@@ -9,10 +9,12 @@ from data_ingestion import (
     build_data_readiness_backlog,
     build_data_readiness_gate_plan,
     build_data_readiness_summary,
+    build_parameter_data_workflow_card,
     build_parameter_snapshot_status,
     build_transformation_review_template,
     cache_source_payload,
     execute_connector_snapshot_request,
+    fetch_url_payload,
     list_cached_snapshots,
     list_reviewed_transformations,
     read_snapshot_manifest,
@@ -21,6 +23,7 @@ from data_ingestion import (
     seed_reference_fixture_snapshots,
     snapshot_payload_hash,
 )
+
 
 
 def test_cache_source_payload_writes_raw_file_and_manifest(tmp_path):
@@ -473,6 +476,66 @@ def test_connector_execution_workbench_turns_requests_into_next_safe_actions(tmp
     assert "source_snapshot_sha256" in template["required_review_fields"]
     assert any("Nenner" in item for item in template["checklist"])
     assert "keine offizielle Prognose" in template["guardrail"]
+
+
+def test_parameter_data_workflow_card_combines_passport_backlog_and_review_next_step(tmp_path):
+    parameters = [
+        {
+            "key": "bevoelkerung_mio",
+            "label": "Bevölkerung",
+            "unit": "million people",
+            "evidence_grade": "A",
+            "source_ids": ["destatis_genesis"],
+            "data_status": "aus_daten",
+            "source_version": "Destatis referenced baseline; automated snapshot pending",
+            "data_lineage": "Registry baseline; reviewed import pending.",
+        },
+    ]
+    cache_source_payload(
+        source_id="destatis_genesis",
+        source_url="https://www-genesis.destatis.de/genesis/online",
+        payload=b"year,value\n2025,84.5\n",
+        filename="population.csv",
+        cache_root=tmp_path,
+        source_period="2025",
+        output_parameter_keys=("bevoelkerung_mio",),
+        transformation_note="raw fixture only; no model mutation",
+        retrieved_at="2026-04-29T20:00:00+00:00",
+    )
+
+    card = build_parameter_data_workflow_card("bevoelkerung_mio", parameters, cache_root=tmp_path)
+
+    assert card["status"] == "parameter_data_workflow_not_model_integration"
+    assert card["parameter_key"] == "bevoelkerung_mio"
+    assert card["passport"]["registry_label"] == "aus Daten"
+    assert card["backlog_item"]["next_gate"] == "transformation_review_needed"
+    assert card["next_safe_gate"]["gate"] == "transformation_review"
+    assert card["planned_connector_request"] is None
+    assert card["transformation_review_template"]["parameter_key"] == "bevoelkerung_mio"
+    assert "Rohdatei" in card["transformation_review_template"]["checklist"][0]
+    assert "keine Registry- oder Modellmutation" in card["guardrail"]
+
+
+def test_parameter_data_workflow_card_exposes_connector_plan_for_snapshot_needed_parameter(tmp_path):
+    parameters = [
+        {
+            "key": "krankenhausbetten",
+            "label": "Krankenhausbetten",
+            "unit": "beds",
+            "evidence_grade": "A",
+            "source_ids": ["destatis_genesis"],
+            "data_status": "aus_daten",
+        },
+    ]
+
+    card = build_parameter_data_workflow_card("krankenhausbetten", parameters, cache_root=tmp_path)
+
+    assert card["backlog_item"]["next_gate"] == "snapshot_needed"
+    assert card["planned_connector_request"]["table_code"] == "23111-0001"
+    assert card["next_safe_gate"]["gate"] == "raw_snapshot_cache"
+    assert card["connector_execution_workbench"]["parameter_key"] == "krankenhausbetten"
+    assert card["transformation_review_template"]["required_review_fields"]
+    assert "kein Netzwerkabruf" in card["guardrail"]
 
 
 def test_transformation_review_template_is_pre_model_integration_guidance(tmp_path):

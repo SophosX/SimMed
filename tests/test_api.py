@@ -82,6 +82,37 @@ def test_api_exposes_data_readiness_backlog_without_model_integration():
     assert "Modelländerung" in first["guardrail"]
 
 
+def test_api_exposes_single_parameter_data_readiness_workflow_without_execution():
+    client = TestClient(api)
+    backlog = client.get("/data-readiness-backlog").json()
+    request = backlog["connector_snapshot_requests"][0]
+    parameter_key = request["output_parameter_keys"][0]
+
+    response = client.get(f"/data-readiness/{parameter_key}")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "parameter_data_workflow_not_model_integration"
+    assert body["parameter_key"] == parameter_key
+    assert body["passport"]["parameter_key"] == parameter_key
+    assert body["backlog_item"]["parameter_key"] == parameter_key
+    assert body["planned_connector_request"]["output_parameter_keys"] == [parameter_key]
+    assert body["next_safe_gate"]["gate"] in {"raw_snapshot_cache", "transformation_review", "explicit_model_integration"}
+    assert body["transformation_review_template"]["parameter_key"] == parameter_key
+    assert "kein Netzwerkabruf" in body["guardrail"]
+    assert "keine Registry- oder Modellmutation" in body["guardrail"]
+
+
+def test_api_rejects_single_parameter_data_readiness_for_unknown_parameter():
+    client = TestClient(api)
+    response = client.get("/data-readiness/not_a_parameter")
+
+    assert response.status_code == 404
+    detail = response.json()["detail"]
+    assert detail["status"] == "unknown_parameter_data_workflow"
+    assert "kein Netzwerkabruf" in detail["guardrail"]
+
+
 def test_api_can_seed_reference_fixture_snapshots_without_model_import():
     client = TestClient(api)
     response = client.post("/data-fixtures/seed-reference-snapshots")

@@ -1529,3 +1529,33 @@ Keine.
 
 ### Verification / Git
 Vor Commit: `tests/test_api.py` 10 passed; Full suite 94 passed; `py_compile` für Kernmodule OK; 20-run/2-year Simulation-Smoke OK. Git-Commit/Push folgt nach Log-Eintrag.
+
+
+## 2026-04-30 00:39 Europe/Berlin — Heartbeat: Parameter-Datenworkflow-Endpoint
+
+### Context
+Alexs Korrektur priorisiert Core-Plattform statt weiterer KI/Evidence-Slices. Dieser Lauf fokussierte daher die Dateningestion-/Provenienz-Strecke in `data_ingestion.py`, `api.py` und API/Data-Ingestion-Tests.
+
+### Project Manager
+Priorität: aus passivem Data Passport/Backlog eine parameterbezogene Arbeitskarte machen, damit Implementierungsagenten gezielt den nächsten sicheren Daten-Gate sehen. Risiko: UI/Agenten könnten Rohcache, Review und Modellintegration weiter verwechseln; deshalb bleibt der neue Helper read-only und stark mit Guardrails beschriftet. Nächste Plattform-Aufgaben: Learning-Page/Workbench auf diese Parameterkarte routen, danach erste echte Live-Connector-Ausführung nur dry-run/opt-in.
+
+### Designer / UX
+Einzelparameter-Workflow ist für Erstnutzer leichter als große Tabellen: ein Parameter zeigt Registry-Status, Backlog-Gate, Connectorplan, Review-Template und nächsten Klick in einem Pfad. Mobile UI sollte später daraus Karten statt breite Tabellen rendern.
+
+### Creative Agent
+Idee: Jede Daten-Passport-Zeile bekommt später einen “Warum noch nicht im Modell?”-Button mit genau dieser Workflow-Karte. Fit: verbessert Vertrauen und Lernwert; kein neuer Modellclaim; technisch leicht, da strukturierte API jetzt existiert.
+
+### Political Health-System Strategist
+Für politisch sensible Parameter ist die Trennung wichtig: ein gecachter oder reviewter Behördenwert ist noch kein Policy-Wirkungsbeweis. Der Workflow verhindert, dass Stakeholder-Simulationen versehentlich als amtliche Prognose oder belastbare Reformwirkung gelesen werden.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Es wurden keine neuen externen Fakten oder Parameterannahmen eingeführt; die Änderung ordnet vorhandene Provenienz-/Cache-/Review-Statusfelder.
+
+### Integrator Decision
+Akzeptiert: `build_parameter_data_workflow_card(...)`, `GET /data-readiness/{parameter_key}` und Regressionstests. Nebenbei Root-Cause-Fix: Connector-Execution-Plan las bisher `raw_snapshot`, während Data Passport `cache` liefert; dadurch konnte Cache-Präsenz im Plan falsch als fehlend erscheinen. Jetzt wird `cache` bevorzugt gelesen.
+
+### Question to Alex
+Keine.
+
+### Verification / Git
+Lokal verifiziert: `98 passed`, `py_compile` für Kernmodule, Simulation-Smoke `20 runs × 2 years` OK `(60, 30)/(320, 6)`. Git-Commit/Push und Zip-Artefakt folgen in diesem Heartbeat.

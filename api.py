@@ -21,6 +21,7 @@ from data_ingestion import (
     build_data_readiness_backlog,
     build_data_readiness_gate_plan,
     build_data_readiness_summary,
+    build_parameter_data_workflow_card,
     build_parameter_snapshot_status,
     build_transformation_review_template,
     execute_connector_snapshot_request,
@@ -108,6 +109,29 @@ def get_data_readiness_backlog() -> dict:
         ),
         "items": items,
     }
+
+
+@api.get("/data-readiness/{parameter_key}")
+def get_parameter_data_readiness(parameter_key: str) -> dict:
+    """Return the complete safe data workflow for one parameter.
+
+    This parameter-level endpoint helps UI/agents answer: registry or assumption,
+    raw cache status, next backlog gate, dry-run connector plan if available, and
+    review checklist. It remains read-only and performs no network/cache/model work.
+    """
+
+    parameters = list_parameters()
+    try:
+        return build_parameter_data_workflow_card(parameter_key, parameters)
+    except KeyError:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "status": "unknown_parameter_data_workflow",
+                "parameter_key": parameter_key,
+                "guardrail": "Unbekannter Parameter: kein Datenworkflow, kein Netzwerkabruf und keine Modellintegration.",
+            },
+        )
 
 
 @api.post("/data-fixtures/seed-reference-snapshots")

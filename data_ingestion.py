@@ -203,9 +203,12 @@ def build_connector_execution_plan(request: ConnectorSnapshotRequest | dict, pas
 
     data = request.to_dict() if isinstance(request, ConnectorSnapshotRequest) else dict(request)
     passport = passport_row or {}
-    raw_snapshot = passport.get("raw_snapshot", {}) if isinstance(passport, dict) else {}
+    raw_snapshot = passport.get("cache") or passport.get("raw_snapshot", {}) if isinstance(passport, dict) else {}
     transformation_review = passport.get("transformation_review", {}) if isinstance(passport, dict) else {}
-    cache_label = raw_snapshot.get("label", "Rohsnapshot noch nicht im Cache")
+    if raw_snapshot.get("has_cached_snapshot"):
+        cache_label = "Rohsnapshot im Cache vorhanden"
+    else:
+        cache_label = raw_snapshot.get("label", "Rohsnapshot noch nicht im Cache")
     review_label = transformation_review.get("label", "Transformation noch nicht geprüft")
     parameter_label = data.get("parameter_label") or ", ".join(data.get("output_parameter_keys", []))
     return [
@@ -255,7 +258,7 @@ def build_transformation_review_template(request: ConnectorSnapshotRequest | dic
 
     data = request.to_dict() if isinstance(request, ConnectorSnapshotRequest) else dict(request)
     passport = passport_row or {}
-    raw_snapshot = passport.get("raw_snapshot", {}) if isinstance(passport, dict) else {}
+    raw_snapshot = passport.get("cache") or passport.get("raw_snapshot", {}) if isinstance(passport, dict) else {}
     parameter_keys = data.get("output_parameter_keys", [])
     parameter_key = parameter_keys[0] if parameter_keys else ""
     return {
@@ -361,6 +364,82 @@ def _next_connector_safe_gate(plan: list[dict]) -> dict:
         "guardrail": final_step["guardrail"],
     }
 
+
+
+def build_parameter_data_workflow_card(
+    parameter_key: str,
+    parameters: list[dict],
+    *,
+    cache_root: Path | str = CACHE_ROOT,
+) -> dict:
+    """Build one parameter-level data workflow card for UI/API agents.
+
+    The card joins the Data Passport, readiness backlog, connector dry-run plan,
+    and transformation-review checklist for a single parameter. It is deliberately
+    read-only: it does not fetch data, write cache files, create reviews, or mutate
+    registry/model values.
+    """
+
+    parameter = next((item for item in parameters if item.get("key") == parameter_key), None)
+    if parameter is None:
+        raise KeyError(parameter_key)
+
+    passport_rows = build_data_passport_rows(parameters, cache_root=cache_root)
+    passport = next(row for row in passport_rows if row["parameter_key"] == parameter_key)
+    backlog_items = build_data_readiness_backlog(parameters, cache_root=cache_root)
+    backlog_item = next(row for row in backlog_items if row["parameter_key"] == parameter_key)
+    requests = build_connector_snapshot_requests(backlog_items, per_source_limit=100)
+    planned_request = next(
+        (request for request in requests if parameter_key in request.get("output_parameter_keys", [])),
+        None,
+    )
+
+    if planned_request is None:
+        review_request = {
+            "parameter_label": passport.get("label", parameter_key),
+            "output_parameter_keys": [parameter_key],
+            "source_id": passport.get("source_ids", [""])[0] if passport.get("source_ids") else "",
+            "source_label": ", ".join(passport.get("source_ids", [])),
+            "table_code": "",
+            "source_period": passport.get("source_version", ""),
+        }
+        execution_plan = [
+            {
+                "order": 1,
+                "gate": "transformation_review",
+                "label": "Transformation reviewen",
+                "status": passport.get("transformation_review", {}).get("status", "not_reviewed"),
+                "instruction": "Rohdaten prüfen, SHA256-Manifest und Ableitung in ReviewedTransformation dokumentieren.",
+                "guardrail": "Review ist keine Registry- oder Modellmutation.",
+            },
+            {
+                "order": 2,
+                "gate": "explicit_model_integration",
+                "label": "Explizite Modellintegration entscheiden",
+                "status": "wartet auf geprüften Review und bewussten Code/Registry-Change",
+                "instruction": "Erst nach Review ParameterSpec/Modelllogik gezielt ändern und Tests ergänzen.",
+                "guardrail": "Keine offizielle Prognose, keine automatische Policy-Wirkung und keine stille Parameteränderung.",
+            },
+        ]
+        workbench_row = None
+    else:
+        review_request = planned_request
+        execution_plan = build_connector_execution_plan(planned_request, passport)
+        workbench_row = build_connector_execution_workbench([planned_request], passport_rows)["rows"][0]
+
+    return {
+        "status": "parameter_data_workflow_not_model_integration",
+        "parameter_key": parameter_key,
+        "parameter_label": passport.get("label", parameter_key),
+        "passport": passport,
+        "backlog_item": backlog_item,
+        "planned_connector_request": planned_request,
+        "connector_execution_workbench": workbench_row,
+        "execution_plan": execution_plan,
+        "next_safe_gate": _next_connector_safe_gate(execution_plan),
+        "transformation_review_template": build_transformation_review_template(review_request, passport),
+        "guardrail": "Parameter-Workflow ist nur Status/Planung: kein Netzwerkabruf, kein Rohdaten-Cache, keine Registry- oder Modellmutation und kein Policy-Wirkungsbeweis.",
+    }
 
 
 def execute_connector_snapshot_request(
