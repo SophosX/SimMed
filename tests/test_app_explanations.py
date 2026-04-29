@@ -94,6 +94,23 @@ def test_finance_and_demography_controls_now_have_combined_registry_help():
     assert "Was passiert beim Ändern?" in epa_help
 
 
+def test_versorgung_controls_now_have_combined_registry_help():
+    rural_help = _parameter_control_help("aerzte_pro_100k_rural")
+    bed_help = _parameter_control_help("krankenhausbetten")
+    throughput_help = _parameter_control_help("patienten_pro_quartal")
+
+    assert "Evidenzgrad B" in rural_help
+    assert "kbv_zi" in rural_help
+    assert "Was passiert beim Ändern?" in rural_help
+    assert "ländlich" in rural_help
+    assert "Evidenzgrad A" in bed_help
+    assert "staffing" in bed_help
+    assert "Was passiert beim Ändern?" in bed_help
+    assert "Evidenzgrad B" in throughput_help
+    assert "throughput" in throughput_help
+    assert "Was passiert beim Ändern?" in throughput_help
+
+
 def test_parameter_evidence_badge_is_short_and_registry_based():
     badge = _parameter_evidence_badge("medizinstudienplaetze")
 

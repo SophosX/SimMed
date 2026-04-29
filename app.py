@@ -1044,39 +1044,39 @@ def render_sidebar() -> dict:
         )
         params["aerzte_pro_100k_urban"] = st.slider(
             "Ärzte/100k (urban)", 150, 500, params["aerzte_pro_100k_urban"], 5,
-            help=_parameter_effect_hint("aerzte_pro_100k_urban"),
+            help=_parameter_control_help("aerzte_pro_100k_urban", "Mehr Ärztedichte in Städten kann Wartezeiten senken, ist aber kein FTE-Nachweis."),
         )
         params["aerzte_pro_100k_rural"] = st.slider(
             "Ärzte/100k (ländlich)", 80, 300, params["aerzte_pro_100k_rural"], 5,
-            help=_parameter_effect_hint("aerzte_pro_100k_rural"),
+            help=_parameter_control_help("aerzte_pro_100k_rural", "Dieser Hebel zeigt direkt, wie stark ländliche Erreichbarkeit von regionaler Kapazität abhängt."),
         )
         params["hausarztpraxen"] = st.slider(
             "Hausarztpraxen", 30_000, 80_000, params["hausarztpraxen"], 500,
-            help=_parameter_effect_hint("hausarztpraxen"),
+            help=_parameter_control_help("hausarztpraxen", "Hausarztpraxen puffern Nachfrage früh; Teamgröße und Öffnungszeiten bleiben vereinfacht."),
         )
         params["fachpraxen"] = st.slider(
             "Fachpraxen", 20_000, 80_000, params["fachpraxen"], 500,
-            help=_parameter_effect_hint("fachpraxen"),
+            help=_parameter_control_help("fachpraxen", "Fachpraxen wirken vor allem auf Facharzt-Wartezeiten; Fachrichtungen sind hier gebündelt."),
         )
         params["mvz_anzahl"] = st.slider(
             "MVZ-Anzahl", 1_000, 15_000, params["mvz_anzahl"], 100,
-            help=_parameter_effect_hint("mvz_anzahl"),
+            help=_parameter_control_help("mvz_anzahl", "MVZ können Organisation und Zugänglichkeit verbessern, erzeugen aber ohne Personal keine Extra-Kapazität."),
         )
         params["krankenhaeuser"] = st.slider(
             "Krankenhäuser", 800, 3_000, params["krankenhaeuser"], 10,
-            help=_parameter_effect_hint("krankenhaeuser"),
+            help=_parameter_control_help("krankenhaeuser", "Krankenhauszahl steht für Versorgungsstruktur, nicht automatisch für Qualität oder verfügbare Betten."),
         )
         params["krankenhausbetten"] = st.slider(
             "Krankenhausbetten", 200_000, 700_000, params["krankenhausbetten"], 5_000,
-            help=_parameter_effect_hint("krankenhausbetten"),
+            help=_parameter_control_help("krankenhausbetten", "Betten helfen nur, wenn Personal vorhanden ist; sonst bleibt es eine Scheinkapazität."),
         )
         params["patienten_pro_quartal"] = st.slider(
             "Patienten/Arzt/Quartal", 400, 1_500, params["patienten_pro_quartal"], 10,
-            help=_parameter_effect_hint("patienten_pro_quartal"),
+            help=_parameter_control_help("patienten_pro_quartal", "Mehr Durchsatz kann Zugang verbessern, aber auch Belastung und Qualitätsrisiken verdecken."),
         )
         params["arbeitszeit_stunden"] = st.slider(
             "Arbeitszeit (h/Woche)", 35, 70, params["arbeitszeit_stunden"],
-            help=_parameter_effect_hint("arbeitszeit_stunden"),
+            help=_parameter_control_help("arbeitszeit_stunden", "Arbeitszeit ist der einfache FTE-Hebel: Kopfzahl wird erst dadurch zu realer Kapazität."),
         )
 
     # ── Ärzte-Pipeline ──

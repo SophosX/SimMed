@@ -534,3 +534,16 @@ No important decision required now.
 
 ### Verification / Git
 Local verification before sync: targeted app/registry tests, py_compile, and 100-run runtime smoke test passed. Git commit/push follows in this heartbeat.
+
+
+## 2026-04-29 16:55 UTC — Sidebar-Versorgungsparameter evidenznäher erklärt
+
+- **Context:** Heartbeat fokussiert TOP-UX-Direktive: Nutzer sollen bei Versorgungsstruktur-Reglern Quelle, Bedeutung und Wirklogik direkt im Tooltip sehen.
+- **Project Manager:** Niedriges Risiko, weil nur Registry-Metadaten und UI-Hilfetexte ergänzt wurden; Modelloutputs bleiben unverändert.
+- **Designer/UX:** Die bisher nur wirkungsbezogenen Tooltips für Ärzte-/Praxis-/Krankenhaus-/Durchsatzregler wurden auf kombinierte Hilfen umgestellt: Evidenzgrad + Quelle + „Was passiert beim Ändern?“.
+- **Creative Agent:** Fit-Idee: Tooltips als Mini-Entscheidungskarten statt Fußnoten; umgesetzt als kurzer, kontextnaher Hilfetext ohne zusätzliche UI-Komplexität.
+- **Political Health-System Strategist:** Krankenhauszahl/Betten und MVZ werden ausdrücklich nicht als automatische Kapazitäts- oder Qualitätsgewinne dargestellt; das reduziert politische Scheingenauigkeit.
+- **Evidence/Domain:** Neue Registry-Einträge nutzen vorhandene Quellenklassen KBV/Zi, BÄK, Destatis/GBE; unsichere Aggregationen sind als Caveat/Uncertainty markiert, keine neuen externen Faktbehauptungen.
+- **Integrator Decision:** Sichere reversible UX-/Provenance-Erweiterung übernommen; Strategie-Modus bleibt später.
+- **Question to Alex if needed:** Keine wichtige Entscheidung offen.
+- **Verification/Git:** `pytest tests/test_app_explanations.py tests/test_registries.py`, `py_compile`, 100-run Smoke-Test erfolgreich; Commit/Push folgt.
