@@ -91,6 +91,15 @@ def test_api_exposes_next_data_readiness_actions_without_execution():
     assert body["status"] == "data_readiness_next_actions_not_executed"
     assert "kein Netzwerkabruf" in body["guardrail"]
     assert len(body["actions"]) == 2
+    packet = body["action_packet"]
+    assert "Status/Dry-run-only" in packet["plain_language_note"]
+    assert len(packet["rows"]) == 2
+    assert "execute=true" in packet["guardrail"] or "kein Live-Fetch" in packet["guardrail"]
+    first_packet_row = packet["rows"][0]
+    assert first_packet_row["copyable_api_command"].startswith("curl")
+    assert first_packet_row["next_review_route"].startswith("GET /data-connectors/transformation-review-template/")
+    assert "Registry/Modell" in " ".join(first_packet_row["operator_checklist"])
+    assert "keine Registry-/Modellmutation" in first_packet_row["guardrail"]
     first = body["actions"][0]
     assert first["rank"] == 1
     assert first["workflow_api"].startswith("GET /data-readiness/")

@@ -803,6 +803,51 @@ def build_next_data_readiness_actions(backlog_items: list[dict], *, limit: int =
     return actions
 
 
+def build_data_readiness_action_packet(actions: list[dict]) -> dict:
+    """Package next actions into a copyable operator handoff for API/UI.
+
+    The packet makes the platform backlog operational for humans and agents while
+    staying read-only: commands are dry-run/status calls only, never execute=true
+    connector calls and never registry/model mutation instructions.
+    """
+
+    rows: list[dict] = []
+    for action in actions:
+        payload = action.get("dry_run_payload")
+        if payload:
+            api_command = (
+                "curl -X POST /data-connectors/execute-planned-snapshot "
+                f"-d '{{\"parameter_key\": \"{payload['parameter_key']}\", \"execute\": false}}'"
+            )
+            mode = "dry_run_status"
+        else:
+            api_command = f"curl {action['workflow_api'].replace('GET ', '')}"
+            mode = "workflow_status"
+        rows.append({
+            "rank": action["rank"],
+            "parameter_key": action["parameter_key"],
+            "label": action["label"],
+            "mode": mode,
+            "copyable_api_command": api_command,
+            "operator_checklist": [
+                "Workflow-/Dry-run-Status lesen",
+                "Rohdaten-Cache-Status und SHA256/Manifest prüfen",
+                "Transformation separat reviewen, bevor Registry/Modell geändert wird",
+            ],
+            "next_review_route": f"GET /data-connectors/transformation-review-template/{action['parameter_key']}",
+            "guardrail": "Copy-Paste-Paket ist Status/Dry-run-only: kein execute=true, kein Netzwerkabruf durch diese Planung, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+        })
+    return {
+        "title": "Copy-Paste Arbeitsauftrag für nächste Daten-Gates",
+        "plain_language_note": (
+            "Dieses Paket übersetzt die nächsten Daten-Backlog-Zeilen in sichere API-Schritte. "
+            "Es ist für Operatoren/Agents gedacht und bleibt ausdrücklich Status/Dry-run-only."
+        ),
+        "rows": rows,
+        "guardrail": "Action-Packet führt nichts aus: kein Live-Fetch, kein Cache-Schreibvorgang, keine Modellintegration, keine amtliche Prognose und kein Wirkungsbeweis.",
+    }
+
+
 
 def build_data_connector_queue(backlog_items: list[dict], *, per_source_limit: int = 4) -> list[dict]:
     """Group snapshot-needed parameters by source so connector work can start safely.

@@ -1735,3 +1735,33 @@ Keine.
 
 ### Verification / Git
 Focused tests passed for the new API/UI helper; full suite passed (`106 passed`), py_compile passed, and simulation smoke passed (`df (60, 30)`, `reg (320, 6)`). Committed and pushed on branch `feat/platform-data-status-foundation` as `fc643dd` (`Add data readiness next actions`); zip refreshed at `/opt/data/cache/documents/health_simulation_app_updated.zip`.
+
+
+## 2026-04-29 23:16 UTC — Heartbeat: Data-readiness action packet
+
+### Context
+Alex's corrected priority remains core platform implementation first. This run extended the data-ingestion/provenance foundation so the next data-gate actions are easier to hand off to operators or agents without turning them into live imports.
+
+### Project Manager
+Priority: make source-backed parameter work executable in small safe steps. This slice adds a copy-paste action packet on top of the existing next-action backlog, keeping the next platform step focused on real-data workflows rather than evidence side quests.
+
+### Designer / UX
+The Learning Page can now show a second table under “Konkrete nächste Plattform-Aktionen” with copyable dry-run/status API commands, review route, mode, and guardrails. This helps first-time users understand what to do next without hunting across endpoints.
+
+### Creative Agent
+Idea fit: the action packet is a low-risk bridge toward a future Daten-Werkbank/checklist UI. It is useful because it packages exact commands and checklist steps, but intentionally avoids one-click live fetching.
+
+### Political Health-System Strategist
+The packet preserves political/health-system credibility: dry-run/status instructions are separated from raw caching, transformation review, Registry/model integration, official forecasts, and policy-effect claims.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. No new source claim, real-world parameter, or model effect was introduced; the change only repackages existing Data Passport/backlog/connector-review guardrails.
+
+### Integrator Decision
+Accepted: add `build_data_readiness_action_packet(...)`, expose it from `GET /data-readiness/next-actions`, and surface it on the Learning Page via the existing data-readiness expander. Deferred: execute=true buttons, live fetch UX, or model integration.
+
+### Question to Alex
+Keine.
+
+### Verification / Git
+Focused tests passed for API and Learning Page helpers; full suite passed (`106 passed`), py_compile passed, and a small simulation smoke passed (`df (60, 30)`, `reg (320, 6)`). Commit/push follows in the Git step of this heartbeat.

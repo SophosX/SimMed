@@ -18,6 +18,7 @@ from data_ingestion import (
     build_connector_snapshot_requests,
     build_data_connector_queue,
     build_data_passport_rows,
+    build_data_readiness_action_packet,
     build_data_readiness_backlog,
     build_data_readiness_gate_plan,
     build_data_readiness_summary,
@@ -133,11 +134,13 @@ def get_next_data_readiness_actions(limit: int = 3) -> dict:
         )
     parameters = list_parameters()
     items = build_data_readiness_backlog(parameters)
+    actions = build_next_data_readiness_actions(items, limit=limit)
     return {
         "status": "data_readiness_next_actions_not_executed",
         "guardrail": "Nächste Aktionen sind Dry-run-/Workflow-Hinweise: kein Netzwerkabruf, kein Cache-Schreibvorgang, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
         "summary": build_data_readiness_summary(items),
-        "actions": build_next_data_readiness_actions(items, limit=limit),
+        "actions": actions,
+        "action_packet": build_data_readiness_action_packet(actions),
     }
 
 

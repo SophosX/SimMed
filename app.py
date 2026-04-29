@@ -34,6 +34,7 @@ from data_ingestion import (
     build_connector_snapshot_requests,
     build_data_connector_queue,
     build_data_passport_rows,
+    build_data_readiness_action_packet,
     build_data_readiness_backlog,
     build_data_readiness_gate_plan,
     build_data_readiness_summary,
@@ -4105,6 +4106,7 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
     full_backlog = build_data_readiness_backlog(list_parameters())
     backlog = full_backlog[:limit]
     summary = build_data_readiness_summary(full_backlog)
+    next_actions = build_next_data_readiness_actions(full_backlog, limit=3)
     return {
         "title": "Nächste Daten-Schritte: erst Cache, dann Review, dann Integration",
         "plain_language_note": (
@@ -4115,7 +4117,8 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         "gate_plan": build_data_readiness_gate_plan(full_backlog),
         "connector_queue": build_data_connector_queue(full_backlog),
         "connector_snapshot_requests": build_connector_snapshot_requests(full_backlog),
-        "next_actions": build_next_data_readiness_actions(full_backlog, limit=3),
+        "next_actions": next_actions,
+        "action_packet": build_data_readiness_action_packet(next_actions),
         "rows": [
             {
                 "Parameter": item["label"],
@@ -4237,6 +4240,20 @@ def render_learning_data_readiness_backlog():
                 "Guardrail": action["guardrail"],
             })
         st.dataframe(pd.DataFrame(action_rows), use_container_width=True, hide_index=True)
+        packet_rows = [
+            {
+                "Rang": row["rank"],
+                "Parameter": row["label"],
+                "Modus": row["mode"],
+                "Copy-Paste API": row["copyable_api_command"],
+                "Review-Route": row["next_review_route"],
+                "Guardrail": row["guardrail"],
+            }
+            for row in backlog["action_packet"]["rows"]
+        ]
+        st.markdown(f"**{backlog['action_packet']['title']}**")
+        st.caption(backlog["action_packet"]["plain_language_note"])
+        st.dataframe(pd.DataFrame(packet_rows), use_container_width=True, hide_index=True)
         st.caption("Diese Liste priorisiert Plattformarbeit: erst Status/Dry-run, dann Rohdaten-Cache nur bewusst, danach Review und explizite Modellintegration.")
     with st.expander("Warum diese Reihenfolge? Daten-Gates als Arbeitsplan", expanded=False):
         for gate in backlog["gate_plan"]:

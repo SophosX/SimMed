@@ -110,6 +110,12 @@ def test_learning_data_readiness_backlog_prioritizes_safe_data_gates():
     assert "keine automatische" in connector["guardrail"]
     assert backlog["connector_snapshot_requests"]
     assert backlog["next_actions"]
+    assert backlog["action_packet"]["rows"]
+    assert "Status/Dry-run-only" in backlog["action_packet"]["plain_language_note"]
+    packet_row = backlog["action_packet"]["rows"][0]
+    assert packet_row["copyable_api_command"].startswith("curl")
+    assert packet_row["next_review_route"].startswith("GET /data-connectors/transformation-review-template/")
+    assert "kein execute=true" in packet_row["guardrail"]
     next_action = backlog["next_actions"][0]
     assert next_action["rank"] == 1
     assert next_action["workflow_api"].startswith("GET /data-readiness/")
