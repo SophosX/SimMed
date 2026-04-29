@@ -621,4 +621,16 @@ Local verification passed: `python3 -m pytest -q` (32 passed), py_compile, and 5
 
 **Question to Alex if needed:** No major decision open; next safe step is trend-chart reading guidance and/or richer per-lever political drill-down.
 
-**Verification/Git:** Local verification passed: `python3 -m pytest -q` (35 passed), py_compile, and 30-run/3-year simulation smoke test. Git commit/push follows from the mirrored clone.
+**Verification/Git:** Pending in this run after tests, smoke test, sync, commit, and push.
+
+## 2026-04-29 Heartbeat: Trendansicht als Lesepfad
+
+- **Context:** Alex priorisiert eine tiefere, logischere Ergebnis-Erfahrung. Nach Narrativ und KPI-Drilldowns fehlte der Trendansicht noch eine klare Leseanleitung.
+- **Project Manager:** Kleiner reversibler UX-Slice statt neuer Modelllogik: Trendchart verständlicher machen, ohne Outputs zu verändern.
+- **Designer/UX:** Die Trendansicht erklärt jetzt Mittelwerte über Jahre, warnt vor gemischten Einheiten und führt zurück zu KPI-Detailkarten.
+- **Creative Agent:** Kein neues visuelles Gimmick; der Mehrwert liegt in einer geführten Interpretation direkt am Chart.
+- **Political Health-System Strategist:** Keine neuen Stakeholder- oder Strategiebehauptungen; politische Lesart bleibt in der separaten Rubrik.
+- **Evidence/Domain:** Keine neue externe Recherche in diesem Lauf; es wurden keine neuen Realwelt-Fakten codiert, nur Modell-Lesehinweise.
+- **Integrator Decision:** Plan um Slice „Trend view reading guide“ erweitert; `build_trend_view_guidance()` mit Test ergänzt; Renderpfad in `render_main_trend_chart()` verbunden.
+- **Question to Alex if needed:** Keine wichtige Entscheidung offen; nächster sicherer Schritt ist Parameter-Auswirkungs-Mapping für geänderte Hebel.
+- **Verification/Git:** Tests und Smoke-Test werden vor Commit/Push ausgeführt.

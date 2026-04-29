@@ -119,3 +119,16 @@ Problem: the KPI section still explains many cards as separate snippets. The nex
 6. **Nächster Klick:** concrete next chart/KPI/political section to inspect.
 
 Implementation guardrail: add a pure helper that returns structured drill-down items, test that it includes observation/strength/next-step fields, then render from that helper. Keep the UI expandable; no extra isolated text blocks.
+
+## 2026-04-29 next slice: Trend view reading guide
+
+Problem: the trend chart now has hover and larger lines, but a first-time user can still misread it as one shared unit scale. Because the default chart mixes euros, days, percentages and headcounts, the UI must explicitly teach how to read it before adding more charts.
+
+Small implementation slice:
+
+1. Add a pure `build_trend_view_guidance(selected_labels)` helper in `app.py`.
+2. The helper returns: what the lines mean, why units should not be compared directly, what the default three metrics are meant to answer, and what to inspect next.
+3. Render this guidance directly above/below the multiselect in `render_main_trend_chart()` so the trend view becomes part of the same reading path.
+4. Add a focused test in `tests/test_app_explanations.py` that guards the mixed-unit warning, mean-over-time explanation, and next inspection step.
+
+Guardrail: this is UI explanation only. Do not change model outputs, add new causal claims, or imply that the chart is a validated real-world forecast.

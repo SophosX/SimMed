@@ -1521,11 +1521,35 @@ def render_kpi_deep_dive(agg: pd.DataFrame, params: dict):
                 st.success(f"**6 · Nächster Klick:** {item['next_step']}")
 
 
+def build_trend_view_guidance(selected_labels: List[str]) -> Dict[str, str]:
+    """Explain how to read the mixed-unit trend chart without adding model logic."""
+    selected_text = ", ".join(selected_labels) if selected_labels else "keine Kennzahl ausgewählt"
+    return {
+        "how_to_read": (
+            "Die Linien zeigen Modell-Mittelwerte Jahr für Jahr über alle Monte-Carlo-Läufe. "
+            "Lies zuerst die Richtung jeder einzelnen Linie: steigt sie, fällt sie oder kippt sie erst später?"
+        ),
+        "unit_warning": (
+            "Achtung: Die ausgewählten Kennzahlen haben unterschiedliche Einheiten und Skalen. "
+            "Euro-Milliarden, Wartezeit-Tage, Prozentwerte und Ärztedichte bitte nicht direkt vergleichen; "
+            "vergleiche nur den Verlauf einer Kennzahl mit sich selbst."
+        ),
+        "selection_meaning": (
+            f"Aktuell ausgewählt: {selected_text}. Diese Kombination beantwortet: Wird das System teurer, "
+            "wird Zugang schlechter oder besser, und steigt der Finanzierungsdruck?"
+        ),
+        "next_step": (
+            "Nächster Klick: Öffne nach auffälligen Knicken die passende KPI-Detailkarte darunter. "
+            "Dort stehen Bedeutung, Start/Ende, geänderte Hebel und Annahmen. Die Trendansicht ist eine Modell-Lesebrille, keine amtliche Prognose."
+        ),
+    }
+
+
 def render_main_trend_chart(agg: pd.DataFrame):
     """Larger, readable trend chart with hover instead of tiny sparklines."""
     st.markdown("---")
     st.markdown("### Zeitverlauf der wichtigsten Kennzahlen")
-    st.caption("Hier siehst du wirklich den Verlauf über die Jahre. Fahre mit der Maus über die Linien, um Werte pro Jahr zu sehen.")
+    st.caption("Hier siehst du den Verlauf über die Jahre. Die Hinweise erklären, wie du gemischte Kennzahlen korrekt liest.")
     choices = {
         "Gesundheitsausgaben": "gesundheitsausgaben_mrd_mean",
         "BIP-Anteil Gesundheit": "bip_anteil_mean",
@@ -1535,6 +1559,12 @@ def render_main_trend_chart(agg: pd.DataFrame):
         "Kollaps-Risiko": "kollaps_wahrscheinlichkeit_mean",
     }
     selected = st.multiselect("Kennzahlen anzeigen", list(choices.keys()), default=["Gesundheitsausgaben", "Facharzt-Wartezeit", "GKV-Beitragssatz"])
+    guidance = build_trend_view_guidance(selected)
+    with st.expander("So liest du den Zeitverlauf richtig", expanded=True):
+        st.markdown(f"**1 · Verlauf lesen:** {guidance['how_to_read']}")
+        st.warning(guidance["unit_warning"])
+        st.markdown(f"**2 · Warum diese Auswahl?** {guidance['selection_meaning']}")
+        st.success(f"**3 · Nächster Klick:** {guidance['next_step']}")
     fig = go.Figure()
     for label in selected:
         col = choices[label]

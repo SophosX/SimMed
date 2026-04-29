@@ -11,6 +11,7 @@ from app import (
     build_kpi_explanations,
     build_political_stakeholder_rows,
     build_result_narrative_summary,
+    build_trend_view_guidance,
     get_default_params,
     learning_page_next_actions,
     plain_language_workflow_summary,
@@ -299,4 +300,19 @@ def test_kpi_drilldown_items_follow_coherent_reading_path():
     assert "Zeitverlauf" in combined
     assert "politische" in combined
     assert "Kopfzahl allein" in combined
+
+
+def test_trend_view_guidance_warns_about_mixed_units_and_next_step():
+    guidance = build_trend_view_guidance(["Gesundheitsausgaben", "Facharzt-Wartezeit", "GKV-Beitragssatz"])
+    combined = " ".join(guidance.values())
+
+    assert "Mittelwerte" in combined
+    assert "Jahr für Jahr" in combined
+    assert "unterschiedliche Einheiten" in combined
+    assert "nicht direkt vergleichen" in combined
+    assert "Gesundheitsausgaben" in combined
+    assert "Facharzt-Wartezeit" in combined
+    assert "GKV-Beitragssatz" in combined
+    assert "KPI-Detailkarte" in combined
+    assert "keine amtliche Prognose" in combined
 
