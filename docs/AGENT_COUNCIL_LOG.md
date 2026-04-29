@@ -375,4 +375,4 @@ Akzeptiert: `_parameter_evidence_badge()` plus Sidebar-Captions für Demografie,
 Keine wichtige Entscheidung offen.
 
 ### Verification / Git
-Lokal: `python3 -m pytest -q` → 18 passed. Commit/Push folgt nach Sync.
+`python3 -m pytest -q` → 18 passed; `py_compile` passed; zip refreshed at `/opt/data/cache/documents/health_simulation_app_updated.zip`; commit `a851301` pushed to `main`.
