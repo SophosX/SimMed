@@ -835,3 +835,5 @@ No important decision open. Safe next slice: make the direct KPI↔Hebel matchin
 
 ### Verification / Git
 Local verification passed: `python3 -m pytest -q` (54 passed), `py_compile`, and 50-run/3-year simulation smoke test (`df=(200,30)`, `reg=(800,6)`). Git commit/push pending in this heartbeat after source→GitHub sync.
+
+Post-commit verification update: committed and pushed as `f8d37b3` (`Improve KPI lever matching explanations`); `git show --name-only --oneline -1` confirmed app.py, tests, plan and council log were included.
