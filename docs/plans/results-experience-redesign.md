@@ -361,3 +361,17 @@ Small implementation slice:
 4. Add a focused test proving a KPI matched to Telemedizin exposes the existing evidence/caveat/sanity-check row, while unrelated KPIs stay explicit that no direct assumption trace exists.
 
 Guardrail: This is explanation routing only. Do not add new empirical claims, model effects, data-source claims, or political stakeholder assertions; reuse only existing assumption-check fields and parameter registry metadata.
+
+## 2026-04-29 next slice: Political result checkpoints
+
+Problem: The political lever detail explains supporters/blockers, but users still have to jump back mentally to the changed-lever bridge and KPI details to judge whether political friction is worth the simulated effect. The political section should therefore show a compact, evidence-safe checkpoint: which observed KPI traces belong to this lever, which detail cards to open, and why this remains a qualitative rubric rather than a vote forecast.
+
+Small implementation slice:
+
+1. Add a pure `build_political_result_checkpoints(political_sections, bridge_items)` helper in `app.py`.
+2. Match political lever sections to existing changed-parameter bridge items by normalized labels only; do not invent new stakeholder or model claims.
+3. Return for each matched lever: label, political friction/lag, observed KPI traces, exact KPI detail targets, caveat, and next step.
+4. Render these checkpoints inside the existing political lever expander after the uncertainty block, so the journey becomes changed lever → simulated KPI traces → political friction → next inspection.
+5. Add a focused test proving Medizinstudienplätze gets KPI targets and the not-a-vote-forecast caveat, while unmatched political sections safely return no checkpoint.
+
+Guardrail: This is cross-navigation only. Reuse existing political sections and changed-parameter bridge fields; do not add empirical claims, vote predictions, lobbying advice, or new causal effects.

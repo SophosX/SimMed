@@ -15,6 +15,7 @@ from app import (
     build_kpi_explanations,
     build_landing_hero_content,
     build_political_lever_detail_sections,
+    build_political_result_checkpoints,
     build_political_stakeholder_rows,
     build_result_explorer_topics,
     build_result_narrative_summary,
@@ -1000,3 +1001,48 @@ def test_result_explorer_topics_include_ordered_reading_paths():
     assert "Einheiten" in combined
     assert "Vote-Forecast" in combined
     assert "Lobbying-Empfehlung" in combined
+
+def test_political_result_checkpoints_link_friction_to_existing_kpi_targets():
+    from political_feasibility import assess_political_feasibility
+
+    agg = pd.DataFrame([
+        {
+            "aerzte_pro_100k_mean": 430.0,
+            "wartezeit_fa_mean": 35.0,
+            "versorgungsindex_rural_mean": 0.72,
+        },
+        {
+            "aerzte_pro_100k_mean": 410.0,
+            "wartezeit_fa_mean": 44.0,
+            "versorgungsindex_rural_mean": 0.64,
+        },
+    ])
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] - 1500
+
+    assessment = assess_political_feasibility({"medizinstudienplaetze": params["medizinstudienplaetze"]})
+    political_sections = build_political_lever_detail_sections(assessment)
+    bridge_items = build_changed_parameter_impact_bridge(agg, params)
+    checkpoints = build_political_result_checkpoints(political_sections, bridge_items)
+
+    assert [checkpoint["label"] for checkpoint in checkpoints] == ["Medizinstudienplätze"]
+    checkpoint = checkpoints[0]
+    combined = " ".join(
+        [
+            checkpoint["political_friction"],
+            checkpoint["implementation_lag"],
+            checkpoint["caveat"],
+            checkpoint["next_step"],
+            " ".join(checkpoint["observed_kpis"]),
+            " ".join(target["next_step"] for target in checkpoint["drilldown_targets"]),
+        ]
+    )
+
+    assert "KPI-Detailkarte" in combined
+    assert "Ärztedichte" in combined or "Ärzte" in combined
+    assert "Wartezeit Facharzt" in combined or "Facharzt-Wartezeit" in combined
+    assert "ländliche Versorgung" in combined or "Versorgungsindex" in combined
+    assert "kein Vote-Forecast" in combined
+    assert "Annahmen-Checks" in combined
+    assert build_political_result_checkpoints([{"label": "Nicht passender Hebel"}], bridge_items) == []
+

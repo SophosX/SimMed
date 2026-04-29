@@ -946,3 +946,16 @@ Local verification before sync: `python3 -m pytest -q` → 59 passed; py_compile
 - **Integrator Decision:** Implemented `build_kpi_assumption_trace(...)`, wired it into `build_kpi_drilldown_items(...)` and `render_kpi_deep_dive(...)`, and documented the slice in `docs/plans/results-experience-redesign.md`.
 - **Question to Alex if needed:** No blocking decision; next safe slice can improve the political section’s “why this group appears” reading path or report navigation.
 - **Verification/Git:** Focused test passed; full verification and push follow in this heartbeat.
+
+
+## 2026-04-29 19:08 UTC — Heartbeat: politische Ergebnis-Checkpoints
+
+- **Context:** Results experience slice continued without new model effects; focus on connecting political feasibility to existing changed-lever/KPI explanations.
+- **Project Manager:** Small reversible UX-routing slice; no data/model migration; preserves current report/navigation architecture.
+- **Designer/UX:** Political expanders now point back to observed KPI traces and exact KPI detail targets, so users can judge friction against simulated result signals instead of reading stakeholder text in isolation.
+- **Creative Agent:** Kept as a “checkpoint before political Bewertung” pattern rather than adding another standalone card.
+- **Political Health-System Strategist:** Wording remains qualitative rubric; explicitly not vote forecast, lobbying ranking, or implementation recommendation.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; no new real-world claims added. Text reuses existing bridge/political fields and labels assumptions/rubric limits.
+- **Integrator Decision:** Added `build_political_result_checkpoints(...)`, rendered matched checkpoints inside political lever expanders, and added a regression test for Medizinstudienplätze plus unmatched safe no-op.
+- **Question to Alex if needed:** Keine neue Produktentscheidung offen; next safe work can continue with report/navigation coherence.
+- **Verification/Git:** Local tests and smoke passed before sync/commit.

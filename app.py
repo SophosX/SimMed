@@ -1454,6 +1454,52 @@ def build_political_lever_detail_sections(political_assessment: Dict[str, Any]) 
     return sections
 
 
+def _normalized_result_label(value: str) -> str:
+    """Normalize German UI labels for safe cross-section matching."""
+    return "".join(ch.lower() for ch in str(value) if ch.isalnum())
+
+
+def build_political_result_checkpoints(
+    political_sections: List[Dict[str, Any]],
+    bridge_items: List[Dict[str, Any]],
+) -> List[Dict[str, Any]]:
+    """Connect political lever explanations to existing result/KPI checkpoints.
+
+    This is cross-navigation only. It reuses already-built political sections and
+    changed-parameter bridge fields; it does not add stakeholder assertions,
+    empirical claims, vote forecasts, lobbying advice, or new model effects.
+    """
+    normalized_bridge_items = [(_normalized_result_label(item.get("label", "")), item) for item in bridge_items]
+    checkpoints: List[Dict[str, Any]] = []
+    for section in political_sections:
+        section_label = _normalized_result_label(section.get("label", ""))
+        bridge = next(
+            (
+                item for normalized_label, item in normalized_bridge_items
+                if normalized_label == section_label or normalized_label in section_label or section_label in normalized_label
+            ),
+            None,
+        )
+        if not bridge:
+            continue
+        checkpoints.append({
+            "label": bridge.get("label", section.get("label", "geänderter Hebel")),
+            "implementation_lag": section.get("implementation_lag", "unklar"),
+            "political_friction": section.get("political_friction", "unklar"),
+            "observed_kpis": bridge.get("observed_kpis", []),
+            "drilldown_targets": bridge.get("drilldown_targets", []),
+            "caveat": (
+                f"{section.get('caveat', 'Qualitative Annahme.')} "
+                "Dies ist eine qualitative Rubrik, kein Vote-Forecast, kein Lobby-Ranking und keine Umsetzungsempfehlung."
+            ),
+            "next_step": (
+                "Vergleiche zuerst die genannten KPI-Detailkarten mit den Annahmen-Checks; "
+                "bewerte politische Reibung erst danach gegen den simulierten Nutzen und die Verzögerung."
+            ),
+        })
+    return checkpoints
+
+
 def build_changed_parameter_impact_bridge(agg: pd.DataFrame, params: dict) -> List[Dict[str, Any]]:
     """Connect changed scenario levers to observed KPI movements.
 
@@ -2768,10 +2814,22 @@ def render_dashboard(agg: pd.DataFrame, params: dict):
         st.write(f"**Umsetzbarkeit:** {feasibility}")
 
     lever_detail_sections = build_political_lever_detail_sections(political_assessment)
+    bridge_items = build_changed_parameter_impact_bridge(agg, params)
+    political_checkpoints = {
+        _normalized_result_label(item["label"]): item for item in build_political_result_checkpoints(lever_detail_sections, bridge_items)
+    }
     if lever_detail_sections:
         st.markdown("#### Politische Lesespur nach geändertem Hebel")
         st.caption("Öffne pro Hebel: Wirkung → mögliche Unterstützer/Bremser → Verzögerung/Reibung → nächster Prüfpunkt.")
         for section in lever_detail_sections:
+            section_norm = _normalized_result_label(section["label"])
+            checkpoint = next(
+                (
+                    item for label, item in political_checkpoints.items()
+                    if label == section_norm or label in section_norm or section_norm in label
+                ),
+                None,
+            )
             with st.expander(f"{section['label']} — warum politisch relevant?", expanded=False):
                 st.markdown(f"**1 · Was ändert dieser Hebel?** {section['effect']}")
                 st.markdown(
@@ -2785,7 +2843,19 @@ def render_dashboard(agg: pd.DataFrame, params: dict):
                 for row in section["blockers"]:
                     st.markdown(f"- **{row['stakeholder']}**: {row['why']}")
                 st.info(f"**5 · Unsicherheit:** {section['caveat']}")
-                st.success(f"**6 · Nächster Prüfpunkt:** {section['next_inspection']}")
+                if checkpoint:
+                    st.markdown("**6 · Ergebnis-Checkpoint vor politischer Bewertung:**")
+                    for observed in checkpoint["observed_kpis"]:
+                        st.markdown(f"- {observed}")
+                    for target in checkpoint["drilldown_targets"]:
+                        st.caption(f"KPI-Ziel: {target['next_step']}")
+                    st.warning(checkpoint["caveat"])
+                    st.success(f"**7 · Nächster Prüfpunkt:** {checkpoint['next_step']}")
+                    st.caption(
+                        f"Verzögerung: {checkpoint['implementation_lag']} · politische Reibung: {checkpoint['political_friction']}"
+                    )
+                else:
+                    st.success(f"**6 · Nächster Prüfpunkt:** {section['next_inspection']}")
                 st.caption(f"Strategie-Modus später: {section['strategy_checkpoint']}")
 
     stakeholder_rows = build_political_stakeholder_rows(political_assessment)
