@@ -159,3 +159,17 @@ Small implementation slice:
 4. Add a focused test that verifies it names the changed lever, shows start/end KPI pointers, flags delayed/ambiguous effects for prevention/study places, and gives a concrete next click.
 
 Guardrail: this is an explanation bridge only. It must not add new model logic, new stakeholder claims or authoritative real-world claims; use existing simulation outputs and existing caveats.
+
+
+## 2026-04-29 next slice: Tap-friendly KPI card details
+
+Problem: KPI cards now have desktop hover help and deeper expanders below, but mobile/tablet users may not discover hover text before scrolling. The first result screen should make the same meaning/why/read explanation reachable by tap, without duplicating inconsistent text.
+
+Small implementation slice:
+
+1. Reuse the central `kpi_detail_texts()` content through `kpi_mobile_detail(metric_key)`.
+2. Render each visible KPI card with `render_metric_card_with_details(...)`, which keeps the existing HTML card and adds a Streamlit popover labelled “Details zu …”.
+3. Switch the dashboard card grid to this renderer so all core KPI cards have the same accessible reading path on desktop and touch devices.
+4. Add a focused unit test that guards the mobile detail helper reuses central meaning/why/read copy and includes a fallback for unknown KPIs.
+
+Guardrail: this is accessibility/UX plumbing only. Do not add new claims, model logic or isolated tooltip strings; central KPI explanations remain the single source of truth.
