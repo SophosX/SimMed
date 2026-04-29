@@ -478,4 +478,4 @@ Passed: `pytest -q` (26), py_compile, 1000-run smoke test. Zip refreshed. Pushed
 - **Evidence/Domain:** Keine neuen externen Fakten eingeführt; qualitative Wirkhinweise sind als Modelllogik/Vereinfachung/Annahme formuliert.
 - **Integrator Decision:** `_parameter_effect_hint()` ergänzt und für Demografie-/Versorgungsstruktur-Regler eingesetzt; Test sichert Klartext und Annahmen-Hinweis.
 - **Question to Alex if needed:** Keine wichtige Entscheidung offen; nächster sicherer Schritt ist weitere Regler-Provenienz plus sichtbare „Was kann ich hier tun?“-Box.
-- **Verification/Git:** Tests/Compile/Smoke/Git-Sync folgen in diesem Lauf.
+- **Verification/Git:** `tests/test_app_explanations.py` bestanden (8), kompletter `pytest -q` bestanden (27), py_compile bestanden, 1000-run Smoke-Test bestanden; Zip refreshed; Push geplant/erfolgt als normaler Git-Schritt.
