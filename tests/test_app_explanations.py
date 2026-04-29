@@ -78,6 +78,22 @@ def test_parameter_control_help_combines_evidence_and_action_guidance():
     assert "Facharztkapazität" in help_text
 
 
+def test_finance_and_demography_controls_now_have_combined_registry_help():
+    income_help = _parameter_control_help("einkommen_durchschnitt")
+    gkv_share_help = _parameter_control_help("gkv_anteil")
+    epa_help = _parameter_control_help("digitalisierung_epa")
+
+    assert "Evidenzgrad A" in income_help
+    assert "GKV revenue base" in income_help
+    assert "Was passiert beim Ändern?" in income_help
+    assert "Evidenzgrad A" in gkv_share_help
+    assert "insured-count" in gkv_share_help
+    assert "Was passiert beim Ändern?" in gkv_share_help
+    assert "Evidenzgrad B" in epa_help
+    assert "Adoption is not the same as better outcomes" in epa_help
+    assert "Was passiert beim Ändern?" in epa_help
+
+
 def test_parameter_evidence_badge_is_short_and_registry_based():
     badge = _parameter_evidence_badge("medizinstudienplaetze")
 

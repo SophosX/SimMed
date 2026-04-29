@@ -505,3 +505,32 @@ Passed: `pytest -q` (26), py_compile, 1000-run smoke test. Zip refreshed. Pushed
 - **Integrator Decision:** `_parameter_control_help()` eingeführt und zentrale registrierte Sidebar-Regler darauf umgestellt; Test ergänzt.
 - **Question to Alex if needed:** Keine wichtige Entscheidung offen.
 - **Verification/Git:** Tests/Compile/Smoke und Git-Sync folgen in diesem Lauf.
+
+## 2026-04-29 18:50 Europe/Berlin — Heartbeat: Registry-backed sidebar guidance expansion
+
+### Context
+Expanded parameter provenance coverage for sidebar controls that already had action hints but still lacked registry-backed source/uncertainty text. Touched `parameter_registry.py`, `app.py`, and `tests/test_app_explanations.py`.
+
+### Project Manager
+Priority: keep improving the first-click understanding of important demographic, income, insurance and digitalization levers. Risk: broad source labels can look more certain than the simplified model really is, so caveats must remain visible. Next tasks: add registry coverage for remaining capacity/policy levers, then improve sidebar grouping text.
+
+### Designer / UX
+Users now get one combined tooltip for more controls: source/evidence + role + uncertainty + “what happens if I change this?”. This reduces fragmented help text and supports the top UX directive.
+
+### Creative Agent
+Idea: later add a tiny “Regler-Führerschein” guided tour that suggests three safe starter experiments. Fit is good for onboarding, but defer until more key controls have registry coverage.
+
+### Political Health-System Strategist
+GKV share, federal subsidy and PKV threshold are politically sensitive. The UI should continue to frame them as scenario levers with tradeoffs, not as neutral optimization knobs.
+
+### Evidence / Domain
+No new external research in this run. Added no new numeric claims beyond existing prototype defaults; registry entries explicitly cite source families already present in `data_sources.py` and label uncertain behavioral/productivity effects.
+
+### Integrator Decision
+Accepted: add registry metadata for `urban_anteil`, income levers, `pkv_schwelle`, `gkv_anteil`, `staatliche_subventionen`, and `digitalisierung_epa`; switch their sidebar help to `_parameter_control_help()`. Deferred: exact table-level source ingestion.
+
+### Question to Alex
+No important decision required now.
+
+### Verification / Git
+Local verification before sync: targeted app/registry tests, py_compile, and 100-run runtime smoke test passed. Git commit/push follows in this heartbeat.

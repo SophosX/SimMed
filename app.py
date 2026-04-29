@@ -1018,22 +1018,22 @@ def render_sidebar() -> dict:
         )
         params["urban_anteil"] = st.slider(
             "Urbanisierungsgrad", 0.50, 0.95, params["urban_anteil"], 0.01,
-            help=_parameter_effect_hint("urban_anteil"),
+            help=_parameter_control_help("urban_anteil", "Beschreibt grob, wie stark Nachfrage und Angebot zwischen Stadt und Land verteilt werden."),
         )
         params["einkommen_durchschnitt"] = st.slider(
             "\u00d8 Bruttoeinkommen (\u20ac/Jahr)", 25_000, 80_000,
             params["einkommen_durchschnitt"], 500,
-            help=_parameter_effect_hint("einkommen_durchschnitt"),
+            help=_parameter_control_help("einkommen_durchschnitt", "Durchschnittlicher Brutto-Wert für die vereinfachte GKV-Einnahmenbasis."),
         )
         params["einkommens_wachstum"] = st.slider(
             "Einkommenswachstum (%/Jahr)", 0.0, 0.06,
             params["einkommens_wachstum"], 0.005,
-            help=_parameter_effect_hint("einkommens_wachstum"),
+            help=_parameter_control_help("einkommens_wachstum", "Szenarioannahme für nominale Einkommensentwicklung, nicht automatisch eine Prognose."),
         )
         params["pkv_schwelle"] = st.slider(
             "Versicherungspflichtgrenze (\u20ac)", 50_000, 90_000,
             params["pkv_schwelle"], 500,
-            help=_parameter_effect_hint("pkv_schwelle"),
+            help=_parameter_control_help("pkv_schwelle", "Politischer Schwellenwert für den möglichen Wechsel aus der GKV in die PKV."),
         )
 
     # ── Versorgungsstruktur ──
@@ -1116,7 +1116,7 @@ def render_sidebar() -> dict:
         )
         params["gkv_anteil"] = st.slider(
             "GKV-Versichertenanteil", 0.70, 0.95, params["gkv_anteil"], 0.01,
-            help=_parameter_effect_hint("gkv_anteil"),
+            help=_parameter_control_help("gkv_anteil", "Anteil der Bevölkerung, der im Modell der GKV zugerechnet wird."),
         )
         params["zuzahlungen_gkv"] = st.slider(
             "GKV-Zuzahlungen (Mrd. \u20ac)", 0.0, 10.0, params["zuzahlungen_gkv"], 0.5,
@@ -1129,7 +1129,7 @@ def render_sidebar() -> dict:
         params["staatliche_subventionen"] = st.slider(
             "Bundeszuschuss (Mrd. \u20ac)", 0.0, 30.0,
             params["staatliche_subventionen"], 0.5,
-            help=_parameter_effect_hint("staatliche_subventionen"),
+            help=_parameter_control_help("staatliche_subventionen", "Bundeszuschuss stabilisiert die GKV, braucht aber politische Gegenfinanzierung."),
         )
         params["praeventionsbudget"] = st.slider(
             "Präventionsbudget (Mrd. \u20ac)", 0.0, 30.0,
@@ -1145,7 +1145,7 @@ def render_sidebar() -> dict:
         )
         params["digitalisierung_epa"] = st.slider(
             "ePA-Nutzungsrate (Start)", 0.0, 1.0, params["digitalisierung_epa"], 0.05,
-            help=_parameter_effect_hint("digitalisierung_epa"),
+            help=_parameter_control_help("digitalisierung_epa", "ePA-Nutzung steht hier für digitale Koordination, nicht automatisch für Einsparungen."),
         )
         params["praevention_effektivitaet"] = st.slider(
             "Präventions-Effektivität", 0.0, 1.0,
