@@ -1676,3 +1676,32 @@ Keine wichtige Entscheidung offen; nächster sicherer Schritt ist eine fokussier
 
 ### Verification / Git
 Gezielt: `2 passed`; komplett: `102 passed`; `py_compile` für Kernmodule OK; Simulation-Smoke `OK smoke (60, 30) (320, 6)`. Commit/Push folgt in diesem Heartbeat; Zip-Artefakt wird aktualisiert.
+
+## 2026-04-30 01:06 Europe/Berlin — Heartbeat: Scenario-Gallery API-Pläne
+
+### Context
+Alex hat die Plattform-Implementierung als primären Track priorisiert. Bestehende Scenario-Gallery-Helfer waren nur in `app.py` nutzbar; Agenten/API konnten die read-only Guided-Apply-Pläne noch nicht fokussiert abrufen.
+
+### Project Manager
+Priorität: MiroFish-inspirierte Scenario Gallery von UI-Prosa in eine agentenfähige Plattform-Schnittstelle überführen. Risiko: ein echter Apply-Button wäre zu früh; deshalb nur read-only Plan/Payload/Lesepfad. Nächste Aufgaben: gezieltes Download/Copy-Format oder confirm-before-apply-Design planen.
+
+### Designer / UX
+Newcomer sollen nicht nur Karten sehen, sondern konkrete nächste Schritte: manuelle Sidebar-Werte, API-Payload und Lesereihenfolge. Die API macht denselben geführten Pfad für externe Agenten wiederverwendbar.
+
+### Creative Agent
+Idee: später aus diesen Plänen teilbare „Szenario-Rezeptkarten“ generieren. Fit: gut für Demo-first Onboarding; erst nach Guardrails/Download-Format, nicht als automatische Mutation.
+
+### Political Health-System Strategist
+Die Starter-Szenarien bleiben bewusst keine politische Empfehlung und keine Lobbying-Route. Besonders bei Studienplätzen/Telemedizin/Prävention muss die Lesereihenfolge Annahmen, Timing und Policy-Briefing vor politischer Bewertung erzwingen.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Es wurden keine neuen Real-World-Claims oder Parameterwerte eingeführt; bestehende Registry-Evidenzgrade/Caveats werden in den Plänen weitergereicht.
+
+### Integrator Decision
+Akzeptiert: neuer `scenario_gallery.py` als strukturierte Quelle für Karten/Manifest-Vorschauen/Guided-Apply-Pläne und neuer API-Endpunkt `GET /scenario-gallery/guided-apply-plans`. `app.py` delegiert die Scenario-Gallery-Helfer nun an das Modul, damit UI und API nicht auseinanderlaufen.
+
+### Question to Alex
+Keine.
+
+### Verification / Git
+Lokale Verifikation: `pytest tests/test_api.py ...` gezielt, API-Smoke mit `TestClient`, `py_compile app.py api.py scenario_gallery.py`, danach komplette Suite `104 passed`. Commit/Push folgt im Git-Schritt dieses Heartbeats.

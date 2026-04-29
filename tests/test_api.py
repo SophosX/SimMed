@@ -201,6 +201,40 @@ def test_api_rejects_connector_execution_without_supported_request():
     assert response.json()["detail"]["status"] == "no_planned_connector_snapshot_request"
 
 
+def test_api_exposes_scenario_gallery_guided_apply_plans_without_execution():
+    client = TestClient(api)
+    response = client.get("/scenario-gallery/guided-apply-plans?n_runs=100&n_years=15&seed=42")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "scenario_gallery_guided_apply_plans_not_executed"
+    assert "kein automatischer Apply-Button" in body["guardrail"]
+    assert "kein Simulationslauf" in body["guardrail"]
+    assert body["plans"]
+    training = next(plan for plan in body["plans"] if plan["card_id"] == "medical_training_pipeline")
+    assert training["api_payload"] == {
+        "parameter_changes": {"medizinstudienplaetze": 9000},
+        "n_runs": 100,
+        "n_years": 15,
+        "seed": 42,
+    }
+    assert training["scenario_id"]
+    assert training["manual_sidebar_steps"][0]["parameter_key"] == "medizinstudienplaetze"
+    assert "Annahmen" in training["reading_order"][3]
+    assert "keine amtliche Prognose" in training["guardrail"]
+    assert "keine Lobbying-Empfehlung" in training["guardrail"]
+
+
+def test_api_rejects_scenario_gallery_guided_apply_plan_out_of_bounds_without_execution():
+    client = TestClient(api)
+    response = client.get("/scenario-gallery/guided-apply-plans?n_runs=1001")
+
+    assert response.status_code == 422
+    detail = response.json()["detail"]
+    assert detail["status"] == "invalid_scenario_gallery_plan_bounds"
+    assert "kein Simulationslauf" in detail["guardrail"]
+
+
 def test_api_exposes_political_feasibility_endpoint():
     client = TestClient(api)
     response = client.post(

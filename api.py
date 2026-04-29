@@ -32,6 +32,7 @@ from data_ingestion import (
 from data_sources import list_sources
 from parameter_registry import list_parameters
 from political_feasibility import assess_political_feasibility
+from scenario_gallery import build_scenario_gallery_guided_apply_plan
 from simulation_core import MODEL_VERSION, build_scenario_manifest, get_default_params, run_scenario
 
 api = FastAPI(title="SimMed Deutschland 2040 API", version="0.2.0")
@@ -237,6 +238,30 @@ def execute_planned_connector_snapshot(req: ConnectorExecutionRequest) -> dict:
         **result,
         "request": planned,
         "data_passport": build_data_passport_rows(updated_parameters),
+    }
+
+
+@api.get("/scenario-gallery/guided-apply-plans")
+def get_scenario_gallery_guided_apply_plans(
+    n_runs: int = 100,
+    n_years: int = 15,
+    seed: int = 42,
+) -> dict:
+    """Expose read-only starter scenario plans for agents/UI without applying them."""
+
+    if not 1 <= n_runs <= 1000 or not 1 <= n_years <= 30 or not 0 <= seed <= 999999:
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "status": "invalid_scenario_gallery_plan_bounds",
+                "guardrail": "Nur bounded Manifest-/Payload-Vorschauen; kein Apply, kein Simulationslauf und keine Modellmutation.",
+            },
+        )
+    plans = build_scenario_gallery_guided_apply_plan(n_runs=n_runs, n_years=n_years, seed=seed)
+    return {
+        "status": "scenario_gallery_guided_apply_plans_not_executed",
+        "guardrail": "Read-only: kein automatischer Apply-Button, keine Session-State-Mutation, kein Simulationslauf, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+        "plans": plans,
     }
 
 
