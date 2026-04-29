@@ -127,6 +127,20 @@ def test_ambient_scribes_include_narrative_review_as_safety_implementation_conte
     assert record.model_use_status == "catalog_only"
 
 
+def test_ambient_scribes_include_multisite_longitudinal_adoption_nuance():
+    source = EVIDENCE_SOURCES["jama_open_multisite_time_visit_quantity_2026"]
+    record = AI_HEALTHCARE_EVIDENCE["ambient_ai_scribes_documentation_burden"]
+
+    assert source.kind == "paper"
+    assert source.retrieved_via == "PubMed E-utilities search + abstract metadata"
+    assert "five US academic" in source.quality_note
+    assert "voluntary opt-in" in source.quality_note
+    assert "not randomized proof of patient outcomes" in source.quality_note
+    assert "German capacity gains" in source.quality_note
+    assert source.id in record.source_ids
+    assert record.model_use_status == "catalog_only"
+
+
 def test_youtube_context_pipeline_is_explicitly_grade_e_and_not_model_fact():
     record = AI_HEALTHCARE_EVIDENCE["ai_healthcare_youtube_context_pipeline"]
     summary = evidence_quality_summary(record.id)

@@ -1281,3 +1281,15 @@ Keine wichtige Entscheidung offen; weiter sichere Evidenz-Inkremente.
 
 ### Verification / Git
 Spezifisch: `tests/test_ai_healthcare_evidence.py` 12 passed. Vollsuite: 82 passed. Commit/Push folgt in diesem Heartbeat.
+
+## 2026-04-29 20:21 UTC — AI-healthcare evidence heartbeat: ambient-scribe multisite adoption nuance
+
+- **Context:** Continue the AI-in-healthcare impact module on the active `feat/ai-healthcare-evidence-validation` branch; keep evidence catalog-only and avoid model-effect claims.
+- **Project Manager:** Small safe increment: add one PubMed/E-utilities sourced ambient-scribe paper with regression coverage rather than broad UI/model work.
+- **Designer/UX:** Future UI evidence passports should show this as “real-world adoption/productivity nuance,” not as a simple capacity-saving claim.
+- **Creative Agent:** Use “evidence passport” framing for each AI use case so users can see positive signal, counterweights, and next review step at a glance.
+- **Political Health-System Strategist:** For Germany, voluntary opt-in and US academic-site adoption limit direct transfer to GKV/KBV/KIS/PVS contexts; procurement/privacy/workflow incentives remain the political implementation bottleneck.
+- **Evidence/Domain:** Added a JAMA Network Open/PubMed multisite longitudinal cohort source for EHR time expenditure and visit quantity; caveat explicitly preserves selection/adoption bias and blocks patient-outcome/German-capacity overclaiming.
+- **Integrator Decision:** Keep `ambient_ai_scribes_documentation_burden` at Evidence Grade B and `catalog_only`; add source to the existing record and test the caveat text.
+- **Question to Alex if needed:** Keine wichtige Entscheidung; continue building the structured evidence base before any model parameter proposal.
+- **Verification/Git:** Targeted AI evidence tests and full verification run next in this heartbeat before commit/push.

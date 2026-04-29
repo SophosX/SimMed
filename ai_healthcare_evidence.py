@@ -229,6 +229,21 @@ EVIDENCE_SOURCES: dict[str, EvidenceSource] = {
         ),
         license_or_terms_note="PubMed metadata/abstract; article copyright belongs to the publisher. Store citation/metadata only unless reuse terms permit more.",
     ),
+    "jama_open_multisite_time_visit_quantity_2026": EvidenceSource(
+        id="jama_open_multisite_time_visit_quantity_2026",
+        title="Changes in Clinician Time Expenditure and Visit Quantity With Adoption of Artificial Intelligence-Powered Scribes: A Multisite Study",
+        url="https://pubmed.ncbi.nlm.nih.gov/41920565/",
+        kind="paper",
+        retrieved_via="PubMed E-utilities search + abstract metadata",
+        retrieved_at="2026-04-29",
+        source_date="2026",
+        quality_note=(
+            "Multisite longitudinal cohort across five US academic health-care institutions introducing AI scribes between June 2023 and August 2025. "
+            "The abstract frames outcomes as EHR time expenditure and visit volume after voluntary opt-in access, so it is useful for real-world adoption, "
+            "time-use and productivity nuance, but selection/adoption effects mean it is not randomized proof of patient outcomes or German capacity gains."
+        ),
+        license_or_terms_note="PubMed metadata/abstract and DOI metadata only; do not store full article text unless reuse terms permit more.",
+    ),
     "x_jama_current_ambient_scribes_2026": EvidenceSource(
         id="x_jama_current_ambient_scribes_2026",
         title="JAMA X post: ambient scribes reduce documentation time but patient outcomes/equity evidence limited",
@@ -285,6 +300,7 @@ AI_HEALTHCARE_EVIDENCE: dict[str, AIHealthcareEvidenceRecord] = {
             "ann_emerg_med_ai_vs_human_scribes_2026",
             "ann_intern_med_vha_primary_care_note_quality_2026",
             "cardiovasc_diagn_ther_ambient_scribes_narrative_review_2026",
+            "jama_open_multisite_time_visit_quantity_2026",
         ),
         transferability_to_germany=(
             "Medium: documentation burden and clinician workflow are relevant in Germany, but effects depend on German documentation rules, "
