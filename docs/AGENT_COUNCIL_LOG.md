@@ -765,3 +765,15 @@ Local verification passed: `python3 -m pytest -q` (32 passed), py_compile, and 5
 - **Integrator Decision:** Implementiert in `app.py`: `build_simulation_report()` ergänzt `guide_questions`, `render_simulation_report()` rendert diese vor den Punkten. Test ergänzt in `tests/test_app_explanations.py`.
 - **Question to Alex if needed:** Keine wichtige Produktentscheidung offen; nächster sicherer Schritt ist weitere Bericht-Navigation/Quellenvertiefung.
 - **Verification/Git:** `pytest` vollständig grün (50 passed), py_compile grün, 50-run/3-year Simulation-Smoke grün. Git-Sync/Push folgt in diesem Lauf.
+
+## 2026-04-29 Heartbeat — Policy-Briefing navigation index
+
+- **Context:** Alex fordert tiefere, logisch geführte Ergebnis-Erklärungen statt weiterer isolierter Snippets. Plan vor UX-Änderung erweitert: Policy-Briefing braucht eine Navigationshilfe vor den Expandern.
+- **Project Manager:** Kleine reversible Slice gewählt: reine Informationsarchitektur für vorhandene Report-Sektionen; kein Modellrisiko.
+- **Designer/UX:** Erstnutzer sehen jetzt vor den sechs Briefing-Expandern, wann welcher Abschnitt zu öffnen ist; tap-friendly, kein Hover nötig.
+- **Creative Agent:** Briefing wird eher wie ein Entscheidungsdossier gelesen: zuerst Executive Summary, dann problembezogen springen. Produktfit: bessere Orientierung ohne zusätzliche Komplexität.
+- **Political Health-System Strategist:** Keine neuen Stakeholder- oder Politikbehauptungen; politische Umsetzbarkeit bleibt qualitative Rubrik, kein Vote-Forecast.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; Änderung organisiert bestehende, bereits gekennzeichnete Evidenz-/Caveat-Texte.
+- **Integrator Decision:** `build_report_navigation_index(report_sections)` in `app.py` ergänzt, Render-Pfad vor Policy-Briefing-Expandern eingebaut, Plan und Test erweitert.
+- **Question to Alex if needed:** Keine wichtige Entscheidung offen; nächster sicherer Schritt ist weitere Berichtsnavigation/Exportfähigkeit oder API-Status für Expertenrat.
+- **Verification/Git:** Lokal: `52 passed`, py_compile OK, 50-run/3-year smoke OK. Git-Sync/Push folgt in diesem Heartbeat.

@@ -15,6 +15,7 @@ from app import (
     build_political_stakeholder_rows,
     build_result_narrative_summary,
     build_result_reading_path,
+    build_report_navigation_index,
     build_simulation_report,
     build_trend_view_guidance,
     get_default_params,
@@ -648,7 +649,7 @@ def test_simulation_report_structures_policy_briefing_from_existing_explanations
     assert "keine gesicherte Realwelt-Kausalität" in combined
 
 
-def test_simulation_report_sections_expose_plain_language_guide_questions():
+def _sample_report_inputs():
     agg = pd.DataFrame([
         {
             "jahr": 2025,
@@ -681,6 +682,11 @@ def test_simulation_report_sections_expose_plain_language_guide_questions():
     params["telemedizin_rate"] = params["telemedizin_rate"] + 0.15
     params["praeventionsbudget"] = params["praeventionsbudget"] + 0.5
 
+    return agg, params
+
+
+def test_simulation_report_sections_expose_plain_language_guide_questions():
+    agg, params = _sample_report_inputs()
     report = build_simulation_report(agg, params)
     assert all(section.get("guide_questions") for section in report)
     assert all(len(section["guide_questions"]) >= 3 for section in report)
@@ -692,4 +698,27 @@ def test_simulation_report_sections_expose_plain_language_guide_questions():
     assert "Evidenzgrade" in combined_questions
     assert "Nächster" in " ".join(section["next_action"] for section in report)
     assert "Vote-Forecast" in combined_questions
+
+
+def test_report_navigation_index_guides_which_expander_to_open_next():
+    agg, params = _sample_report_inputs()
+    report = build_simulation_report(agg, params)
+
+    index = build_report_navigation_index(report)
+    combined = " ".join(
+        [index["instruction"]]
+        + [f"{item['title']} {item['open_when']} {item['first_question']} {item['target']}" for item in index["items"]]
+    )
+
+    assert len(index["items"]) == 6
+    assert [item["section_id"] for item in index["items"]] == [section["id"] for section in report]
+    assert "Executive Summary" in combined
+    assert "Geänderte Hebel" in combined
+    assert "KPI" in combined
+    assert "Zeitverlauf" in combined
+    assert "Evidenz" in combined
+    assert "Politische Umsetzbarkeit" in combined
+    assert "Executive Summary zuerst" in combined
+    assert "öffne danach den Abschnitt" in combined
+    assert all(item["target"].startswith("#policy-briefing-") for item in index["items"])
 

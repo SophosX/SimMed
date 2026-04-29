@@ -239,3 +239,16 @@ Small implementation slice:
 4. Add a focused test proving prevention/study-place changes show evidence grade, sources, register role, caveat/uncertainty, KPI/time-trend sanity check, and the “not proven real-world effect” warning.
 
 Guardrail: This is evidence/provenance UX only. Do not add new empirical claims, model logic, political stakeholder assertions or scores.
+
+## 2026-04-29 next slice: Policy-Briefing navigation index
+
+Problem: the new Policy-Briefing sections are coherent internally, but a first-time reader still sees six expanders and may not know whether to skim, open everything, or start from a specific concern. The report needs a short navigation index before the expanders so the report behaves like a guided briefing rather than a list of collapsible blocks.
+
+Small implementation slice:
+
+1. Add a pure `build_report_navigation_index(report_sections)` helper in `app.py`.
+2. For each report section, return the section title, one short reason to open it, the first guide question, and a stable anchor-style target based on the section id. Add a compact overall reading instruction that says: skim the Executive Summary first, then open the section matching your question.
+3. Render this index at the start of `render_simulation_report()` before the detailed expanders. It must be tap-friendly and not depend on hover.
+4. Add a focused test verifying that the index covers all six report sections, preserves order, names “Executive Summary”, “Geänderte Hebel”, “KPI”, “Zeitverlauf”, “Evidenz”, and “Politische Umsetzbarkeit”, and includes the concrete “what to open next” instruction.
+
+Guardrail: This is information architecture only. Do not add empirical claims, model logic, new stakeholder assertions, or visual complexity; reuse existing section titles, purposes, and guide questions.
