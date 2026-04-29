@@ -182,6 +182,8 @@ See `docs/AGENT_WORKFLOW.md` for the coordination model.
 - Do not add important constants without updating provenance/parameter documentation.
 - Do not hide assumptions only in comments.
 - Add or update tests for simulation-core and API changes.
+- UI controls for policy levers should surface registry-backed caveats/provenance near the control, especially when effects are delayed or politically sensitive.
+- Keep political feasibility interpretation clearly separated from numeric model outputs unless Alex explicitly decides to add feasibility scoring.
 - Make user-facing explanations understandable for people who are not already inside the project.
 
 ## Roadmap

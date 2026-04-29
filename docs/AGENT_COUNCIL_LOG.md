@@ -80,3 +80,33 @@ No immediate decision required; Alex already confirmed this log is desired.
 
 ### Verification / Git
 Pending at creation time: tests, zip refresh, commit, push.
+
+
+## 2026-04-29 15:29 Europe/Berlin — Heartbeat: Feasibility Layer Planning
+
+### Context
+Reviewed `README.md`, `docs/AGENT_WORKFLOW.md`, `docs/AGENT_COUNCIL_LOG.md`, and `app.py`. Added a docs-only implementation plan for a guided scenario builder and a new political feasibility layer design note; no simulation behavior changed.
+
+### Project Manager
+Priority: improve newcomer comprehension and preserve strategic/political interpretation boundaries before adding more UI/features. Risk: if feasibility is mixed into numeric outputs too early, SimMed may appear partisan or opaque. Next tasks: (1) implement registry-backed UI caveat helpers, (2) add API/docs examples for scenario manifests, (3) strengthen official-source provenance for weak parameters.
+
+### Designer / UX
+The Streamlit UI still contains many controls and hard-coded assumptions; a guided scenario builder should put caveats and provenance directly next to the policy lever so non-technical users understand delayed effects before reading charts.
+
+### Creative Agent
+Idea: add a “Reform Radar” explainer panel that shows stakeholder friction and implementation lag as a separate narrative overlay. Fit: improves understanding and motivation; credible if separated from model outputs; avoids unserious gamification if framed as interpretation; feasible as docs/UI metadata first; explainable to newcomers; Alex should decide before it becomes a score.
+
+### Political Health-System Strategist
+Political feasibility should be treated as a power/institution layer: BMG can propose, but Länder, KVen/KBV, DKG, GKV-Spitzenverband, BÄK, medical faculties, and budget actors can delay, reshape, or block implementation. Public institutional analysis is useful, but hidden political weights would be risky without a clear product decision.
+
+### Evidence / Domain
+No new numeric assumptions were added. The political feasibility document explicitly keeps assumptions out of `simulation_core.py` and requires labeling/citing feasibility claims later.
+
+### Integrator Decision
+Accepted safe documentation changes: `docs/plans/2026-04-29-guided-scenario-builder.md`, `docs/POLITICAL_FEASIBILITY_LAYER.md`, and README policy notes. Deferred implementation of feasibility scoring and UI badges until Alex chooses product tone.
+
+### Question to Alex
+How should SimMed handle political feasibility long-term? Options: (1) neutral explainer notes only, (2) transparent decision-support rubric separated from health/economic outputs, (3) competition scoring dimension with anti-gaming controls.
+
+### Verification / Git
+Pending: pytest, py_compile, zip refresh, source sync, commit, push.
