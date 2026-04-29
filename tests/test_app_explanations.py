@@ -7,6 +7,7 @@ from app import (
     _parameter_provenance_help,
     build_kpi_explanations,
     get_default_params,
+    plain_language_workflow_summary,
 )
 
 
@@ -84,3 +85,14 @@ def test_changed_policy_lever_notes_names_only_changed_scenario_levers():
     assert "Präventionsbudget wurde erhöht" in combined
     assert "Telemedizin" not in combined
     assert "kaum sofort" in combined
+
+
+def test_learning_page_reuses_expert_council_plain_language_workflow():
+    steps = plain_language_workflow_summary()
+    combined = " ".join(steps)
+
+    assert len(steps) >= 4
+    assert "Vorschläge" in combined
+    assert "nicht direkt" in combined
+    assert "Quellen" in combined
+    assert "Git-Historie" in combined

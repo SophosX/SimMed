@@ -114,7 +114,7 @@ def plain_language_workflow_summary() -> list[str]:
     """Explain the governance workflow for UI/API documentation."""
 
     return [
-        "Neue KI- oder Expertenbeiträge sind zuerst nur Vorschläge.",
+        "Neue KI- oder Expertenbeiträge sind zuerst nur Vorschläge und verändern das Modell nicht direkt.",
         "Ein Integrator triagiert: Ist der Beitrag relevant, verständlich und prüfbar?",
         "Fachliche Reviewer prüfen Quellen, Annahmen und mögliche Nebenwirkungen.",
         "Erst akzeptierte Beiträge dürfen mit Tests, Provenienz und Git-Historie ins Modell integriert werden.",

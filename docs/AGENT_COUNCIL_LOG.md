@@ -389,3 +389,33 @@ Keine wichtige Entscheidung offen.
 - Integrator Decision: Added `expert_council.py`, tests, and product-direction docs; no model-output changes.
 - Question to Alex: No important decision needed.
 - Verification/Git: Tests passed (`22 passed`); pushed commit `1d84202`.
+
+
+## 2026-04-29 16:23 UTC — Heartbeat: Expertenrat-Onboarding sichtbarer
+
+### Context
+Learning Page already existed; `expert_council.py` defined the contribution workflow, but the onboarding page did not yet make the guardrail concrete for newcomers.
+
+### Project Manager
+Priority: reduce newcomer confusion around external AI/human inputs before adding submission endpoints. Risk remains low because this is explanatory UI only and does not mutate model parameters.
+
+### Designer / UX
+Users should immediately understand that SimMed is not a free-form claim collector. The Learning Page now includes a direct “Beiträge sind Vorschläge, keine Modellfakten” explanation and visible review steps.
+
+### Creative Agent
+Idea: later add a “Beitrags-Ampel” preview card (eingereicht/geprüft/integriert) for each community contribution. Fit: strong for trust and motivation, defer until API submission objects are exposed.
+
+### Political Health-System Strategist
+For health-policy credibility, stakeholder or AI claims must be reviewed before shaping model assumptions. This supports trust with institutions because the platform separates input, review, and accepted model knowledge.
+
+### Evidence / Domain
+No new external factual claim was encoded. The UI reuses `plain_language_workflow_summary()` from the tested expert-council state machine; research need: define reviewer role taxonomy and evidence thresholds before accepting real submissions.
+
+### Integrator Decision
+Accepted a small reversible Learning Page update plus regression test. Deferred real submission UI/API mutation until contribution storage and reviewer identity rules are designed.
+
+### Question to Alex
+Keine wichtige Frage: this is a safe trust/onboarding improvement aligned with the chosen Expertenrat direction.
+
+### Verification / Git
+Tests passed locally: `python3 -m pytest -q` (23 passed) plus `py_compile` for app/core/API/test modules. Git sync/push follows this entry.

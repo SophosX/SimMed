@@ -18,6 +18,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import multiprocessing
+import os
 import time
 import io
 import hashlib
@@ -26,6 +27,7 @@ from typing import Dict, List, Optional, Tuple, Any
 import warnings
 
 from political_feasibility import assess_political_feasibility
+from expert_council import plain_language_workflow_summary
 from parameter_registry import PARAMETER_REGISTRY
 
 warnings.filterwarnings("ignore")
@@ -2092,11 +2094,31 @@ def render_learning_page():
 </div>
 """, unsafe_allow_html=True)
 
-    st.markdown("### 5. Was kommt als Nächstes?")
+    st.markdown("### 5. Wie kommen neue Beiträge ins Modell?")
+    workflow_steps = plain_language_workflow_summary()
+    st.markdown("""
+<div class="learn-callout">
+  <b>Wichtig:</b> Externe KI- oder Menschenbeiträge sind zuerst Vorschläge – keine Modellfakten.
+  Sie verändern die Simulation nicht automatisch. Erst nach Prüfung, Begründung und Integration mit Provenienz
+  dürfen sie ins Modell einfließen.
+</div>
+""", unsafe_allow_html=True)
+    for idx, step in enumerate(workflow_steps, start=1):
+        st.markdown(
+            f"""
+<div class="learn-step">
+  <div class="learn-num">{idx}</div>
+  <div><h4>Schritt {idx}</h4><p>{step}</p></div>
+</div>
+""",
+            unsafe_allow_html=True,
+        )
+
+    st.markdown("### 6. Was kommt als Nächstes?")
     st.markdown("""
 <div class="learn-grid">
   <div class="learn-card"><h3>Entscheidungsrubrik</h3><p>Zu jedem Szenario: Was passiert, warum passiert es, wer gewinnt/verliert, wer blockiert?</p></div>
-  <div class="learn-card"><h3>Expertenrat</h3><p>Externe KI- oder Menschenbeiträge sollen nicht ungeprüft ins Modell fließen, sondern durch Experten/Integrator bestätigt werden.</p></div>
+  <div class="learn-card"><h3>Expertenrat</h3><p>Als Nächstes soll diese Prüfkette in API und UI sichtbar werden, ohne dass Einsendungen direkt Parameter verändern.</p></div>
   <div class="learn-card"><h3>Strategie-Modus</h3><p>Später: Wie könnte man eine Reform politisch wirklich durchsetzen – mit Reihenfolge, Bündnissen und Kompromissen?</p></div>
 </div>
 """, unsafe_allow_html=True)
