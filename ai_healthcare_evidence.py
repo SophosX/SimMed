@@ -156,6 +156,20 @@ EVIDENCE_SOURCES: dict[str, EvidenceSource] = {
         ),
         license_or_terms_note="PubMed metadata/abstract; article copyright belongs to Thieme. Store citation/metadata only unless reuse terms permit more.",
     ),
+    "appl_clin_inform_sutton_ai_scribes_review_2025": EvidenceSource(
+        id="appl_clin_inform_sutton_ai_scribes_review_2025",
+        title="Clinical Implementation of Artificial Intelligence Scribes in Health Care: A Systematic Review",
+        url="https://pubmed.ncbi.nlm.nih.gov/40306686/",
+        kind="paper",
+        retrieved_via="PubMed E-utilities search + abstract metadata",
+        retrieved_at="2026-04-29",
+        source_date="2025",
+        quality_note=(
+            "Systematic review of AI-scribe implementations after 2021; proposes an evaluation framework and reports gaps across "
+            "clinician, patient and organizational effects. Use as evidence-map/context for evaluation domains, not as a pooled effect size."
+        ),
+        license_or_terms_note="PubMed metadata/abstract; article copyright may apply. Store citation/metadata only unless reuse terms permit more.",
+    ),
     "x_jama_current_ambient_scribes_2026": EvidenceSource(
         id="x_jama_current_ambient_scribes_2026",
         title="JAMA X post: ambient scribes reduce documentation time but patient outcomes/equity evidence limited",
@@ -207,6 +221,7 @@ AI_HEALTHCARE_EVIDENCE: dict[str, AIHealthcareEvidenceRecord] = {
             "phti_ai_delivery_early_impacts_2025",
             "jama_editorial_effectiveness_ambient_scribes_2026",
             "appl_clin_inform_shin_pediatric_scribes_2025",
+            "appl_clin_inform_sutton_ai_scribes_review_2025",
         ),
         transferability_to_germany=(
             "Medium: documentation burden and clinician workflow are relevant in Germany, but effects depend on German documentation rules, "

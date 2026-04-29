@@ -67,6 +67,19 @@ def test_ambient_scribes_include_pediatric_trial_with_null_time_findings():
     assert source.id in record.source_ids
 
 
+def test_ambient_scribes_include_systematic_review_as_evidence_map_not_effect_size():
+    source = EVIDENCE_SOURCES["appl_clin_inform_sutton_ai_scribes_review_2025"]
+    record = AI_HEALTHCARE_EVIDENCE["ambient_ai_scribes_documentation_burden"]
+
+    assert source.kind == "paper"
+    assert source.retrieved_via == "PubMed E-utilities search + abstract metadata"
+    assert "systematic review" in source.title.lower()
+    assert "evaluation framework" in source.quality_note
+    assert "not as a pooled effect size" in source.quality_note
+    assert source.id in record.source_ids
+    assert record.model_use_status == "catalog_only"
+
+
 def test_youtube_context_pipeline_is_explicitly_grade_e_and_not_model_fact():
     record = AI_HEALTHCARE_EVIDENCE["ai_healthcare_youtube_context_pipeline"]
     summary = evidence_quality_summary(record.id)
