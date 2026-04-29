@@ -20,6 +20,7 @@ from app import (
     build_political_lever_detail_sections,
     build_political_result_checkpoints,
     build_political_stakeholder_rows,
+    build_result_decision_checkpoints,
     build_result_explorer_topics,
     build_result_narrative_summary,
     build_result_reading_path,
@@ -1187,3 +1188,46 @@ def test_changed_lever_question_cards_answer_first_before_audit_details():
     assert "Lobbying-Empfehlung" in combined
     assert "keine amtliche Prognose" in combined
     assert build_changed_lever_question_cards(agg, get_default_params()) == []
+
+def test_result_decision_checkpoints_prevent_overclaiming_before_kpi_grid():
+    agg = pd.DataFrame([
+        {
+            "jahr": 2026,
+            "aerzte_pro_100k_mean": 430.0,
+            "wartezeit_fa_mean": 35.0,
+            "versorgungsindex_rural_mean": 0.72,
+            "gkv_saldo_mean": 1.0,
+        },
+        {
+            "jahr": 2040,
+            "aerzte_pro_100k_mean": 410.0,
+            "wartezeit_fa_mean": 44.0,
+            "versorgungsindex_rural_mean": 0.64,
+            "gkv_saldo_mean": -2.0,
+        },
+    ])
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] - 1500
+
+    checkpoints = build_result_decision_checkpoints(agg, params)
+
+    assert [row["checkpoint"] for row in checkpoints] == [
+        "1 · Ergebnis-Signal",
+        "2 · Stärkste KPI zuerst prüfen",
+        "3 · Geänderte Hebel zuordnen",
+        "4 · Annahmen/Evidenz vor Schlussfolgerung",
+        "5 · Timing im Trend prüfen",
+        "6 · Politische Bewertung trennen",
+        "7 · Sichere Lesart",
+    ]
+    combined = " ".join(row["answer"] + " " + row["next_step"] for row in checkpoints)
+    assert "Effektstärke" in combined
+    assert "KPI-Detailkarte" in combined or "Detailkarte" in combined
+    assert "Medizinstudienplätze" in combined
+    assert "Evidenzgrad" in combined
+    assert "2032" in combined
+    assert "Vote-Forecast" in combined
+    assert "keine amtliche Prognose" in combined
+    assert "keinen Wirksamkeitsbeweis" in combined
+    assert "Ergebnis → Wirkpfad → Annahme → Zeitverlauf" in combined
+

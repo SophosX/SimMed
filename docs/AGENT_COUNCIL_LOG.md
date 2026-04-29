@@ -1044,3 +1044,24 @@ No important decision open. Recommendation: keep iterating on answer-first/resul
 
 ### Verification / Git
 Targeted test passed (`tests/test_app_explanations.py::test_changed_lever_question_cards_answer_first_before_audit_details`); full `python3 -m pytest -q` passed (71 tests); py_compile passed; smoke test passed with 20 runs × 2 years (`df=(60, 30)`, `reg=(320, 6)`). Synced and pushed main commit `2dc2568`.
+
+
+## 2026-04-29 19:35 UTC — Ergebnis-Entscheidungscheck vor KPI-Raster
+
+**Context:** Alex fordert tiefere, zusammenhängende Ergebnis-Erklärungen statt weiterer isolierter Snippets. Kleine UX-Slice gemäß Plan: vor der KPI-Flut muss klar sein, ob aus der Simulation schon eine Entscheidung abgeleitet werden darf.
+
+**Project Manager:** Priorität bleibt Result Experience. Risiko: Nutzer interpretieren starke KPI-Bewegungen als Wirksamkeitsbeweis. Slice begrenzt dieses Risiko durch einen expliziten Entscheidungs-/Audit-Check.
+
+**Designer/UX:** Neuer Expander „Darf ich daraus schon eine Entscheidung ableiten?“ steht direkt nach der Top-Narrative und vor dem dichten KPI-Raster. Er führt Signal → stärkste KPI → geänderter Hebel → Evidenz/Annahme → Timing → Politik → sichere Lesart.
+
+**Creative Agent:** Keine neue Visual-Spielerei; die Verbesserung ist ein dramaturgischer Gatekeeper vor der Zahlenflut.
+
+**Political Health-System Strategist:** Politische Bewertung wird ausdrücklich nach KPI-, Annahmen- und Timingprüfung eingeordnet; kein Vote-Forecast und keine Lobbying-Empfehlung.
+
+**Evidence/Domain:** Keine neue externe Recherche und keine neuen Realwelt-Claims. Der Helper nutzt vorhandene Narrative/KPI/Assumption/Timing/Political-Strukturen; Schlussfolgerungen werden als Modell-/Referenzpfad begrenzt.
+
+**Integrator Decision:** Plan `docs/plans/results-experience-redesign.md` erweitert; `build_result_decision_checkpoints()` und Renderer in `app.py` ergänzt; Test deckt Effektstärke, KPI-Ziel, Evidenzgrad, Timing, politische Guardrails und keine-amtliche-Prognose ab.
+
+**Question to Alex if needed:** Keine wichtige Entscheidung offen; nächster sicherer Schritt ist die gleiche Entscheidungslogik in den Policy-Briefing-Navigationsindex zu spiegeln.
+
+**Verification/Git:** Lokale Tests bestanden (`72 passed`), py_compile bestanden, Simulation-Smoke `30 runs × 3 Jahre` bestanden. Git-Sync/Push folgt in diesem Lauf.

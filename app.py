@@ -1970,6 +1970,86 @@ def render_changed_lever_question_cards(agg: pd.DataFrame, params: dict):
             st.warning(card["guardrail"])
 
 
+def build_result_decision_checkpoints(agg: pd.DataFrame, params: dict) -> List[Dict[str, str]]:
+    """Build a safe pre-KPI decision checklist from existing result explanations.
+
+    This is decision-hygiene/navigation only. It tells the reader what must be
+    inspected before turning a simulated KPI movement into a policy conclusion,
+    while reusing existing narrative, KPI, changed-lever, timing and political
+    structures. It does not add new causal effects, empirical claims or scores.
+    """
+    summary = build_result_narrative_summary(agg, params)
+    kpi_items = build_kpi_drilldown_items(agg, params)
+    lever_cards = build_changed_lever_question_cards(agg, params)
+    timing_rows = build_trend_changed_lever_timing(agg, params)
+    audit_rows = build_changed_lever_result_audit_trail(agg, params)
+
+    strongest = kpi_items[0] if kpi_items else {}
+    strongest_text = (
+        f"{strongest.get('label', 'KPI')}: {strongest.get('observation', 'keine Start-/Ende-Beobachtung verfügbar')} "
+        f"Effektstärke: {strongest.get('effect_strength', 'noch nicht bewertet')}. "
+        f"Nächster Klick: {strongest.get('next_step', 'KPI-Detailkarte öffnen.')}"
+    )
+    changed_text = "; ".join(card["label"] for card in lever_cards) or "keine erklärte Haupt-Stellschraube geändert"
+    assumption_text = "; ".join(
+        row.get("assumption_check", "") for row in audit_rows if row.get("assumption_check")
+    ) or "keinen geänderten Haupthebel mit Register-Check gefunden"
+    timing_text = "; ".join(
+        f"{row['label']}: {row['inspection_window']}" for row in timing_rows
+    ) or "Zeitverlauf der wichtigsten KPI prüfen"
+    political_text = "; ".join(
+        f"{row['label']}: {row['political_caveat']}" for row in audit_rows
+    ) or "politische Umsetzbarkeit nur als qualitative Rubrik lesen; kein Vote-Forecast."
+
+    return [
+        {
+            "checkpoint": "1 · Ergebnis-Signal",
+            "answer": summary.get("lead", "Ergebnis zuerst über die stärksten KPI-Bewegungen lesen."),
+            "next_step": summary.get("next_step", "Stärkste KPI-Bewegung öffnen."),
+        },
+        {
+            "checkpoint": "2 · Stärkste KPI zuerst prüfen",
+            "answer": strongest_text,
+            "next_step": "Öffne die genannte KPI-Detailkarte, bevor du weitere Kennzahlen interpretierst.",
+        },
+        {
+            "checkpoint": "3 · Geänderte Hebel zuordnen",
+            "answer": f"Geänderte Hebel: {changed_text}.",
+            "next_step": "Lies je Hebel: Was wurde geändert? Warum bewegt es Ergebnisse? Welche Annahme begrenzt die Lesart?",
+        },
+        {
+            "checkpoint": "4 · Annahmen/Evidenz vor Schlussfolgerung",
+            "answer": f"Register-/Annahmen-Check: {assumption_text}.",
+            "next_step": "Behandle KPI-Bewegungen erst nach Caveat- und Evidenzprüfung als belastbares Lesesignal.",
+        },
+        {
+            "checkpoint": "5 · Timing im Trend prüfen",
+            "answer": timing_text,
+            "next_step": "Prüfe im Zeitverlauf, ob Effekte sofort, verzögert oder erst spät im Referenzpfad sichtbar werden.",
+        },
+        {
+            "checkpoint": "6 · Politische Bewertung trennen",
+            "answer": political_text,
+            "next_step": "Politische Unterstützer/Bremser erst nach KPI-, Annahmen- und Timingprüfung lesen.",
+        },
+        {
+            "checkpoint": "7 · Sichere Lesart",
+            "answer": "SimMed liefert einen Modell-/Referenzpfad, keine amtliche Prognose, keinen Wirksamkeitsbeweis und keine Lobbying-Empfehlung.",
+            "next_step": "Entscheidung erst als Hypothese formulieren: Ergebnis → Wirkpfad → Annahme → Zeitverlauf → qualitative Umsetzbarkeit.",
+        },
+    ]
+
+
+def render_result_decision_checkpoints(agg: pd.DataFrame, params: dict):
+    """Render the pre-KPI decision checklist."""
+    checkpoints = build_result_decision_checkpoints(agg, params)
+    with st.expander("Darf ich daraus schon eine Entscheidung ableiten?", expanded=True):
+        st.caption("Kurzer Sicherheitscheck vor der KPI-Flut: erst Signal, dann Hebel, Annahmen, Timing und Politik getrennt prüfen.")
+        for row in checkpoints:
+            st.markdown(f"- **{row['checkpoint']}:** {row['answer']}  ")
+            st.caption(f"Nächster Schritt: {row['next_step']}")
+
+
 def render_changed_lever_result_audit_trail(agg: pd.DataFrame, params: dict):
     """Render an input-to-result audit trail for changed levers."""
     rows = build_changed_lever_result_audit_trail(agg, params)
@@ -2953,6 +3033,7 @@ def render_dashboard(agg: pd.DataFrame, params: dict):
     endjahr = int(last["jahr"])
 
     render_result_narrative_summary(agg, params)
+    render_result_decision_checkpoints(agg, params)
 
     st.markdown(f"### Kernkennzahlen {endjahr} (Mittelwerte über alle Runs)")
     st.caption("Desktop: ⓘ/Hover erklärt jede Karte. Mobil/Tablet: dieselben Erklärungen stehen direkt darunter in den aufklappbaren KPI-Details.")

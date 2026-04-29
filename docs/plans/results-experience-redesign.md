@@ -430,3 +430,18 @@ Small implementation slice:
 5. Add a focused test that verifies the card reuses KPI targets, evidence/timing/political caveats, and keeps the not-a-forecast/not-lobbying guardrail.
 
 Guardrail: this is a readability layer over existing structured outputs only. It must not change model logic, introduce new evidence claims, or turn the qualitative political rubric into advice.
+
+
+## 2026-04-29 next slice: Ergebnis-Entscheidungscheck before KPI grid
+
+Problem: The top narrative and changed-lever cards explain pieces of the run, but users still need a safe decision checkpoint before reading the KPI grid: what can I already conclude, what must I inspect first, and what must not be overclaimed?
+
+Small implementation slice:
+
+1. Add a pure `build_result_decision_checkpoints(agg, params)` helper in `app.py`.
+2. Reuse existing structured helpers only: result narrative, changed-lever question cards, KPI drill-down items, trend timing, and political checkpoint/audit fields.
+3. Return a short ordered set of checkpoints: result signal, strongest KPI detail, changed-lever explanation, assumptions/evidence, trend timing, political feasibility guardrail, and safe conclusion.
+4. Render it directly after the top result narrative as “Darf ich daraus schon eine Entscheidung ableiten?” before the dense KPI card grid.
+5. Add a focused test that verifies the checkpoints include effect strength, exact next KPI/detail target, evidence/assumption caveat, timing, political not-vote-forecast guardrail, and no-official-forecast language.
+
+Guardrail: this is a decision-hygiene/navigation layer only. It must not add new empirical claims, new model effects, or a hidden policy recommendation. It should tell users what to inspect before treating a simulated KPI movement as policy evidence.
