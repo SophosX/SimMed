@@ -104,6 +104,20 @@ Run tests:
 python3 -m pytest -q
 ```
 
+Local stability note:
+
+If Streamlit crashes during simulation with `joblib.externals.loky.process_executor.TerminatedWorkerError` or worker `SIGSEGV`, update to the latest code and rerun. SimMed now uses joblib's `threading` backend by default because process-based `loky` can be unstable on some local macOS/Python setups.
+
+Optional tuning:
+
+```bash
+# Safer / less CPU pressure
+SIMMED_MAX_WORKERS=1 streamlit run app.py
+
+# Process-based parallelism only if your machine handles it
+SIMMED_JOBLIB_BACKEND=loky streamlit run app.py
+```
+
 Run a small scenario from Python:
 
 ```bash

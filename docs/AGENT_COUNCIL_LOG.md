@@ -419,3 +419,20 @@ Keine wichtige Frage: this is a safe trust/onboarding improvement aligned with t
 
 ### Verification / Git
 Tests passed locally: `python3 -m pytest -q` (23 passed) plus `py_compile` for app/core/API/test modules. Git sync/push follows this entry.
+
+## 2026-04-29 18:25 Europe/Berlin — Local Streamlit Crash Fix
+
+### Context
+Alex reported local Streamlit crash on macOS/Python 3.11: `joblib.externals.loky.process_executor.TerminatedWorkerError` with worker `SIGSEGV` during 1,000-run simulation.
+
+### Integrator Decision
+Root cause hypothesis: process-based joblib `loky` backend is unstable in some local Streamlit/macOS environments. Fix: default to `threading`, cap workers via `SIMMED_MAX_WORKERS` default 4, keep `SIMMED_JOBLIB_BACKEND=loky` override, and fall back to sequential if joblib fails.
+
+### UX/Sinncheck
+Local first-run must not crash. Stability beats maximum parallel speed.
+
+### Evidence / Domain
+This is engineering stability, not model evidence. Added regression tests for default threaded execution and worker-limit env behavior.
+
+### Verification / Git
+Pending: full tests, runtime smoke test, zip, commit, push.

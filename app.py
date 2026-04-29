@@ -773,7 +773,12 @@ def run_simulation(
         (df_kpis, df_regional): KPI-DataFrame (run_id × jahr × kpis),
         Regional-DataFrame (run_id × bundesland × ärzte/pop).
     """
-    n_cores = max(1, multiprocessing.cpu_count() - 1)
+    # Default to joblib's thread backend rather than process-based "loky".
+    # On some local macOS/Python setups, loky workers can terminate with SIGSEGV
+    # during Streamlit runs. Threads avoid process forking/pickling and keep the
+    # app stable; users can override via SIMMED_JOBLIB_BACKEND=loky if needed.
+    n_cores = min(max(1, multiprocessing.cpu_count() - 1), int(os.getenv("SIMMED_MAX_WORKERS", "4")))
+    joblib_backend = os.getenv("SIMMED_JOBLIB_BACKEND", "threading")
     batch_size = max(1, n_runs // 10)
 
     all_kpis: List[np.ndarray] = []
@@ -784,9 +789,19 @@ def run_simulation(
         seeds = list(range(base_seed + batch_start, base_seed + batch_end))
 
         if HAS_JOBLIB and len(seeds) > 1:
-            batch = Parallel(n_jobs=n_cores, backend="loky")(
-                delayed(_run_single_sim)(params, s, n_years) for s in seeds
-            )
+            try:
+                batch = Parallel(n_jobs=n_cores, backend=joblib_backend)(
+                    delayed(_run_single_sim)(params, s, n_years) for s in seeds
+                )
+            except Exception as exc:
+                if progress_callback:
+                    progress_callback(min(1.0, batch_start / n_runs))
+                warnings.warn(
+                    f"Joblib backend '{joblib_backend}' failed ({type(exc).__name__}); "
+                    "falling back to sequential simulation for stability.",
+                    RuntimeWarning,
+                )
+                batch = [_run_single_sim(params, s, n_years) for s in seeds]
         else:
             batch = [_run_single_sim(params, s, n_years) for s in seeds]
 
