@@ -170,6 +170,35 @@ EVIDENCE_SOURCES: dict[str, EvidenceSource] = {
         ),
         license_or_terms_note="PubMed metadata/abstract; article copyright may apply. Store citation/metadata only unless reuse terms permit more.",
     ),
+    "ann_emerg_med_ed_adoption_documentation_time_2026": EvidenceSource(
+        id="ann_emerg_med_ed_adoption_documentation_time_2026",
+        title="Ambient Artificial Intelligence Scribe Adoption and Documentation Time in the Emergency Department",
+        url="https://pubmed.ncbi.nlm.nih.gov/41665590/",
+        kind="paper",
+        retrieved_via="PubMed E-utilities search + abstract metadata",
+        retrieved_at="2026-04-29",
+        source_date="2026",
+        quality_note=(
+            "Retrospective ED audit-log study of 8,740 eligible encounters; ambient AI use was low/skewed and concentrated in lower-acuity, "
+            "non-interpreter encounters. When used it was associated with shorter on-shift documentation time and total EHR time, so it is useful "
+            "for adoption/selection-bias and emergency-care workflow caveats, not patient-outcome claims."
+        ),
+        license_or_terms_note="PubMed metadata/abstract; article copyright belongs to the publisher. Store citation/metadata only unless reuse terms permit more.",
+    ),
+    "ann_emerg_med_ai_vs_human_scribes_2026": EvidenceSource(
+        id="ann_emerg_med_ai_vs_human_scribes_2026",
+        title="Ambient Artificial Intelligence Versus Human Scribes in the Emergency Department",
+        url="https://pubmed.ncbi.nlm.nih.gov/41251650/",
+        kind="paper",
+        retrieved_via="PubMed E-utilities search + abstract metadata",
+        retrieved_at="2026-04-29",
+        source_date="2026",
+        quality_note=(
+            "Emergency-department quality-improvement pilot comparing AI and human scribes; AI notes had similar adult quality but lower pediatric "
+            "quality, and physicians spent more note-section time/contributed more note text with AI. Important negative/mixed comparator evidence."
+        ),
+        license_or_terms_note="PubMed metadata/abstract; article copyright belongs to the publisher. Store citation/metadata only unless reuse terms permit more.",
+    ),
     "x_jama_current_ambient_scribes_2026": EvidenceSource(
         id="x_jama_current_ambient_scribes_2026",
         title="JAMA X post: ambient scribes reduce documentation time but patient outcomes/equity evidence limited",
@@ -222,6 +251,8 @@ AI_HEALTHCARE_EVIDENCE: dict[str, AIHealthcareEvidenceRecord] = {
             "jama_editorial_effectiveness_ambient_scribes_2026",
             "appl_clin_inform_shin_pediatric_scribes_2025",
             "appl_clin_inform_sutton_ai_scribes_review_2025",
+            "ann_emerg_med_ed_adoption_documentation_time_2026",
+            "ann_emerg_med_ai_vs_human_scribes_2026",
         ),
         transferability_to_germany=(
             "Medium: documentation burden and clinician workflow are relevant in Germany, but effects depend on German documentation rules, "

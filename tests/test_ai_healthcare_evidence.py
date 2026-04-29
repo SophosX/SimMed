@@ -80,6 +80,24 @@ def test_ambient_scribes_include_systematic_review_as_evidence_map_not_effect_si
     assert record.model_use_status == "catalog_only"
 
 
+def test_ambient_scribes_include_emergency_department_mixed_comparator_evidence():
+    adoption = EVIDENCE_SOURCES["ann_emerg_med_ed_adoption_documentation_time_2026"]
+    comparator = EVIDENCE_SOURCES["ann_emerg_med_ai_vs_human_scribes_2026"]
+    record = AI_HEALTHCARE_EVIDENCE["ambient_ai_scribes_documentation_burden"]
+
+    assert adoption.retrieved_via == "PubMed E-utilities search + abstract metadata"
+    assert "low/skewed" in adoption.quality_note
+    assert "non-interpreter encounters" in adoption.quality_note
+    assert "not patient-outcome claims" in adoption.quality_note
+    assert comparator.kind == "paper"
+    assert "human scribes" in comparator.title.lower()
+    assert "lower pediatric quality" in comparator.quality_note
+    assert "negative/mixed comparator evidence" in comparator.quality_note
+    assert adoption.id in record.source_ids
+    assert comparator.id in record.source_ids
+    assert record.model_use_status == "catalog_only"
+
+
 def test_youtube_context_pipeline_is_explicitly_grade_e_and_not_model_fact():
     record = AI_HEALTHCARE_EVIDENCE["ai_healthcare_youtube_context_pipeline"]
     summary = evidence_quality_summary(record.id)

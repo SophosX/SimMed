@@ -1192,3 +1192,32 @@ Geplant/ausgeführt in diesem Lauf: fokussierte Tests und Full Suite nach Patch;
 - **Integrator Decision:** Quelle an `ambient_ai_scribes_documentation_burden` angehängt und Regressionstest ergänzt, der den Guardrail-Charakter absichert.
 - **Question to Alex:** Keine wichtige Entscheidung offen.
 - **Verification/Git:** Gezielter Test und Gesamtsuite werden nach Patch ausgeführt; Commit/Push folgt bei grünem Lauf.
+
+## 2026-04-29 22:08 Europe/Berlin — Heartbeat: AI-Scribe-Evidenz ED-Mixed-Comparator
+
+### Context
+Aktiver Branch `feat/ai-healthcare-evidence-validation`; fortgesetzt, weil er direkt zur AI-in-healthcare-Evidenzvalidierung passt. Fokus: Ambient-AI-Scribes um neue Notaufnahme-/ED-Evidenz aus PubMed/E-utilities erweitern.
+
+### Project Manager
+Priorität: Evidenzkatalog vertiefen, aber weiterhin kein Modellparameter-Effekt. Risiko: positive Dokumentationszeit-Befunde könnten Adoption/Patientenselektion und negative Vergleichsbefunde überdecken. Nächste Aufgaben: weitere PubMed-Treffer prüfen, danach UI/API-Passport für AI-Evidence vorbereiten.
+
+### Designer / UX
+Die spätere Oberfläche sollte ED-Evidenz nicht als “AI spart immer Zeit” zeigen, sondern sichtbar zwischen Adoption, Setting, Vergleichsgruppe und gemischten Ergebnissen unterscheiden.
+
+### Creative Agent
+Idee: eine “Evidenz-Ampel pro Setting” für AI-Scribes (Hausarzt, Pädiatrie, Notaufnahme, Klinik) — nützlich, aber erst nach mehr strukturierten Records.
+
+### Political Health-System Strategist
+Für deutsche Übertragung sind Datenschutz, Interpreter-/Mehrsprachigkeitsfälle, KV/Klinik-IT-Integration und ungleiche Adoption zentrale politische/Umsetzungsfragen; noch keine politische Score-Änderung.
+
+### Evidence / Domain
+PubMed/E-utilities lieferte zwei Annals-of-Emergency-Medicine-Abstracts: ein retrospektives ED-Audit mit niedriger/skewed Adoption und kürzerer EHR-Zeit bei Nutzung; ein QI-Pilot AI vs. human scribes mit ähnlicher bis niedrigerer Qualität und mehr EHR-Notizzeit bei AI. Beide bleiben Katalog-Evidenz, keine Patient-Outcome- oder Kosteneffekt-Behauptung.
+
+### Integrator Decision
+Akzeptiert: zwei neue `EvidenceSource`-Einträge und Anschluss an `ambient_ai_scribes_documentation_burden`; Regressionstest ergänzt. Kein neuer SimMed-Modelleffekt.
+
+### Question to Alex
+Keine wichtige Entscheidung offen.
+
+### Verification / Git
+Spezifische Tests/Compile bestanden: `pytest tests/test_ai_healthcare_evidence.py -q` → 10 passed; `py_compile` für Evidenzmodul/Test bestanden. Commit/Push folgt in diesem Lauf.
