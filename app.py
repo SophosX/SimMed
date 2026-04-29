@@ -38,6 +38,7 @@ from data_ingestion import (
     build_data_readiness_backlog,
     build_data_readiness_gate_plan,
     build_data_readiness_operator_handoff,
+    build_data_readiness_platform_brief,
     build_data_readiness_summary,
     build_next_data_readiness_actions,
     build_parameter_data_workflow_card,
@@ -4121,6 +4122,7 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         "next_actions": next_actions,
         "action_packet": build_data_readiness_action_packet(next_actions),
         "operator_handoff": build_data_readiness_operator_handoff(next_actions),
+        "platform_brief": build_data_readiness_platform_brief(next_actions),
         "rows": [
             {
                 "Parameter": item["label"],
@@ -4273,6 +4275,21 @@ def render_learning_data_readiness_backlog():
             for row in handoff["rows"]
         ]
         st.dataframe(pd.DataFrame(handoff_rows), use_container_width=True, hide_index=True)
+        platform_brief = backlog["platform_brief"]
+        st.markdown(f"**{platform_brief['title']}**")
+        st.caption(platform_brief["plain_language_note"])
+        platform_rows = [
+            {
+                "Rang": row["rank"],
+                "Parameter": row["label"],
+                "Plattform-Slice": row["platform_slice"],
+                "Verifikation": row["verification"],
+                "Definition of done": row["definition_of_done"],
+                "Guardrail": row["guardrail"],
+            }
+            for row in platform_brief["rows"]
+        ]
+        st.dataframe(pd.DataFrame(platform_rows), use_container_width=True, hide_index=True)
         st.caption("Diese Liste priorisiert Plattformarbeit: erst Status/Dry-run, dann Rohdaten-Cache nur bewusst, danach Review und explizite Modellintegration.")
     with st.expander("Warum diese Reihenfolge? Daten-Gates als Arbeitsplan", expanded=False):
         for gate in backlog["gate_plan"]:

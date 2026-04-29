@@ -8,7 +8,9 @@ from data_ingestion import (
     build_data_passport_rows,
     build_data_readiness_backlog,
     build_data_readiness_gate_plan,
+    build_data_readiness_platform_brief,
     build_data_readiness_summary,
+    build_next_data_readiness_actions,
     build_parameter_data_workflow_card,
     build_parameter_snapshot_status,
     build_transformation_review_template,
@@ -439,6 +441,35 @@ def test_execute_connector_snapshot_request_caches_raw_payload_without_model_imp
     assert rows[0]["cache"]["has_cached_snapshot"] is True
     assert rows[0]["transformation_review"]["status"] == "not_reviewed"
     assert "geprüfte Transformation separat" in rows[0]["passport_note"]
+
+
+def test_platform_brief_turns_next_actions_into_verified_read_only_work(tmp_path):
+    parameters = [
+        {
+            "key": "krankenhausbetten",
+            "label": "Krankenhausbetten",
+            "unit": "beds",
+            "evidence_grade": "A",
+            "source_ids": ["destatis_genesis"],
+            "data_status": "aus_daten",
+        }
+    ]
+    backlog = build_data_readiness_backlog(parameters, cache_root=tmp_path)
+    actions = build_next_data_readiness_actions(backlog, limit=1)
+
+    brief = build_data_readiness_platform_brief(actions)
+
+    assert brief["title"].startswith("Plattform-Brief")
+    assert "kein execute=true" in brief["guardrail"]
+    assert "Status/Dry-run" in brief["sequence"][0]
+    row = brief["rows"][0]
+    assert row["parameter_key"] == "krankenhausbetten"
+    assert "POST /data-connectors/execute-planned-snapshot" in row["verification"]
+    assert "GET /data-readiness/krankenhausbetten" in row["verification"]
+    assert "GET /data-connectors/transformation-review-template/krankenhausbetten" in row["verification"]
+    assert "Registry-/Modelländerung" in row["definition_of_done"]
+    assert "kein execute=true" in row["guardrail"]
+
 
 
 def test_connector_execution_workbench_turns_requests_into_next_safe_actions(tmp_path):

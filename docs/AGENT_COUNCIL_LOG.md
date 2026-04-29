@@ -1778,3 +1778,16 @@ Focused tests passed for API and Learning Page helpers; full suite passed (`106 
 - **Integrator Decision:** Added `build_data_readiness_operator_handoff(...)`, exposed it through `/data-readiness/next-actions`, new `/data-readiness/operator-handoff`, and the Learning Page backlog expander.
 - **Question to Alex if needed:** Keine — this is a safe/reversible platform workflow improvement.
 - **Verification/Git:** 107 pytest tests passed; py_compile passed for core modules; simulation smoke passed (`df=(60, 30)`, `reg=(320, 6)`). Commit/push pending in this heartbeat.
+
+
+## 2026-04-29 23:28 UTC — Plattform-Brief für nächste Datenarbeit
+
+- **Context:** Alex wants heartbeats to prioritize core platform implementation. Current branch `feat/platform-data-status-foundation` already had backlog/action-packet/operator-handoff; next safe slice was to make the next data-work cycle more directly consumable by cron/operators and API/UI without executing connectors.
+- **Project Manager:** Chose a small data-ingestion/provenance improvement over KI evidence intake: one reusable helper, one focused API endpoint, Learning Page surfacing, and regression tests.
+- **Designer/UX:** Added a concise “Plattform-Brief” layer so first-time/platform operators see platform slice, verification route, definition of done, and guardrail in a mobile-safe table instead of only raw action rows.
+- **Creative Agent:** Framed it as a short work brief for autonomous cycles, not a new import button; it turns backlog planning into an executable-but-safe reading artifact.
+- **Political Health-System Strategist:** Kept all wording away from official forecasts, policy-effect proof, or lobbying recommendations; data readiness remains infrastructure before policy interpretation.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf. No new factual/model claims; guardrails preserve raw cache, transformation review, and explicit model integration as separate stages.
+- **Integrator Decision:** Added `build_data_readiness_platform_brief(...)`, exposed it via `/data-readiness/next-actions`, `/data-readiness/operator-handoff`, new `/data-readiness/platform-brief`, and Learning Page backlog output.
+- **Question to Alex if needed:** Keine — safe/reversible platform workflow improvement.
+- **Verification/Git:** 109 pytest tests passed; `py_compile` passed for touched modules/tests; simulation smoke passed (`df=(60, 30)`, `reg=(320, 6)`). Commit/push pending in this heartbeat.

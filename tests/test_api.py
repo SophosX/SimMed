@@ -103,6 +103,11 @@ def test_api_exposes_next_data_readiness_actions_without_execution():
     assert first_handoff_row["review_template_route"].startswith("GET /data-connectors/transformation-review-template/")
     assert "kein execute=true" in first_handoff_row["guardrail"]
     assert "Registry-/Modelländerung" in " ".join(first_handoff_row["definition_of_done_before_model_integration"])
+    platform_brief = body["platform_brief"]
+    assert "Plattform-Brief" in platform_brief["title"]
+    assert len(platform_brief["rows"]) == 2
+    assert "kein execute=true" in platform_brief["guardrail"]
+    assert platform_brief["rows"][0]["verification"].startswith("Status prüfen")
     first_packet_row = packet["rows"][0]
     assert first_packet_row["copyable_api_command"].startswith("curl")
     assert first_packet_row["next_review_route"].startswith("GET /data-connectors/transformation-review-template/")
@@ -120,6 +125,25 @@ def test_api_exposes_next_data_readiness_actions_without_execution():
         assert first["primary_api"] == first["workflow_api"]
         assert first["dry_run_payload"] is None
 
+
+
+def test_api_exposes_platform_brief_as_core_platform_status_endpoint():
+    client = TestClient(api)
+    response = client.get("/data-readiness/platform-brief?limit=2")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "data_readiness_platform_brief_not_executed"
+    assert "kein Netzwerkabruf" in body["guardrail"]
+    brief = body["platform_brief"]
+    assert brief["title"].startswith("Plattform-Brief")
+    assert len(brief["rows"]) == 2
+    assert "Status/Dry-run" in brief["sequence"][0]
+    first = brief["rows"][0]
+    assert first["verification"].startswith("Status prüfen")
+    assert "Review-Template" in first["verification"]
+    assert "Registry-/Modelländerung" in first["definition_of_done"]
+    assert "kein execute=true" in first["guardrail"]
 
 
 def test_api_exposes_operator_handoff_as_focused_data_platform_work_order():

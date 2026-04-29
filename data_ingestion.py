@@ -899,6 +899,43 @@ def build_data_readiness_operator_handoff(actions: list[dict]) -> dict:
 
 
 
+def build_data_readiness_platform_brief(actions: list[dict]) -> dict:
+    """Create a compact platform-work brief from the next safe data actions.
+
+    This is the cron/operator-facing wrapper around the existing handoff. It
+    answers: what is the next platform slice, how is it verified, and what must
+    still *not* be inferred? It stays read-only/status-only and deliberately
+    contains no execute=true commands.
+    """
+
+    handoff = build_data_readiness_operator_handoff(actions)
+    rows: list[dict] = []
+    for handoff_row in handoff["rows"]:
+        rows.append({
+            "rank": handoff_row["rank"],
+            "parameter_key": handoff_row["parameter_key"],
+            "label": handoff_row["label"],
+            "platform_slice": handoff_row["first_safe_step"],
+            "verification": (
+                f"Status prüfen über {handoff_row['status_or_dry_run_route']} und Workflow prüfen über "
+                f"{handoff_row['workflow_route']}; Review-Template: {handoff_row['review_template_route']}."
+            ),
+            "definition_of_done": " · ".join(handoff_row["definition_of_done_before_model_integration"]),
+            "guardrail": handoff_row["guardrail"],
+        })
+    return {
+        "title": "Plattform-Brief: nächste Datenarbeit ohne Modellmutation",
+        "plain_language_note": (
+            "Dieser Brief ist für kurze Plattform-Zyklen: erst Status/Dry-run, dann bewusstes Rohdaten-Caching, "
+            "dann Review, danach separate Modellintegration. Er ist kein Importknopf."
+        ),
+        "sequence": handoff["sequence"],
+        "rows": rows,
+        "guardrail": "Plattform-Brief ist read-only: kein execute=true, kein Netzwerkabruf, kein Cache-Schreiben, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    }
+
+
+
 def build_data_connector_queue(backlog_items: list[dict], *, per_source_limit: int = 4) -> list[dict]:
     """Group snapshot-needed parameters by source so connector work can start safely.
 

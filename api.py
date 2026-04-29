@@ -21,6 +21,7 @@ from data_ingestion import (
     build_data_readiness_action_packet,
     build_data_readiness_backlog,
     build_data_readiness_operator_handoff,
+    build_data_readiness_platform_brief,
     build_data_readiness_gate_plan,
     build_data_readiness_summary,
     build_next_data_readiness_actions,
@@ -143,6 +144,7 @@ def get_next_data_readiness_actions(limit: int = 3) -> dict:
         "actions": actions,
         "action_packet": build_data_readiness_action_packet(actions),
         "operator_handoff": build_data_readiness_operator_handoff(actions),
+        "platform_brief": build_data_readiness_platform_brief(actions),
     }
 
 
@@ -168,6 +170,31 @@ def get_data_readiness_operator_handoff(limit: int = 3) -> dict:
         "summary": build_data_readiness_summary(items),
         "actions": actions,
         "operator_handoff": build_data_readiness_operator_handoff(actions),
+        "platform_brief": build_data_readiness_platform_brief(actions),
+    }
+
+
+@api.get("/data-readiness/platform-brief")
+def get_data_readiness_platform_brief(limit: int = 3) -> dict:
+    """Return the next safe core-platform data brief for cron/operators."""
+
+    if limit < 1 or limit > 10:
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "status": "invalid_data_readiness_platform_brief_limit",
+                "limit": limit,
+                "guardrail": "Limit muss zwischen 1 und 10 liegen; keine Datenaktion wurde ausgeführt.",
+            },
+        )
+    parameters = list_parameters()
+    items = build_data_readiness_backlog(parameters)
+    actions = build_next_data_readiness_actions(items, limit=limit)
+    return {
+        "status": "data_readiness_platform_brief_not_executed",
+        "guardrail": "Plattform-Brief ist read-only: kein Netzwerkabruf, kein Cache-Schreibvorgang, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+        "summary": build_data_readiness_summary(items),
+        "platform_brief": build_data_readiness_platform_brief(actions),
     }
 
 

@@ -117,6 +117,12 @@ def test_learning_data_readiness_backlog_prioritizes_safe_data_gates():
     handoff_row = backlog["operator_handoff"]["rows"][0]
     assert handoff_row["review_template_route"].startswith("GET /data-connectors/transformation-review-template/")
     assert "Transformation ist separat reviewed" in " ".join(handoff_row["definition_of_done_before_model_integration"])
+    assert backlog["platform_brief"]["rows"]
+    assert "Plattform-Brief" in backlog["platform_brief"]["title"]
+    platform_row = backlog["platform_brief"]["rows"][0]
+    assert "Review-Template" in platform_row["verification"]
+    assert "Registry-/Modelländerung" in platform_row["definition_of_done"]
+    assert "kein execute=true" in platform_row["guardrail"]
     packet_row = backlog["action_packet"]["rows"][0]
     assert packet_row["copyable_api_command"].startswith("curl")
     assert packet_row["next_review_route"].startswith("GET /data-connectors/transformation-review-template/")
