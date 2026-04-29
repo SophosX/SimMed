@@ -10,6 +10,7 @@ from data_ingestion import (
     build_data_readiness_summary,
     build_parameter_snapshot_status,
     cache_source_payload,
+    execute_connector_snapshot_request,
     list_cached_snapshots,
     list_reviewed_transformations,
     read_snapshot_manifest,
@@ -374,3 +375,62 @@ def test_connector_snapshot_requests_expose_first_safe_destatis_cache_contract(t
     assert "cache_source_payload" in request["next_safe_action"]
     assert "No automatic registry or model mutation" in request["transformation_note"]
     assert "not a model import" in request["guardrail"]
+
+
+def test_execute_connector_snapshot_request_caches_raw_payload_without_model_import(tmp_path):
+    request = build_connector_snapshot_requests(
+        build_data_readiness_backlog(
+            [
+                {
+                    "key": "bevoelkerung_mio",
+                    "label": "Bevölkerung",
+                    "unit": "million people",
+                    "evidence_grade": "A",
+                    "source_ids": ["destatis_genesis"],
+                    "data_status": "aus_daten",
+                }
+            ],
+            cache_root=tmp_path,
+        )
+    )[0]
+    seen_urls = []
+
+    def fake_fetcher(url):
+        seen_urls.append(url)
+        return b"GENESIS raw csv bytes;year;value\n2025;84.5\n"
+
+    result = execute_connector_snapshot_request(
+        request,
+        cache_root=tmp_path,
+        payload_fetcher=fake_fetcher,
+        retrieved_at="2026-04-29T22:10:00+00:00",
+    )
+
+    assert seen_urls == [request["endpoint_url"]]
+    assert result["status"] == "raw_snapshot_cached_not_model_integration"
+    assert "not a model import" in result["guardrail"]
+    assert "ReviewedTransformation" in result["next_safe_action"]
+
+    snapshot = result["snapshot"]
+    assert snapshot["source_id"] == "destatis_genesis"
+    assert snapshot["output_parameter_keys"] == ["bevoelkerung_mio"]
+    assert snapshot["raw_path"].endswith("destatis_genesis_12411_0001_population.csv")
+    assert snapshot["sha256"] == snapshot_payload_hash(b"GENESIS raw csv bytes;year;value\n2025;84.5\n")
+    assert "No automatic registry or model mutation" in snapshot["transformation_note"]
+
+    rows = build_data_passport_rows(
+        [
+            {
+                "key": "bevoelkerung_mio",
+                "label": "Bevölkerung",
+                "unit": "million people",
+                "evidence_grade": "A",
+                "source_ids": ["destatis_genesis"],
+                "data_status": "aus_daten",
+            }
+        ],
+        cache_root=tmp_path,
+    )
+    assert rows[0]["cache"]["has_cached_snapshot"] is True
+    assert rows[0]["transformation_review"]["status"] == "not_reviewed"
+    assert "geprüfte Transformation separat" in rows[0]["passport_note"]

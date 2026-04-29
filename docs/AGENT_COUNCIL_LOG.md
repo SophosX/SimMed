@@ -1325,3 +1325,32 @@ Targeted tests: `62 passed`. Full suite: `84 passed`. Py compile passed for core
 - Integrator Decision: data_ingestion.py um ConnectorSnapshotRequest, Destatis/GENESIS-Mappings und build_connector_snapshot_requests erweitert; API und Learning Page exponieren die Requests.
 - Question to Alex if needed: Keine.
 - Verification/Git: 64 fokussierte Tests, py_compile und 20x2 Simulation-Smoke bestanden; Commit/Push folgt.
+
+## 2026-04-29 22:02 UTC — Heartbeat: Connector Executor Foundation
+
+### Context
+Alex corrected the heartbeat priority toward core platform work. Current branch `feat/platform-data-status-foundation` already had connector snapshot request planning; the missing next safe slice was execution into the raw cache without model mutation.
+
+### Project Manager
+Priority: move Data Passport/Data Readiness from planning to executable provenance infrastructure. Risk: a live connector must not silently become a model import. Next tasks: expose execution status safely in API/UI, add source-specific credential/terms handling, then add transformation-review tooling.
+
+### Designer / UX
+The user-facing path should stay three-stage and mobile-readable: request planned → raw snapshot cached → transformation reviewed. Avoid labels that imply imported model truth.
+
+### Creative Agent
+Idea: later show a “Daten-Pipeline Ampel” per parameter. Fit: useful for newcomers if it reuses passport/backlog fields; defer until API/UI status has the executor result.
+
+### Political Health-System Strategist
+Health-policy credibility improves when raw official data is auditable before any political scenario claims are made. Keep this as administrative provenance, not a policy-effect statement.
+
+### Evidence / Domain
+No new factual evidence claim was added. The executor stores raw bytes plus SHA256 manifest only; parsing, denominator checks, and model integration remain explicit later gates.
+
+### Integrator Decision
+Accepted: add `fetch_url_payload(...)` and `execute_connector_snapshot_request(...)` to cache a planned connector payload unchanged via `cache_source_payload`, with tests proving Data Passport still reports missing transformation review.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; next safe platform step is API/UI surfacing of connector execution status without live auto-import.
+
+### Verification / Git
+Verified locally: `pytest tests/test_data_ingestion.py -q` (10 passed), full `pytest -q` (87 passed), py_compile, and 20-run simulation smoke `(60, 30)/(320, 6)`. Commit/push pending in this heartbeat.

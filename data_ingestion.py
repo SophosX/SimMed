@@ -12,8 +12,9 @@ from datetime import UTC, datetime
 from hashlib import sha256
 import json
 from pathlib import Path
-from typing import Literal
+from typing import Callable, Literal
 from urllib.parse import urlencode
+from urllib.request import Request, urlopen
 
 DataStatus = Literal["aus_daten", "annahme"]
 TransformationStatus = Literal["not_reviewed", "reviewed_no_model_import", "reviewed_model_ready"]
@@ -178,6 +179,58 @@ def build_connector_snapshot_requests(backlog_items: list[dict], *, per_source_l
         requests.append(data)
         per_source_counts["destatis_genesis"] = per_source_counts.get("destatis_genesis", 0) + 1
     return requests
+
+
+def fetch_url_payload(url: str, *, timeout_seconds: int = 30) -> bytes:
+    """Fetch a connector payload as bytes without interpreting or transforming it.
+
+    The helper deliberately returns raw bytes only. Parsing, table-shape checks and
+    parameter changes belong to a later reviewed transformation step.
+    """
+
+    request = Request(url, headers={"User-Agent": "SimMed-data-provenance-bot/0.1"})
+    with urlopen(request, timeout=timeout_seconds) as response:  # nosec B310 - configured connector URL only
+        return response.read()
+
+
+def execute_connector_snapshot_request(
+    request: ConnectorSnapshotRequest | dict,
+    *,
+    cache_root: Path | str = CACHE_ROOT,
+    payload_fetcher: Callable[[str], bytes] | None = None,
+    retrieved_at: str | None = None,
+) -> dict:
+    """Fetch/cache one planned connector snapshot without mutating model parameters.
+
+    This is the first executable bridge after `ConnectorSnapshotRequest`: it
+    consumes the read-only request contract, obtains the raw payload unchanged,
+    writes the standard SHA256 manifest via `cache_source_payload`, and returns a
+    Data-Passport-ready status object. It never parses values, updates the
+    registry, or claims a policy/model effect.
+    """
+
+    data = request.to_dict() if isinstance(request, ConnectorSnapshotRequest) else dict(request)
+    fetcher = payload_fetcher or fetch_url_payload
+    payload = fetcher(data["endpoint_url"])
+    snapshot = cache_source_payload(
+        source_id=data["source_id"],
+        source_url=data["endpoint_url"],
+        payload=payload,
+        filename=data["suggested_filename"],
+        cache_root=cache_root,
+        source_period=data.get("source_period", ""),
+        license_or_terms_note=data.get("license_or_terms_note", ""),
+        output_parameter_keys=tuple(data.get("output_parameter_keys", ())),
+        transformation_note=data.get("transformation_note", ""),
+        retrieved_at=retrieved_at,
+    )
+    return {
+        "status": "raw_snapshot_cached_not_model_integration",
+        "snapshot": snapshot.to_dict(),
+        "guardrail": data.get("guardrail")
+        or "Rohdaten-Snapshot gecacht; keine Registry- oder Modellmutation ohne Transformationsreview.",
+        "next_safe_action": "Rohdatenstruktur prüfen und ein ReviewedTransformation-Review dokumentieren; erst danach explizite Modellintegration erwägen.",
+    }
 
 
 def cache_source_payload(
