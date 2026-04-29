@@ -1,0 +1,6 @@
+Title: A quick guide to Ambient AI Scribes: what they are and how they can help save clinician time
+Channel: Newton's Tree
+URL: https://www.youtube.com/watch?v=RlR8pLkY8_U
+Transcript source: supadata:supadata
+
+Clinicians spend half their working day on electronic health records and then another hour or two at night. When it's done right, AI can help. It can cut time spent on notes by about 20% and after hours work done by nearly 30%. Now imagine freeing up that time. More focus on patients, less burnout, and documentation that's still safe and accurate. That's the promise of Ambient Scribes.

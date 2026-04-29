@@ -1,0 +1,196 @@
+Title: The future of AI in medicine and what it means for physicians and practices with Tom Lawry
+Channel: American Medical Association (AMA)
+URL: https://www.youtube.com/watch?v=MQN3AABMIzU
+Transcript source: supadata:supadata
+
+Unger: Hello and welcome to the
+AMA Update video and podcast. Artificial intelligence
+or AI, continues to be one of the hottest
+topics in health care. And today, we're continuing that
+conversation with a leading AI transformation advisor to
+health and medical leaders around the world, Tom Lawry. Tom is the managing director
+of Second Century Tech, bestselling author
+of Hacking Health and the former national director
+for artificial intelligence at Microsoft, joining
+us from Seattle. I'm Todd Unger, AMA's chief
+experience officer in Chicago. Tom, we're so glad to have you. Welcome. Lawry: Hey, it's
+great to be with you. Thanks for having me. Unger: Well, since
+the launch of ChatGPT, so much of the conversation
+around AI in health care has focused on one aspect and
+that's been generative AI. But the term AI, obviously,
+encompasses so much more than that. I'm a big fan of the definition
+that you used when you visited the AMA a couple of months ago. And I thought it would just
+make sense for the audience out there if they heard
+how you think about it. What do you mean when
+you talk about AI? Lawry: Well, great question. Generative AI is
+the latest flavor of many flavors of what's known
+as artificial intelligence. So I like keeping things simple. So to your point, let's
+assume AI is really relating to IT
+systems, the sense, comprehend, act and learn. Probably, more importantly,
+it's intelligence demonstrated by software with the
+ability to depict or mimic human brain functions. And I want to emphasize
+mimic human brain functions, not replace. Unger: So in your book,
+you talk about how AI can solve some of the biggest
+problems in health care, which is very good news because
+we do need that help. I'd like to focus on a couple
+of the most pressing problems for physicians,
+starting with obstacles like prior authorization
+and paperwork, in general. How can AI lessen the
+administrative burdens on physicians? And when is that
+going to be a reality? Lawry: Well, I think the
+answer is it's starting now. It's only, hopefully,
+going to get better. But to your point, for every
+physician that's listening, what was the intrinsic reason
+you went to medical school? It probably wasn't to become
+a data entry clerk, which is what many physicians I talk
+to feel like we've turned them into. So the ability to take
+those highly repetitive, low-value activities
+and automate it through the use of AI
+is one of the key areas that we all should
+be focusing on. There are the good
+examples now for what's known as ambient
+intelligence, where, as a physician is
+doing a consult, instead of going to the EMR
+and the corner of that room and hunting and pecking, of
+having natural conversations and in the background ambient
+intelligence is recording all of that, is putting together
+those triage notes to allow you, essentially, to spend
+more time being a doctor and less time being
+a data entry clerk. So we're already seeing it. It's only going to get better. Unger: Well, speaking of that,
+let's talk about another one of the big concerns
+for physicians, not unrelated to what
+we just talked about, and that is physician burnout. So they're already
+asked to do so much, so fast and for so many people. And unlike when we think
+about EHRs, how do we ensure that AI is used to
+reduce physicians' burnout and not just increase
+their workload? Lawry: Well, once again,
+AI as a tool and a vehicle, if properly used,
+gives us the ability to augment the skills and
+the work of physicians. So I would address
+that quickly by saying there are two burdens
+that AI, done correctly, will help address. The first is what we've
+already talked about, which is the administrivia. A study by Stanford
+shows many physicians spend more time in the EMR
+than they do seeing patients. That's just not right. A colleague of mine,
+Dr. Eric Topol, who's the head of Scripps
+Research, very popular author himself, coined the term
+"keyboard liberation". I'm here to say AI can help
+all physicians with keyboard liberation. We should start the keyboard
+liberation league today. The second thing, quickly,
+that I don't think is getting the kind of
+attention it should is what I call
+cognitive burden that is being placed on physicians
+by the exponential growth of medical data. So a newly trained
+physician in 1950 would go their entire practice
+before medical knowledge doubled. Today, it's doubling
+every 72 days. So even the best,
+smartest physicians are having a hard time keeping
+up with all that information to help them make
+the right decisions. AI has great opportunity when it
+comes to helping tame that data explosion. Unger: First off,
+#keyboardliberation. Write that down. Second, to your point,
+in terms of the exploding knowledge about
+medical information, it's also applying to AI itself. The pace of change with
+this particular technology is just incredible. How does a physician, any
+practice, no matter what the size, keep up with this? Lawry: Well, it's
+a great question and probably the
+longer answer is not something we're going
+to do in this podcast. But essentially,
+the world normally works, particularly
+health and medicine, on what economists
+call linear change in growth, which is incremental
+change produced by technology. Then adoption takes
+place and the little gaps between technology and adoption
+and adoption and regulatory. We're in a point where
+economists also talk about exponential growth curve. So the biggest challenge
+for everyone right now is not what the
+technology can do, but it's the velocity of
+change that it's driving. So I think any practice,
+any health care organization is being challenged right
+now because everything that is set up for
+leadership for management is based on that linear growth. And exponential growth
+creates that hockey stick when it comes to change. So it brings us down to-- if we're going to be in this
+for a while, which I believe we are, everyone has to rethink
+how they manage, how they lead, how they practice. Unger: On that
+subject, your book also talks about the
+qualities that leaders have to help their
+organizations adapt and thrive in this big revolution
+in health care. What do you think some of those
+key qualities of AI leaders are going to look like? Lawry: Well, I think, first
+of all, many of the leadership qualities that have gotten
+leaders to where they are today remain intact, remain important. But when you look at
+the changes being driven by digital and
+transformation, I believe there are new set of
+skills that are desperately going to be needed. And it's not just my opinion. But research by McKinsey and
+others like Gartner are saying, leaders with the
+skills they've been successful with in the
+past will not necessarily be successful in the new
+world of digital and AI. And so we're looking at
+things like new hard skills, like leaders needing
+to know AI, which is not to say they need
+to know how to code it. But they at least need
+to understand what it is and what it can do when it comes
+to the practice of medicine. There are also a
+lot of other things, such as soft skills, when
+it comes to design thinking. More than anything, the
+thing I coach leaders on is the importance of
+thinking differently. And a lot of that has
+to do with the number one impediment I see when
+I'm advising big health care organizations about driving
+value at scale with AI is basically the need to
+digitally upskill everyone in the organization,
+starting with leadership. Unger: That's no
+small challenge. How do you do that? Lawry: Well, it starts
+with leadership. It starts with
+the acknowledgment that the way you're
+going to manage and lead in the world of AI is
+going to be different. And there's a whole new
+science emerging around things like decisions about
+decisions, where, in the past, every decision in the
+health care organization was made by a human and a brain. And there are many
+of those things that are being automated. So there are some things,
+like the practice of medicine, dealing with patients, where
+humans, physicians, have to be in the loop. But there are many other
+things we can automate and the humans don't necessarily
+have to be in the loop. But it's that whole
+science around decisions about decisions that leaders
+must understand and then bring forward systems
+actually apply that in the practice of medicine
+and in the practice of running these big health organizations. Unger: So my final question-- I'd like to look ahead a
+bit and imagine that it's 10 years in the future, 2033. In what way do you think that
+health care will have changed the most as a result of AI? Lawry: Well, with any luck
+and done right, while there's so much chatter today about
+the threats and the issues, and even the existential
+threat to humankind, I believe the narrative is going
+to be very different in health care done right. I believe we have the ability
+to create a health renaissance, where all of the issues
+we just talked about, when it comes to the things
+we burdened physicians with, many of those things
+are going to go away or be dramatically reduced to
+allow physicians to practice at the highest level, not
+just for the quality of care but help them
+intrinsically pursue the reasons they became
+physicians in the first place. I see the ability for us
+to go so much farther when it comes to this relationship
+with consumers, including consumers having a big play in
+the management of their health in collaboration
+with physicians. Beyond that, I see
+things that are already happening in other
+parts of the world where we have the ability to
+truly take this thing called population health and deliver
+much greater measurable value at scale by the monitoring
+and management of things like chronic
+conditions, courtesy of AI coming in behind
+physicians and support of what they do. Unger: Well, Tom,
+I'm going to put that into our little time capsule. And then I'm going
+to see you in 2033. Lawry: Add me back-- Unger: We'll see how-- Lawry: --in 10 years, Todd. Unger: --that goes. Lawry: Yes. Unger: Thank you so
+much for joining us. It really is a pleasure
+to talk to you. AI isn't the only thing
+driving change in health care. And along with what we talked
+about earlier with Tom, we are leading the
+charge to address those burdens, like prior
+authorization, burnout and more as part of
+the AMA Recovery Plan for America's Physicians. You can learn all about our
+latest wins and our efforts at ama-assn.org/recovery. We'll be back soon with
+another AMA Update. In the meantime, you can find
+all our videos and podcasts at ama-assn.org/podcasts. Thanks for joining us today. Please take care. [MUSIC PLAYING]

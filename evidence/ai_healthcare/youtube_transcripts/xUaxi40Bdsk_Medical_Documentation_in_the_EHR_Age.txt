@@ -1,0 +1,560 @@
+Title: Medical Documentation in the EHR Age
+Channel: UCSF Department of Medicine
+URL: https://www.youtube.com/watch?v=xUaxi40Bdsk
+Transcript source: supadata:supadata
+
+- Okay, good afternoon. Welcome to Medical Grand Rounds. We've got a small and mighty
+crowd here at Parnassus and I think about 50 or 60 people online, so we will be speaking to all of them. Today's a special day for a few reasons. Every year we hold the
+Gurpreet Dhaliwal Lecture. I wanna make clear to everyone
+that Gurpreet Dhaliwal is alive and well, (all laughs) sitting here in the auditorium. This lecture was named after Gurpreet by a couple of donors who
+were grateful for him. The rest of us have not donated money, but we're all grateful for him. Gurpreet is a remarkable human being and an inspiration and a
+role model for all of us as we think about how to
+be better diagnosticians. And so it's a really nice opportunity to honor all of the
+things that he has done and will do for the community here. It's also part of our Master Clinician
+Visiting Professorship. So we started the Master Clinician Program a number of years ago
+to honor our clinicians who provide exemplary
+care to their patients. Often we find ourselves honoring our educators and our researchers, but don't really give enough attention to the people that take care of all of us, and these are the people
+that we consider to be our, the doctor's doctor, the people who you would go to for a problem for yourself
+or family members. And as we look at the legacy of the Master Clinician Program, it's really an extraordinary
+group of our faculty. This year we honored five
+extraordinary faculty and welcomed them to the group. They are Nira Bka, who gave
+Grand Rounds a few weeks ago, Beth Harleman, Steve Hayes,
+Leslie Miya, and Hope Rugo. Amazing group of people. So for today's Gurpreet Dhaliwal Lecture, as I think about Gurpreet sitting here and Lisa sitting here, they may be the two people
+who have done the most to improve the way we
+think about diagnosis and gotten the issue of
+diagnosis in front of the public more than almost any other
+people I can think of. Gurpreet, through his
+own work and his lectures and his role modeling
+of what it looks like, to be an extraordinary diagnostician. And Lisa, through her work in some ways bringing to public attention
+the importance of diagnosis and the complexity of
+diagnosis and the art. And in some ways the joy of diagnosis, which I think we all feel
+particularly in internal medicine, but I think Lisa's done more
+than anybody I can think of to make the public aware
+of what that means. She is an associate professor on the faculty of Yale University. She's had really a remarkable career. And when the students ask me, you know, "Should I go into
+medicine and be a doctor?" It's a hard question to answer because there are so many flavors of what it's like to be a doctor. I think Lisa's career exemplifies
+how many different ways you can make contributions as a physician. She has made contributions as a clinician, she continues to do that. And she now actually runs Yale's Long COVID comprehensive clinic, but probably her greatest contributions come through her work in writing for and speaking to lay audiences as well as professional audiences. She came by that. Honestly, she was a journalist
+for a number of years before going to medical school. And in fact, she has an Emmy
+Award for her journalism in her coverage of Hurricane Hugo. But then lucky for us,
+she went to medical school and she did the usual professorial thing, but also continued writing and
+speaking to the lay public, mostly in the topic of diagnosis and how to improve diagnosis. You will know her work in large part because she writes the popular and long-lived column called, "Diagnosis" in the New York Times magazine, which is must go, must
+do reading by all of us. Really explicating complex cases and how to think about
+this for the lay public. That series ultimately turned into or was an inspiration
+for the TV show "House," which also demonstrated what
+great diagnosis looked like, but also a dysfunctional human
+being, which leaves us not. And she's also helped create
+the documentary series, "Diagnosis," which is on Netflix. Her most recent book is called, "Diagnosis: Solving the Most
+Baffling Medical Mysteries," which is a collection of
+her New York Times column. So we're grateful to you, Lisa, for coming and spending some time with us. So grateful to Gurpreet, grateful
+to our master clinicians. And Lisa's talk today is
+on medical documentation in the electronic health record age, and we look forward to hearing it. Lisa. (audience applauding) - Thank you for a generous, really generous and
+beautiful introduction. I just wish my mom was here. It's really great to be here, especially after all this isolation. It's been an amazing visit so far. I've met so many fascinating people and I've stolen as much
+as I could from them, but I plan to steal more. It's also exciting to be
+speaking at Grand Rounds that's named after my good
+friend, Gurpreet Dhaliwal. He's been an inspiration to
+me since the day I met him, and I'm honored to talk
+to you under his aegis. It's also great speaking here at the home of some of the solutions to the problems that I'm gonna address in this talk. I'm gonna talk about the
+electronic medical record and how it has changed the way we do some of the most important
+things we do in medicine, specifically how we
+communicate, how we write notes. But first, is there anybody
+here who has worked in a system before electronic medical record came? Well. (laughs) Okay, well that's in a surprise. Okay, somebody younger. But you know, for most of you, you've spent your careers
+in this EMR world. And let me just say that
+although there are things that need to be improved,
+this world is better. The EMR has made medicine better. Oh, oh, I finally got that. Sorry. If you've ever watched
+those old doctor shows, I mean really old, not House,
+Dr. Kildare, Marcus Wellby, you'll know that we used to
+keep track of our patients on little pieces of paper that we stuck into charts like this and held together with these
+very, very flimsy metal clips. We keep the language and
+even the image in Epic. You know, when you chart somebody, it shows a little teeny weeny chart, little paper folder icons that represent what
+charts used to look like. But this is the real thing, thousands and thousands of
+pages containing problemless and test results and
+lots and lots of notes. They were usually held together by these little metal clamps. These things were so frustrating. Charts would get misplaced. You'd have to see a patient and you didn't know anything about them. You'd have to then write a note that would be, God knows how, gotten back into the chart
+whenever it was found. It was just a horror. The charts would last
+the patient's lifetime. Sick patients might have dozens of charts, all stuffed with papers more
+or less held into place. Pages would be lost, entire
+volumes would be lost, and don't get me started
+on the handwriting. Let me just say doctor's bad handwriting is absolutely legendary. And I think that when it was first, when it was just used
+to write prescriptions, it kind of made sense. You know, we didn't have
+very, when this was the case, we didn't have very many things to offer and so scribbling it totally made sense. But then when we started
+to write notes, oi, I spent so many hours trying
+to decipher handwriting. In hospitals, the
+consultants or attendings would come by and scribble their notes, and of course it was up to the house staff to actually turn those into orders and we'd had to have to figure it out. The unit clerks were our secret weapons, but if they couldn't read
+it, you were in big trouble. And sometimes you'd actually
+have to call the doctor and say, can't say, "Boy, your handwriting was so
+terrible I couldn't read it." You would've to come up with some reason that you were calling. So nobody wants to go back to that. Certainly I don't. EMRs have made possible things that were absolutely
+unthinkable before we had them. We can check our own quality of care. We can find out how our internal medicine
+patients with diabetes, which ones of them have
+A1Cs that are at goal. We can implement a
+change and then recheck. That kind of data was
+inconceivable before the EMR. We can get a better understanding not only of our patients,
+but our communities. That's exciting and valuable. But our fundamental job
+is taking care of patients when they're sick and come to see us. And right now, there
+are aspects of the EMR that are just not helping,
+they're actually hurting. So in the next 40 minutes or
+so, I'm gonna do a few things. First, I wanna tell you a little bit about where I'm coming from, although Bob's done a really
+great job of doing this and why this matters to me. And although I hope by
+the end of this talk that this will also matter to you. Then I'd like to spend a
+little time with what we have, a little of the time we have together taking you back to the origins of the medical notes that we write and what happened to it
+when what should have been, the greatest thing in the
+world happened in medicine, the development of the
+tool that gave us access to the full picture of
+the patient, the EMR, and look at how it has affected the note. Spoiler alert, I think the EMR has impaired our storytelling
+ability in medicine. And finally, I'd like to
+focus on maybe, maybe, how we can get it all back. So here's one thing I
+didn't know about medicine. I didn't know a lot of
+things about medicine even though I covered it for many years when I was in the media. But when I started at Yale in 1992, I didn't know about the
+essence of diagnosis. What drew me to medicine
+was its narrative structure. What I loved about medicine
+was the stories we tell. Most of our communications
+are in the form of stories. That's how we teach everything. That's how we talk about
+things, usually patient stories. And I'm actually violating
+sort of an unwritten rule in Grand Rounds 'cause I'm
+not telling a patient's story. And there won't be any patient
+stories at all in this talk, because I'm focused on the
+doctor's story about the patient. Here's another thing you
+didn't know about me. I almost went into urology. Yeah, the simplicity,
+the beauty of the anatomy just spoke to me. And of course I had a very
+charismatic attending. That's how all of our specialty
+choices I think are driven. So for my first clerkships,
+I was totally set. I was gonna bully my way
+through general surgery and become one of the first
+few female urologists. But then I did my
+internal medicine rotation and everything changed. I went to this meeting I'd never heard of called Morning Report and my dreams of the OR just disappeared. I fell in love with the
+practice of using this story to solve a mystery. I was hooked on the H&P. So I write a column for
+the New York Times magazine called "Diagnosis." This is my first column. It was published in September of 2002. I started writing it just after
+my year as a chief resident. An acquaintance of mine
+called me and and asked me and all the other doctors
+he knew and asked me, "What can doctors write?" And I'm like, "Oh my God,
+we write the best story and we write it a dozen times a day. It's so fabulous." And it was a little detective story, and this is what I sold
+to the New York Times. And it took some doing, but I finally persuaded them
+to let me tell that story. So I base my column on the H&P. I love the structure, I love the fact that the story was presented
+in the same way every time so that you can anticipate and recall when a case was presented verbally. I'm still writing that column. This is my column that
+just got put up yesterday or the day before. And I tell the story in
+a lot of different ways. "House" was one way. This was another way. This is a series I did for Netflix. That visit to morning report
+has shaped my entire career in medicine and in media and it's driving my interest
+in the medical note. Like every new generation, I thought that the way I found medicine when I arrived in 1992, it
+had always been this way. You might say, as I once thought, that the notes structures used,
+the H&P and the SOAP notes, that their reflections of how we think. And because of that, you might
+think that these traditions evolved out of our work sort of naturally. That's what I assumed. And so I was shocked to find out that these structures that we used, the structures that
+define the stories we tell were invented by one guy. His name was Lawrence L. Weed. Here he is. You can see that. Look at that computer. (laughs) That's all I gotta say. That's how old this photograph looks. And although the note looks as if it were a reflection
+of our thinking, what Weed would say is
+that we have it backwards. In a wonderful Grand Rounds that you can still see on YouTube, Weed tells us, "The practice of medicine is the way you handle the
+data and think with it. But it is the way you handle that data that determines the way you think, not the other way around." In the 1950s and 60s, Weed was
+mostly a research scientist on the faculty of several
+academic medical centers. And like almost all research
+scientists at the time and now, he was required to attend on the wards a couple of months a year. And he was actually shocked by the way doctors documented their, what he considered applied science, both in the hospital and in their offices. So here's a sample note he features in his talks and in his books. Let me just say, looking at this handwriting
+gives me a little PTSD. But there's a little system to this setup. You can see that there's a
+date and the blood pressure, the heart rate and the
+weight over here on the left. And maybe that's a med
+list over on the right. Those scratchings in the
+middle, is that a plan? Did he have constipation? You can see that maybe milk
+of magnesia is at the top. I can't read the next one, but the third on that list is Dulcolax, and lastly, Fleets enema. Not surprisingly, two days
+later when he comes back, he has diarrhea. I think that scribble is the plan. A month later, he feels pretty good. So this tells you the little story, but it doesn't tell you anything
+about who this patient is and what his problems
+are, what his issues are. And it wasn't just the outpatient notes, Weed was kind enough to turn
+this into typewritten text so it could be read. But let's just focus on the top two notes. Patients received, oh,
+I can't read it here. Patient received 40 units
+of regular insulin yesterday because of a blood sugar
+of 44 urine sugars. Got 2000 of Amgen
+yesterday, blah, blah blah. Oh here, you can read it
+a little bit better there. So it's still, you have no
+idea of who this guy is, I assume it's a guy, why
+he's in the hospital. Presumably it's for his diabetes, but we don't know anything else about him. At the end of the month, this
+physician rotated off service and a new doctor took over
+and here are his notes. So these are notes that spoke to Weed. He thought this was a way of doing it. And you see that he starts off with, it's a problem-based list
+and it's very systematic and it tells you the essentials that you need to know to
+care for this patient. This is the same patient. Weed responded to this
+as any scientist might. He says, "A double standard exists. We invoke discipline when
+we prepare the manuscripts concerning laboratory resource. And yet we abandon discipline when we write the final
+progress note such as these on the care of the patient. And because of that, the
+care itself may suffer. But we can help students systematize their clinical experience by means of their clinical records. We can demand that they present
+the data they accumulate on each problem in a
+consistent well organized form, clearly delineated." He was totally right. And out of this observation came two of our most precious stories, the H&P, which is an adaptation of what he calls the
+problem-oriented medical record, and the SOAP note. Armed with these two structures, he became a one-man advocacy army. He helped set up two outpatient practices that implemented the
+systematic documentation. And the two doctors he recruited set out to convert the
+world and they succeeded. His two-part series published
+in the New England Journal in March of 1968 remains one
+of the most cited references in medicine. And acceptance was amazingly
+widespread and fast. And even though there were problems, documentation was clearly
+better AL, after Larry, than it was before. And that's where things stood
+when I started my residency and became an attending. Paper charts had their frustrations, but there was nothing
+else until there was. the first EMR was developed in 1972 by the Regenstrief Institute in Indiana. It was welcomed as a major
+advance in medical practice, but nobody bought it. It was very pricey and cost
+was, it was unthinkable until Barack Obama pushed
+the American Recovery and Reinvestment Act of 2009, which offered incentives
+to implementing the EMR. Now there are many, many
+versions of the EMR, but currently Epic is by
+far the most widely used. Epic says that 78% of the
+patients in the United States have medical records in Epic. EMR, as it was rolled out, was so much better than these old charts. It had many features
+that improved our notes. Templates for notes reminded us of stuff that needed to be documented and reinforce the order
+they were presented at. And we didn't have to
+wrestle with bad handwriting. Results and notes were never lost and the patient's data was
+right there ready to be viewed. It should have been
+perfect, but it wasn't, because around the same time, charting and billing became
+linked and complicated. Starting in the 1990s, CMS asked doctors to
+justify their billing codes by itemizing a certain
+number of components primarily of the history of the exam in medical decision making. These are the cards that
+everyone carried, oh sorry, everyone carried all the time. So if you wanted to give a,
+this is for a new patient, if you wanted to give a certain code, you had to have this many
+components of the HPI, this many systems, review of systems, this many past medical family
+history, physical exam. You had to have all those, even if the patient didn't actually need to have those things documented. And so when the multimillion
+dollar investments in the EMR was made, many hospitals
+and other health systems wanted to make sure
+they could bill a visit at the highest and best level. They were paying the EMR's bills, so naturally they got what they wanted. So for the first 11 to 12
+years of the EMR's life from 2009 until very recently, doctors felt pressure to
+add elements to their notes that related not to the
+patient but to the biller. So, one result of this agreement between EMR builders and buyers was that we ended up with
+a bunch of templated notes that often, often seem to ask doctors to either lie or spend time unlying, undoing the lies the EMR was
+ready to tell on your behalf. There were all these built
+in efficiency components, the review of systems so that
+with one click of a button, you could document the 12-point
+review of systems you did. Really? You really did a 12-point
+review of systems? If you did a more thoughtful and patient appropriate review of systems, you had to either type it out old school or go through the shortcut
+and unclick the boxes that weren't true. A third possibility, and we
+all know that this happened, we could just turn a
+blind eye to the untruths and keep going. This, of course, was
+the most efficient way. And then there was a physical exam. With a touch of a button or two, you could have a full physical
+exam added to your notes. But did you really do all that? The lungs were clear to
+auscultation and percussion? Really? (audience laughs) Did you really do full narrow exam. As an attending in reviewing the notes written by interns on the team, there were times when I suspected that not everything in the note was true. And that was unsettling even worse, there were times when I
+was absolutely certain it wasn't true. A couple of years ago I had
+a patient with scrotal edema. A couple of days of Lasix fixed that, but he had other problems. But every day in the intern's note, he had himself in the patient's room documenting scrotal edema. Thankfully he did note that
+the scrotal edema had resolved, but I was pretty sure that the intern was not examining this guy's scrotum. Or if he was, he shouldn't
+have been using templated exams or even worse, cut and paste exams seems to make accuracy a time sink. It makes it harder for
+clinicians and trainees to modify their exam based
+on the clinical course. Sure, you do a full exam on the first day of a patient's time in the hospital. But if you're still doing
+100% exam on day four or five, I'm gonna wonder if you're
+really paying attention, because your exam should
+be clinically driven based on the diagnosis and the patient's concerns and reports. The other possibility, of course, is that you are not
+really doing everything said in the note, that you're lying. Well, it's the copy forward lie. It's not really a lie. The dot phrase lie, it's not really a lie. So the first phase of EMR note writing, both in the hospital in
+the outpatient setting, fostered two important and I
+would say damaging changes. First, as I said, it encouraged
+doctors to document stuff that had nothing to do with
+what they knew about the patient or what had happened to the patient the day before or overnight
+or even what you were planning to do for the patient that day. So what is all the
+extra stuff doing there? It's such a pervasive problem. We have a name for it,
+of course, note bloat. There have been dozens of
+articles about not bloat and what to do about it pretty since the first
+day the EMR was adopted. The other problem is a
+little more insidious and a little more destructive. Far too often, we wonder
+how much of what we read is actually true. In a recent article on note bloat, one doctor acknowledged that. Let's see. "Everybody knows which doctor's notes can or can't be trusted." I think a lot of us feel that way. I got involved in redesigning the note at my hospital a few years ago after a really disturbing conversation I had with a wonderful
+attending that I admire greatly. He'd been one of my attendings
+when I was a trainee who's a wonderful teacher
+and a fantastic mentor. We were attending together and I was complaining
+about my intern's notes. They were copy forwarded. You know what copy forward is, where you take yesterday's note, put it in as if, change the
+date and it's today's note. And then you go through to make sure that you can't get caught
+in any of that inaccuracies. So we were attending together
+and I was complaining about my intern's copy forwarded notes, which were way too long
+and not that interesting. He looked at me and he was
+kind of surprised and he said, "You read them? I haven't read them for years." He said, "If the intern can't
+be bothered to write his note, I certainly cannot be bothered to read it. And how much of it is real anyway?" I have to say, this was so
+uncharacteristic of this guy. I mean, I was shocked beyond words. I know he was tired and that's
+why he sounded so cranky. But beyond that, the interns
+who spend so much of their time writing these notes to have
+their work completely ignored, I found that shocking,
+ignored and doubted. But I also realized that I
+felt the same way he did, more or less. He wasn't reading the intern's notes and he wasn't telling them that he wasn't and he wasn't telling them why he wasn't. I was reading the notes, but I also was not telling the intern how disappointed I was, how unsatisfying and how unreliable it is. I wasn't discussing it with them either. And I worried, are they gonna
+graduate from their residency and try to manage in the world of care with these terrible notes? After that conversation, I realized that I
+couldn't do that anymore. And I'll tell you about what
+I did about that in a minute. But first, there's still
+the issue of note bloat. I'm sure I don't have
+to convince anyone here that note bloat is real
+and that it is a problem. But there is now data documenting
+how much of it there is and what a big problem it is. So let me share some of that with you. I love this line. I don't know Alan Butler. He's the head of Epic, but he said, "Doctors are writing the
+equivalent of 'War and Peace' every nine months." That is war and peace. That's a lot. The average US note is
+over 6,000 characters long. That's about 1200 words. And depending on how many spaces, that is just under five
+double space pages of text. According to Butler's, "Doctors are writing the
+equivalent of War and Peace." Is all that really necessary? Doctors outside the US don't think so. Outside the US, specialist
+notes, and let me just say, as bad as internists are, the
+specialists are so much worse. But outside the US, the specialist notes a
+average 1200 characters, 1/5 the length of ours, and it
+hasn't always been this way. A group of doctors and researchers at the Oregon Health
+and Sciences University reviewed 2.7 million notes
+written by 6,200 doctors across 46 specialties over
+the course of 10 years, from 2009 until 2018. Over that period of time, they found that the median
+note length increased 60% from a median of 401 words
+in 2009 to 642 words in 2018. Median note redundancy, which they define as proportion of text identical in one note to
+the patient's last note, increased from 11% from 47.9
+in 2009 to 58.8 in 2018. And in 2018, when the source of the
+text could be identified, just 29% of the notes, let's see, yeah, just 29% of the notes was written directly and 70% was copy and pasted or copy forwarded or templated text. Not surprisingly, the more templated or
+copied texts there was, the longer and more redundant the note. These researchers calculated
+that for every 1% increase in the proportion of
+copied or templated text, it was associated with a
+1.5 increase in note length. Doesn't really matter if a
+note is long and repetitive. Of course the writer in
+me thinks that it does and the doctor in me is in full agreement. Making people work to find out what's going on with your
+patient cannot be helpful, and there's some evidence
+that this is true. In one study, 20 intensivists reviewed patient data in
+the conventional format and then using a format that only included salient information. When using the conventional, that is the wordy redundant note, physicians made four times
+as many errors per subject and took approximately twice
+as long to complete task when compared to those
+using streamlined notes. Another study showed that physicians using the conventional format had to view more than 2/3 of the information
+in the note more than once, had to reread most of
+the note more than once compared to just 17% of the information presented in a streamlined format. It took longer to read, and this was surprising to my residents, and longer to write. Studies comparing conventional notes with all their copy forwarding
+and templated time savers compared with a streamlined note format with an emphasis on pertinent data that showed that streamlined
+notes were 25%, sorry, were 25% shorter and were
+signed 1.3 hours earlier. And we all know, and there's
+now studies to show this, that the later A note
+is put into the chart, the less likely it is that
+anyone will ever see it. So that whole work that interns are doing, gone, doesn't matter. So using templated or a
+template that encourages writers to include only important
+data and actually type it in, communicate the data better, they're faster, they're shorter,
+and you get out earlier. So after my shocking
+conversation with my mentor, I decided to do something about the notes that our interns were writing. I started working with
+one of the residents who I knew was interested in this and we developed a new template. Let's see. Maybe this is it. Nope. Oh, this is important. Does it matter? Well, actually, there was just a lawsuit that was resolved last year, where one urgent care center
+had to pay two million dollars for fraud. And the Department of Justice
+in their press release said that, "Documentation
+should be medically necessary to the patient's complaint, and that performing a full
+review of the patient's history and a comprehensive examination may not be clinically relevant
+nor medically necessary." So they thought that some
+of the over documentation that they saw was actually fraud and it cost that company
+two million dollars. So this is the template
+that we came up with. There's no imported data. All those three asterisks. I don't know if you use Epic or not. I think you do. You have to write it in yourself. So there's not a lot
+to see in this template because nothing's imported. It's all has to be written in. And it's just there to remind
+you of what needs to be. This is the H&P. Here's the progress note. In my institution, at least at the time, how to write notes and
+how to present these in the verbal version of the note were taught to the interns
+by their residents. We didn't have a class in note writing. And of course the residents that were teaching our new interns were taught by their
+residents and it goes back. And so all of these residents, their notes went back to the
+time when billing was linked to how many stupid
+pieces of data you put in and not linked to the
+actual patient itself. So most of these, most of the templates, most of the bad templates
+are filled with data that is automatically pulled in. Or when you look at, when you go to Epic and
+choose one of theirs, they're filled with data that
+is automatically pulled in or they make it easy to
+automatically pull in data sets. Not single pieces of data,
+but whole collections of data. What this requires is
+that you choose the data that you put in and that's been shown to
+improve the note quality and also I think the thought quality. When you spend your entire
+note writing experience trying to catch the errors
+from yesterday's note that you've brought forward, you're not thinking about the patient, you're not thinking
+about the patient today, you're thinking about how you
+can keep from looking foolish. That's a very different set of
+thoughts that you're having. So I presented these
+just as notes templates and added them to the Epic file and there was zero uptake. Zero. And that's when we decided that we had to take over teaching it, because clearly just having it available was not enough to overcome
+a culture that said, "I'm doing it the way my
+resident tells me to do it, because that's worked for him
+and that's gonna work for me." So we started teaching interns
+a class on note writing. And we had a couple of different classes, every intern got it. And that was two years ago
+and it's making a difference. It's making a difference. You know, the great thing about residency is once something
+succeeds for three years, and I don't think we're quite there yet. Well, maybe we have a 50 or 60% uptake, but once something is
+there for three years, thus it has always been, right? So if we can just keep moving it along, I think we're gonna win, but that's cause we're in
+a really small hospital. I mean, I'm part of
+Yale New Haven Hospital, but we're in a community hospital. This primary care residency program, we have only a few residents. So we're gonna get it through here and then we're gonna say,
+"This is the YPC way, the Yale primary care
+way of doing things." And try to make it a source of pride and then we'll try to
+take on the other program. The H&P I think was
+pretty well understood, what it's there for and why
+all these things existed. But the SOAP note, the progress note, that's where a lot of the lack
+of understanding came from. Like, what is the point
+of a progress note? Well, of course the point
+is that it's a snapshot of a patient at a single moment. That moment when you
+examine them that morning at 6:30 in the morning
+before your before rounds, it's a snapshot of then. And every minute it stays
+out of the chart after that, it's getting staler and
+staler by the second. So when you hold onto your note as I did until three in the afternoon
+and stick it in the chart then thinking that now I've really
+told the story of the patient, you've just wasted all of that time. It's sad, but it took me, I
+didn't know, nobody told me. And so we make sure that our interns know that the purpose of the
+SOAP is to be a snapshot of the patient as they were that morning. So some of the interns are concerned that the real problem with the SOAP note is that it only covers what
+happens since the last note. I think that's a good thing, because we have all seen
+notes where everything, including this kitchen
+sink, is in that note. Every lab, every sodium, every
+piece of radiology ever done, it's all in there and you can't
+figure out what's important. And if you can't figure
+out what's important, that means that somebody,
+namely that intern, is not thinking about what's important, because these notes are how we think. And if you're not writing a note that shows what you're thinking, you're not, possibly, you're
+not actually thinking. There are other programs that
+are doing the same thing. This is an NYU Langone progress note. They did a study showing
+that using this template made notes better, shorter
+and higher quality. The hospitalists have the
+biggest issue with this, because they often pick up a patient deep into the hospital stay, and they feel like they
+don't really have time to review the whole chart. Is that a problem with the note? I mean, really? Is that a problem with the note? I don't think so. I think that's a problem with a system that moves doctors around like so many pieces of on a checker board, dropping doctors in as if we
+were completely interchangeable and had the borg mind. I'm not in charge of that, so I do think we have to
+accommodate the system as we find it and we're
+still trying to figure out how to accommodate that, but I hope it won't be in the SOAP note. The other issue that's
+come up time and time again is the sense that the note had
+to contain certain elements that had nothing to do with patient care and everything to do with billing, and that is no longer the case. Starting in the 1990s, oh,
+let's see, I forgot something. I'm just gonna skip that. Starting in the 1990s, MSS did ask doctors to bill based on the number of required
+components in the note, but that was completely
+discontinued in 2021, and this is what you have to do here. The history that you include,
+medically appropriate. The exam, medically appropriate, they have more definitions
+of these things, but the overriding idea
+is that if it's important to how you thought about the patient. If it was important to
+how you see the patient and where the patient's gonna
+go and what they're gonna do, it belongs in there. If it doesn't, it doesn't belong in there. We've really just started to try to change the medical note at my institution. I'm located as small community hospital. Last year, I saw some buy-in on the note and this year even more. The great thing about it, residency, is that it will become history once you get it passed a certain number. If all goes well with this rollout, I'm gonna focus next year
+on the outpatient note. I'm working with one of
+the chief residents now. I'm learning one of Epic's
+best bell and whistle offering. It's what's called problem-based charting. I don't know if if y'all do that here. I know Larry Reed would appreciate that, because it's really his
+problem-oriented medical record designed for the outpatient world, but that is sourced for next year's dish. This year, we're still focused
+on getting inpatient charting up to snuff, the great promise. So there's some new
+possibilities helping us to chart beyond these templates. Some of it scary and some
+of it is kind of exciting. So Doximity has incorporated
+GPT in making notes, and you can see note template
+for internal medicine and you just put in the medical problem and the patient's age and
+some basic information and it will generate a note
+for you and it's scary. Just makes it up. And you know, GPT turns out they're
+good at making stuff up. This I thought was a little
+bit more interesting. So now what people do is
+that they have scribes who take notes based on
+what happens in the room, but it does seem kind of
+silly or at least strange to augment our EMR by
+bringing in an actual human to do the actual work. So this company and other
+companies are doing this. (bright upbeat music) Clinical notes that write themselves. (bright upbeat music) Clinic notes that write
+themselves, really? I mean maybe at least with this, there's a transcript of
+what actually happened and the note is formatted from the data that actually exists. So maybe that's gonna help us. Maybe. I'm kind of a Luddite, I guess, when it comes to things like this. The great promise of the EMR would be that it at
+least had the potential to tell us all about a patient. It's all right there,
+just a few clicks away. And really, that is
+such a tremendous gift. But we have to learn how to
+manage all that availability so that it works for and for
+the patients we care for. So let me let Larry
+Weed have the last word. He said, "In the beginning,
+the clinical clerk, the new intern and the
+practicing physician are confronted with an
+apparent contradiction. Each is asked as a whole
+physician to accept the obligation of meeting many problems simultaneously and yet to give each the
+single-minded attention that is fundamental to developing and mobilizing his or
+her enthusiasm and skill, for these two virtues do not arise except where an organized concentration upon a particular subject is possible." That's the goal. Thanks very much. Questions? (audience applauding) - I will use this one. Let's see. Thank you, Lisa. That was terrific. I think you implied this
+in your last statement, but it strikes me that the
+note is almost an impossibility because there are so many masters. And in some ways I'd love to hear you think a little bit more
+about who and what is it for. Do you can imagine, it's for you to remember
+what happened the next day, your colleagues to see what's going on, malpractice prophylaxis,
+billing, quality measurement. Is that part of the problem? It's got so many different
+parties who have different lenses that makes it almost impossible to come up with a coherent way of organizing it. - I don't think it's impossible. I don't think it's impossible. I do think that there
+are lots of functions, but I think the most important function, especially in a residency program, is to help residents
+and doctors, in general, think about their patient. The purpose of the note is to
+help you think about a patient and formulate your ideas so
+that you can move forward with the plan for the
+day and the next day. And I think that a good note will tell the story of
+a hospital stay far. I get, because I write my column, it used to be every two weeks, thank God now it's just once a month, and I would see notes
+from all over the country. And there were so many times when I would look through a
+big stack of charts or notes and have no idea what was going on, that it was just not clear
+what the thinking was, what the plan was, it
+was just data everywhere. That doesn't help anybody. I think that all of those
+markets for this note would be improved if the
+note had a clear function, which was for the progress
+note to tell what happened since the last time I wrote this note, since the last note was written and what we're gonna do today. That's the purpose of it. And I think if it actually
+lived up to that purpose, that would satisfy everybody. - [Bob] Yes. One more
+and then I'll open it up. And by the way, that I think you missed what to me was the most memorable
+part of the paper chart, which was you pick it up sometimes and a post-it note would
+flutter out to the floor, remember those? Oh my God, there was something
+crucial on that post-it note that was actually stuck in the chart. - And you don't have any
+idea what page it was on. - [Bob] What page was on
+whose, whose chart it was, Just kinda stuck it back on some chart. You made the point, I
+think quite legitimately that we may be entering an era where the doctor and
+patient has a conversation and that ends up becoming a note and the technology obviously
+is getting better very quickly. As I kind of process one of your points, which is the note as a thought provoker, the opportunity for you to take a break, slow down, think about what's going on, and then consolidate
+that and articulate it. Can you think of ways that the computer could actually help us do that more than simply documentation? And I'm thinking about a future world where the computer suggests to us this, what you've told me or what you
+and the patient talked about is compatible with these five
+diagnoses or other things. What do you see as the
+benefits and downsides of the computer providing actually more real decision support as opposed to just documentation? - I think that would be fantastic,, because of course, you know, when I used to talk a lot
+about diagnostic error and diagnostic excellence. And I would say to people,
+you know, we have solutions, read more or use Isabel, but
+of course nobody does that. Nobody does it. - [Bob] Gurpreet does that,
+but I think he's the only one. - He is the only one. And that's why, you know, that's why this is a
+lecture named after him. - [Bob] Yeah. - So I mean I think that
+the computer can help us. I mean they could prompt us. Do you have a new sodium? You know, has the patient
+had an x-ray of their hip? You know, I mean I think
+that they could prompt us to think about the things
+that this computer, who already sort of knows
+sort of the algorithm that we're working with, can prompt us. And I think also suggesting
+possible diagnoses. That's why I wanted people
+to look up things in Isabel. That's why I subscribe to Isabel. I would've subscribe to something else if I thought there was anything better. But I think that having
+a computer do it for us, because of course you have
+to stop what you're doing and think, wait, do I have
+any other, do I have any? What's the level of uncertainty I have when I have only, you
+know, 20 more minutes? - [Bob] Right. That's the goal, that you actually don't
+have to think about that or enter It some other place, that it would come to you on
+your epic screen and make- - And prompt you. Yes, help you think it out. - [Bob] So you would
+like that if that helps. - I think so. Although, you know, I kinda
+hate computers, but, you know. - [Bob] All right. Let's open it to any
+questions or comments. Yeah. And Peter, say who you are. - [Peter] Hi, Pete. Oh, as I step all over my food, Peter Barish, hospitalist. Bob, I think I'm stealing
+this from one of your talks about the EMR probably, but it strikes me that
+despite all of the advances in sort of documentation in
+the EMR, that we really are, we have really just scanned
+something that used to be paper and put it in the computer. And that is a pretty limited way of looking at medical documentation. And you could imagine, I mean, so many other ways that, you know, we might document rather than
+really just writing something, scanning and putting it in
+there and that's today's note. I'm wondering at, you know, if anyone else is doing
+this in a different way that's like radically different from the way that we're
+thinking about notes that might, you know, make it so that the daily progress note could be more like a neurosurgery
+note where it's just like, no surgery today, maybe surgery tomorrow. You know, and that's
+what, to a certain extent, what you need to know, right? It's like, is a patient
+going to the OR today? Like, nope, you know, this
+is, we're getting these labs, but then maybe some of the
+medical decision making and thinking is somewhere else. - You know, I don't know if you- - [Bob] Never heard of an internist argued that our notes should look more
+like a neurosurgery now so. - Never, never. And in fact, there's one study that looked at not
+neurosurgery, but ophthalmology. When they were finished learning about how to make a better progress note, their notes were longer. Still not as long as an internal
+medicine note, but longer. So I'm not sure that that's
+really what we need to know. I mean, what we need
+to know about patients is so complicated. You know, there's a lot of things that we need to know about patients and I'm just not sure that
+one line's gonna do it. On the other hand, writing
+a volume doesn't make sense. I mean, when we had hand cramps from writing, you know, notes in charts, it helped us get our minds
+around what needed to be said. And maybe if we could
+please just get it cramped whenever we went over,
+you know, 2,000 words. - [Bob] It could shock
+you, yeah, but it is. (all laughs) - I like it. - [Bob] One of my co-residents, his ideal note was feeling
+well and doing swell. (all laughing) But I think Peter's
+question sort of implies, I'll extend it a little
+bit, that the note, even into your idealized world, is still a piece of paper under a tab. And when we look at
+documentation in our new world, if you were building the note today, you would use us your
+inspiration of a Facebook wall or a Twitter feed or a Wikipedia share, collaborative note or Google docs, if it would have audio, it'd have video, it'd be much richer than a
+piece of paper under a tab. So can you? - You are so right. That is such a great idea. - All right. There we go.
+- I don't see that? - I love that idea. Let's do that. - [Bob] Yeah. Okay, let's do it. Rebecca, say who you are. - [Rebecca] Hi, I'm Rebecca Berman. I'm the medicine residency
+program director. Thanks for this talk. I'm sure how staff are thrilled to hear that shorter notes are better
+and I couldn't agree more. I'm thinking about the
+purpose of the note. Like Epic is a billing system and there's a lot, a lot of clicks in it, so it sort of encourages everyone
+to add more to their note. Has there been thought
+in working backwards from what we actually need
+in a discharge summary. Like as a PCP I need
+to know the Lasix dose and their dry weight
+and really nothing else. And so is there a way to sort
+of use what we need at the end to help people figure out
+what to include in the middle? - That's a really interesting question. I don't know. You know, I think that, you know, in our system and probably here too, residents start on the discharge summary the day the patient is admitted. So it's not like they're not thinking about the day of discharge,
+but it doesn't, you're right, it doesn't seem to have a lot
+of impact on what patients or what residents write
+about the patient that day. And in fact, if anything, the
+bad things about the SOAP note have now been transferred
+over to the discharge summary and we have all sorts of really
+terrible useless information in the discharge. Something that used to
+be clean and elegant and straightforward has
+now become lumpy. (laughs) - [Bob] In some ways, so and also asking for
+a customer centric note that actually, what does
+the consumer of this note actually need and work back
+in your design from that. That's an interesting idea. Rita, state who you are. - [Rita] Rita Redberg,
+cardiology and editor, JAMA Internal Medicine. Thanks for a great talk and insights. And I don't like computers either, but they're not going away. - They're not going away. - [Rita] But as we know and sort of building on what Rebecca said, a lot of the note I think is for billing, 'cause certainly it used to be that it was just to remind
+me, you know, what happened. And in my clinic notes, you know, I would always write things about the appearance of the patient, 'cause then I would
+remember exactly who it was or like what they. And now that we share everything and like, I'm so afraid of offending anyone. But, so in my ideal world this is, we get rid of FIFA service medicine, have everything capitated, and then we could have really
+short notes, so that's so. And, Eric, I know we were
+getting a lot of stuff at JAMA. I am of course on how ChatGPT
+can replace or help us with note taking someone
+from our own house staff, and I don't know if Eric's
+been looking at that. If you wanna comment on it. - [Eric] Hi, happy to talk. Good to see you, Lisa. Yeah, I'm Eds, real fellow
+with Rita, Jim, I am. We met some years ago. I used to be at Penn. I founded that writing
+group, the Go Wannabes. We all came to your house once. Jack had just started on
+civil I think, so it's yeah, it's a while ago.
+- Oh my god. - Wow. Okay.
+- Yeah. That's my husband and fabulous podcast
+- Yeah, Jack hit. called "Uncivil." But there's more
+- Fantastic Audio turns. you've never heard about. - [Eric] Really would recommend it. So, good to see you again. As far as ChatGPT, I guess the thing that was interesting about that aid, that's whatever that was called, the dictation aid is that, you know, it's sort of effortless for
+ChatGPT to like pull that, those kind of features
+out of transcriptions and then kind of put them into a summary. The challenges these things
+called hallucinations in which the the ChatGPT software, 'cause it basically just
+guesses sequentially words, will invent just facts
+about the patient's case that actually don't
+appear in the transcript because those are
+probabilistically featured in other similar cases. We're about to publish
+something, I think that's fine, we're about to publish
+something that basically shows that patients age and in some cases gender at the most common hallucination. So you may chat with a patient,
+I don't often say hello, 33 year old male or something, but in your transcript something
+like that might come up. Other than that, sorry, briefly,
+three unrelated comments, just sort of from the
+field of being a resident. One, I'd be interested in
+the history of the handoff, especially as more programs
+switched to day night, residents tend to communicate really outside the medical record
+and your comments about it being a way of organizing thinking I think is really interesting. But as a tool to truly
+communicate between providers, there's a sort of like a black market of information exchange,
+which is now featured in Epic, which is basically a series of boxes. - Like the sign outs. - [Eric] Yes, sign outs
+and they are sloppy. It is hyphens with events of the day, whether or not a consultant
+saw them, medication changes, it's just sort of this
+hodgepodge of information and then boxed to dos like things to do. So it's sort of just a
+hyphen post and the something and then box future tense. - To me, that seems like a perfect note. If all those things
+were in the right spot, that's all you really need, 'cause that's what the note
+is for, is to communicate. Here's where we are right now. Here's what needs to get done. I don't think that that's a hodgepodge. I think that's the real stuff. Just the stuff that matters. All the rest of that stuff. - [Bob] There you go. The whole note should just
+be the sign out there. (all laughs) Lisa, thank you so much. This is terrific. Thank you for visiting us. (audience applauding)

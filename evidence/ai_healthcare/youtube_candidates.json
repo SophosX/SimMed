@@ -1,0 +1,810 @@
+[
+  {
+    "video_id": "axWFgMdl2xo",
+    "title": "AI Happy Hour | Language Models in Medicine",
+    "channel": "Stanford AIMI",
+    "published": "2022-02-25",
+    "url": "https://www.youtube.com/watch?v=axWFgMdl2xo",
+    "queries": [
+      "Stanford healthcare AI clinical documentation ambient"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/axWFgMdl2xo_AI_Happy_Hour_Language_Models_in_Medicine.txt",
+    "key_themes": [
+      "ambient AI",
+      "patient-clinician relationship",
+      "equity"
+    ],
+    "use": "evidence",
+    "description_excerpt": "This live panel discussion is part of the AI Happy Hour series, brought to you by Stanford AIMI and friends. We cover hot topics in AI in medicine as well as live questions & comments from attendees. It's casual, insightful, and open to all!  Outline: 03:45 - Panel Introductions 07:18 - Contrast of NLP work in and out of medicine - domain specifici",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "73JkMKUAZ2M",
+    "title": "Mayo Clinic #MakingWaves: Artificial Intelligence Integration in ECG Interpretation",
+    "channel": "Anumana",
+    "published": "2022-09-01",
+    "url": "https://www.youtube.com/watch?v=73JkMKUAZ2M",
+    "queries": [
+      "Mayo Clinic generative AI clinical documentation"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/73JkMKUAZ2M_Mayo_Clinic_MakingWaves_Artificial_Intelligence_Integration_in_ECG_Int.txt",
+    "key_themes": [
+      "AI scribes",
+      "patient-clinician relationship"
+    ],
+    "use": "evidence",
+    "description_excerpt": "Electrical signals can inscribe valuable information about a patient. The world of ECG is evolving rapidly. Research from our partners at the Mayo Clinic documents 66 discrete labels — from various rhythms, conduction disturbances, ischemia, hypertrophy — obtained from a standard 12-lead electrocardiogram (ECG). In this #makingwaves episode from Ma",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "xUaxi40Bdsk",
+    "title": "Medical Documentation in the EHR Age",
+    "channel": "UCSF Department of Medicine",
+    "published": "2023-05-23",
+    "url": "https://www.youtube.com/watch?v=xUaxi40Bdsk",
+    "queries": [
+      "UCSF generative AI healthcare clinical documentation"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/xUaxi40Bdsk_Medical_Documentation_in_the_EHR_Age.txt",
+    "key_themes": [
+      "clinical documentation",
+      "patient-clinician relationship"
+    ],
+    "use": "evidence",
+    "description_excerpt": "From brief handwritten ditties to detailed electronic templates, medical notes have undergone a tremendous — albeit polarizing — evolution since the dawn of the electronic health record (EHR). Join us Thursday for an eye-opening discussion about the changes to medical documentation, the unexpected consequences, and the steps we can take to reclaim ",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "3OGpbWLQQbo",
+    "title": "Generative AI in Healthcare: Current and Future Applications",
+    "channel": "AHealthcareZ - Healthcare Finance Explained",
+    "published": "2023-06-11",
+    "url": "https://www.youtube.com/watch?v=3OGpbWLQQbo",
+    "queries": [
+      "Mayo Clinic ambient AI scribe",
+      "Mayo Clinic generative AI clinical documentation"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/3OGpbWLQQbo_Generative_AI_in_Healthcare_Current_and_Future_Applications.txt",
+    "key_themes": [
+      "ambient AI",
+      "AI scribes",
+      "patient-clinician relationship"
+    ],
+    "use": "evidence",
+    "description_excerpt": "Generative AI in Healthcare: Current and Future Applications.  Generative AI is the creation of text, audio, image or video content via software artificial intelligence.  Generative AI to create healthcare content has amazing current and future uses.  Here are 3 examples:  1.  Generative AI in combination with Ambient Voice Recognition and Natural ",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "IYwuDuFtQzc",
+    "title": "Mayo Clinic's 160+ AI Algorithms, AI Replacing Jobs?, Journal of Computers Informatics Nursing + AI",
+    "channel": "ComputerandCoin",
+    "published": "2023-07-13",
+    "url": "https://www.youtube.com/watch?v=IYwuDuFtQzc",
+    "queries": [
+      "Mayo Clinic generative AI clinical documentation"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/IYwuDuFtQzc_Mayo_Clinic_s_160_AI_Algorithms_AI_Replacing_Jobs_Journal_of_Computers.txt",
+    "key_themes": [
+      "clinician burnout"
+    ],
+    "use": "evidence",
+    "description_excerpt": "References: https://www.beckershospitalreview.com/innovation/mayo-clinic-created-160-ai-algorithms.html#:~:text=Rochester%2C%20Minn.%2Dbased%20Mayo,neurology%2C%20radiology%20and%20other%20specialties.  https://www.washingtonpost.com/opinions/2023/07/11/ai-health-care-revolution/  https://www.beckershospitalreview.com/innovation/physicians-who-use-",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "MQN3AABMIzU",
+    "title": "The future of AI in medicine and what it means for physicians and practices with Tom Lawry",
+    "channel": "American Medical Association (AMA)",
+    "published": "2023-07-25",
+    "url": "https://www.youtube.com/watch?v=MQN3AABMIzU",
+    "queries": [
+      "Eric Topol ambient AI scribe healthcare",
+      "AMA ambient AI scribe physician burnout",
+      "AMA AI medical scribe"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/MQN3AABMIzU_The_future_of_AI_in_medicine_and_what_it_means_for_physicians_and_prac.txt",
+    "key_themes": [
+      "ambient AI",
+      "AI scribes",
+      "clinician burnout",
+      "patient-clinician relationship"
+    ],
+    "use": "evidence",
+    "description_excerpt": "Leading AI transformation advisor and author of Hacking Health Care Tom Lawry joins to discuss what the future of AI in medicine looks like and what it means for physicians and their practices. American Medical Association CXO Todd Unger hosts.  🥼 Access the AMA Recovery Plan for America’s Physicians: https://bit.ly/AMA_RecoveryPlan  📖 Find Tom's b",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "ll5LY7wI_Xc",
+    "title": "Can AI Catch What Doctors Miss? | Eric Topol | TED",
+    "channel": "TED",
+    "published": "2023-12-09",
+    "url": "https://www.youtube.com/watch?v=ll5LY7wI_Xc",
+    "queries": [
+      "Eric Topol AI healthcare doctors podcast transcript"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/ll5LY7wI_Xc_Can_AI_Catch_What_Doctors_Miss_Eric_Topol_TED.txt",
+    "key_themes": [
+      "AI scribes",
+      "patient-clinician relationship"
+    ],
+    "use": "evidence",
+    "description_excerpt": "AI could propel the biggest transformation in the history of medicine, says physician-scientist Eric Topol. He explains how sophisticated AI models can interpret medical images as well or better than human experts can — and, beyond that, even pick up things that human eyes can't see. Learn all the ways AI is poised to make a difference for both pat",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "AKRSv4d1WJY",
+    "title": "4/11/24: Evaluating Clinical Applications of AI at Stanford Hospitals: Drs. Rob Gallo & April Liang",
+    "channel": "Stanford Division of Computational Medicine ",
+    "published": "2024-04-15",
+    "url": "https://www.youtube.com/watch?v=AKRSv4d1WJY",
+    "queries": [
+      "UCSF generative AI healthcare clinical documentation"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/AKRSv4d1WJY_4_11_24_Evaluating_Clinical_Applications_of_AI_at_Stanford_Hospitals_D.txt",
+    "key_themes": [
+      "clinical documentation",
+      "patient-clinician relationship",
+      "privacy",
+      "evaluation"
+    ],
+    "use": "evidence",
+    "description_excerpt": "Bio: Dr. Gallo is a medical informatics research fellow at the VA Palo Alto Health Care System’s Center for Innovation to Implementation and a post-doctoral scholar in the Stanford Department of Health Policy. He obtained his medical degree at Washington University School of Medicine, and subsequently completed his residency training in Internal Me",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "siWkMW_TYw4",
+    "title": "Nursing in the Era of AI- Stanford Medicine",
+    "channel": "Microsoft for Healthcare",
+    "published": "2024-08-15",
+    "url": "https://www.youtube.com/watch?v=siWkMW_TYw4",
+    "queries": [
+      "Stanford healthcare AI clinical documentation ambient"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/siWkMW_TYw4_Nursing_in_the_Era_of_AI-_Stanford_Medicine.txt",
+    "key_themes": [
+      "ambient AI",
+      "clinical documentation",
+      "workflow"
+    ],
+    "use": "evidence",
+    "description_excerpt": "Hear from Gretchen Brown, Chief Nursing Information Officer at Stanford Medicine and Darren Batara, Manager of Nursing Innovation and Informatics at Stanford Medicine as they shares insights on bringing value back to the nursing documentation workflow through ambient speech and AI.",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "Mg0w715mrAA",
+    "title": "BrainX Community Live! August 2024: Implementing Ambient AI Scribe in Healthcare",
+    "channel": "BrainX Community",
+    "published": "2024-08-25",
+    "url": "https://www.youtube.com/watch?v=Mg0w715mrAA",
+    "queries": [
+      "NEJM AI ambient scribe",
+      "NEJM AI clinical documentation ambient AI"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/Mg0w715mrAA_BrainX_Community_Live_August_2024_Implementing_Ambient_AI_Scribe_in_He.txt",
+    "key_themes": [
+      "ambient AI",
+      "AI scribes",
+      "clinical documentation"
+    ],
+    "use": "evidence",
+    "description_excerpt": "Theme: Implementing Ambient AI Scribe in Healthcare  https://brainxai.org/  Program description:  – Introduction  – “Study Analysis: Ambient Artificial Intelligence Scribes to Alleviate the Burden of Clinical Documentation.\" Ed Lee, MD, MPH, Chief Medical Officer,Nabla  – Q&A with Dr. Ed Lee  Related publication: Tierney, A. A., G. Gayre, B. Hoberm",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "GUJMyPFhvk4",
+    "title": "Generative AI-Powered Healthcare: The Future is Now",
+    "channel": "Google Cloud",
+    "published": "2024-08-30",
+    "url": "https://www.youtube.com/watch?v=GUJMyPFhvk4",
+    "queries": [
+      "Mayo Clinic generative AI clinical documentation"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/GUJMyPFhvk4_Generative_AI-Powered_Healthcare_The_Future_is_Now.txt",
+    "key_themes": [
+      "patient-clinician relationship"
+    ],
+    "use": "evidence",
+    "description_excerpt": "Learn more about Google Cloud's Generative AI solutions and enroll today! → https://goo.gle/genai-health  Step into the future of healthcare! Discover how generative AI is transforming the healthcare industry, empowering doctors, researchers, and professionals to achieve better outcomes for patients and providers. Through engaging videos, interacti",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "lFG8Fcf7HwM",
+    "title": "Opening Remarks | Artificial Intelligence: The Future of Medicine & Health Care Is Here",
+    "channel": "Stanford Health Care",
+    "published": "2024-09-17",
+    "url": "https://www.youtube.com/watch?v=lFG8Fcf7HwM",
+    "queries": [
+      "Stanford healthcare AI clinical documentation ambient"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/lFG8Fcf7HwM_Opening_Remarks_Artificial_Intelligence_The_Future_of_Medicine_Health_.txt",
+    "key_themes": [
+      "ambient AI",
+      "AI scribes",
+      "patient-clinician relationship"
+    ],
+    "use": "evidence",
+    "description_excerpt": "Speaker: Rick Shumway, MHA, President & CEO, Stanford Health Care Tri-Valley and Stanford Medicine Partners  In this session, Rick Shumway, the President and CEO of Stanford Health Care Tri-Valley and Stanford Medicine Partners, discusses the incredible potential and applications of Artificial Intelligence (AI) in the health care industry. He highl",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "6NkTRd0C6dU",
+    "title": "Ambient Voice Technology AI checklist for clinicians",
+    "channel": "eGPlearning",
+    "published": "2025-03-01",
+    "url": "https://www.youtube.com/watch?v=6NkTRd0C6dU",
+    "queries": [
+      "NHS ambient AI scribe"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/6NkTRd0C6dU_Ambient_Voice_Technology_AI_checklist_for_clinicians.txt",
+    "key_themes": [
+      "ambient AI",
+      "AI scribes",
+      "governance"
+    ],
+    "use": "evidence",
+    "description_excerpt": "THIS is your best guide to use Ambient SCRIBE AI (AVT) in healthcare➡️   Watch This Next ➡️ https://youtu.be/3PxVGTVAeFQ  Subscribe to our Podcast: https://link.chtbl.com/egplearning  Register for EPIC: https://bit.ly/EPICapply  Ways to Work with Us: contact me: https://www.linkedin.com/in/dr-hussain-gandhi/  Connect with me: https://bit.ly/m/eGPle",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "Xb8H52xtbSE",
+    "title": "Podcast | Dr. Keith Morse, Stanford Children's| AI Success Starts with Knowing Your Data & Workflows",
+    "channel": "The Big Unlock Podcast",
+    "published": "2025-04-29",
+    "url": "https://www.youtube.com/watch?v=Xb8H52xtbSE",
+    "queries": [
+      "Stanford healthcare AI clinical documentation ambient"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/Xb8H52xtbSE_Podcast_Dr._Keith_Morse_Stanford_Children_s_AI_Success_Starts_with_Kno.txt",
+    "key_themes": [
+      "ambient AI",
+      "clinical documentation",
+      "workflow",
+      "patient-clinician relationship"
+    ],
+    "use": "evidence",
+    "description_excerpt": "Full Episode - https://thebigunlock.com/2025/04/28/the-right-ai-use-case-starts-with-knowing-your-data-and-your-workflows/  In this episode, Keith Morse, MD, MBA Clinical Associate Professor of Pediatrics & Medical Director of Clinical Informatics – Enterprise AI of Stanford Children’s Health, shares how the organization is embracing tools like lar",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "20ZQqo9AYJA",
+    "title": "AI Scribes Saved 15,700 Hours – Here’s How!",
+    "channel": "Health AI Tidbits",
+    "published": "2025-05-13",
+    "url": "https://www.youtube.com/watch?v=20ZQqo9AYJA",
+    "queries": [
+      "NEJM AI ambient scribe",
+      "NEJM AI clinical documentation ambient AI"
+    ],
+    "transcript_available": true,
+    "transcript_source": "auto",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/20ZQqo9AYJA_AI_Scribes_Saved_15_700_Hours_Here_s_How_.txt",
+    "key_themes": [
+      "ambient AI",
+      "AI scribes",
+      "clinical documentation",
+      "clinician burnout",
+      "patient-clinician relationship"
+    ],
+    "use": "evidence",
+    "description_excerpt": "This video breaks down the key insights from the NEJM Catalyst article (Mar 2025) on ambient AI scribes in healthcare. After over 2.5 million uses in one year, this large-scale study reveals how generative AI scribes are saving doctors time, reducing burnout, and improving the clinical experience for both physicians and patients.  📄 Article: https:",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "OZe8i6V89yQ",
+    "title": "NHS bosses say unapproved AI software should not be used to record patients",
+    "channel": "Sky News",
+    "published": "2025-06-24",
+    "url": "https://www.youtube.com/watch?v=OZe8i6V89yQ",
+    "queries": [
+      "NHS ambient AI scribe"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/OZe8i6V89yQ_NHS_bosses_say_unapproved_AI_software_should_not_be_used_to_record_pat.txt",
+    "key_themes": [
+      "AI scribes",
+      "patient-clinician relationship"
+    ],
+    "use": "evidence",
+    "description_excerpt": "Doctors are using AI software that does not meet minimum standards to record and transcribe patient meetings, according to a Sky News investigation.  NHS bosses have demanded GPs and hospitals stop using artificial intelligence software that could breach data protection rules and put patients at risk.  #skynews #nhs #ai #uknews #health   SUBSCRIBE ",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "cRXdT8XTREM",
+    "title": "HealthcareLINC Q&A: The risks of using AI virtual scribes/ambient listening for documentation",
+    "channel": "McAfee & Taft",
+    "published": "2025-06-26",
+    "url": "https://www.youtube.com/watch?v=cRXdT8XTREM",
+    "queries": [
+      "Mayo Clinic ambient AI scribe"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/cRXdT8XTREM_HealthcareLINC_Q_A_The_risks_of_using_AI_virtual_scribes_ambient_liste.txt",
+    "key_themes": [
+      "ambient AI",
+      "AI scribes",
+      "clinical documentation",
+      "patient-clinician relationship",
+      "privacy"
+    ],
+    "use": "evidence",
+    "description_excerpt": "Artificial intelligence is revolutionizing how people and companies work. These AI-powered systems are transforming the documentation-intensive healthcare industry, including the use of ambient listening devices, or virtual scribes, to aid with documentation and AI-driven functions related to provider-patient interactions.  From outpatient visits t",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "NKxk7qOdAfE",
+    "title": "Healthcare-Specific Red Teaming of Medical Generative AI Apps",
+    "channel": "Pacific AI",
+    "published": "2025-07-24",
+    "url": "https://www.youtube.com/watch?v=NKxk7qOdAfE",
+    "queries": [
+      "Mayo Clinic generative AI clinical documentation"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/NKxk7qOdAfE_Healthcare-Specific_Red_Teaming_of_Medical_Generative_AI_Apps.txt",
+    "key_themes": [
+      "AI scribes",
+      "clinical documentation",
+      "workflow",
+      "patient-clinician relationship",
+      "safety"
+    ],
+    "use": "evidence",
+    "description_excerpt": "Presented by: David Talby Presented at the Mayo Clinic AI Summit, July 2025   Abstract:  Large language models (LLMs) hold immense promise for advancing clinical workflows, yet their deployment in healthcare raises critical safety, ethical, and bias-related concerns that exceed the scope of standard red‑teaming practices. In this talk, we first rev",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "UXugBwSGd2M",
+    "title": "Ambient Voice Technology: A game-changer for the NHS? Part 1",
+    "channel": "Health Innovation Yorkshire & Humber",
+    "published": "2025-08-21",
+    "url": "https://www.youtube.com/watch?v=UXugBwSGd2M",
+    "queries": [
+      "NHS ambient AI scribe"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/UXugBwSGd2M_Ambient_Voice_Technology_A_game-changer_for_the_NHS_Part_1.txt",
+    "key_themes": [
+      "ambient AI",
+      "AI scribes"
+    ],
+    "use": "evidence",
+    "description_excerpt": "Back In June we held our Ambient Voice Technology event and the morning section, part 1, video features:  NHS England briefing on the new Ambient Scribe Guidance and Adopting Ambient Scribing George Onisiforou, NHS England  Experiences of early adopters from across the Yorkshire and Humber and North East North Cumbria regions:  Dr Andrew Noble, Cit",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "GQlA8kfjBc0",
+    "title": "Mayo Clinic Platform_Accelerate: PuzzleAI",
+    "channel": "Mayo Clinic Platform",
+    "published": "2025-08-25",
+    "url": "https://www.youtube.com/watch?v=GQlA8kfjBc0",
+    "queries": [
+      "Mayo Clinic generative AI clinical documentation"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/GQlA8kfjBc0_Mayo_Clinic_Platform_Accelerate_PuzzleAI.txt",
+    "key_themes": [
+      "clinical documentation",
+      "workflow"
+    ],
+    "use": "evidence",
+    "description_excerpt": "PuzzleAI delivers advanced AI-powered medical voice-recognition tools to streamline clinical documentation, enhance diagnostic efficiency, and support seamless integration into healthcare workflows. During their time in the Accelerate program, the company aims to utilize Mayo Clinic’s expertise to better understand clinician’s workflows, identify p",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "SGaorSXGMkE",
+    "title": "A quick guide to Ambient AI Scribes: what they are and how they can help save clinician time",
+    "channel": "Newton's Tree",
+    "published": "2025-09-02",
+    "url": "https://www.youtube.com/watch?v=SGaorSXGMkE",
+    "queries": [
+      "NHS ambient AI scribe"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/SGaorSXGMkE_A_quick_guide_to_Ambient_AI_Scribes_what_they_are_and_how_they_can_hel.txt",
+    "key_themes": [
+      "ambient AI",
+      "AI scribes"
+    ],
+    "use": "evidence",
+    "description_excerpt": "🚀 Clinicians spend half their working day on electronic health records. 🔎 Want to see how AI can help cut that time safely? Watch now!  Clinicians spend hours documenting care, often late into the night. Done right, AI can reduce time on notes by 20%, and after-hours work by nearly 30%. That’s the promise of ambient scribes. These are AI tools that",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "SuX580I3Qyo",
+    "title": "Can AI Write Better Discharge Summaries?",
+    "channel": "AI and Healthcare",
+    "published": "2025-09-04",
+    "url": "https://www.youtube.com/watch?v=SuX580I3Qyo",
+    "queries": [
+      "UCSF generative AI healthcare clinical documentation"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/SuX580I3Qyo_Can_AI_Write_Better_Discharge_Summaries_.txt",
+    "key_themes": [
+      "clinical documentation",
+      "workflow",
+      "patient-clinician relationship",
+      "safety"
+    ],
+    "use": "evidence",
+    "description_excerpt": "AI is transforming discharge documentation. Dr. Ben Rosner of UCSF breaks down how large language models (LLMs) perform compared to physicians—and what that means for safety, education, and clinical workflows. Learn what “LLM as jury” could mean for quality control and how AI might de-skill future doctors if we're not careful. For a summary and key",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "RlR8pLkY8_U",
+    "title": "A quick guide to Ambient AI Scribes: what they are and how they can help save clinician time",
+    "channel": "Newton's Tree",
+    "published": "2025-09-08",
+    "url": "https://www.youtube.com/watch?v=RlR8pLkY8_U",
+    "queries": [
+      "NHS ambient AI scribe"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/RlR8pLkY8_U_A_quick_guide_to_Ambient_AI_Scribes_what_they_are_and_how_they_can_hel.txt",
+    "key_themes": [
+      "ambient AI",
+      "AI scribes"
+    ],
+    "use": "evidence",
+    "description_excerpt": "🚀 Clinicians spend half their working day on electronic health records. 🔎 Want to see how AI can help cut that time safely? Watch now!  Clinicians spend hours documenting care, often late into the night. Done right, AI can reduce time on notes by 20%, and after-hours work by nearly 30%. That’s the promise of ambient scribes. These are AI tools that",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "ZwWpDQ41rJ0",
+    "title": "Stanford Medicine leads the way with AI | Box AI-First Podcast EP 8",
+    "channel": "Box",
+    "published": "2025-10-22",
+    "url": "https://www.youtube.com/watch?v=ZwWpDQ41rJ0",
+    "queries": [
+      "Stanford Medicine ambient AI scribe"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/ZwWpDQ41rJ0_Stanford_Medicine_leads_the_way_with_AI_Box_AI-First_Podcast_EP_8.txt",
+    "key_themes": [
+      "ambient AI",
+      "AI scribes",
+      "workflow",
+      "patient-clinician relationship",
+      "safety",
+      "governance"
+    ],
+    "use": "evidence",
+    "description_excerpt": "AI is changing healthcare, and Stanford Medicine is leading the charge.  In this episode, Box Chief Customer Officer Jon Herstein sits down with Dr. Mike Pfeffer, Chief Information and Digital Officer, and Dr. Todd Ferris, Deputy CIO at Stanford School of Medicine, to explore how Stanford is deploying AI at scale, from ambient scribing in patient v",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "KPo9rlwavwU",
+    "title": "AIMI Grand Rounds: The Implementation and Evaluation of Generative AI Solutions in Healthcare",
+    "channel": "Stanford AIMI",
+    "published": "2025-11-26",
+    "url": "https://www.youtube.com/watch?v=KPo9rlwavwU",
+    "queries": [
+      "Stanford Medicine ambient AI scribe"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/KPo9rlwavwU_AIMI_Grand_Rounds_The_Implementation_and_Evaluation_of_Generative_AI_S.txt",
+    "key_themes": [
+      "patient-clinician relationship",
+      "evaluation"
+    ],
+    "use": "evidence",
+    "description_excerpt": "Recorded on October 28, 2025, by the Stanford Center for Artificial Intelligence in Medicine and Imaging.  The AIMI Grand Rounds, sponsored by the Stanford Center for Artificial Intelligence in Medicine and Imaging (AIMI), is a new series launch that is a crucial initiative for disseminating the latest AI advancements in medicine, aiming to drive t",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "wXocZBGp-ec",
+    "title": "AI Scribes  The Real Impact",
+    "channel": "Chukwuma Onyeije, M.D.",
+    "published": "2025-11-28",
+    "url": "https://www.youtube.com/watch?v=wXocZBGp-ec",
+    "queries": [
+      "NEJM AI ambient scribe",
+      "NEJM AI clinical documentation ambient AI"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/wXocZBGp-ec_AI_Scribes_The_Real_Impact.txt",
+    "key_themes": [
+      "ambient AI",
+      "AI scribes",
+      "clinical documentation",
+      "clinician burnout",
+      "workflow",
+      "patient-clinician relationship"
+    ],
+    "use": "evidence",
+    "description_excerpt": "AI Scribes Aren't Saving Time—Here's What the NEJM Actually Found  Your hospital spent thousands on ambient AI scribes. You're still charting at 10 PM. After reviewing two major NEJM AI studies and real-world implementation data, I found out why current AI scribes aren't the productivity tools we were promised—and what physician-developers are buil",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "a0N_lqlwx7A",
+    "title": "Healthcare Beat Silicon Valley at AI: The $1.4B Data Breakdown",
+    "channel": "IDAAHub",
+    "published": "2025-12-05",
+    "url": "https://www.youtube.com/watch?v=a0N_lqlwx7A",
+    "queries": [
+      "Mayo Clinic ambient AI scribe"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/a0N_lqlwx7A_Healthcare_Beat_Silicon_Valley_at_AI_The_1.4B_Data_Breakdown.txt",
+    "key_themes": [
+      "ambient AI",
+      "clinical documentation",
+      "patient-clinician relationship"
+    ],
+    "use": "evidence",
+    "description_excerpt": "🚀 HEALTHCARE AI JUST EXPLODED—AND 80% OF THE MARKET IS STILL UNTAPPED  Healthcare organizations are now deploying AI at 2.2X the rate of other industries. In just 12 months, adoption jumped from 3% to 22%—a 7X increase. $1.4 billion in spending. Eight new unicorns. And procurement cycles that dropped from 12-18 months to just 4.7 months.  In this e",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "QDwydf40uto",
+    "title": "Ambient AI in Pediatrics",
+    "channel": "Stanford Department of Pediatrics",
+    "published": "2025-12-08",
+    "url": "https://www.youtube.com/watch?v=QDwydf40uto",
+    "queries": [
+      "Stanford Medicine ambient AI scribe"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/QDwydf40uto_Ambient_AI_in_Pediatrics.txt",
+    "key_themes": [
+      "ambient AI"
+    ],
+    "use": "evidence",
+    "description_excerpt": "",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "-BygprpqyLk",
+    "title": "What Values are in AI? A Conversation with Dr. Zak Kohane",
+    "channel": "NEJM Group",
+    "published": "2025-12-17",
+    "url": "https://www.youtube.com/watch?v=-BygprpqyLk",
+    "queries": [
+      "NEJM AI clinical documentation ambient AI"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/-BygprpqyLk_What_Values_are_in_AI_A_Conversation_with_Dr._Zak_Kohane.txt",
+    "key_themes": [
+      "ambient AI",
+      "AI scribes",
+      "clinical documentation",
+      "patient-clinician relationship"
+    ],
+    "use": "evidence",
+    "description_excerpt": "For Dr. Zak Kohane, this year’s advances in AI weren’t abstract. They were personal, practical, and deeply tied to care. After decades studying clinical data and diagnostic uncertainty, he finds himself building his own EHR, reviewing his child’s imaging with AI, and re-thinking the balance between incidental and missed findings. Across each story ",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "ZDdgZGcYqa4",
+    "title": "Eric Topol on Why Doctors Shouldn’t Fear AI — And How It Could Finally Fix Our Broken System",
+    "channel": "Offcall",
+    "published": "2025-12-18",
+    "url": "https://www.youtube.com/watch?v=ZDdgZGcYqa4",
+    "queries": [
+      "Eric Topol AI healthcare doctors podcast transcript"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/ZDdgZGcYqa4_Eric_Topol_on_Why_Doctors_Shouldn_t_Fear_AI_And_How_It_Could_Finally_F.txt",
+    "key_themes": [
+      "AI scribes",
+      "clinician burnout",
+      "patient-clinician relationship"
+    ],
+    "use": "evidence",
+    "description_excerpt": "Dr. Eric Topol (https://www.linkedin.com/in/eric-topol-md-b83a7317/)  is one of the most influential voices in modern medicine. Founder of the Scripps Research Translational Institute and author of Deep Medicine and Super Agers, Eric has spent decades interrogating medical dogma, calling out hype, and pushing the profession toward evidence, prevent",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "le5Hjx1dd4I",
+    "title": "The 229 Podcast: Inside Stanford Medicine’s AI Sandbox With Michael Pfeffer, MD",
+    "channel": "This Week Health",
+    "published": "2026-01-08",
+    "url": "https://www.youtube.com/watch?v=le5Hjx1dd4I",
+    "queries": [
+      "Stanford Medicine ambient AI scribe"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/le5Hjx1dd4I_The_229_Podcast_Inside_Stanford_Medicine_s_AI_Sandbox_With_Michael_Pfe.txt",
+    "key_themes": [
+      "ambient AI",
+      "AI scribes",
+      "workflow",
+      "patient-clinician relationship",
+      "governance"
+    ],
+    "use": "evidence",
+    "description_excerpt": "Dr. Michael Pfeffer, SVP and CIDO at Stanford Medicine, reveals how his team built a secure AI sandbox in just six weeks—and what they learned from analyzing thousands of user prompts. From ambient scribes that actually work to ChatEHR transforming clinical workflows in real-time, Michael shares the practical wins and honest challenges of deploying",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "lmU0iZNneVs",
+    "title": "Scribe for Urgent Care | AI-powered medical ambient scribe",
+    "channel": "OneAdvanced",
+    "published": "2026-01-30",
+    "url": "https://www.youtube.com/watch?v=lmU0iZNneVs",
+    "queries": [
+      "NHS ambient AI scribe",
+      "NHS AI clinical documentation ambient"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/lmU0iZNneVs_Scribe_for_Urgent_Care_AI-powered_medical_ambient_scribe.txt",
+    "key_themes": [
+      "ambient AI",
+      "AI scribes",
+      "clinical documentation",
+      "workflow",
+      "patient-clinician relationship",
+      "safety"
+    ],
+    "use": "evidence",
+    "description_excerpt": "Scribe for Urgent Care | AI Medical Transcription Built into Adastra  Meet Scribe for Urgent Care, embedded directly into Adastra. This ambient medical transcription solution uses AI to capture consultations and automatically generate structured clinical summaries in real time.  Designed to fit seamlessly into existing Adastra workflows, Scribe pri",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "0x_7bZYQ8iU",
+    "title": "Is AI the First Technology Doctors Actually Trust? Robert Wachter, Author & Chair of Medicine, UCSF",
+    "channel": "Analyzing Healthcare by SCALE Community ",
+    "published": "2026-02-04",
+    "url": "https://www.youtube.com/watch?v=0x_7bZYQ8iU",
+    "queries": [
+      "UCSF generative AI healthcare clinical documentation"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/0x_7bZYQ8iU_Is_AI_the_First_Technology_Doctors_Actually_Trust_Robert_Wachter_Autho.txt",
+    "key_themes": [
+      "AI scribes",
+      "clinical documentation",
+      "clinician burnout",
+      "safety"
+    ],
+    "use": "evidence",
+    "description_excerpt": "Bob Wachter on AI in healthcare, EMRs, digital health, clinician burnout, and why generative AI may succeed where healthcare technology failed. In this episode of Analyzing Healthcare, Jason Schifman speaks with Bob Wachter, Chair of Medicine at UCSF and author of A Giant Leap, on why AI may finally transform healthcare.  Wachter explains how EMRs ",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "ycnzfWRH-bU",
+    "title": "AI Clinical Scribe Safety: Why Transcripts Matter (NEJM)",
+    "channel": "The Health AI Brief",
+    "published": "2026-02-11",
+    "url": "https://www.youtube.com/watch?v=ycnzfWRH-bU",
+    "queries": [
+      "NEJM AI ambient scribe",
+      "NEJM AI clinical documentation ambient AI"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/ycnzfWRH-bU_AI_Clinical_Scribe_Safety_Why_Transcripts_Matter_NEJM_.txt",
+    "key_themes": [
+      "ambient AI",
+      "AI scribes",
+      "clinical documentation",
+      "clinician burnout",
+      "patient-clinician relationship",
+      "safety"
+    ],
+    "use": "evidence",
+    "description_excerpt": "Is your hospital deleting \"Digital Gold\"? AI clinical scribes are transforming documentation, but a hidden liability trap is forcing the destruction of vital patient data.  In this episode, we break down the NEJM analysis of AI-generated transcripts. While these tools reduce clinician burnout, the systematic deletion of original audio and transcrip",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "CelqBy3XXY8",
+    "title": "S1 Ep144: The AI scribe era is here, with Robert Wachter, M.D., and more",
+    "channel": "Medical Economics TV",
+    "published": "2026-04-23",
+    "url": "https://www.youtube.com/watch?v=CelqBy3XXY8",
+    "queries": [
+      "NEJM AI ambient scribe",
+      "NEJM AI clinical documentation ambient AI",
+      "UCSF ambient AI scribe"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/CelqBy3XXY8_S1_Ep144_The_AI_scribe_era_is_here_with_Robert_Wachter_M.D._and_more.txt",
+    "key_themes": [
+      "ambient AI",
+      "AI scribes",
+      "clinical documentation",
+      "clinician burnout",
+      "workflow",
+      "patient-clinician relationship"
+    ],
+    "use": "evidence",
+    "description_excerpt": "Ambient artificial intelligence (AI) scribes have become the fastest-adopted physician technology in recent memory. At UCSF, 70% of physicians now use one daily. At Kaiser Permanente, more than 7,000 physicians used them across 2.5 million patient encounters in just over a year. But what does the evidence actually show, and what are practices getti",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "_cDC3b8cVAs",
+    "title": "The AI tool physicians actually love — Robert Wachter, M.D., chair of UCSF Medicine",
+    "channel": "Medical Economics TV",
+    "published": "2026-04-28",
+    "url": "https://www.youtube.com/watch?v=_cDC3b8cVAs",
+    "queries": [
+      "UCSF ambient AI scribe"
+    ],
+    "transcript_available": true,
+    "transcript_source": "supadata:supadata",
+    "transcript_path": "evidence/ai_healthcare/youtube_transcripts/_cDC3b8cVAs_The_AI_tool_physicians_actually_love_Robert_Wachter_M.D._chair_of_UCSF.txt",
+    "key_themes": [
+      "ambient AI",
+      "AI scribes",
+      "clinical documentation",
+      "clinician burnout",
+      "patient-clinician relationship"
+    ],
+    "use": "evidence",
+    "description_excerpt": "Ambient AI scribes have done something almost unheard of in health care technology: they've made physicians actually want them. At UCSF, 70% of physicians use one, and 90% of them say they love it.  But are they living up to the hype on efficiency?  What happens when the human in the loop stops paying attention?  And what does any of this have to d",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  },
+  {
+    "video_id": "5ujE7Q-OR3I",
+    "title": "Ambient Intelligence in Healthcare | AINeuroCare",
+    "channel": "Junaid Kalia MD",
+    "published": "2021-06-09",
+    "url": "https://www.youtube.com/watch?v=5ujE7Q-OR3I",
+    "queries": [
+      "Stanford Medicine ambient AI scribe",
+      "Stanford healthcare AI clinical documentation ambient",
+      "AMA ambient AI scribe physician burnout"
+    ],
+    "transcript_available": false,
+    "transcript_source": "none:RequestBlocked",
+    "transcript_path": null,
+    "key_themes": [
+      "ambient AI",
+      "AI scribes",
+      "clinical documentation",
+      "clinician burnout",
+      "workflow",
+      "patient-clinician relationship"
+    ],
+    "use": "context-only",
+    "description_excerpt": "#AINeuroCare #AI #Healthcare  👉 Ambient Intelligence in Healthcare  👉 Chapters: 0:00 - Ambient Intelligence 0:32 - Series Overview 0:48 - Scribe VS CDT 1:49 - Digital Voice Assistant 3:28 - Road Map of Tech Giants 5:51 - EHR Workload  This video is part of the series Digital Voice Assistant in Telehealth and here is the link to the playlist: https:",
+    "storage_note": "Transcript text stored for research/evidence-review only; do not treat expert talk claims as model evidence without primary-source verification."
+  }
+]

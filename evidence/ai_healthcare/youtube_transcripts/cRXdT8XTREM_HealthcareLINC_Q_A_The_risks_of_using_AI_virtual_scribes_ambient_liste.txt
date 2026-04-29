@@ -1,0 +1,83 @@
+Title: HealthcareLINC Q&A: The risks of using AI virtual scribes/ambient listening for documentation
+Channel: McAfee & Taft
+URL: https://www.youtube.com/watch?v=cRXdT8XTREM
+Transcript source: supadata:supadata
+
+An ambient
+listening device or virtual scribe, is part of Electronic Health
+Record Technology, or EHR, that is being used
+by providers, physicians and hospitals to record the conversation
+between a patient and a provider. Develop a transcript that is then reviewed
+and edited by the provider, and becomes part of the patient's
+permanent medical record. Most EHR systems have an ambient listening
+or virtual scribe option, and it's being used more
+and more by providers. The intent is that the provider
+would review the transcript, make any edits, and then approve it,
+and it would then become part of the permanent
+medical record for the patient. Most patients are given the option
+to either consent to the use of ambient listening technology, or decline it
+for their visit with the provider. There have been a number of studies and surveys related to the use of ambient
+listening devices. Providers report positive experiences
+with the use of the technology, because they can spend more time
+discussing the patient's condition and engaging with the patient,
+and less time staring at the computer screen and entering notes
+into the electronic health record. Providers also report less pajama time. Pajama time is a term
+used to describe the time that providers have to spend outside
+of their regular workday. Entering medical records
+in the electronic health record. Overall, experts
+predict that these are positive factors that should lead to less provider
+burnout over time. Likewise, patients
+report positive experiences. They believe that they are more engaged
+with their provider when an ambient listening
+device is being used, that the provider is paying more attention
+to what the patient has to say, and that the patient is more involved
+in the care and treatment decisions. Federal and state law require that providers maintain
+an accurate and complete medical record. One potential risk of using an ambient listening device are errors
+that may occur in the transcription that are not caught by the physician
+or provider when they review and approve the transfer option to become part
+of the patient's permanent medical record. An example might be that a physician
+tells the patient during a visit that they're going
+to prescribe 0.5mg of a drug. The listening device may transcribe that incorrectly to be five milligrams. If the physician does not catch that error
+before it's filled by the patient
+in a prescription, this could lead to harm to the patient
+and liability for the physician. Two phenomenons involved here. One is called hallucinations,
+which is the AI term for incorrect text. So when the AI technology
+actually invents text, something that was not actually said
+in the conversation. The second issue is automation bias, and that's a provider's preference
+to rely on what the transcription provides,
+even if there's errors in it. And so when a provider reviews
+the transcript, it's vitally important that they carefully
+review everything that's part of the transcript before approving it
+to become part of the medical record. So there's not that risk to the provider
+and to the patient. There can be risks from a medical
+malpractice perspective, and Oklahoma medical records must be maintained
+for a period of six years. Defense counsel advise that
+the medical record should be unchanged, and there should only be one
+medical record. When the ambient listening device records the conversation and the audio recording,
+and then that's transcribed. This is essentially a dual medical record,
+meaning that there's a medical record, the permanent medical record,
+and that for some period of time, there's another portion
+of the medical record that may or may not become part
+of the permanent medical record. So there's a risk that a plaintiff's
+lawyer would claim that when records are produced
+in a lawsuit, that the complete medical record
+has not been produced, and that there's been spoilage
+of evidence, meaning that the hospital, the physician group,
+the provider has deleted or destroyed evidence
+that's necessary for the lawsuit. The bottom line is that ambient listening
+device technology is a tool. It can be a helpful tool,
+both from the provider's perspective and a positive patient experience. However, it doesn't absolve the provider
+of the obligation to carefully review and edit the transcript before it becomes
+part of the medical record. One recommendation is that providers should adopt a comprehensive policy
+addressing the use of AI ambient technology as part of a patient visit, and their obligations to carefully review the documentation before it becomes
+part of the medical record. The policy should also state that the audio recording in the transcript
+is not part of the legal medical record that is just transitory
+communications in draft form, and is not intended
+to be the permanent medical record. Additionally,
+the policy should provide that physicians and other practitioners will be educated
+regarding the use of AI technology and the need to carefully review
+documentation before its uploaded in the patient's
+medical record. In order to be of any benefit,
+a provider must adopt and implement the AI ambient use technology policy before litigation is commenced. We've advised a number of clients
+regarding the use of ambient technology. If you have any questions,
+please reach out to us at McAfee and Taft.

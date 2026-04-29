@@ -1,0 +1,18 @@
+Title: Generative AI-Powered Healthcare: The Future is Now
+Channel: Google Cloud
+URL: https://www.youtube.com/watch?v=GUJMyPFhvk4
+Transcript source: supadata:supadata
+
+In the world today, Doctors researchers, and other health professionals have 
+a powerful tool at their disposal: generative AI. This powerful technology has 
+already transformed numerous industries,   and healthcare is no exception. In the Generative AI for Healthcare course, 
+you’ll explore the world of generative AI,   specifically tailored to the healthcare sector.   
+Through a combination of videos, quizzes,   and hands-on labs, you’ll get an introduction to generative 
+AI and large language models (LLMs), and learn how you can use these tools to 
+transform the way you approach healthcare. Identify Gen AI healthcare use cases, And use large language models 
+to solve healthcare challenges.  You’ll also utilize prompt design and prompt 
+engineering to develop effective prompts. Participate in knowledge checks along the way, and practice what you learn through hands-on labs. Upon completion of the course, earn a badge that 
+you can apply to your pursuits in the job market. Generative AI is not just a 
+technological advancement; it's a partner in healthcare, working alongside us to achieve better outcomes for 
+patients and providers alike. Ready to embrace the future of healthcare?   Learn more about Google Cloud's 
+Generative AI solutions today.

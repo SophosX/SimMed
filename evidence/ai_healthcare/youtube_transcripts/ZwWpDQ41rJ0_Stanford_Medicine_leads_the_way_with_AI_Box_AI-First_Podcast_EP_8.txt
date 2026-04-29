@@ -1,0 +1,796 @@
+Title: Stanford Medicine leads the way with AI | Box AI-First Podcast EP 8
+Channel: Box
+URL: https://www.youtube.com/watch?v=ZwWpDQ41rJ0
+Transcript source: supadata:supadata
+
+technology is not the, not under the
+ownership of the CIO per se, right? I mean, it's, It's becoming more
+democratized than ever before. And so, as Todd mentioned, we,  we
+created a secure platform for everyone at Stanford Medicine to be able
+to use the models in a safe way. And we have over 15 models now accessible. Um, And so rather than us dictating
+what the models could be used for, we said, it's all, you know. go have fun, learn, experiment. And we've seen that be very,  very
+successful to the point where by understanding how people are using
+this uh, let's call it sandbox uh, we develop products from it. This is the AI first podcast
+hosted by me, John Herstein, chief Customer Officer at Box. Join me for real conversations with
+CIOs and tech leaders about re-imagining work with the power of content and
+intelligence, and putting AI at the core of enterprise transformation. Hello everyone and welcome to the AI first
+podcast where we talk about all things AI in businesses and enterprises that are
+taking advantage of the capabilities of artificial intelligence in pragmatic ways. And I'm very, very delighted today. We've got something new on the podcast,
+which is we're joined by two guests, not one, and today we have the longtime
+customer of Box, Stanford School of Medicine and Stanford Health, and I'm
+joined today by Todd Ferris, who's the Deputy CIO at the Stanford School
+of Medicine, and Mike Peffer, who's the Chief Information and Digital
+Officer for Stanford Healthcare and the Stanford School of Medicine. Welcome guys. Thanks for having us. Yeah, thanks for having us. Excited to be here. Absolutely. I'm very, very excited to
+have this conversation. I have been doing a lot of reading about. The implications of AI in healthcare. And we've got a thousand questions
+that we don't, we're not gonna get through all of them, but we're
+going to cover as much as we can. But let me start first by giving you both
+an opportunity to introduce yourselves and your roles and sort of how you define
+the scope of your roles, uh, at Stanford. Maybe Mike, we'll start with you. Thanks John. So, uh, this is an incredibly exciting
+time in healthcare and in health sciences research and education. So just thrilled to
+have this conversation. Um, and so my role is really
+to, um, lead the technology, um, department for the, uh, health, uh,
+organization, Stanford Healthcare and the School of Medicine at Stanford. We call ourselves TDS or Technology
+and Digital Solutions, and we're, uh, an amazing group of people. Dedicated to serving the missions of
+research, education, and patient care. And it's really an incredible place
+to be and be part of a team that's so, uh, dedicated to that mission and
+delivering amazing things in healthcare. I'm also a hospitalist physician, and
+so got board certified internal medicine and still, uh, round in the hospital
+and see patients with, uh, incredible residents and medical students here. So that, that's a really fun
+and, uh, exciting part of my job. But it also keeps me
+connected to the front lines. Yeah, I was gonna say that probably
+keeps you very, very close to the day-to-day things that physicians,
+clinicians, and patients are dealing with. Yes absolutely. It's, it's, it's why I went
+into medicine and I'm really lucky that I get to do both. Alright, Todd, over to you. Yeah. Well, thanks again for having us. Uh, I think you know my background,
+I've, I've been, uh, I'm also a physician, family medicine. Uh, then, uh, actually came to Stanford to
+train in clinical informatics and actually never left, been at Stanford ever since. Uh, going over 20 years. Uh, hold a wide variety of roles. Privacy security. Uh, and, and you know, my, my
+fascination has just always been how do we enable our research mission and
+make sure we do it in a way that, uh, protects our patient's privacy and
+their, the security of their data. And so that's been our huge focus,
+uh, is really how do we leverage technology to, to make that happen. And, and this is just
+such an exciting time. As Mike said, we just have, you
+know, for so often we said the computer should be able to do this. Well now we have breakthroughs
+where it can do this for us. And it's just a really exciting time. Well, we're gonna dive into some
+of the practical implications of that and where this is actually
+showing up for, for both of you. One thing I want to touch on is. As I've been reading about this, this
+area, the implications for healthcare are both on the operational side of how you
+run, you know, hospitals, how you run, uh, all of the things that we do for patients. But there's also implications on
+the clinical side, and I think we're gonna be touching on aspects of both. And I'm just wondering if you all could
+maybe at a very high level, just lay out how you think about those two domains and
+is there a third or fourth domain that we should also be thinking about when we
+think about what AI can do for healthcare? I think AI has the potential to infuse
+itself into all of these buckets. And what we often talk about, uh,
+here is thinking about it in two ways. One, automation and one augmentation. And I'll kind of break those in,
+but across all of those domains. So for us, it's in each of
+those domains where there are opportunities to solve problems. Using the technology and
+do we automate or augment? So automation to us is, you know,
+we're, we're taking a task that humans can do today and, uh,
+making it much easier, taking it completely away using the technology. So an example is, uh, AI ambient scribes. So you go in and see, you know,
+your physician here, and they'll ask you if you wanna participate,
+and then it will listen to the conversation and then produce a note. Well, doctors can write notes too. So we're just automating that
+process and giving time back to that physician, uh, patient relationships. So that's, that's an
+example of automation. Lots of opportunities around that,
+across all the mission areas. The, the, the second is, uh, augmentation. And that's really like
+doing things that the human. Can't do by themselves or the computer
+can't really do by themselves. Right. It's, it's kind of
+bringing that all together. So this is like, uh, predicting,
+uh, different, uh, events in healthcare that if we knew earlier
+we could help, um, patients. Uh, it's, um, you know, uh, really kind
+of precision medicine type of things where we can use large sets of data to
+come up with better, uh, answers and better decisions, uh, for the clinician. So those are the two big buckets. And obviously automation is, uh, kind of
+a easier to do and lower risk overall. And, and augmentation takes a lot of work. And then, you know, Todd can talk
+about some of the stuff that we're, we're thinking about on the, on
+the research and education side. Yeah, so taking a similar tact,
+you know, one, one area where we're thinking, uh, around augmentation
+is on the education side. We've launched a project, uh,
+with a faculty member who's spent a lot of our career really. Helping students in how do
+they think thinking habits. So when they approach a patient,
+how do you be systematic in that and, and make sure that you are
+approaching it in a thoughtful way. And, and that actually
+just requires a skill. There's a skillset that they learn
+as they go through their education. And we've developed a tool to help
+augment, uh, our faculty members. It actually can listen into a conversation
+between a faculty member and a student. And then essentially say, did you,
+did you kind of, did you prompt them? Did you miss an area? Was the student thinking
+through this carefully? And, and help that, that teaching aspect. So it's again, augmenting them,
+helping them where maybe, where they miss something, not replacing them. And then on the other side,
+you know, areas where we're thinking about automation. Uh, we have a research project recently
+published, uh, where we were looking at at folks that maybe have, uh, behaviors. Alcohol substance abuse behaviors were
+really, they, they are struggling a bit and they could use, uh, intervention. And so we actually developed a chat
+bot that, uh, did an intervention. So people, uh, opted into this. They had this automated service that
+they could chat with whenever they were thinking about risky behaviors. And we published on it 'cause it
+was actually quite successful. Uh, so again, you know, a
+lot of interesting areas where we're leveraging ai. That's, uh, those are some really
+great examples and I think we'll dig into some of these, uh, in a bit
+more detail as, as we go through. And certainly one of the things I want
+to touch on are some of the obstacles or challenges you have with deploying,
+you know, those kinds of solutions. But maybe before we get there, Mike, I
+wanna go back to you 'cause you gave a couple of examples of where AI can sort
+of be integrated into the, the, the workflow, if you will, between the, the
+clinician, the doctor, and the patient. Um, how do you do that without
+disrupting that or doing it in a way that feels maybe off to, to the patient? Yeah, that's a great question. I mean, these things take
+a lot of work to implement. It's not just turning something on. and we, we know that in healthcare, so
+I've been in health IT and informatics for over 15 years now, and I can tell
+you that it's all about the workflow, the implementation, and the training. The technology's the easy part. And, um, so it, it really
+boils down to understanding how the technology is gonna work. How does it integrate into the workflow
+and then building that implementation and training to make sure it's successful? So, you know, with the AI ambient scribes,
+for example, we, we were the first actually to pilot the integration of that
+tool into our electronic health record and test it and see what the workflow work. And prior to that integration,
+it, the workflow wasn't good, people didn't really wanna use it. After that integration, it became clear
+that this was gonna be successful, and then we built from the pilot,
+um, what the right training and implementation plan was gonna be, and
+actually decided to do it over a year. So it wasn't just something we
+turned on for everybody right away. We wanted everybody to have the
+appropriate training, the appropriate support, and, um, learn from each of
+the waves of the go lives that we did. So we, we recently, uh, completed
+the entire, uh, implementation of it across all of our specialties. And I think because we spent a
+lot of time thinking about that implementation and training part,
+uh, it went very successfully. Uh, so, you know, I, I, I
+think that's just really key. And, and, and as people try to, like,
+do things in healthcare, do technology in healthcare, uh, it's, there's often
+a focus on the product and it's not, that's only one small piece of the puzzle. Absolutely. And you know, we're gonna definitely
+talk more about the change management aspect of this and how do you
+get people to work differently. I am also really curious about
+how patients are reacting to it. So, uh, do you wind up having resistance? Uh, we're asking permission. Are patients saying no often? Uh, and, and, and is part of the
+training to actually teach the, the providers, um, how to overcome
+those objections and concerns. Yeah. Well, great points. I mean, for the most part, patients love
+it because it's taken the clinicians. Eyes from the computer
+screen right to the patient and the notes come back quicker. So, uh, we have open notes, which
+means once the physician signs the note, it, it appears in the patient
+portal so the patient can read it. So you have better notes, you have
+faster notes, and you have a, a better connection with the, um, with
+between the physician and the patient. Now, this isn't, it isn't perfect, right? And, uh, we absolutely respect
+patients', uh, wishes to use the product or not, right? Uh, so that's always asked, and we've
+trained in the training, you know, how, how to have that conversation. Uh, it's becoming so
+ubiquitous in healthcare. It's probably one of the fastest
+adoptions of a health IT product I've ever seen. Yeah. And so I think patients are getting,
+uh, exposed to it very frequently and are seeing the benefits of it and are,
+you know, agreeing to participate. So it's, it's not that we rarely
+see a no, uh, because it really does bring back that physician patient
+relationship that, you know, has been difficult with the computer. Right. Yeah, I could definitely see
+the huge benefit of the doctor looking you in the eye as opposed
+to looking down at their tablet. Right, And, or, or typing away, you
+know, or writing with a stylus. Um, and you, you feel like you're
+getting more of that personal attention. Um, so I, huge benefit and to your
+point, um, they're starting to see these technologies show up maybe
+in their dentist office also. Right. So it's, so, it's, it's, it's, gonna feel more natural and, and normal. It's funny you say that
+'cause I went to the dentist Okay. and it's been way too long, so I,
+everybody should go to their dentist Thank you. That, thank you for the PSA. Um yeah totally. Teeth are really important. And, uh, it, I think AI scribes in the
+dentist office might be a little hard 'cause they're like in your mouth. So, you know, maybe you have to train
+the model how to, like, interpret, you know, like stuff like that. But um yeah absolutely. They're, they're the, some of the
+new technologies, like X-rays, they don't do x-rays anymore. It's all digital. It's really incredible. So I agree with you. This, this stuff is, um, really
+making its way through, uh, all aspects of, of the health sciences. Yeah. And Todd, let me go back
+to you for a minute. And going back to kind of researchers
+and educators, um, how have they, you, a couple examples of, of, of cool
+wins, um, how have they responded to the, the pilots that you're running? And did you have initial skepticism,
+maybe in particular from, you know, folks who are more on the research and
+the, the education side, just around ai and, and, and how did you turn
+that initial skepticism into more, you know, excitement, enthusiasm about it? We've had almost no skepticism. In fact, they're kind of
+beating our doors down. Like we, we can't meet their demands. Uh, and, and that, you know, just
+as Stanford researchers, they're always out there, you know, pushing. And so we, uh, through Mike's actual
+initiative, you know, made, uh, available AI models very early in a secure
+environment that was on our own system. And they just started gobbling that up and
+they were building things and they were immediately saying, can I get API access? Can I, you know, do this, can I do that? And we're like, slow down,
+let us build things out. Uh, so it's, it's been quite the opposite. They are just gung-ho. I'm, I'm curious, uh, I wonder if that's,
+is that a symptom potentially of the fact that you all are at Stanford, you're in
+the middle of Silicon Valley, and when you talk to peers elsewhere in the country and
+in the world, do you hear the same thing? Or is this unique. Certainly the peers that I've
+talked to are also experiencing a, a lot of interests. just the adoption of chat GPT when
+it came out was just enormous, right? I think it's not specific to Stanford. I think there's tremendous
+excitement about it at Stanford. Um, but uh, yeah, I think this
+is really taking, you know, the health sciences by storm really,
+uh, all the mission areas, right. This is, this is just really exciting. So one of the things I wanna, um, kind
+of shift to is talking a little bit about leadership and culture, and particularly
+leadership in the technology space. And, um, it's maybe been timely because
+I think there's been some title changes over there for, for, for you both. Um, but how is AI changing your roles, the
+roles of the CIO, the roles of the CTO? Um, what's different now
+from what it was before? I've always thought the CIO or or CDO
+role, it is a very strategic role. So it's not about, you know, what
+data center we should be in, which is very important, don't get me right. And, and that's part
+of what we need to do. But, but it's, it's,
+it's bigger than that. It's, it's, it's what strategies
+does the business need to accomplish? How is technology gonna enable that? And now it's even technology can do things
+that strategically maybe we couldn't do in the past and now we could do. So, uh, it, it's really elevated
+to a, a strategic role, um, beyond what I think it's ever been in the
+past, especially in healthcare. Right. Um, and so I think that's,
+that's been a, a big change. The other thing is, uh,
+well two other things. One is, um, technology is not
+the, not under the ownership of the CIO per se, right? I mean, it's, it's becoming more
+democratized than ever before. And so, as Todd mentioned, we,
+we created a secure platform for everyone at Stanford Medicine to be
+able to use the models in a safe way. And we have over 15 models now accessible. Um, and so rather than us dictating
+what the models could be used for, we said, it's all, you know. Go have fun, learn, experiment. And we've seen that be very, very
+successful to the point where by understanding how people are using
+this, uh, let's call it sandbox, uh, we develop products from it. We said, well, if thousands of people are
+asking it to do this, let's just create something that does that automatically. So, so it's been a huge kind of learning
+environment f for us to be successful. So it's, it's, it's understanding that
+technology is not just under the purview of the CIO, but really something that the
+whole organization can take advantage of. And then finally it's, it's,
+and, and this is my philosophy, but AI is not a team, a person. It, it's everybody. Everybody in technology
+needs to understand ai. It is a tool that everybody needs
+to understand and embrace and use. Whether it's configuring your, your, your
+routers by the network team automatically, which our team did, which was amazing. using using AI and, and our platform
+to all the way up the chain of decision, clinical decision support. So it's not a team and I think
+we've embraced that very early, uh, in our organization and that
+has really paid dividends for us. Very, very interesting. And I, I think your point about it
+being technology for everybody isac exactly what we're seeing inside of Box. And also what we're seeing with a
+lot of our customers is that there's a lot of grassroots happening. And I think partially it is because
+there was so much excitement when chat GPT first came out just at a consumer level of like, oh, this is
+interesting, I can do cool things with it. And you start thinking about, well, how
+can I apply those capabilities at work? what's what's I think very interesting
+now is you've got the grassroots stuff happening, but also top-down initiatives
+and where do those things meet? Um, how much do you encourage versus
+limit the grassroots work that's going on? Um, because that's where a lot
+of the innovation comes from. So it's a very interesting time, I think,
+for us to be figuring this all out. I, and I do wonder, maybe Todd for
+you is how does this all affect. What the digital transformation
+roadmap looks like at Stanford. So every, every organization's on a
+journey at some level to digitize. And, you know, I think you're probably
+pretty far along, but how does the, the, the, the capability of AI
+that's available now and all of these organic efforts, how do they start to
+affect what that roadmap looks like? Yeah, that's a great question. And you would be shocked that,
+you know, there, there are still some processes that are. Somewhat archaic. Uh, when, when we think
+about, uh, clinical trials, um, there are still things
+that are printed out mainly from a regulatory standpoint. And, uh, FDA still requires certain
+things or, or you have to have certain systems built and, and
+that, uh, that creates challenges. We, we still do have, uh, binders for
+clinical trials and insecure locations, and, and we've been ramping that up. Like how, how, how do we digitize
+those things and give people the, those platforms and increasingly. Um, we're, we're, you're absolutely right,
+we're, we are sort of how do we turn up that knob and increase the speed of that,
+especially as these tools come on board that could really, uh, you know, automate
+or augment, uh, those processes, allowing, uh, us to enroll more patients into those
+clinical trials and, uh, provide that, you know, where we might be resource limited. We can now bring more
+of that to more people. Todd, you reminded me of one of my
+favorite models that we, we implemented. Um, you know, healthcare is the, uh,
+entity keeping fax machines alive. So we have a um, we have a model that will read incoming
+faxes for referrals and determine whether they're urgent or not, and then
+separate them into different queues. So it's like, talk about
+digitization in healthcare. I mean, there's so much low hanging fruit and sometimes it's gonna
+be automating things that. Well, shouldn't be there
+in the first place, but, um, but still, I mean, I, you
+know, that the journey of digitization in healthcare isn't complete, Right. And that's a great example because,
+you know, AI is not gonna make the fax machine go away because you've got this
+whole network of people that are still dependent on them, but it can make
+the process better knowing that, that there's analog data in the middle of it. Yeah. Um, that's fascinating. I mean, the other thing that occurs
+to me is when you talk about things like clinical trials, I think that
+that's a mixture of structured and a lot of unstructured data. Is that, is that right? Am I thinking about that? Yeah, yes. Yeah, it, I mean, it tends to,
+um, push us towards structured. That's really what they want to
+have, but that's data that sometimes isn't collected in routine care. So there's a lot of abstraction,
+people reading the notes and kind of pulling out nuggets of information, um, as well as sending over, you know,
+copies of what we call source data. That's the actually what,
+what was the source? So sometimes there's all sorts of things,
+whether they're images, um, scanned in documents, all sorts of things to really
+back up the trial, making sure that we have that chain of custody laid out. Right. So you essentially, in your world,
+you have, believe it or not, still analog content or data. You've got digital, but unstructured,
+but also a lot of structured data and the way you think about AI for each
+of those may be slightly different. so would you describe as you, maybe
+not a trick question, but if you think about the broader sort of digital
+strategy at Stanford today, would you say your posture today is AI first
+or is it AI friendly, or is there another term that you all would use? How, how do you think about the importance
+of AI and what you do going forward? well, certainly within our IT
+organization, TDS, uh, it's AI first. In fact, we set a goal that we would
+hit 30% of all our projects to be ai. Um, and that may not sound like a lot,
+but in healthcare we do a lot of things like open clinics up as a project, do you
+know, upgrades on, on different platforms. We have over a thousand applications,
+so it's not that we could get to 90% because there's stuff we need to
+do to so called keep the lights on, but, but really push us to get to at
+least 30% and we've beat that goal, which is, which is really amazing. So definitely AI first in
+the, in the organization, but. You know, Stanford Medicine has
+always been very much about digital. We have an integrated strategic
+plan across all of our entities. That's the School of Medicine,
+Stanford Healthcare, and Stanford Medicine Children's Health, where
+digitally driven is one of our pillars. So it is wired into our DNA. And so it's no surprise that, that
+it is, uh, an AI driven organization, but, but not for the sake of ai. You know, when you go back
+to our mission areas, right? Research, education, patient care, and
+the problems that we wanna solve, um, to make all of those areas better, um,
+we're asking the question, can AI do that? Can AI help solve that problem? And it's really that approach I think that the organization is, is. Have you ever had a situation where
+someone was leading with AI and actually that was not the right
+way to think about the problem? Oh Yeah, Huh? Maybe I won't ask for examples. No no. I mean, it's fine. I, I had one this week Okay. Okay. you know, and, and I was the guilty party. So I had suggested that we, that we
+maybe solve a, a particular, uh, case with an AI solution and then chatting
+with the team, the team's, like, you know, I think we'd be better, you
+know, in the first phase, leveraging existing technology, learn more about
+the solution, and then think about how do we then bring that into our AI platform. So, you know, we, we are, we're, we're
+communicating about it, talking about it, thinking the pros and the cons. Where does it fit in
+that overall lifecycle? That's a great example, Todd. You know, like, so there's so many
+products, vendors in healthcare, so many startups, which is really fun. I mean, I, I love the excitement,
+enthusiasm that everybody has to try to make health better, which I will segue. The most important thing that we look
+for in partnerships with, you know, our tech companies, vendors, startups,
+whatever, is a connection to the mission. If it's not about patients, if
+it's not about research, if it's not about educating our future
+clinicians, then it's not, we are not gonna be interested, right? It's gotta be about that. Um, and then the, the, the product
+and, and everything else comes later. So that, that's really, really important. Right, But, um, there, there's so many solutions
+that you, you can get lost in that problem very easily if you don't know
+what problem you're trying to solve. And so, um. So, and, and we'll all make the mistake. We'll be like, that's really cool. Like let's do it. And then it's like, well what are
+we actually solving with that? And is it valuable enough to solve, it
+may be a problem that needs to be solved, that may be a good solution, but we
+have, we only have limited resources, you know, so do we wanna invest in that? And that's where the value
+equation comes in, right? It's like what is the value to the
+organization by solving that problem and by solving it with that AI solution. And we actually have a framework here
+that was developed by one of our faculty members, Nick Sha, who's our
+chief data scientists and his lab. And that's the firm assessment, which
+is fair, useful, reliable models. And we use that to actually determine
+is this solution that we are gonna put in that has AI valuable to the
+organization by looking at all the mission areas, by looking at how. Utility of the model, et cetera. So that's very important to us
+because we, we don't just wanna put everything in and hope it all works. It, it has to work and
+it has to provide value. Right. Just outta curiosity, is that firm
+framework, is that, um, is that something that that's publicly available or is that
+a proprietary thing to Stanford today? Open source, Well, I would maybe encourage folks in the
+audience to go check it out, um, because it may be a great way to think about this. And we are gonna come back to
+this question of value because it's a very important one to
+me in my role, um, at Box. But I think to all of our customers,
+the question always is like, well, what, what's the value of this thing? And I think one of the challenges, you guys
+can correct me if I'm wrong or confirm this, but one of the challenge that
+pretty much every C-I-O-C-D-O-C-T-O that we talk to is dealing with the
+fact that every one of their vendors is adding AI to their products, right? Um, and maybe they're just slapping
+it on, maybe they're deeply embedding it, but everyone's adding ai. And so the challenge for you as a
+consumer of those technologies is. Which ones of these things
+actually have value? Which ones of these things
+actually provide benefit, you know, to, in your case, to your
+patients, to your researchers? So maybe how do you all think about even
+just vetting and curating and deciding which of those AI solutions you're gonna
+go pursue and which ones you're gonna say, ah, there's not enough there for
+us to, to really be compelled by it. And, we'll, we'll hold off on that. Do you have a framework for that? Is it firm or it's something else? one of the, the strategies that, that,
+uh, we employed and, and thanks to Mike for pushing on this so hard, is
+really forcing in a way all of our TDS team members to, to level up on ai. So we actually published a course and,
+and required our team members to all take that so they understand the pros and cons. That way when they're evaluating
+working with vendors, they can understand the pros and the cons
+and they can start to weigh that. And, and that's, that's been huge
+because otherwise, you know, uh, it is famous for, you know, seeing a shiny
+thing and getting directed to that. And this allows them to have a framework
+to assess is this really valuable? Um. So they don't get distracted
+and then suddenly distract the whole team towards that. And that's been very valuable so that
+when it does come up and then we've built into our project management, uh, that we
+identify things that have AI right away. So they go into a separate dashboard. So we can keep an eye on that and, and
+understand where is that, do we need? And I be, and I, I believe we're actually
+reviewing each of those before they even go forward, uh, to make sure that we like,
+yes, we wanna make that investment, uh, which is really important so that we can,
+'cause we could, as you said, everybody is pushing this into their product. We could suddenly consume ourselves
+with upgrading this and that extra license fee here, there, everywhere. And are we really solving
+real important problems? Absolutely. And I want to go maybe even a
+little bit further and, and, and wade into, I think it's gonna be
+a pretty deep area, which is it. We can't talk about healthcare without
+talking about trust and safety. And we've talked about, you know, do
+these products and capabilities add value? But there's also the question of do we
+believe we're continuing to maintain the trusted safety that we're expected to in
+our roles as we're employing these digital innovations, um, and specifically ai. So I am wondering, maybe we'll start
+with kind of a high level view, maybe Todd, uh, from you on, how do you
+think about maintaining trust and safety given not just the fact that,
+uh, these things are new, but, and I mean specifically AI capabilities, but
+also how quickly they're all moving. Um so how, how do you, how do you build that
+into the culture and make sure that you're never losing sight of trust and safety? It's a tricky one, but it is, you
+know, something that I think our firm framework and our AI governance
+really is trying to tackle. So, number one, making sure we, um, do
+that assessment before we deploy it. And that way we also understand
+what are we, what are we impacting, and how do we measure that? That way we can continue to measure
+those models, making sure they continue to perform the way they expect. So, you know, models
+are taking inputs, um. A, a health system is a living,
+breathing, you know, organism. Uh, lab tests change the way
+we record information changes. What if we missed reconnecting
+the model and suddenly now the model is not, uh, getting the
+same inputs that it was before. Uh, and it may now not fire correctly. So we need to be always monitoring that
+and making sure that it is behaving the way we expect it to behave. And that's part of the team's process. Uh, and we, we have, uh, our aim,
+right, um, project where we kind of, uh, track that and, and monitor
+that our AI, making sure it is, it is behaving the way we expect. just to add to that, we, we have
+a governance group, um, on the health system side that reviews
+all AI that we put into production. Uh, and we, the, the overarching
+umbrella, we call it the responsible air lifecycle, but we can't just
+turn on AI without understanding, you know what it's gonna do. We do an ethics assessment, uh, and then
+that goes to a committee for approval. And obviously we monitor these things, uh,
+to make sure they're performing, uh, well. So, um, it's, it's taken very,
+very seriously and we pilot things, test them, and publish on them. And, you know, there, there's, there's
+a lot of work that goes into these things, which is why we don't just
+turn it on left and right, and we don't have a thousand of these things
+going because each one takes kind of a lot of time to go through the process
+and to vet it and to understand it. Um, and I, and then that's the right
+thing to do because of the, the, you know, the kind of business we're in. For sure. Um, and you said before anything goes
+into production, is there also a process to even take something in and and pilot
+it or like are there different sort of phases that you take these things
+through from a governance perspective? Yes. Um, it depends on what it is. So everything's given like a risk level. And then it really depends on where,
+you know, what part of the business does it impact, what's the workflow? Workflow is so key. I'll keep emphasizing that. Um, how hard it is to implement. All of, all of these pieces determine,
+you know, what kind of pilot do we need? Do we even need a proof of
+concept before the pilot where we technically see if it's gonna work? Um, and that's all built
+into every project we do. So it's, it's there, it isn't the,
+the assessment and the life cycle. Are our frameworks, but
+everything that passes through it really isn't a cookie cutter. It can't be. It has to be individualized. It's very interesting. I mean, I think every one of our
+customers are dealing with this question of how do we do governance around ai? And they've all come up with, I
+think, roughly the same structure. But I would imagine for you all is just
+a whole nother level of, um, you know, just, just compliance that you've gotta
+deal with when you're talking about, you know, patient data, research data, the
+privacy of that, the security of that. Um, how do you ensure, I mean, other
+than the governance process itself, are there other specific things that you do,
+rules or principles that you say everyone has to adhere to or anything else? And I'm, I'm thinking about this from
+a standpoint of pragmatic advice for those, you know, who are listening and
+dealing with these challenges themselves. Like besides the governance committee
+and the governance process, what other things should be people be
+thinking about putting in place? A question academic. We, we wanna support things through
+that, that whole life cycle. So while we have very finite products
+that are coming, they're, they're polished, they're ready to deploy. We also have these sparks, these ideas,
+and we want to create safe places for our, our researchers, our faculty
+members to innovate and then create a pipeline where we can test those. And we're, we're working on, you
+know, increasing the support for that. It's not quite turn the crank, but
+we're working on that this year to get to a place where they can deploy
+things in a safe environment, but yet actually get real, uh, clinical
+data and clinical expertise, uh, coming in and then show value. Be able to publish on value and
+then we can evaluate to determine does it really have impact, uh,
+just using our firm assessment and then ultimately get deployed. So creating that pipeline and,
+and so that's, that's what I encourage everybody is to think
+about how do you have that funnel? All those ideas. Not all of those will be good ideas,
+but we really need to bring the creative spirit in and we may find those nuggets. We're, again, not just looking
+out to the vendor community, but we're also looking inward at our
+faculty members are taking care of patients, seeing real world issues. love that idea of the funnel where
+you're gonna have a lot of stuff coming at the top, but you've gotta have a
+process for kind of whittling that down. And what comes out at the bottom
+has gotta be the highest value, most secure, um, kinds of solutions. Sorry, Mike, I cut you off. no, I mean, it's great point. I want to add that, you know, and we,
+we kind of talked about this before about AI is everyone's job in, in it,
+and everyone needs to be upskilled because when you, when you talk about
+security, for example, and privacy, uh, you need an amazing infrastructure team. You need an amazing architecture team. You need an amazing cybersecurity team. You need, you need all those pieces to
+come together with an understanding of ai. We're very lucky to have that. Uh, the teams work incredibly well
+together, but all of those pieces are important to make sure that the
+models are secure and HIPAA compliant. For example, when we put them into
+production and we think through how do we build our sandboxes, how do
+we deliver, uh, a minimum necessary data to make the models function? Uh, so all of those pieces need to come
+together and, um, so it's not just, you know, build your AI team over here
+and be like, ah, we're good to go. It's actually, everybody's
+gotta be involved and, um, part of how you build these things. So, um, that's something we take
+very seriously here, obviously. But, uh, it's, it's, it's, it
+couldn't be more collaborative. I mean, the traditional framework
+of it where you have your different verticals doing different things isn't,
+uh, isn't gonna work in the future. Like there, there has to be this level of. Interdependency between all your
+teams to really be able to deliver this kind of stuff in a safe,
+secure, and um, meaningful way. It, it's a really great point. It does remind me a load of the early
+days of, you know, internet where companies had like internet teams, right? And if you, if you look at what, how
+companies are organized today, no one, no one has a, I mean, you don't
+really have a separate internet team. It's just part of how
+you think about doing, doing business Now. Um. Uh, it's, it's great advice for, uh, for
+folks listening just in terms of how to, how to organize themselves around this. Maybe in the early days you still have
+some emerging technology folks who are looking at things in a slightly different
+way, but you very quickly, I think, get to this model of how do you integrate
+it into all the things that you do. So you're thinking about
+security, privacy, uh, robustness, all of that holistically. it does make me wonder a bit about one
+particular aspect of ai, which is the fact that it's, it's probabilistic. And so what, when you think about things
+like the importance of accuracy and repeatability in particular, um, that's
+incredibly important healthcare, right? So how, how do you all think about
+what do you do when AI gets it wrong? Um, what sort of, uh, safeguards
+do you put in place around that? And again, is that built
+into the framework? You say, every time we use an AI tool, we
+need to be thinking about these things. Or there certain use cases where it's
+actually fine, that it's probabilistic. Um, in other cases it's not just
+like, maybe Mike, how do you, how do you think about that? How do you mitigate that risk? Well that is, that is the big question
+I think in all of this, um, right, because, you know, the whole idea
+behind generative AI is that it generates things, texts, pictures,
+whatever, and it's not gonna give you the same response every single time. And so how do you, um. How do you handle all of this? And, it really takes, uh, again, a lot
+of evaluation and piloting of the tools, being able to assess how well they're
+performing, but also an understanding that is not gonna be perfect. And how do you train, you know,
+the people using the tools and understanding what their, what
+the, you know, capabilities are. I think it's really important, but, you
+know, there's so much opportunity to do better in healthcare that we, if we
+aim for perfect, then we're not gonna get better and we need to get better. And so, um, that's been kind of our
+philosophy is we wanna make things better and um, and then we continue
+to learn and make things even better and make things even better. So that's kind of how we
+think about it globally. There's a lot of work going on, on
+to how do you actually measure this. There's a framework that was
+developed here called Med Helm, which really assesses how generative
+models actually perform on healthcare tasks, as an example. So you can begin to see how
+things, you know, perform. And that's something we use. Um, we get lots of feedback, so
+there's real time feedback that you get from, from using these models so
+we can see how they're performing. And so I liken it to a,
+a learning health system. You know, it's really, uh,
+using these tools, learning, growing, making them better. Uh, but they, they perform really
+well and they, they do things that, you know what, a human, a, a human
+might take a long time to, to look through a medical chart and maybe they
+don't look through the whole medical chart because it's so time consuming. And so even if you can get a
+really, really good summary of that information, we've seen examples
+of where that has changed care in a very positive way because. In a minute, you can summarize, you
+know, what would take hours and really be able to, uh, move forward on that. So, so it's a, it's a great question. I think we're gonna continue
+to learn in this space. Um, but we, we, uh, we build that
+into our framework and our monitoring capabilities as we move forward. One of the tactics that I've seen, uh,
+come up more and more in discussions with customers is, you know, leveraging
+different models and different agents. We haven't really talked about
+agents yet, but to perform different tasks in a workflow. And so maybe you've got one model
+that's doing that initial analysis, but a second that's actually doing the
+validation and, and or the QA assessment. Right. Of that. And are those techniques
+that you've begun to employ. Certainly on the research side
+we are, we are playing with that. And you know, my comment on, you know,
+the previous question was that, you know, medicine is inherently a probabilistic. Endeavor. Um, all the lab tests come back. There is some rate of error in them. Clinicians by their training deal in
+probabilities, and so they're very accustomed to tools coming back. And it's not with a certainty. It's not like running a oil
+refinery where it's, you know, very, you know, uh, mechanical. There's very set things. We are going by a lot of
+different sources of data. We all know there are some
+error in those lab tests. The various, uh, imaging
+studies we send people for. And so we're accounting for that. And I think that's why these
+models actually work quite well in this environment. We need to understand how well they
+work just by doing things like med helm, but we really need to make
+sure our clinicians continue to view them as they're probabilistic. They have some error in them. Uh, they're just like a lab
+test or some other thing. And we just need to be
+cautious of hallucinations. And I think we are very cognizant of that. Um, we don't want our models making
+things up, but uh, there's just great opportunity in, um, you know,
+leveraging that and, and bringing that, that, that skill to the forefront. Thank you for saying that. 'cause that's a really, it's a fascinating
+point I hadn't really considered before. Just the nature of what you do
+is probabilistic to your point. And people are used to working that way. And, um, I guess there's a question
+over time of, is AI getting better at those probabilities than humans have been? Right. More, the more information
+we get it, the better. And, and this is the point of Med Helm
+is to really be able to measure that. As we continue to improve those, as
+we train the models on more and more data, their precision becomes better. And so we can continue to monitor that
+and make sure that it's reasonable. We don't, we don't want giving
+something that's a 50 50, right? I mean, that's not useful. Uh, but you know, there's, there's
+a certain point where we're like, yeah, this, this is useful. There's a little bit of noise in
+here, but we can account for that. This is really, it's, it's fascinating. Just a different way of thinking
+about it, because on the business side, if you're talking about things
+like, you know, financials, it's predictable and repeatable, and you
+know exactly what it should, what the answer is, and, and you can test that. Right? Exactly. Yeah. So if you're talking on like a, on
+a general ledger, like it wouldn't be acceptable to sort of like, you
+know, well, it looks like this amount of money, but in the case of a, in a
+patient, we're taking in lots of data as a clinician and, and working with that
+and, and then looking at probabilities of what's the likelihood of this illness? Everything's pointing
+towards this illness. We should be headed that way. We should treat it like that. And then we watch for the response. Does the patient respond to that? And it's, it's, these can help us. Right, and there's often
+incomplete data sets too, right? So you don't have all
+the data all the time. And so that's just something
+clinicians are used to. I mean, and, and so again,
+we wanna make it better than what we, what we
+currently have today. Well, and I could see one of the, the
+uses being, you know, actually doing diagnosis, but I, I would imagine
+there's also a huge use for what's the right next test to even run. Right. So what, what's the recommendation
+for next steps, even before you get to, you know, what's the actual
+underlying, you know, condition? Is that, is that, is that the case? Is that happening? There are certainly initiatives
+around that and research areas. Uh, now this is not new. I mean, going back to the, you
+know, the eighties there were. Depl and other sort of tools that
+where you could put in a list of symptoms and the computer system
+would pop out a list of, you know, diagnosis in probability order. Uh, but I think that the tools are
+getting more integrated into the workflow. It was a lot to ask a clinician to go
+over to a separate computer system, type in all of those things, and
+then have the system spit it out. But now it can be in the workflow. But again, we need to make sure that
+our clinicians are understanding that like, this is based on the
+information that the system has. You have the patient in front of you and that is their, you know, they,
+you know, as, as a clinician, you really get to understand
+like, does this person look sick? How do they like you, you interact
+with that person and you have a real good sense of what, what they're
+doing and, and so like they need to integrate that along with this data. Yeah. That's a never lose sight of that, right? That there's still a human involved here
+that you're, that you're caring for. Um, it's, it's just so fascinating. I do wonder, and I don't know if you
+can give specific examples or not, but have you started to run into any
+ethical dilemmas or any of the, the folks that are, that are starting to
+use these technologies, what are, what are the nature of those and, and how
+do you, how do you work through those? so I'll go back to technology
+and workflow, right there, there are how you deploy these things
+and the workflows that you design certainly play into these challenges. So, uh, like it, here's an example. I mean, we, we haven't deployed
+this, but this is just a example. If you're gonna create a model that
+predicts which patients are most likely not to show up for their appointment,
+uh, sure you could create a model that that does, that the model could
+be completely unbiased and predict pretty well, who, you know, may
+not show up for their appointment. Then the question is, well,
+what do you do with that? If Mm-hmm. you, you could double book, so you
+could add more patients onto this schedule, but if the patient shows up,
+this puts everybody at a disadvantage. The patient who was gonna predicted to
+no-show the patient who's there that was double booked and the physician
+now that has to deal with all of that. Or you call the patient that was predicted
+to no-show and you ask them, how can we help you get to the appointment? Right. Two totally different workflows, very different ethical implications. So it, it's hard to, like,
+each one has its own. Potential challenges. That's why we do ethics assessments
+for a lot of, a lot of our, what we do when it impacts patients. Um, the other thing is it's, it's, it's
+a little bit of a cultural change in the sense that, uh, you, we will start to be
+doing things that cross specialty lines. And so, you know, we could learn
+things off an image that say maybe one physician ordered for a particular
+reason, but find something that another physician is gonna need to take
+care of that we we didn't do before. Or predict things, uh, diagnoses
+or that, uh, uh, one specialty doesn't, you know, typically handle
+and who's responsible for that. And so there's this kind of a little
+bit of blurring of the lines that is quite complicated and, and we, we have
+to work through, a as, as examples of. The change management around all of this. Then there's regulatory and insurance
+reimburse and all of these other things that factor into it too. So, um, let's just say it's,
+it's, it's, it's a really exciting time and fun to be in these Exciting and cha and challenging, right? Because problems, you know, but it, it's, it's,
+it's really fun and a privilege to, to get to work through these things. And, you know, now we have
+another tool tool in our tool belt that we didn't have before. That's incredibly powerful. So it's not like we didn't know these
+problems existed and we, it didn't, it's not like we didn't, we, we haven't
+wanted to make, uh, differential diagnoses better using more data. Um, but we didn't always
+have the tools to do that. And now we, we have the
+tools and we have to learn. But, you know, the more and more you
+get into clinical decision making, that's where, again,
+the, the risk is higher. And you start getting into
+software as a medical device, you start getting into, you know. Really having to understand how these
+systems work and then educating clinicians to understand probabilities related to
+what the models are going to produce. So that gets much more complicated,
+which is why I think you're seeing right now a lot of focus on automation
+in healthcare, because that's a lot of the low hanging fruit. Right right. And I see an analogy in some of
+the other industries that we serve. Uh, for example, immediate entertainment. AI is very problematic from a,
+from a creative perspective. So there's a a lot of
+concern and, and a tendency to sort to stay away from it there. But if you think about a whole bunch
+of other business processes that every median entertainment company
+needs to run, AI can be very helpful. So sort of deciding where it is
+appropriate and where it's not appropriate, and the guardrails
+may be different, right. you you did mention Mike, um,
+uh, some reg regulatory stuff. I don't wanna go too far down that,
+uh, rabbit hole, but just can you touch on that a little bit and what
+are some of the things to be thinking about from a regulatory perspective? That's a very dynamic
+and open space right now. there's hasn't been that much
+in the way of regulation of ai, just overall just AI in general. Right. Um, we take it very seriously in the
+sense that we know everything that's, you know, in our systems with AI and
+how we're monitoring it and when it got approved and all of these things. So at least we, we are very careful
+about that, you know, part of it. So, uh, but you know, I, I think, I
+think everybody's trying to figure this out and so it's, it's a learning space. And, um, you know, much like everything
+in medicine, you know, when a drug gets approved, there might be post,
+uh, you know, drug deployment findings, that there's a new side effect or a
+new whatever, and then you have a new warning or there change in indication. And this is just common in,
+in, in healthcare in general. So I think the regulations, um,
+for AI are not explicit, but are probably gonna follow in that the same
+footsteps that we are gonna learn and continue to monitor and go from there. Thank you, uh, Todd, I wanna
+turn to you and, and, and pivot a little bit to, to looking forward. Um, and we started, we touched
+on a few things here, but what gets you the most excited about? What's, what's possible and do you have
+any ideas about what could be possible that you, we just simply can't do today? Three, let's say three
+to five years out to go. Not, not too, too crazy. Oof. That is kind of crazy Maybe that's too, maybe that is too crazy. Alright. no, I, some interesting, some
+interesting, areas that we're working. I think all the craze has really
+been about, uh, large language models specifically for generative text and,
+and, and images and other things. But we're also thinking a lot about
+how do you leverage transformer models, but not with what you would think are
+traditional objects like a, a word. What if that's really more like a
+medical event because then you can start to predict the next event. And, and so we're looking at that, uh,
+specifically around, um, you know, right now a big focus on the cancer side. Uh, so we have two very large initiatives. Uh. Through, uh, arpa h and then, uh,
+the Weill, uh, cancer Hub West, where we're working on how do we think
+differently about cancer care and can we predict, uh, outcomes from
+a very complex multimodal dataset. So not just simply what's in the EHR,
+but also what's in the histology, which is really the gold standard when you
+think about, uh, uh, cancer treatment. The actually taking that biopsy
+of that cancer tissue and then looking at it under a microscope,
+staining it and understanding what is going on at a cellular level
+is really what's gonna drive. And then the genomic sampling of that. So we actually take those cancer cells and
+we sequence them and understand like what is going on, feeding that into a model. Then to predict all the potential
+outcomes, we're starting down that path. And I think in three, three
+years we can really be. Just way out there, way more than a
+human can integrate that information. 'cause it's so large and I think that's where the
+computer comes into play. That's a fascinating example. So the same underlying transformer
+technology, but applied to a very different problem set. Absolutely. So foundational models that are
+developed on top of novel data sets? Right. And I would imagine Stanford's at the
+forefront of some of that research. Yeah, we're trying to be. Trying to be? Okay. Um, so Mike, maybe to go back to
+the operational side for a minute, paint us a picture of a, a day in the
+life in a hospital augmented by ai. You don't have to tell us every
+detail, but like what, what will feel different to maybe to a patient? there's, uh, a lot of foundational
+things that we are still working on in healthcare, like scheduling and
+prioritizing and things like that, that as we get better and better
+at, we'll be able to be automated. I think you're gonna see more
+visual AI based technologies. In hospital rooms, in, in clinics
+that will do more than just listen to conversations, but will understand
+kind of how, how you're feeling, uh, what's your fall risk, et cetera. So they'll, they'll be kind
+of much more data generated around, um, you as a person, which will then help kind of make, uh,
+give clinicians the opportunity to, to have better personalized decisions. I mean, all of this is really in my
+mind, moving towards personalized health Mm-hmm. trials for drugs are averages. Basically the one group
+on average does better than the other group,
+and it's statistically significant, so that's great. But not everybody in
+that group did better. Some did worse. Not everybody in the. You know, is gonna
+benefit in the same way. So how do we, the only way to get to that,
+like this is the right medicine for you in the, you know, uh, in the category
+of say, high blood pressure medicines. 'cause you can choose from a bunch. Uh, we'll be able to hopefully get to that
+point where this is the right medicine for you and we'll have the best outcome. And that I think is where all
+of this hopefully will go. And so the experience, you know,
+I hopefully will be easier. I think there'll be more
+interaction through patient portals. There'll be agents helping
+you schedule things. It'll, it'll, it'll hopefully
+bo be more seamless. But ultimately it's about that
+personalized precision medicine that, um, will really change that experience. It is so fascinating, and I think
+there's so much, uh, potential here, and I'm, I'm glad you all and your,
+your teams are working on this. Um, this stuff continues to
+evolve incredibly quickly. How do you ensure that Stanford, both
+culturally and operationally stays agile? Is consuming all of these, uh, innovations
+as, as they occur in the right way. Again, back to trust and safety, um, but
+just what, what's the plan to make sure that you stay on top of all this stuff? yeah, I mean, honestly, I don't
+think we can, I, I think there's so much coming at us all the time. I, I think we just have to stick
+to our, our, our mission and our values and use our frameworks. And identify the problems that we wanna
+solve because it's gonna be better for our patients or better for our researchers. Uh, and stick to that. Uh, but there's, I mean,
+it, and it's so hard. I mean, there's so much, right? There's so much coming our way. And so staying true to that I think
+is, is how we stay on top of it. Recognizing that it, it's, it's a team. It's not a person, it's not, you know, a
+small group, but it's really everybody. And then it's, it's not just it,
+it's everybody in the organization. So I think it's, it's that kind
+of philosophy that will help us. Um, but it's not, I, I don't, I think
+it's very hard to, to stay up to date with everything and everything's changing
+pretty quickly, which is exciting on one hand, but also when you think
+about deploying things into production at scale, version control, you know,
+making sure these things are performing as well as they need to perform. You, you can't. Always go down the shiny object
+route and move too quickly. I think you, you really
+need to balance all of that. Todd, what would you add? Well, I think Mike covered most of it. The only thing I would add is kind of
+what I mentioned earlier, is that's really making sure we keep those sandboxes,
+those tool sets available, uh, for our own, you know, uh, team members as
+well as our community so that they have that space to work and innovate because
+it is coming too fast and furious for any one person or one team to own. We really have to view it as our whole
+organization is out there looking at that next innovation and figuring
+that out, but able to do it in a safe. Controlled way. Uh, so that they, and, and then, and
+then we can, that funnel right back to that funnel, making sure that
+it comes in, and then we can figure out what's the next thing to deploy. And using the, the frameworks
+that you talked about to kind of, you know, evaluate things in the
+funnel and kind of bring them down. And I love, Mike, what you
+said earlier too, about always keeping the mission in mind. And, and I think as these things come
+at you, having that lens of what is the mission and how does it support the
+mission, whatever the mission is, and your case, it's very clear, patient care,
+um, and education and research, um, for business might be something completely
+different, but look at it through that lens is what you're, what you're saying. Yeah, we trained you well,
+John, you got the mission. Perfect. I got it. Yes. Alright. Thank you. I was paying attention. That's all. I, I wanna, I wanna close
+with a, with a couple things. Um, in, in my role in, in, in
+customer success at at Box, I think a lot about kind of three things. One is delivering value,
+which we talked about earlier. And so I want to touch back on that. Um, the second is around culture
+and change, and the third is around the experience that we
+provide to the folks who consume the things that we're providing. Right? So, um, three big areas, but
+I'll just ask you, you know, a couple quick questions on these. So Mike, what do you see as the
+critical path to value realizations, making sure that the things that
+you're bringing in and evaluating and ultimately putting out there, um, for
+folks are actually providing value. How do you, how do you think about that? Yeah, I think it's all about the
+framework and it, you know, doesn't matter necessarily what framework you
+use, but you need a framework to evaluate these things and then follow up if
+they're performing as they need to be. And if they're not, turn 'em off, uh, because they will live forever
+and they could create problems later. So it's, it's really sticking
+to that framework. Doing a really good assessment of
+the value of, of what it should provide and then measuring it later. It's, it's, you gotta measure it later, Well, and I think your point about
+follow-up is incredibly important. 'cause I think a lot of, a lot of,
+at least on the commercial side, what you see a lot is you do an
+initial business case to make the decision to go purchase something. But does anyone ever check back six months, 12 months, 18 months later
+to see, well, did it actually do the right? thought it was gonna do? Exactly. Yeah. Okay. So evaluate upfront and then keep
+checking back to make sure that that value's being delivered. Um, Todd, let me ask you
+about culture and change. And we've touched on this a little
+bit and it's obviously a huge topic on its own, but as you're deploying these
+kinds of innovative, uh, technologies and deciding what's in and what's
+not in guidance for folks out there about how to think about the change
+aspect of that, and I think, I can't remember Mike, if it was you who said
+earlier, it's not about the technology, it's about the change and the people. So Todd, how, how, how do you think
+about that and what are the most important criteria for influencing that? Yeah, culture is such a, such a big thing. It's it, you know, I, I think we're
+very lucky at Stanford that we have a, a, you know, culture of, of innovation. It's very much sort of baked in. Um, we're a very entrepreneurial,
+uh, bunch here and, and that, um, so that culture just sort of
+permeates across the organization. And, and so the other piece that I,
+I think is, we are also blessed with is that, uh, folks do understand
+that there are limitations. So we've been working for a long time, you
+know, since I started with sort of, you know, the privacy and security in the, uh. I won't say how long ago, but it was
+a while ago and it's now baked in. I mean, it really is baked into the
+culture that they recognize that yes, I can be innovative, but I have to do
+it in a way that protects this data. Um, it's so important. And so those are just, you know, you've
+gotta have those foundations, and when you have those foundations, then people
+can just really build from there. Excellent. Um, and then the last thing I wanted
+to touch on is just the experience that you intend to deliver. And I think, Mike, early on in the
+conversation, you talked about the importance of these solutions being
+integrated into the workflow so that you're not over here doing some AI
+thing and then you gotta go back to the, the way you normally do work. Um, maybe just how do you all think
+about, maybe for both of you, how do you think about making sure that
+the experience that you provide, um, ensures the success of, of the, the
+solution that you're rolling out? well, so it's a multidisciplinary team. It's clinicians, it's informaticists,
+it's technologists, it's UI experts, it's nurses, it's, it's everybody that has to
+weigh in on how we design the workflow and then we test it and then we fix it. 'cause usually the first time
+isn't always the right way. Um, and that is just in incredibly key. You have to have your, the people
+who are gonna use it, the people who are gonna manage it, um, and
+the people who are designing it all have to be kind of in the same room
+really thinking about that experience. Uh, so I think that's really important
+and, and, and that is so important that it has to be completed before
+we make a decision to move forward and put it into production. Because again, and we've talked
+about this a bunch, like the workflow determines a lot of the
+times what the model is going to do. And so, uh, it all needs to be
+incorporated there, but it's really bringing, bringing everybody together. In order to understand
+how this is gonna work. Todd, last word, anything to add on that? I think Mike really summed it up. Uh, it is, it is all about the workflow. If you don't get the workflow
+right, it doesn't matter how great your models are, it's. It's not gonna work. And, and it's iterative. You have to, you know, you know that
+you, you, you can plan the best, but until you actually test it, pilot it
+into that workflow, you just don't know. Well. I have really, really
+enjoyed this conversation. Maybe I'll give you each a very
+quick minute to say, you know, one piece of advice for folks who are
+not as far along as you all and how you're thinking about this. Is there maybe one thing for peer CIOs,
+CEOs, CTOs, whatever leadership role they we're in here, what's one thing people
+should do or not do, um, to really improve their chances of being successful with ai? one thing, uh, you know, I I
+would just say it's, it's making sure you have a really good team. Okay. Uh, it's just always about, it
+always comes down to the people that you get to work with. I mean, and I am so fortunate to get
+to work with amazing people, both within TDS or technology organization
+and throughout Stanford, but it's just about the people and if the team works
+well and the relationships are good. Then you're gonna be successful. It's just like with any
+AI is just another tool. Right? So it's really still boils down to those
+basic principles of really good team and a team that is high performing. Great. And probably once you build that
+team, hang onto it as long as you can and continue to grow and develop it. Yes. Todd, Okay, so no offense John, but. Don't believe vendors, um,
+they're not, they're not, they're not going to just come in
+and magically solve your problem. You gotta have the team,
+you gotta put the work in. You can't simply just pay somebody
+and it's just magically gonna work. This is, you know, it's too often
+I see vendors coming in and say, we're gonna solve all of this. And it's like, Nope, you,
+you gotta put in the work. You gotta think through the workflow. You gotta think through the process. You gotta think through all that. And, and it, to Mike's point,
+you gotta have a strong team. Yeah. Well, the good news is,
+I'm not offended by that. Um, I think there's an element
+of, uh, of trust but verify. And certainly as you build long-term
+relationships with vendors, you kind of, you kind of get to know
+them a bit, but there are a lot of new entrants in this space. And so being really clear about what
+your requirements are, what your criteria are, and I think, again,
+going back to the frameworks, using your pre-established frameworks to do
+those evaluations, sort of take some of the subjectivity out of outta the process. There's always gonna be some,
+but it takes a lot of it out. um, we are very happy to be, uh, one of
+your vendors and I would hope, hope to say actually a partner more so than a vendor. Um, but this has been,
+uh, a great conversation. Again, the first one I've done
+with two guests at the same time, and it was, it was incredible. So appreciate both of your
+perspectives, both your insights and, um, uh, really appreciate your time. So thank you. Thanks John. Yeah, thanks for having us. This was great. Thanks for tuning into the AI first
+podcast, where we go beyond the buzz and into the real conversations
+shaping the future of work. If today's discussion helped you rethink
+how your organization can lead with ai, be sure to subscribe and share
+this episode with fellow tech leaders. Until next time, keep challenging
+assumptions, stay curious and lead boldly into the AI first era.

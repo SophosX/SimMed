@@ -1,0 +1,128 @@
+Title: Can AI Catch What Doctors Miss? | Eric Topol | TED
+Channel: TED
+URL: https://www.youtube.com/watch?v=ll5LY7wI_Xc
+Transcript source: supadata:supadata
+
+I've had the real fortune
+of working at Scripps Research for the last 17 years. It's the largest nonprofit biomedical
+institution in the country. And I've watched some of my colleagues, who have spent two to three years to define the crystal
+3-D structure of a protein. Well, now that can be done
+in two or three minutes. And that's because
+of the work of AlphaFold, which is a derivative of DeepMind,
+Demis Hassabis and John Jumper, recognized by the American
+Nobel Prize in September. What's interesting, this work, which is taking the amino acid
+sequence in one dimension and predicting the three-dimensional
+protein at atomic level, [has] now inspired many other of these
+protein structure prediction models, as well as RNA and antibodies, and even being able to pick up
+all the missense mutations in the genome, and even being able
+to come up wit proteins that have never been invented before,
+that don't exist in nature. Now, the only thing I think about this
+is it was a transformer model, we'll talk about that in a moment, in this award, since Demis and John and their team of 30 scientists don't understand how
+the transformer model works, shouldn't the AI get an asterisk
+as part of that award? I'm going to switch from life science, which has been the singular biggest
+contribution just reviewed, to medicine. And in the medical community, the thing that we don't talk much about
+are diagnostic medical errors. And according to the National
+Academy of Medicine, all of us will experience
+at least one in our lifetime. And we know from a recent
+Johns Hopkins study that these errors have led
+to 800,000 Americans dead or seriously disabled each year. So this is a big problem. And the question is, can AI help us? And you keep hearing
+about the term “precision medicine.” Well, if you keep making the same mistake
+over and over again, that's very precise. (Laughter) We don't need that, we need accuracy and precision medicine. So can we get there? Well, this is a picture of the retina. And this was the first major hint, training 100,000 images
+with supervised learning. Could the machine see things
+that people couldn't see? And so the question was,
+to the retinal experts, is this from a man or a woman? And the chance of getting it
+accurate was 50 percent. (Laughter) But the AI got it right, 97 percent. So that training, the features are not even fully defined
+of how that was possible. Well that gets then
+to all of medical images. This is just representative,
+the chest X-ray. And in fact with the chest X-ray, the ability here for the AI to pick up, the radiologists, expert radiologists
+missing the nodule, which turned out to be picked up
+by the AI as cancerous, and this is, of course,
+representative of all of medical scans, whether it’s CT scans, MRI, ultrasound. That through supervised learning
+of large, labeled, annotated data sets, we can see AI do
+at least as well, if not better, than expert physicians. And 21 randomized trials
+of picking up polyps -- machine vision during
+colonoscopy -- have all shown that polyps are picked up better with the aid of machine vision
+than by the gastroenterologist alone, especially as the day goes on,
+later in the day, interestingly. We don't know whether picking up
+all these additional polyps changes the natural history of cancers, but it tells you about machine eyes, the power of machine eyes. Now that was interesting. But now still with deep learning models,
+not transformer models, we've seen and learned that the ability for computer vision to pick up things
+that human eyes can't see is quite remarkable. Here's the retina. Picking up the control of diabetes
+and blood pressure. Kidney disease. Liver and gallbladder disease. The heart calcium score, which you would normally get
+through a scan of the heart. Alzheimer's disease before any
+clinical symptoms have been manifest. Predicting heart attacks and strokes. Hyperlipidemia. And seven years before
+any symptoms of Parkinson's disease, to pick that up. Now this is interesting
+because in the future, we'll be taking pictures
+of our retina at checkups. This is the gateway to almost
+every system in the body. It's really striking. And we'll come back to this
+because each one of these studies was done with tens or hundreds [of]
+thousands of images with supervised learning, and they’re all separate studies
+by different investigators. Now, as a cardiologist,
+I love to read cardiograms. I've been doing it for over 30 years. But I couldn't see these things. Like, the age and the sex of the patient, or the ejection fraction of the heart, making difficult diagnoses
+that are frequently missed. The anemia of the patient, that is,
+the hemoglobin to the decimal point. Predicting whether a person, who's never had
+atrial fibrillation or stroke from the ECG, whether that's going to likely occur. Diabetes, a diagnosis of diabetes
+and prediabetes, from the cardiogram. The filling pressure of the heart. Hypothyroidism and kidney disease. Imagine getting an electrocardiogram
+to tell you about all these other things, not really so much about the heart. Then there's the chest X-ray. Who would have guessed
+that we could accurately determine the race of the patient, no less the ethical implications of that, from a chest X-ray through machine eyes? And interestingly, picking up
+the diagnosis of diabetes, as well as how well
+the diabetes is controlled, through the chest X-ray. And of course, so many different
+parameters about the heart, which we could never, radiologists or cardiologists,
+could never be able to come up with what machine vision can do. Pathologists often argue about a slide, about what does it really show? But with this ability of machine eyes, the driver genomic mutations
+of the cancer can be defined, no less the structural
+copy number variants that are accounting
+or present in that tumor. Also, where is that tumor coming from? For many patients, we don’t know. But it can be determined through AI. And also the prognosis of the patient, just from the slide, by all of the training. Again, this is all just
+convolutional neural networks, not transformer models. So when we go from the deep neural
+networks to transformer models, this classic pre-print, one of the most cited pre-prints ever, "Attention is All You Need," the ability to now be able
+to look at many more items, whether it be language or images, and be able to put this in context, setting up a transformational
+progress in many fields. The prototype is,
+the outgrowth of this is GPT-4. With over a trillion connections. Our human brain has 100 trillion
+connections or parameters. But one trillion, just think of all
+the information, knowledge, that's packed into those one trillion. And interestingly, this is now multimodal
+with language, with images, with speech. And it involves a massive amount
+of graphic processing units. And it's with self-supervised learning, which is a big bottleneck in medicine because we can't get experts
+to label images. This can be done
+with self-supervised learning. So what does this set up in medicine? It sets up, for example,
+keyboard liberation. The one thing that both
+doctors, clinicians and patients would like to see. Everyone hates being
+data clerks as clinicians, and patients would like
+to see their doctor when they finally have the visit
+they've waited for a long time. So the ability to change
+the face-to-face contact is just one step along the way. By having the liberation from
+keyboards with synthetic notes that are driven,
+derived from the conversation, and then all the downstream normal
+data clerk functions that are done, often off-hours. Now we're seeing in health systems
+across the United States where people, physicians
+are saving many hours of time and heading towards ultimately
+keyboard liberation. We recently published, with the group
+at Moorfields Eye Institute, led by Pearse Keane, the first foundation model
+in medicine from the retina. And remember those eight different things
+that were all done by separate studies? This was all done with one model. This is with 1.6 million retinal images predicting all these different
+outcome likelihoods. And this is all open-source, which is of course really important
+that others can build on these models. Now I just want to review a couple
+of really interesting patients. Andrew, who is now six years old. He had three years of relentlessly
+increasing pain, arrested growth. His gait suffered with a dragging
+of his left foot, he had severe headaches. He went to 17 doctors over three years. His mother then entered all
+his symptoms into ChatGPT. It made the diagnosis
+of occulta spina bifida, which meant he had a tethered spinal cord
+that was missed by all 17 doctors over three years. He had surgery to release the cord. He's now perfectly healthy. (Applause) This is a patient that was sent to me, who was suffering with,
+she was told, long COVID. She saw many different
+physicians, neurologists, and her sister entered all her symptoms
+after getting nowhere, no treatment for long COVID, there is no treatment validated, and her sister put all
+her symptoms into ChatGPT. It found out it actually
+was not long COVID, she had limbic encephalitis,
+which is treatable. She was treated, and now
+she's doing extremely well. But these are not just anecdotes anymore. 70 very difficult cases that are the clinical
+pathologic conferences at the New England Journal of Medicine were compared to GPT-4, and the chatbot did as well or better than the expert
+master clinicians in making the diagnosis. So I just want to close
+with a recent conversation with my fellow. Medicine is still an apprenticeship, and Andrew Cho is 30 years old, in his second year
+of cardiology fellowship. We see all patients
+together in the clinic. And at the end of clinic the other day, I sat down and said to him, "Andrew, you are so lucky. You're going to be practicing medicine
+in an era of keyboard liberation. You're going to be
+connecting with patients the way we haven't done for decades." That is the ability to have the note and the work from the conversation to derive things like pre-authorization, billing, prescriptions,
+future appointments -- all the things that we do, including nudges to the patient. For example, did you get
+your blood pressure checks and what did they show and all that coming back to you. But much more than that, to help with making diagnoses. And the gift of time that having all the data of a patient that's all teed up before
+even seeing the patient. And all this support changes the future
+of the patient-doctor relationship, bringing in the gift of time. So this is really exciting. I said to Andrew, everything
+has to be validated, of course, that the benefit greatly
+outweighs any risk. But it is really a remarkable time
+for the future of health care, it's so damn exciting. Thank you. (Applause)

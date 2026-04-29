@@ -1,0 +1,183 @@
+Title: AI Scribes Saved 15,700 Hours – Here’s How!
+Channel: Health AI Tidbits
+URL: https://www.youtube.com/watch?v=20ZQqo9AYJA
+Transcript source: auto
+
+[0.1] Okay, here's a question for you. Did you
+[2.2] know AI could potentially free up enough
+[5.3] physician time in just one year to equal
+[8.6] almost five entire working years? Yeah,
+[11.4] it's a pretty staggering figure, isn't
+[12.9] it? That's exactly the kind of potential
+[14.6] we're trying to uh unpack today. We're
+[16.7] doing a deep dive into ambient AI
+[19.1] scribes in healthcare, looking at how
+[21.4] they've actually performed after a year
+[23.2] out there in the real world. Mhm. And
+[25.4] we're basing this on a specific piece of
+[27.4] research, right? from NEJM Catalyst
+[29.8] Innovations and Care Delivery published
+[31.8] March 31st, 2025. The title is ambient
+[35.5] artificial intelligence scribes
+[37.6] learnings after one year and over 2.5
+[40.1] million uses. A pretty comprehensive
+[42.1] look covering a lot of ground. Exactly.
+[44.1] And our mission today is really to
+[45.5] figure out are these AI scribes
+[47.4] sustainable? Are they genuinely
+[49.4] effective at cutting down that
+[50.8] documentation hassle for doctors and
+[53.5] maybe improving the patient visit? So
+[55.7] let's start with the why. What was the
+[57.4] big problem these AI tools were meant to
+[59.4] fix? Well, the core issue, and it's a
+[61.5] massive one in healthcare, is the sheer
+[63.7] burden of clinical documentation. Oh,
+[66.2] yeah. It's just overwhelming. It leads
+[68.2] straight to clinician burnout, you know,
+[71.1] job dissatisfaction. And you have to
+[73.0] imagine it potentially impacts the
+[74.6] quality of care, too, if doctors are
+[76.5] just swamped with paperwork. Absolutely.
+[79.4] This wasn't the very first attempt,
+[80.8] either. The article mentions this built
+[82.8] on earlier pilot programs. Okay, so the
+[85.0] problem Mhm. too much documentation. The
+[88.7] proposed
+[90.0] solution, these ambient AI scribes, how
+[93.6] do they actually work when implemented?
+[96.2] So the idea is they use generative AI.
+[98.6] They listen with patient consent.
+[100.5] Obviously, that's crucial, right? They
+[102.2] listen to the doctor patient
+[103.3] conversation and automatically generate
+[105.0] the clinical notes. Okay. And how did
+[107.4] the roll out go? Did doctors actually
+[109.1] use them? Yeah. What the study found was
+[110.8] really interesting. Usage grew pretty
+[112.4] steadily, quite linearly over the first
+[114.2] year. This was within the permanent and
+[115.8] medical group, a big health care system.
+[117.6] And was it everyone using it equally or
+[120.0] not quite it seems about a third of the
+[121.6] users accounted for most of the use? A
+[123.4] sort of power user group emerged which
+[125.8] suggests that for those who really
+[127.1] adopted it, it was providing real value.
+[130.1] Exactly. That's the implication. They
+[132.0] really leaned into it. Did they figure
+[133.8] out who these power users were like
+[136.2] younger doctors or maybe those closer to
+[138.6] retirement? That was one of the
+[140.1] surprising bits actually. They looked at
+[142.1] standard things like age, how long since
+[144.7] graduation, and none of those really
+[147.4] predicted adoption. It wasn't clearly
+[149.3] one demographic group over another. Huh.
+[152.3] Interesting. So, it appealed more
+[154.3] broadly than maybe expected. It seems
+[156.6] so. And the feedback from the physicians
+[158.5] who did use it overwhelmingly positive
+[161.3] according to the study. That's great to
+[162.7] hear for the doctors. But what about the
+[164.6] other person in the room, the patient?
+[167.0] How do they feel about this uh AI
+[169.4] listening in? That's obviously a
+[171.4] critical question. The study reported
+[173.3] that all patients involved felt the AI
+[176.1] scribe had either a positive or um a
+[179.5] neutral impact on their visit quality.
+[181.8] Okay, so no negative impact reported by
+[184.0] patients. That's really important.
+[185.4] Definitely it suggests it wasn't
+[187.1] perceived as some kind of you know
+[189.2] intrusive barrier between them and their
+[191.3] doctor. Now something else happened
+[193.0] during this first year or they actually
+[195.1] switched the company providing the AIC
+[197.7] scribe technology. They did. Yeah. a
+[199.8] vendor transition midstream. How did
+[201.8] that affect things? Did usage drop off?
+[203.9] Well, that's another key finding. The
+[205.9] transition seemed pretty seamless. Usage
+[208.2] patterns stayed consistent and the heavy
+[210.2] users of the old system quickly adopted
+[212.3] the new one. So, that suggests the value
+[214.5] wasn't just tied to one specific
+[216.3] product. Exactly. It points to the
+[218.7] underlying value of the technology
+[220.6] itself, the automated documentation
+[222.5] function that seemed to be the core
+[224.6] benefit doctors were latching on to.
+[226.4] Okay, let's talk impact. We started with
+[228.2] that big number about time savings. Did
+[230.5] the article quantify that more
+[231.9] specifically? It did. They estimated
+[234.3] that over that first year, the
+[236.2] physicians using the AI scribes saved,
+[238.8] get this, over 15,700 hours on
+[242.1] documentation compared to colleagues who
+[244.2] didn't use the system. Wow. 15,000
+[246.9] hours. How does that translate into like
+[249.1] work days? It works out to roughly
+[252.2] 1,794 working days. almost 1,800 days of
+[255.9] physician time freed up in one year just
+[258.2] within this group. That is huge. That's
+[261.1] time that could potentially go back into
+[262.9] patient care or research or just maybe
+[266.0] preventing burnout precisely. It's a
+[268.2] very tangible benefit. So given these
+[270.2] positive results, what did the
+[272.4] researchers say should happen next?
+[275.1] Where does this go from here? Well, they
+[277.1] noted there's still more to learn, like
+[278.8] understanding the impact across
+[280.2] different kinds of clinical settings,
+[281.7] different specialties, maybe different
+[283.4] patient demographics. Makes sense. And
+[285.8] they also suggested looking into
+[287.4] strategies to uh encourage the
+[290.5] non-users. Why weren't they adopting it?
+[292.8] And also allowing for more individual
+[294.8] customization of the nodes maybe to make
+[296.5] it even more useful, right? Tailoring it
+[298.7] a bit more. Okay, so summing it up, the
+[301.9] big picture seems to be that these
+[303.8] ambient AI scribes, at least in this
+[306.6] large-scale study, shows significant
+[309.2] promise. Yeah, real potential to ease
+[311.3] that documentation burden, save doctors
+[313.4] substantial time and do it without
+[315.1] negatively impacting the patient
+[316.6] experience. In fact, maybe even
+[317.8] improving it for some. It sounds like a
+[319.8] technology that's finding its footing
+[321.2] and proving its worth. Looks that way.
+[323.6] Seems potentially sustainable and could
+[325.8] become even more effective with further
+[327.4] refinement. Now, if you found this
+[329.4] discussion on AI's role in clinical
+[331.5] documentation interesting, you might
+[333.4] want to check out our previous deep
+[334.8] dive. Ah, yes. We looked at AI from a
+[336.8] different angle than how it's being
+[338.4] woven into the education and training of
+[341.0] healthcare professionals. Sort of the
+[342.8] learning side of the equation. Exactly.
+[344.8] It provides some good context for how
+[346.9] the workforce is adapting to these
+[348.5] tools. Which kind of leads to a final
+[351.0] thought, doesn't it? Something for you,
+[352.6] the listener, to think about. What's
+[354.2] that? Well, given these clear benefits
+[356.7] we've discussed, especially for the
+[358.5] doctors who really engage with these AI
+[360.6] scribes, what do you think are the main
+[362.9] barriers, maybe psychological, maybe
+[365.1] practical, that are preventing even
+[367.5] wider adoption of these tools across
+[369.6] healthcare right now?
+[371.8] That's a great question to chew on.
+[374.2] What's holding it back despite the
+[376.2] potential? Definitely something worth
+[377.8] considering.

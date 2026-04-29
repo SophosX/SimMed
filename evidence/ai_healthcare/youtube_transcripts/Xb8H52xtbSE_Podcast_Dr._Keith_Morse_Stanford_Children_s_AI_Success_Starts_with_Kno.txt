@@ -1,0 +1,6 @@
+Title: Podcast | Dr. Keith Morse, Stanford Children's| AI Success Starts with Knowing Your Data & Workflows
+Channel: The Big Unlock Podcast
+URL: https://www.youtube.com/watch?v=Xb8H52xtbSE
+Transcript source: supadata:supadata
+
+As as we sort of get into the um world of large language models, it's not too hard to envision a future where we are able to have a large language model help us process unstructured information from these different sites to extract um yeah relevant things of of of interest from from notes and do largecale studies that look at notes and look at look at unstructured data. that's that's not here yet, but is sort of in the near future.
