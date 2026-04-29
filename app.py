@@ -2674,6 +2674,65 @@ def build_trend_metric_reading_rows(
     return rows
 
 
+def build_trend_changed_lever_timing(agg: pd.DataFrame, params: dict) -> List[Dict[str, str]]:
+    """Explain when changed levers should be inspected in the trend view.
+
+    This reuses the changed-parameter bridge and existing model caveats only. It
+    does not infer new real-world effects; it tells users where in the simulated
+    time path to look before over-interpreting an early or late KPI movement.
+    """
+    if agg.empty:
+        return []
+
+    bridge_items = build_changed_parameter_impact_bridge(agg, params)
+    if not bridge_items:
+        return []
+
+    start_year = int(agg.iloc[0]["jahr"]) if "jahr" in agg.columns else 0
+    end_year = int(agg.iloc[-1]["jahr"]) if "jahr" in agg.columns else start_year
+    default_window = f"{start_year}–{end_year}" if start_year else "über den gesamten Verlauf"
+
+    timing_rules = {
+        "medizinstudienplaetze": (
+            "frühe Jahre nur als Pipeline-Vorlauf lesen; direkte Versorgungswirkung nicht sofort erwarten",
+            f"{start_year + 6}–{min(start_year + 13, end_year)} besonders prüfen, falls im Horizont sichtbar",
+        ),
+        "praeventionsbudget": (
+            "kurzfristige Ausgabenbewegung und spätere Krankheitslast getrennt lesen",
+            f"erst die frühen Kostenpunkte, dann spätere Outcome-Jahre bis {end_year} vergleichen",
+        ),
+        "digitalisierung_epa": (
+            "Anlauf und Produktivität nicht als sofortige sichere Kostenbremse lesen",
+            f"Knicke über {default_window} prüfen und mit Wartezeit/Ausgaben abgleichen",
+        ),
+        "telemedizin_rate": (
+            "Zugangsentlastung zuerst bei Wartezeit/Telemedizin prüfen, nicht als Ersatz jeder Leistung lesen",
+            f"frühe und mittlere Jahre im Verlauf {default_window} mit KPI-Details abgleichen",
+        ),
+        "pflegepersonal_schluessel": (
+            "Qualität, Burnout und Kosten zusammen lesen; bessere Schlüssel brauchen reale Fachkräfte",
+            f"über {default_window} Burnout, vermeidbare Mortalität und Ausgaben nebeneinander prüfen",
+        ),
+    }
+
+    rows: List[Dict[str, str]] = []
+    for item in bridge_items:
+        how_to_read, window = timing_rules.get(
+            item["key"],
+            ("über den Zeitverlauf prüfen und nicht aus einem Einzeljahr schließen", default_window),
+        )
+        rows.append({
+            "label": item["label"],
+            "changed": item["change"],
+            "how_to_read_timing": how_to_read,
+            "inspection_window": window,
+            "linked_kpis": "; ".join(target["label"] for target in item.get("drilldown_targets", [])),
+            "caveat": item["caveat"],
+            "next_step": item["next_step"],
+        })
+    return rows
+
+
 def build_trend_view_guidance(selected_labels: List[str]) -> Dict[str, str]:
     """Explain how to read the mixed-unit trend chart without adding model logic."""
     selected_text = ", ".join(selected_labels) if selected_labels else "keine Kennzahl ausgewählt"
@@ -2698,7 +2757,7 @@ def build_trend_view_guidance(selected_labels: List[str]) -> Dict[str, str]:
     }
 
 
-def render_main_trend_chart(agg: pd.DataFrame):
+def render_main_trend_chart(agg: pd.DataFrame, params: dict | None = None):
     """Larger, readable trend chart with hover instead of tiny sparklines."""
     st.markdown("---")
     st.markdown("### Zeitverlauf der wichtigsten Kennzahlen")
@@ -2727,7 +2786,18 @@ def render_main_trend_chart(agg: pd.DataFrame):
                     f"{row['next_step']}"
                 )
             st.caption(trend_rows[0]["caveat"])
-        st.success(f"**4 · Nächster Klick:** {guidance['next_step']}")
+        if params is not None:
+            timing_rows = build_trend_changed_lever_timing(agg, params)
+            if timing_rows:
+                st.markdown("**4 · Timing deiner geänderten Hebel:**")
+                for row in timing_rows:
+                    st.markdown(
+                        f"- **{row['label']}**: {row['how_to_read_timing']} "
+                        f"Zeitraum: {row['inspection_window']}. "
+                        f"KPI-Details: {row['linked_kpis'] or 'passende KPI-Details öffnen'}."
+                    )
+                st.caption("Timing-Hinweis: Diese Liste erklärt Modellpfade und Caveats, keine gesicherte Realwelt-Wirkung.")
+        st.success(f"**5 · Nächster Klick:** {guidance['next_step']}")
     fig = go.Figure()
     for label in selected:
         col = choices[label]
@@ -2824,7 +2894,7 @@ def render_dashboard(agg: pd.DataFrame, params: dict):
         render_metric_card_with_details("Patientenzufr.", f"{v:.0f} / 100", "zufriedenheit_patienten", d, True, cls)
 
     render_kpi_deep_dive(agg, params)
-    render_main_trend_chart(agg)
+    render_main_trend_chart(agg, params)
     render_simulation_report(agg, params)
 
     defaults = get_default_params()

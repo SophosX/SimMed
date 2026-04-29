@@ -24,6 +24,7 @@ from app import (
     build_report_navigation_index,
     build_report_question_shortcuts,
     build_simulation_report,
+    build_trend_changed_lever_timing,
     build_trend_metric_reading_rows,
     build_trend_view_guidance,
     get_default_params,
@@ -1019,6 +1020,37 @@ def test_kpi_result_story_answers_core_user_journey_without_new_claims():
     assert "Nächster Klick" in story["next_inspection"]
     assert "keine amtliche Prognose" in story["scope_caveat"]
     assert "Vote-Forecast" not in combined  # KPI story stays model-result focused, not political forecasting
+
+
+def test_trend_changed_lever_timing_explains_when_to_inspect_delayed_levers():
+    agg = pd.DataFrame([
+        {
+            "jahr": 2026,
+            "aerzte_pro_100k_mean": 430.0,
+            "wartezeit_fa_mean": 35.0,
+            "versorgungsindex_rural_mean": 0.72,
+        },
+        {
+            "jahr": 2040,
+            "aerzte_pro_100k_mean": 410.0,
+            "wartezeit_fa_mean": 44.0,
+            "versorgungsindex_rural_mean": 0.64,
+        },
+    ])
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] - 1500
+
+    rows = build_trend_changed_lever_timing(agg, params)
+
+    assert [row["label"] for row in rows] == ["Medizinstudienplätze"]
+    row = rows[0]
+    combined = " ".join(row.values())
+    assert "Pipeline" in combined or "Vorlauf" in combined
+    assert "2032" in row["inspection_window"]  # 2026 + 6 years
+    assert "Facharzt" in row["linked_kpis"] or "Wartezeit" in row["linked_kpis"]
+    assert "Kopfzahl" in row["caveat"]
+    assert "Zeitverlauf" in row["next_step"]
+    assert build_trend_changed_lever_timing(agg, get_default_params()) == []
 
 
 def test_political_result_checkpoints_link_friction_to_existing_kpi_targets():

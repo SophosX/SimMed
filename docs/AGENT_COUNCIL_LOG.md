@@ -972,3 +972,16 @@ Local verification before sync: `python3 -m pytest -q` → 59 passed; py_compile
 - Integrator Decision: Implemented `build_kpi_result_story(item)` and rendered it inside `render_kpi_deep_dive`; added focused regression coverage.
 - Question to Alex if needed: No important decision open in this slice.
 - Verification/Git: Local tests and smoke passed; sync/commit/push status follows in heartbeat.
+
+
+## 2026-04-29 Heartbeat – Trend timing for changed levers
+
+- Context: Result experience needs a coherent path from changed parameters to KPI detail, trend timing, assumptions, and political feasibility.
+- Project Manager: Small safe slice chosen: improve trend-reading context without changing model logic or adding claims.
+- Designer/UX: Users now get timing guidance directly where they inspect time-series, including delayed levers instead of forcing them to infer timing from separate cards.
+- Creative Agent: Rejected adding another flashy chart; reused the existing expander as a guided reading layer.
+- Political Health-System Strategist: Especially useful for medical study places because political narratives may over-interpret early years; guidance points to pipeline delay and capacity caveat.
+- Evidence/Domain: No new research in this slice; text reuses existing model caveats and registry-backed explanations.
+- Integrator Decision: Implemented a pure helper and renderer rows in `render_main_trend_chart(agg, params)`; no simulation outputs changed.
+- Question to Alex if needed: No major decision open; next safe step can continue polishing report/result navigation.
+- Verification/Git: Pending tests and push in this heartbeat.

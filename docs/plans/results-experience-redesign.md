@@ -388,3 +388,16 @@ Small implementation slice:
 5. Add a focused test proving Medizinstudienplätze gets KPI targets and the not-a-vote-forecast caveat, while unmatched political sections safely return no checkpoint.
 
 Guardrail: This is cross-navigation only. Reuse existing political sections and changed-parameter bridge fields; do not add empirical claims, vote predictions, lobbying advice, or new causal effects.
+
+## 2026-04-29 next slice: Trend timing for changed levers
+
+Problem: The trend chart now explains mixed units and selected line movement, but users still need a concrete timing lens for changed levers. Some levers should not be judged in year 1: medical study places have a delayed pipeline, prevention may spend first and affect outcomes later, and digitalization/telemedicine/pflege changes need KPI-specific cross-checks.
+
+Small implementation slice:
+
+1. Add a pure `build_trend_changed_lever_timing(agg, params)` helper in `app.py`.
+2. Reuse only `build_changed_parameter_impact_bridge(...)`, existing drilldown targets, and existing caveats.
+3. Render the timing rows inside the existing trend-reading expander, after the touch-friendly line summaries.
+4. Add a focused test that verifies delayed medical study places name the pipeline, show the 6+ year inspection window, link to KPI details, and preserve the Kopfzahl≠Kapazität caveat.
+
+Guardrail: this is navigation/timing guidance only. Do not introduce new empirical claims or change the simulation model; label it as model-path interpretation, not real-world proof.
