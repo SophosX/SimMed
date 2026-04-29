@@ -347,3 +347,17 @@ Small implementation slice:
 4. Add a focused test proving every topic has ordered steps covering signal, reason/model path, assumption/caveat, and next inspection, and that political wording remains a qualitative rubric/not a vote forecast.
 
 Guardrail: This is navigation/information architecture only. Do not add new empirical claims, model effects, causal scores, or stakeholder assertions; each step must point back to already existing explanation structures.
+
+
+## 2026-04-29 next slice: KPI assumption trace for matched levers
+
+Problem: KPI detail cards can now identify which changed levers match a KPI, and the separate assumption-check block shows evidence/caveats per lever. A user still has to connect those two sections manually before trusting or questioning a KPI explanation.
+
+Small implementation slice:
+
+1. Add a pure `build_kpi_assumption_trace(item, assumption_checks)` helper in `app.py`.
+2. For each KPI drill-down item, match its direct changed levers to existing changed-lever assumption checks and return compact rows: lever label, evidence/source summary, model caveat, registry caveat, uncertainty, and the exact sanity-check instruction.
+3. Extend `build_kpi_drilldown_items(...)` and `render_kpi_deep_dive(...)` so the evidence checkpoint appears inside the KPI expander directly after the matched-lever context.
+4. Add a focused test proving a KPI matched to Telemedizin exposes the existing evidence/caveat/sanity-check row, while unrelated KPIs stay explicit that no direct assumption trace exists.
+
+Guardrail: This is explanation routing only. Do not add new empirical claims, model effects, data-source claims, or political stakeholder assertions; reuse only existing assumption-check fields and parameter registry metadata.

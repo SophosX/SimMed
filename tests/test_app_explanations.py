@@ -10,6 +10,7 @@ from app import (
     _parameter_provenance_help,
     build_changed_parameter_impact_bridge,
     build_kpi_answer_checklist,
+    build_kpi_assumption_trace,
     build_kpi_drilldown_items,
     build_kpi_explanations,
     build_landing_hero_content,
@@ -650,6 +651,44 @@ def test_kpi_drilldowns_match_changed_levers_to_specific_kpis():
     assert "Telemedizin" in items["wartezeit_fa"]["lever_context"]
     assert "keine direkte Brücke" in items["gkv_saldo"]["lever_context"]
     assert "nicht als direkte Ursache" in items["gkv_saldo"]["lever_context"]
+
+
+def test_kpi_assumption_trace_links_direct_changed_levers_to_evidence_checks():
+    agg = pd.DataFrame([
+        {
+            "jahr": 2025,
+            "wartezeit_fa_mean": 20.0,
+            "telemedizin_rate_mean": 10.0,
+            "zufriedenheit_patienten_mean": 70.0,
+            "gkv_saldo_mean": -2.0,
+        },
+        {
+            "jahr": 2040,
+            "wartezeit_fa_mean": 26.0,
+            "telemedizin_rate_mean": 18.0,
+            "zufriedenheit_patienten_mean": 73.0,
+            "gkv_saldo_mean": -3.0,
+        },
+    ])
+    params = get_default_params()
+    params["telemedizin_rate"] = params["telemedizin_rate"] + 0.15
+
+    checks = build_changed_parameter_assumption_checks(agg, params)
+    items = {item["key"]: item for item in build_kpi_drilldown_items(agg, params)}
+    wait_trace = build_kpi_assumption_trace(items["wartezeit_fa"], checks)
+    saldo_trace = build_kpi_assumption_trace(items["gkv_saldo"], checks)
+    combined = " ".join(
+        f"{row['label']} {row['evidence']} {row['model_caveat']} {row['registry_caveat']} {row['uncertainty']} {row['sanity_check']}"
+        for row in wait_trace
+    )
+
+    assert [row["label"] for row in wait_trace] == ["Telemedizin"]
+    assert items["wartezeit_fa"]["assumption_trace"] == wait_trace
+    assert saldo_trace == []
+    assert items["gkv_saldo"]["assumption_trace"] == []
+    assert "Evidenzgrad" in combined
+    assert "Unsicherheit" in combined
+    assert "keine gesicherte Realwelt-Wirkung" in combined
 
 
 def test_kpi_answer_checklist_answers_core_result_questions_from_existing_item():

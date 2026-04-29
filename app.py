@@ -2411,6 +2411,20 @@ def build_kpi_answer_checklist(item: Dict[str, Any]) -> List[Dict[str, str]]:
 
 
 
+def build_kpi_assumption_trace(item: Dict[str, Any], assumption_checks: List[Dict[str, str]]) -> List[Dict[str, str]]:
+    """Connect KPI-matched changed levers to existing evidence/caveat checks.
+
+    This is a routing helper only: it reuses rows from
+    ``build_changed_parameter_assumption_checks`` so KPI cards can show which
+    registry assumptions limit a directly matched changed lever without adding
+    new empirical claims or model effects.
+    """
+    matched_labels = {lever.get("label") for lever in item.get("matching_changed_levers", [])}
+    if not matched_labels:
+        return []
+    return [check for check in assumption_checks if check.get("label") in matched_labels]
+
+
 def build_kpi_drilldown_items(agg: pd.DataFrame, params: dict) -> List[Dict[str, str]]:
     """Return a coherent reading path for KPI detail expanders.
 
@@ -2421,6 +2435,7 @@ def build_kpi_drilldown_items(agg: pd.DataFrame, params: dict) -> List[Dict[str,
     texts = kpi_detail_texts()
     lever_notes = _changed_policy_lever_notes(params)
     scenario_focus = "\n".join(f"- {note}" for note in lever_notes) if lever_notes else "Kein zentral erklärter Szenario-Hebel wurde gegenüber dem Standardwert verändert."
+    assumption_checks = build_changed_parameter_assumption_checks(agg, params)
     next_steps = {
         "gesundheitsausgaben_mrd": "Öffne danach GKV-Saldo und BIP-Anteil, um zu sehen, ob höhere Ausgaben finanzierbar wirken.",
         "bip_anteil": "Vergleiche danach Gesundheitsausgaben und GKV-Beitragssatz im Zeitverlauf.",
@@ -2464,7 +2479,7 @@ def build_kpi_drilldown_items(agg: pd.DataFrame, params: dict) -> List[Dict[str,
                 "Nutze die globalen Szenario-Hinweise nur als Kontext, nicht als direkte Ursache:\n"
                 f"{scenario_focus}"
             )
-        items.append({
+        item = {
             "key": key,
             "label": info["label"],
             "title": f"{info['label']}: {summary['start']:.2f} → {summary['end']:.2f} · {summary['strength']}",
@@ -2480,7 +2495,9 @@ def build_kpi_drilldown_items(agg: pd.DataFrame, params: dict) -> List[Dict[str,
             "abs_delta": summary["abs_delta"],
             "pct_delta": summary["pct_delta"],
             "effect_strength": summary["strength"],
-        })
+        }
+        item["assumption_trace"] = build_kpi_assumption_trace(item, assumption_checks)
+        items.append(item)
     items.sort(key=lambda item: abs(float(item["pct_delta"])), reverse=True)
     return items
 
@@ -2505,10 +2522,20 @@ def render_kpi_deep_dive(agg: pd.DataFrame, params: dict):
                 st.markdown(f"**4 · Warum im Modell?** {item['drivers']}")
                 st.markdown("**5 · Welche deiner geänderten Hebel passen direkt zu dieser KPI?**")
                 st.markdown(item["lever_context"])
-                st.markdown("**6 · Alle geänderten Haupthebel als Kontext:**")
+                if item.get("assumption_trace"):
+                    st.markdown("**6 · Evidenz-/Annahmen-Check für diese direkten Hebel:**")
+                    for check in item["assumption_trace"]:
+                        st.markdown(
+                            f"- **{check['label']}**: {check['evidence']}; "
+                            f"{check['uncertainty']}; Modell-Caveat: {check['model_caveat']}; "
+                            f"Register-Caveat: {check['registry_caveat']}; Plausibilitätscheck: {check['sanity_check']}"
+                        )
+                else:
+                    st.caption("Kein direkter Evidenz-/Annahmen-Check in dieser KPI-Karte, weil kein geänderter Haupthebel direkt auf diese KPI gemappt wurde.")
+                st.markdown("**7 · Alle geänderten Haupthebel als Kontext:**")
                 st.markdown(item["scenario_focus"])
-                st.info(f"**7 · Annahme prüfen:** {item['assumption']}")
-                st.success(f"**8 · Nächster Klick:** {item['next_step']}")
+                st.info(f"**8 · Annahme prüfen:** {item['assumption']}")
+                st.success(f"**9 · Nächster Klick:** {item['next_step']}")
 
 
 def build_trend_metric_reading_rows(

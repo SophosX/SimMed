@@ -933,3 +933,16 @@ Local verification before sync: `python3 -m pytest -q` → 59 passed; py_compile
 - **Integrator Decision:** Implemented `reading_path` on `build_result_explorer_topics(...)`, rendered it in the existing expander, and documented the slice in `docs/plans/results-experience-redesign.md`.
 - **Question to Alex if needed:** Keine wichtige neue Entscheidung offen; next safe step is further consistency/navigation cleanup in the Policy-Briefing/result journey.
 - **Verification/Git:** Focused explorer test added; full pytest, py_compile and small simulation smoke passed locally before sync.
+
+
+## 2026-04-29 Heartbeat — KPI assumption trace inside drill-downs
+
+- **Context:** Alex wants the result page to explain what changed, why, strength, assumptions and next inspection without shallow snippets.
+- **Project Manager:** Small reversible slice: connect KPI-specific changed-lever matches with existing assumption/evidence checks instead of adding a new standalone block.
+- **Designer/UX:** Users now see the evidence/caveat checkpoint inside the KPI expander directly after “which changed lever fits this KPI,” reducing cross-section hunting.
+- **Creative Agent:** Kept the “mini audit trail” pattern inside existing cards; no new visual layer or gamified claim.
+- **Political Health-System Strategist:** No new stakeholder/political claims; political rubric unchanged.
+- **Evidence/Domain:** Reused `build_changed_parameter_assumption_checks(...)` and registry metadata only; no new research in this run and no new factual claims encoded.
+- **Integrator Decision:** Implemented `build_kpi_assumption_trace(...)`, wired it into `build_kpi_drilldown_items(...)` and `render_kpi_deep_dive(...)`, and documented the slice in `docs/plans/results-experience-redesign.md`.
+- **Question to Alex if needed:** No blocking decision; next safe slice can improve the political section’s “why this group appears” reading path or report navigation.
+- **Verification/Git:** Focused test passed; full verification and push follow in this heartbeat.
