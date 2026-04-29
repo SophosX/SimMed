@@ -878,4 +878,4 @@ Akzeptiert: `build_kpi_answer_checklist(item)` als reine Informationsarchitektur
 Keine wichtige Entscheidung offen.
 
 ### Verification / Git
-Lokal verifiziert: gezielter neuer Test, gesamte Pytest-Suite, py_compile und kleiner Simulation-Smoke-Test bestanden. Git-Sync/Push folgt im selben Heartbeat.
+Lokal verifiziert: gezielter neuer Test, gesamte Pytest-Suite, py_compile und kleiner Simulation-Smoke-Test bestanden. Git: Commit `3cd0997` auf `main` nach GitHub gepusht.
