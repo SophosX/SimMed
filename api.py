@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
 from data_ingestion import (
@@ -20,6 +20,7 @@ from data_ingestion import (
     build_data_readiness_gate_plan,
     build_data_readiness_summary,
     build_parameter_snapshot_status,
+    execute_connector_snapshot_request,
     list_cached_snapshots,
     list_reviewed_transformations,
     seed_reference_fixture_snapshots,
@@ -37,6 +38,14 @@ class ScenarioRequest(BaseModel):
     n_runs: int = Field(default=100, ge=1, le=1000)
     n_years: int = Field(default=15, ge=1, le=30)
     seed: int = Field(default=42, ge=0, le=999999)
+
+
+class ConnectorExecutionRequest(BaseModel):
+    parameter_key: str = Field(description="Registry parameter key with a planned connector request")
+    execute: bool = Field(
+        default=False,
+        description="False returns the safe planned request only; True fetches and caches raw bytes without model integration.",
+    )
 
 
 @api.get("/sources")
@@ -110,6 +119,52 @@ def seed_data_fixture_snapshots() -> dict:
         "guardrail": "Fixture-Snapshots dienen nur Cache/Provenienz- und UI-Tests; sie ändern keine SimMed-Modellparameter und sind kein Live-Destatis-Import.",
         "seeded_snapshots": [snapshot.to_dict() for snapshot in snapshots],
         "data_passport": build_data_passport_rows(parameters),
+    }
+
+
+@api.post("/data-connectors/execute-planned-snapshot")
+def execute_planned_connector_snapshot(req: ConnectorExecutionRequest) -> dict:
+    """Plan or execute one safe raw-snapshot cache action without model mutation.
+
+    Default `execute=False` is a dry-run/status response for agents and UI: it
+    identifies the exact request and next safe gate but performs no network call.
+    Setting `execute=True` fetches the configured connector URL and caches raw
+    bytes unchanged; parsing, transformation review and registry/model changes
+    remain explicit later steps.
+    """
+
+    parameters = list_parameters()
+    items = build_data_readiness_backlog(parameters)
+    requests = build_connector_snapshot_requests(items, per_source_limit=100)
+    planned = next(
+        (item for item in requests if req.parameter_key in item.get("output_parameter_keys", [])),
+        None,
+    )
+    if planned is None:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "status": "no_planned_connector_snapshot_request",
+                "parameter_key": req.parameter_key,
+                "guardrail": "Nur unterstützte Snapshot-needed-Parameter mit expliziter Connector-Zuordnung können ausgeführt werden.",
+            },
+        )
+
+    if not req.execute:
+        return {
+            "status": "planned_snapshot_request_not_executed",
+            "guardrail": "Dry-run: kein Netzwerkabruf, kein Rohdaten-Cache, keine Registry- oder Modellmutation.",
+            "request": planned,
+            "next_safe_action": planned["next_safe_action"],
+            "data_passport": build_data_passport_rows(parameters),
+        }
+
+    result = execute_connector_snapshot_request(planned)
+    updated_parameters = list_parameters()
+    return {
+        **result,
+        "request": planned,
+        "data_passport": build_data_passport_rows(updated_parameters),
     }
 
 

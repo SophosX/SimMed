@@ -94,6 +94,34 @@ def test_api_can_seed_reference_fixture_snapshots_without_model_import():
     assert "geprüfte Transformation" in population["passport_note"]
 
 
+def test_api_plans_connector_snapshot_execution_as_dry_run_by_default():
+    client = TestClient(api)
+    backlog = client.get("/data-readiness-backlog").json()
+    request = backlog["connector_snapshot_requests"][0]
+    parameter_key = request["output_parameter_keys"][0]
+
+    response = client.post("/data-connectors/execute-planned-snapshot", json={"parameter_key": parameter_key})
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "planned_snapshot_request_not_executed"
+    assert "kein Netzwerkabruf" in body["guardrail"]
+    assert body["request"]["source_id"] == "destatis_genesis"
+    assert body["request"]["output_parameter_keys"] == [parameter_key]
+    assert "cache_source_payload" in body["next_safe_action"]
+    assert body["data_passport"]
+    passport_row = next(row for row in body["data_passport"] if row["parameter_key"] == parameter_key)
+    assert passport_row["parameter_key"] == parameter_key
+
+
+def test_api_rejects_connector_execution_without_supported_request():
+    client = TestClient(api)
+    response = client.post("/data-connectors/execute-planned-snapshot", json={"parameter_key": "telemedizin_rate"})
+
+    assert response.status_code == 404
+    assert response.json()["detail"]["status"] == "no_planned_connector_snapshot_request"
+
+
 def test_api_exposes_political_feasibility_endpoint():
     client = TestClient(api)
     response = client.post(

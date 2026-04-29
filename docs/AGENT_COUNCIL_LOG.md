@@ -1354,3 +1354,32 @@ Keine wichtige Entscheidung offen; next safe platform step is API/UI surfacing o
 
 ### Verification / Git
 Verified locally: `pytest tests/test_data_ingestion.py -q` (10 passed), full `pytest -q` (87 passed), py_compile, and 20-run simulation smoke `(60, 30)/(320, 6)`. Commit/push pending in this heartbeat.
+
+## 2026-04-30 00:07 Europe/Berlin — Heartbeat: Safe Connector Execution API Dry-Run
+
+### Context
+Alex corrected that core platform implementation is the primary track. This run continued the data-ingestion/provenance foundation on branch `feat/platform-data-status-foundation` by exposing planned connector execution through the API without making live imports the default.
+
+### Project Manager
+Priority: turn connector readiness from passive backlog into an operational but safe API workflow. Risk: a live connector endpoint could be misunderstood as model integration. Next tasks: add a Streamlit Learning Page control/status for this endpoint, then add reviewed-transformation workflow guidance.
+
+### Designer / UX
+Dry-run-by-default wording helps first-time users understand the sequence: request planned → optional raw snapshot cache → transformation review → explicit model integration. The next UI slice should show this as a four-step status card, not a technical JSON dump.
+
+### Creative Agent
+Idea: a small “Daten-Werkbank” view where each parameter has a traffic-light ladder and one safe next button. Fit: high for onboarding and provenance trust, but implementation should stay read-only/dry-run until Alex confirms live connector operations.
+
+### Political Health-System Strategist
+For sensitive health-policy claims, raw official data must not silently become policy proof. The new guardrails preserve the distinction between source access, transformation review, and political/model interpretation.
+
+### Evidence / Domain
+No new external research in this run. The change only exposes already documented Destatis/GENESIS connector requests and repeats that cache artifacts are not official forecasts, model imports, or policy-effect proof.
+
+### Integrator Decision
+Accepted: add `POST /data-connectors/execute-planned-snapshot` with dry-run default and 404 guardrail for unsupported parameters. Deferred: live execution UI and automatic network fetches in heartbeat runs.
+
+### Question to Alex
+No major decision required now. Later decision: whether live connector execution should be allowed from UI, API-only, or cron-only after credentials/terms are settled.
+
+### Verification / Git
+Initial verification: `python3 -m pytest tests/test_api.py -q` passed (8 tests). Full-suite/commit/push status follows in heartbeat summary.
