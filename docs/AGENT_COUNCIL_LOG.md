@@ -1043,4 +1043,4 @@ Accepted: add `build_changed_lever_question_cards(...)` and render it before the
 No important decision open. Recommendation: keep iterating on answer-first/result-audit clarity before adding new simulation mechanics.
 
 ### Verification / Git
-Targeted test passed (`tests/test_app_explanations.py::test_changed_lever_question_cards_answer_first_before_audit_details`); full `python3 -m pytest -q` passed (71 tests); py_compile passed; smoke test passed with 20 runs × 2 years (`df=(60, 30)`, `reg=(320, 6)`). Git sync/commit/push pending at log-writing time.
+Targeted test passed (`tests/test_app_explanations.py::test_changed_lever_question_cards_answer_first_before_audit_details`); full `python3 -m pytest -q` passed (71 tests); py_compile passed; smoke test passed with 20 runs × 2 years (`df=(60, 30)`, `reg=(320, 6)`). Synced and pushed main commit `2dc2568`.
