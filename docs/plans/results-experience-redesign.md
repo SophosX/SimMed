@@ -252,3 +252,16 @@ Small implementation slice:
 4. Add a focused test verifying that the index covers all six report sections, preserves order, names “Executive Summary”, “Geänderte Hebel”, “KPI”, “Zeitverlauf”, “Evidenz”, and “Politische Umsetzbarkeit”, and includes the concrete “what to open next” instruction.
 
 Guardrail: This is information architecture only. Do not add empirical claims, model logic, new stakeholder assertions, or visual complexity; reuse existing section titles, purposes, and guide questions.
+
+## 2026-04-29 next slice: Policy-Briefing question shortcuts
+
+Problem: even with an index, users may arrive with one concrete question rather than a desire to read six sections. The report should translate common result-reading questions into the exact expander to open, so the page feels guided rather than encyclopedic.
+
+Small implementation slice:
+
+1. Add a pure `build_report_question_shortcuts(report_sections)` helper in `app.py`.
+2. Return 5 concise shortcut rows keyed to existing sections only: strongest change, changed lever path, KPI meaning/strength, timing/trend, evidence/political caveat. Each row should include the user question, the recommended section title/id, and why that section answers it.
+3. Render these shortcuts inside the existing “Wie lese ich dieses Briefing?” expander before the full section index, as tap-friendly bullets.
+4. Add a focused test that verifies every shortcut points to an existing section, covers KPI/trend/evidence/politics, and does not introduce new factual claims beyond existing section metadata.
+
+Guardrail: This is navigation UX only. It must not add model logic, empirical assumptions, stakeholder assertions, or duplicate long explanation copy.

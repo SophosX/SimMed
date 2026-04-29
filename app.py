@@ -1749,6 +1749,62 @@ def build_report_navigation_index(report_sections: List[Dict[str, Any]]) -> Dict
     }
 
 
+def build_report_question_shortcuts(report_sections: List[Dict[str, Any]]) -> List[Dict[str, str]]:
+    """Map common reader questions to existing Policy-Briefing sections.
+
+    This is navigation UX only: it reuses section ids/titles/purposes and avoids
+    adding fresh empirical, causal or stakeholder claims.
+    """
+    by_id = {section.get("id", ""): section for section in report_sections}
+    shortcut_specs = [
+        (
+            "Was hat sich am stärksten verändert?",
+            "executive_summary",
+            "Startet mit der kompakten Orientierung und den größten Bewegungen.",
+        ),
+        (
+            "Welche meiner geänderten Hebel erklären den Modellpfad?",
+            "changed_levers",
+            "Verbindet Eingaben mit KPI-Spuren, Verzögerungen und dem nächsten Klick.",
+        ),
+        (
+            "Was bedeutet eine KPI-Bewegung und wie stark ist sie?",
+            "kpi_deep_dive",
+            "Führt durch Bedeutung, Beobachtung, Effektstärke und verwandte Prüfungen.",
+        ),
+        (
+            "Wann passiert der Effekt im Zeitverlauf?",
+            "trend_timing",
+            "Erklärt Trendlinien, unterschiedliche Einheiten und Timing-Prüfungen.",
+        ),
+        (
+            "Welche Annahmen, Evidenz oder politische Reibung begrenzen die Aussage?",
+            "evidence_assumptions",
+            "Beginnt beim Evidenz-/Annahmen-Check; danach politische Umsetzbarkeit öffnen.",
+        ),
+        (
+            "Wer könnte unterstützen oder bremsen — und warum?",
+            "political_feasibility",
+            "Zeigt die qualitative politische Rubrik je geändertem Hebel, nicht als Vote-Forecast.",
+        ),
+    ]
+    shortcuts: List[Dict[str, str]] = []
+    for question, section_id, why in shortcut_specs:
+        section = by_id.get(section_id)
+        if not section:
+            continue
+        shortcuts.append(
+            {
+                "question": question,
+                "section_id": section_id,
+                "section_title": section.get("title", section_id),
+                "why": why,
+                "target": f"#policy-briefing-{section_id.replace('_', '-')}",
+            }
+        )
+    return shortcuts
+
+
 def render_simulation_report(agg: pd.DataFrame, params: dict):
     """Render the structured Policy-Briefing navigator."""
     st.markdown("---")
@@ -1756,8 +1812,14 @@ def render_simulation_report(agg: pd.DataFrame, params: dict):
     st.caption("Ein strukturierter Pfad für Entscheidungen: kompakt, aufklappbar und aus denselben geprüften Erklärungshilfen gebaut.")
     report_sections = build_simulation_report(agg, params)
     navigation = build_report_navigation_index(report_sections)
+    shortcuts = build_report_question_shortcuts(report_sections)
     with st.expander("Wie lese ich dieses Briefing?", expanded=True):
         st.caption(navigation["instruction"])
+        st.markdown("**Wenn du mit einer Frage kommst:**")
+        for shortcut in shortcuts:
+            st.markdown(f"- **{shortcut['question']}** → `{shortcut['section_title']}`")
+            st.caption(shortcut["why"])
+        st.markdown("**Abschnitte in Reihenfolge:**")
         for item in navigation["items"]:
             st.markdown(f"**{item['order']}. {item['title']}**")
             st.caption(f"{item['open_when']} — {item['why']}")

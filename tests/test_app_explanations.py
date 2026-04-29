@@ -16,6 +16,7 @@ from app import (
     build_result_narrative_summary,
     build_result_reading_path,
     build_report_navigation_index,
+    build_report_question_shortcuts,
     build_simulation_report,
     build_trend_view_guidance,
     get_default_params,
@@ -721,4 +722,25 @@ def test_report_navigation_index_guides_which_expander_to_open_next():
     assert "Executive Summary zuerst" in combined
     assert "öffne danach den Abschnitt" in combined
     assert all(item["target"].startswith("#policy-briefing-") for item in index["items"])
+
+
+def test_report_question_shortcuts_route_reader_questions_to_existing_sections():
+    agg, params = _sample_report_inputs()
+    report = build_simulation_report(agg, params)
+    section_ids = {section["id"] for section in report}
+
+    shortcuts = build_report_question_shortcuts(report)
+    combined = " ".join(
+        f"{item['question']} {item['section_id']} {item['section_title']} {item['why']} {item['target']}"
+        for item in shortcuts
+    )
+
+    assert len(shortcuts) >= 5
+    assert all(item["section_id"] in section_ids for item in shortcuts)
+    assert all(item["target"].startswith("#policy-briefing-") for item in shortcuts)
+    assert "KPI" in combined and "Effektstärke" in combined
+    assert "Zeitverlauf" in combined and "Trendlinien" in combined
+    assert "Evidenz" in combined and "Annahmen" in combined
+    assert "politische" in combined and "Vote-Forecast" in combined
+    assert "Modellpfad" in combined
 

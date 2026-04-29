@@ -777,3 +777,32 @@ Local verification passed: `python3 -m pytest -q` (32 passed), py_compile, and 5
 - **Integrator Decision:** `build_report_navigation_index(report_sections)` in `app.py` ergänzt, Render-Pfad vor Policy-Briefing-Expandern eingebaut, Plan und Test erweitert.
 - **Question to Alex if needed:** Keine wichtige Entscheidung offen; nächster sicherer Schritt ist weitere Berichtsnavigation/Exportfähigkeit oder API-Status für Expertenrat.
 - **Verification/Git:** Lokal: `52 passed`, py_compile OK, 50-run/3-year smoke OK. Git-Sync/Push folgt in diesem Heartbeat.
+
+## 2026-04-29 20:15 Europe/Berlin — Policy-Briefing question shortcuts
+
+### Context
+Alex's current priority is a deeper, coherent results experience. The Policy-Briefing already had sections and a navigation index, but users with a concrete question still had to map their concern to the right expander themselves.
+
+### Project Manager
+Priority: keep improving the results journey in small, reversible slices. Risk: navigation text can become another snippet if it duplicates explanations; therefore this slice only routes to existing report sections.
+
+### Designer / UX
+Added question-first shortcuts inside “Wie lese ich dieses Briefing?” so a user can start from “Was hat sich geändert?”, “Was bedeutet diese KPI?”, “Wann passiert der Effekt?”, or “Welche Annahmen/Politik begrenzen die Aussage?” and open the matching report section.
+
+### Creative Agent
+Idea: later add a visual “Briefing map” with the same shortcuts as cards. Fit: useful for onboarding, but deferred until the current text navigation proves coherent.
+
+### Political Health-System Strategist
+Political feasibility remains explicitly framed as qualitative rubric, not a vote forecast. The shortcut points to the existing political section instead of adding new stakeholder assertions.
+
+### Evidence / Domain
+No new empirical claims were added; this is navigation/information architecture only. Keine neue Recherche in diesem Lauf.
+
+### Integrator Decision
+Accepted: update `docs/plans/results-experience-redesign.md`, add `build_report_question_shortcuts(...)`, render shortcuts in `render_simulation_report(...)`, and test that shortcuts target existing sections and cover KPI/trend/evidence/politics.
+
+### Question to Alex
+No important decision open for this low-risk navigation slice.
+
+### Verification / Git
+Local verification passed: targeted shortcut test, full pytest suite, py_compile, and 50-run/3-year simulation smoke test. Commit/push status to be recorded after sync.
