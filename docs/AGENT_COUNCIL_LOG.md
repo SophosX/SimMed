@@ -1014,4 +1014,4 @@ Accepted: implement a changed-lever result audit trail helper and render it near
 No important decision needed in this slice; it is reversible navigation over existing explanations.
 
 ### Verification / Git
-Pending at log-write time: pytest, py_compile, runtime smoke, sync, commit, push.
+`tests/test_app_explanations.py::test_changed_lever_result_audit_trail_links_input_kpi_assumption_timing_and_politics` passed; full `python3 -m pytest -q` passed (66 tests); py_compile passed; 30-run/3-year smoke passed (`df=(120, 30)`, `reg=(480, 6)`). Synced and pushed main commit `1095db8`.
