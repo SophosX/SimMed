@@ -896,7 +896,10 @@ def _parameter_evidence_badge(key: str) -> str:
         "E": "🔴",
     }.get(spec.evidence_grade, "⚪")
     sources = ", ".join(spec.source_ids)
-    status = "aus Daten" if spec.data_status == "aus_daten" else "Annahme, nicht aus Daten"
+    data_status = getattr(spec, "data_status", None)
+    if data_status is None:
+        return f"{grade_icon} Evidenz {spec.evidence_grade} · {sources}"
+    status = "aus Daten" if data_status == "aus_daten" else "Annahme, nicht aus Daten"
     return f"{grade_icon} {status} · Evidenz {spec.evidence_grade} · {sources}"
 
 
@@ -1015,6 +1018,42 @@ def _parameter_effect_hint(key: str) -> str:
     return hints.get(key, "Was passiert beim Ändern? Dieser Regler verändert ein Szenario, ist aber noch nicht mit einer eigenen Kurz-Erklärung dokumentiert.")
 
 
+def build_landing_hero_content() -> Dict[str, Any]:
+    """Return static first-contact copy for the landing hero.
+
+    The hero explains what SimMed is without running simulations or changing
+    model parameters. Button actions are navigation hints only for this slice.
+    """
+    return {
+        "title": "Was ist SimMed?",
+        "mission": (
+            "SimMed hilft, mögliche Folgen gesundheitspolitischer Entscheidungen "
+            "für das deutsche Gesundheitssystem bis 2040 verständlich zu erkunden."
+        ),
+        "actions": [
+            {
+                "label": "Was passiert, wenn …?",
+                "description": "Eine Frage formulieren und später passende Beispiel-Szenarien auswählen.",
+                "hint": "frage",
+            },
+            {
+                "label": "Stellschrauben verstehen",
+                "description": "Sehen, welche Parameter links verändert werden können und was sie bedeuten.",
+                "hint": "parameter",
+            },
+            {
+                "label": "Ergebnis lesen lernen",
+                "description": "Nach einer Simulation zuerst Klartext, KPIs und Annahmen einordnen.",
+                "hint": "ergebnis",
+            },
+        ],
+        "disclaimer": (
+            "SimMed ist ein Lern- und Szenario-Werkzeug, keine amtliche Prognose "
+            "und keine medizinische oder politische Empfehlung."
+        ),
+    }
+
+
 def sidebar_quick_start_steps() -> List[str]:
     """Kurze Orientierung, damit neue Nutzer:innen sofort wissen, was zu tun ist."""
     return [
@@ -1022,6 +1061,22 @@ def sidebar_quick_start_steps() -> List[str]:
         "2. Starte die Simulation und lies zuerst: Was hat sich verändert? Dort steht die Klartext-Erklärung.",
         "3. Öffne danach Wer unterstützt? Wer bremst?, um politische Machbarkeit und Konflikte einzuordnen.",
     ]
+
+
+def render_landing_hero() -> None:
+    """Render the mobile-first landing hero before tabs/results."""
+    content = build_landing_hero_content()
+    st.markdown(f"### {content['title']}")
+    st.write(content["mission"])
+
+    columns = st.columns(3)
+    for column, action in zip(columns, content["actions"]):
+        with column:
+            if st.button(action["label"], key=f"landing_hero_{action['hint']}", use_container_width=True):
+                st.session_state["landing_hero_hint"] = action["hint"]
+            st.caption(action["description"])
+
+    st.caption(f"Hinweis: {content['disclaimer']}")
 
 
 def render_sidebar() -> dict:
@@ -3376,6 +3431,7 @@ def main():
         "Monte-Carlo-Simulationsplattform für das deutsche Gesundheitssystem \u2013 "
         f"{params['n_runs']:,} Runs \u00d7 {params['sim_jahre']} Jahre"
     )
+    render_landing_hero()
 
     # Warnung bei geänderten Parametern
     if "last_params_hash" in st.session_state and "agg" in st.session_state:

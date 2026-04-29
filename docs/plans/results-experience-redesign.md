@@ -82,6 +82,10 @@ Connect changed parameters to result explanations:
 - Research/source real-world claims later before making them authoritative.
 - Keep UI clear; do not bury users in walls of text.
 
+## 2026-04-29 clarity/UX Slice 1.1: landing hero
+
+Implemented as the first Bühne 1 slice only: add a small top-of-page hero before result tabs/start content that answers “Was ist SimMed?” for first-time users. The block contains one mission sentence, three safe button-like navigation prompts, and a disclaimer that SimMed is not an official forecast. The buttons only store a session-state hint and do not change parameters, run simulations, or introduce model/data changes. Next logical slice remains Bühne 1 Slice 1.2: concrete example scenarios.
+
 ## Verification
 
 Run:

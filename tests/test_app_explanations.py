@@ -11,6 +11,7 @@ from app import (
     build_changed_parameter_impact_bridge,
     build_kpi_drilldown_items,
     build_kpi_explanations,
+    build_landing_hero_content,
     build_political_lever_detail_sections,
     build_political_stakeholder_rows,
     build_result_narrative_summary,
@@ -32,6 +33,20 @@ from app import (
     plain_language_workflow_summary,
     sidebar_quick_start_steps,
 )
+
+
+def test_landing_hero_content_sets_first_contact_expectations():
+    content = build_landing_hero_content()
+    combined_actions = " ".join(action["label"] + " " + action["description"] for action in content["actions"])
+
+    assert content["title"] == "Was ist SimMed?"
+    assert len(content["mission"].split(".")) <= 2
+    assert "Gesundheitssystem" in content["mission"]
+    assert len(content["actions"]) == 3
+    assert "Was passiert, wenn" in combined_actions
+    assert "Stellschrauben verstehen" in combined_actions
+    assert "Ergebnis lesen" in combined_actions
+    assert "keine amtliche Prognose" in content["disclaimer"]
 
 
 def test_direction_word_uses_plain_language_and_preference_direction():
