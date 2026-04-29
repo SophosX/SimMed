@@ -919,6 +919,23 @@ def _parameter_effect_hint(key: str) -> str:
         "krankenhausbetten": "Was passiert beim Ändern? Mehr Betten helfen nur, wenn Personal vorhanden ist; weniger Betten können Kapazität verknappen. Betten sind deshalb kein vollständiges Kapazitätsmaß.",
         "patienten_pro_quartal": "Was passiert beim Ändern? Höher = mehr Durchsatz je Arzt, potenziell kürzere Wartezeiten; niedriger = weniger Durchsatz. Qualität und Belastung sind hier nur indirekt sichtbar.",
         "arbeitszeit_stunden": "Was passiert beim Ändern? Höher = mehr rechnerische Behandlungskapazität; niedriger = weniger Kapazität. Dauerhafte Mehrarbeit kann aber Belastung und Abwanderung erhöhen.",
+        "einkommens_wachstum": "Was passiert beim Ändern? Höher = die beitragspflichtigen Einnahmen wachsen schneller; niedriger = die GKV-Finanzierung gerät eher unter Druck. Vereinfachung: Verteilung, Arbeitsmarkt und Beitragsbemessungsgrenze sind noch nicht detailliert modelliert.",
+        "pkv_schwelle": "Was passiert beim Ändern? Höher = tendenziell weniger Menschen wechseln in die PKV; niedriger = mehr Wechsel möglich. Das ist ein politischer Finanzierungshebel, keine vollständige Versicherungswahl-Prognose.",
+        "ausbildungsdauer_jahre": "Was passiert beim Ändern? Länger = neue Ärzt:innen kommen später im System an; kürzer = der Nachwuchs wirkt früher. Wichtig: Facharztkapazität entsteht trotzdem erst nach zusätzlicher Weiterbildung.",
+        "abwanderungsquote": "Was passiert beim Ändern? Höher = ein größerer Teil des ärztlichen Nachwuchses fehlt in Deutschland; niedriger = mehr bleibt verfügbar. Gründe für Abwanderung sind hier nicht einzeln modelliert.",
+        "einwanderung_aerzte": "Was passiert beim Ändern? Höher = mehr zusätzlicher Arzt-Zufluss pro Jahr; niedriger = weniger Entlastung. Anerkennung, Sprache, Fachrichtung und Region bleiben vereinfachte Annahmen.",
+        "ruhestandsquote": "Was passiert beim Ändern? Höher = mehr Ärzt:innen verlassen jährlich die Versorgung; niedriger = der Bestand bleibt länger stabil. Altersstruktur und Teilzeit werden nur grob berücksichtigt.",
+        "gkv_anteil": "Was passiert beim Ändern? Höher = mehr Menschen sind im GKV-System, Einnahmen und Ausgaben steigen gemeinsam; niedriger = mehr Verlagerung Richtung PKV/Selbstzahler. Verteilungseffekte sind vereinfacht.",
+        "zuzahlungen_gkv": "Was passiert beim Ändern? Höher = kurzfristig mehr Einnahmen/Entlastung für die GKV; niedriger = weniger direkte Beteiligung der Patient:innen. Soziale Härten und Nachfrageverzicht sind noch nicht sauber ausmodelliert.",
+        "morbi_rsa_staerke": "Was passiert beim Ändern? Höher = stärkere Umverteilung nach Krankheitslast zwischen Kassen; niedriger = weniger Ausgleich. Im Modell ist das ein grober Stabilitätshebel, kein exakter RSA-Rechner.",
+        "staatliche_subventionen": "Was passiert beim Ändern? Höher = der Bund stützt die GKV stärker; niedriger = Beitrags- oder Ausgabendruck steigt. Gegenfinanzierung im Bundeshaushalt wird noch nicht modelliert.",
+        "digitalisierung_epa": "Was passiert beim Ändern? Höher = mehr digitale Dokumentation kann Koordination verbessern; niedriger = weniger digitaler Nutzen. Vereinfachung: Einführungskosten, Datenschutz und Akzeptanz sind nur qualitativ sichtbar.",
+        "praevention_effektivitaet": "Was passiert beim Ändern? Höher = Prävention wirkt stärker auf spätere Krankheitslast; niedriger = weniger langfristiger Nutzen. Kurzfristige Einsparungen werden bewusst nicht versprochen.",
+        "amnog_preisreduktion": "Was passiert beim Ändern? Höher = Arzneimittelausgaben sinken rechnerisch stärker; niedriger = weniger Preisentlastung. Innovationseffekte und Verhandlungsergebnisse sind hier nur grob abgebildet.",
+        "drg_niveau": "Was passiert beim Ändern? Höher = Krankenhäuser erhalten mehr Erlöse je Fall, aber Ausgaben steigen; niedriger = Kostendruck auf Kliniken. Qualität und Leistungsverschiebung bleiben vereinfachte Annahmen.",
+        "pflegepersonal_schluessel": "Was passiert beim Ändern? Höher = mehr Pflegepersonal pro Bedarf kann Qualität und Belastung verbessern, kostet aber mehr; niedriger = mehr Überlastungs- und Kapazitätsrisiko. Fachkräfteverfügbarkeit ist begrenzt modelliert.",
+        "wartezeit_grenze_tage": "Was passiert beim Ändern? Strenger = politisch kürzere Zielwartezeit, aber nur realistisch mit Kapazität; lockerer = weniger Zielverfehlung auf dem Papier. Das erzeugt keine Termine automatisch.",
+        "igel_rate": "Was passiert beim Ändern? Höher = mehr Selbstzahlerleistungen außerhalb der GKV; niedriger = weniger Privatfinanzierung am Rand. Zugangsgerechtigkeit und medizinischer Nutzen sind hier nur als Caveat markiert.",
     }
     return hints.get(key, "Was passiert beim Ändern? Dieser Regler verändert ein Szenario, ist aber noch nicht mit einer eigenen Kurz-Erklärung dokumentiert.")
 
@@ -992,12 +1009,12 @@ def render_sidebar() -> dict:
         params["einkommens_wachstum"] = st.slider(
             "Einkommenswachstum (%/Jahr)", 0.0, 0.06,
             params["einkommens_wachstum"], 0.005,
-            help="Nominales jährliches Wachstum",
+            help=_parameter_effect_hint("einkommens_wachstum"),
         )
         params["pkv_schwelle"] = st.slider(
             "Versicherungspflichtgrenze (\u20ac)", 50_000, 90_000,
             params["pkv_schwelle"], 500,
-            help="JAEG 2025: 69.300 \u20ac",
+            help=_parameter_effect_hint("pkv_schwelle"),
         )
 
     # ── Versorgungsstruktur ──
@@ -1052,17 +1069,19 @@ def render_sidebar() -> dict:
         )
         params["ausbildungsdauer_jahre"] = st.slider(
             "Studiumsdauer (Jahre)", 5.0, 8.0, params["ausbildungsdauer_jahre"], 0.5,
+            help=_parameter_effect_hint("ausbildungsdauer_jahre"),
         )
         params["abwanderungsquote"] = st.slider(
             "Abwanderungsquote", 0.00, 0.15, params["abwanderungsquote"], 0.005,
-            help="Anteil neuer Ärzt:innen, die ins Ausland gehen",
+            help=_parameter_effect_hint("abwanderungsquote"),
         )
         params["einwanderung_aerzte"] = st.slider(
             "Ärzte-Einwanderung/Jahr", 0, 15_000, params["einwanderung_aerzte"], 100,
-            help="Quelle: BÄK 2025 – ca. 3.500",
+            help=_parameter_effect_hint("einwanderung_aerzte"),
         )
         params["ruhestandsquote"] = st.slider(
             "Ruhestandsquote/Jahr", 0.010, 0.060, params["ruhestandsquote"], 0.005,
+            help=_parameter_effect_hint("ruhestandsquote"),
         )
 
     # ── Versicherung & Finanzierung ──
@@ -1078,19 +1097,20 @@ def render_sidebar() -> dict:
         )
         params["gkv_anteil"] = st.slider(
             "GKV-Versichertenanteil", 0.70, 0.95, params["gkv_anteil"], 0.01,
-            help="Quelle: BMG 2025 – ca. 88 %",
+            help=_parameter_effect_hint("gkv_anteil"),
         )
         params["zuzahlungen_gkv"] = st.slider(
             "GKV-Zuzahlungen (Mrd. \u20ac)", 0.0, 10.0, params["zuzahlungen_gkv"], 0.5,
+            help=_parameter_effect_hint("zuzahlungen_gkv"),
         )
         params["morbi_rsa_staerke"] = st.slider(
             "Morbi-RSA Intensität", 0.0, 2.0, params["morbi_rsa_staerke"], 0.1,
-            help="1.0 = aktueller Stand",
+            help=_parameter_effect_hint("morbi_rsa_staerke"),
         )
         params["staatliche_subventionen"] = st.slider(
             "Bundeszuschuss (Mrd. \u20ac)", 0.0, 30.0,
             params["staatliche_subventionen"], 0.5,
-            help="Quelle: BMG 2025 – 14,5 Mrd. \u20ac",
+            help=_parameter_effect_hint("staatliche_subventionen"),
         )
         params["praeventionsbudget"] = st.slider(
             "Präventionsbudget (Mrd. \u20ac)", 0.0, 30.0,
@@ -1106,32 +1126,34 @@ def render_sidebar() -> dict:
         )
         params["digitalisierung_epa"] = st.slider(
             "ePA-Nutzungsrate (Start)", 0.0, 1.0, params["digitalisierung_epa"], 0.05,
-            help="Quelle: gematik 2025 – ca. 15 %",
+            help=_parameter_effect_hint("digitalisierung_epa"),
         )
         params["praevention_effektivitaet"] = st.slider(
             "Präventions-Effektivität", 0.0, 1.0,
             params["praevention_effektivitaet"], 0.05,
-            help="0 = keine Wirkung, 1 = maximale Wirkung",
+            help=_parameter_effect_hint("praevention_effektivitaet"),
         )
         params["amnog_preisreduktion"] = st.slider(
             "AMNOG-Preisreduktion", 0.0, 0.30, params["amnog_preisreduktion"], 0.01,
+            help=_parameter_effect_hint("amnog_preisreduktion"),
         )
         params["drg_niveau"] = st.slider(
             "DRG-Fallpauschalen-Niveau", 0.70, 1.50, params["drg_niveau"], 0.05,
-            help="1.0 = aktuelles Niveau",
+            help=_parameter_effect_hint("drg_niveau"),
         )
         params["pflegepersonal_schluessel"] = st.slider(
             "Pflegepersonal-Schlüssel", 0.5, 2.0,
             params["pflegepersonal_schluessel"], 0.05,
-            help="1.0 = aktuell, >1 = mehr Personal",
+            help=_parameter_effect_hint("pflegepersonal_schluessel"),
         )
         params["wartezeit_grenze_tage"] = st.slider(
             "Wartezeit-Grenze FA (Tage)", 7, 60,
             params["wartezeit_grenze_tage"],
-            help="Gesetzliche Maximal-Wartezeit (TSG)",
+            help=_parameter_effect_hint("wartezeit_grenze_tage"),
         )
         params["igel_rate"] = st.slider(
             "IGeL/Selbstzahler-Rate", 0.0, 0.25, params["igel_rate"], 0.01,
+            help=_parameter_effect_hint("igel_rate"),
         )
 
     st.session_state["user_params"] = params

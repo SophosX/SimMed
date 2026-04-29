@@ -82,7 +82,12 @@ def test_parameter_effect_hint_explains_action_and_flags_simplifications():
     assert "Was passiert beim Ändern?" in aging_hint
     assert "altersbedingte Nachfrage" in aging_hint
     assert "Vereinfachte Annahme" in aging_hint
+    finance_hint = _parameter_effect_hint("staatliche_subventionen")
+    policy_hint = _parameter_effect_hint("wartezeit_grenze_tage")
+
     assert "Personal vorhanden" in bed_hint
+    assert "Bund" in finance_hint and "GKV" in finance_hint
+    assert "erzeugt keine Termine automatisch" in policy_hint
     assert "noch nicht mit einer eigenen Kurz-Erklärung" in unknown_hint
 
 

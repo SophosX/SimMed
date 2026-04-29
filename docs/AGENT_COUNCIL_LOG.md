@@ -479,3 +479,16 @@ Passed: `pytest -q` (26), py_compile, 1000-run smoke test. Zip refreshed. Pushed
 - **Integrator Decision:** `_parameter_effect_hint()` ergänzt und für Demografie-/Versorgungsstruktur-Regler eingesetzt; Test sichert Klartext und Annahmen-Hinweis.
 - **Question to Alex if needed:** Keine wichtige Entscheidung offen; nächster sicherer Schritt ist weitere Regler-Provenienz plus sichtbare „Was kann ich hier tun?“-Box.
 - **Verification/Git:** `tests/test_app_explanations.py` bestanden (8), kompletter `pytest -q` bestanden (27), py_compile bestanden, 1000-run Smoke-Test bestanden; Zip refreshed; Push geplant/erfolgt als normaler Git-Schritt.
+
+
+## 2026-04-29 16:40 UTC – Sidebar-Wirkhinweise für weitere Hebel
+
+- **Context:** 3-Minuten-Heartbeat; UX-Direktive: Nutzer:innen sollen vor dem Verstellen verstehen, was ein Regler macht.
+- **Project Manager:** Niedriges Risiko, weil nur Hilfetexte und Tests geändert wurden; keine Modelllogik.
+- **Designer/UX:** Viele Finanzierungs-, Pipeline- und Politikregler hatten noch knappe oder harte Quellen-Snippets; jetzt erklären sie „Was passiert beim Ändern?“ in einfacher Sprache.
+- **Creative Agent:** Der Sidebar-Hover wird schrittweise zu einem Mini-Coach: erst Handlung, dann Caveat, dann Ergebnisinterpretation.
+- **Political Health-System Strategist:** Politische Hebel wie Wartezeitgrenze, Bundeszuschuss, DRG-Niveau und Pflegepersonalschlüssel werden als Ziel-/Finanzierungs-/Kapazitätshebel erklärt, nicht als automatische Realitätsprognosen.
+- **Evidence/Domain:** Keine neuen externen Fakten kodiert; neue Texte markieren Vereinfachungen und vermeiden neue Zahlenbehauptungen.
+- **Integrator Decision:** Safe UI-copy improvement umgesetzt; bestehende `_parameter_effect_hint`-Struktur wiederverwendet.
+- **Question to Alex if needed:** Keine wichtige Entscheidung offen.
+- **Verification/Git:** `pytest tests/test_app_explanations.py`, `py_compile`, 100-run Smoke-Test erfolgreich; Sync/Commit/Push folgt.
