@@ -13,6 +13,7 @@ from app import (
     build_changed_lever_result_audit_trail,
     build_kpi_answer_checklist,
     build_learning_data_passport_overview,
+    build_learning_data_readiness_backlog,
     build_kpi_assumption_trace,
     build_kpi_drilldown_items,
     build_kpi_drilldown_navigation,
@@ -78,6 +79,19 @@ def test_learning_data_passport_overview_separates_registry_cache_and_transforma
     assert "aus Daten" in combined or "Annahme, nicht aus Daten" in combined
     assert "nicht automatisch integriert" in combined or "Keine geprüfte Transformation" in combined
 
+
+
+def test_learning_data_readiness_backlog_prioritizes_safe_data_gates():
+    backlog = build_learning_data_readiness_backlog(limit=5)
+
+    assert backlog["title"].startswith("Nächste Daten-Schritte")
+    assert "kein Import-Knopf" in backlog["plain_language_note"]
+    assert 1 <= len(backlog["rows"]) <= 5
+    first = backlog["rows"][0]
+    assert {"Parameter", "Nächstes Gate", "Aktion", "Guardrail"} <= set(first)
+    combined = " ".join(str(value) for row in backlog["rows"] for value in row.values())
+    assert "Rohdaten" in combined or "Transformation" in combined
+    assert "kein" in combined.lower() and "Modell" in combined
 
 
 def test_landing_hero_content_sets_first_contact_expectations():

@@ -310,6 +310,58 @@ def build_data_passport_rows(
     return rows
 
 
+
+def build_data_readiness_backlog(
+    parameters: list[dict],
+    *,
+    cache_root: Path | str = CACHE_ROOT,
+    limit: int | None = None,
+) -> list[dict]:
+    """Return the next safe data-foundation tasks per parameter.
+
+    The backlog is intentionally operational, not a model-import mechanism. It
+    tells users/agents what is missing before a registry value could be treated
+    as a reviewed data-derived model input: raw snapshot, checked transformation,
+    and explicit model/registry integration remain separate gates.
+    """
+
+    priority = {
+        "snapshot_needed": 0,
+        "transformation_review_needed": 1,
+        "explicit_model_integration_needed": 2,
+        "monitor_only": 3,
+    }
+    rows: list[dict] = []
+    for row in build_data_passport_rows(parameters, cache_root=cache_root):
+        has_snapshot = row["cache"]["has_cached_snapshot"]
+        review_status = row["transformation_review"]["status"]
+        if not has_snapshot:
+            next_gate = "snapshot_needed"
+            next_action = "Rohdaten-Snapshot aus der dokumentierten Quelle holen und mit SHA256-Manifest cachen."
+        elif review_status == "not_reviewed":
+            next_gate = "transformation_review_needed"
+            next_action = "Transformation von Rohdaten zu Modellgröße prüfen, dokumentieren und bewusst noch nicht automatisch importieren."
+        elif review_status == "reviewed_model_ready":
+            next_gate = "explicit_model_integration_needed"
+            next_action = "Nur nach fachlicher Freigabe Registry/Modellcode explizit ändern; Snapshot allein reicht nicht."
+        else:
+            next_gate = "monitor_only"
+            next_action = "Derzeit kein Modellimport: Review/Caveat beobachten und bei neuer Quelle erneut prüfen."
+
+        rows.append({
+            "parameter_key": row["parameter_key"],
+            "label": row["label"],
+            "evidence_grade": row["evidence_grade"],
+            "registry_label": row["registry_label"],
+            "has_cached_snapshot": has_snapshot,
+            "transformation_status": review_status,
+            "next_gate": next_gate,
+            "next_action": next_action,
+            "guardrail": "Keine Modelländerung durch diese Backlog-Aufgabe; Daten werden erst nach Review und expliziter Integration wirksam.",
+        })
+    rows.sort(key=lambda item: (priority.get(item["next_gate"], 99), item["evidence_grade"], item["label"]))
+    return rows if limit is None else rows[:limit]
+
 def _latest_transformation_by_parameter(cache_root: Path | str) -> dict[str, ReviewedTransformation]:
     latest: dict[str, ReviewedTransformation] = {}
     for review in list_reviewed_transformations(cache_root):

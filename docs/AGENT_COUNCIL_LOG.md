@@ -1213,3 +1213,33 @@ Keine wichtige Entscheidung offen.
 - **Integrator Decision:** `POST /data-fixtures/seed-reference-snapshots` akzeptiert, weil es die Data-Passport-Pipeline bedienbarer macht und bestehende Schutzlogik wiederverwendet.
 - **Question to Alex if needed:** Keine.
 - **Verification/Git:** Wird nach Tests, Smoke, Commit/Push und Zip-Refresh im Heartbeat berichtet.
+
+
+## 2026-04-29 23:35 Europe/Berlin — Heartbeat: Data-Readiness Backlog
+
+### Context
+Alex corrected the heartbeat priority toward core platform implementation. Current branch `feat/platform-data-status-foundation` already had Data Passport/cache/fixture groundwork; this run added a safe next-step backlog for real data readiness.
+
+### Project Manager
+Priority: make data-ingestion work actionable, not only descriptive. Risk: users or agents could mistake cached snapshots for model imports. Next tasks: (1) convert first backlog item into a reviewed live-source connector slice, (2) keep Data Passport and backlog visible in UI/API, (3) add source-specific connector tests before model integration.
+
+### Designer / UX
+The Learning Page now shows a clearer sequence: first see Data Passport status, then see the next data gates (cache → transformation review → explicit integration). This helps newcomers understand where to click/what is still missing without relying on hover.
+
+### Creative Agent
+Idea: later turn the backlog into a guided “Daten-Werkbank” with cards per source. Fit: useful for contributor motivation and provenance discipline, but defer until one live connector exists.
+
+### Political Health-System Strategist
+No new stakeholder or political claims added. The guardrail is important politically: SimMed must not present a raw administrative snapshot as a ready policy conclusion or official forecast.
+
+### Evidence / Domain
+No new external research in this run. The change strengthens provenance workflow only: registry status, raw cache, transformation review, and explicit model integration remain separate gates.
+
+### Integrator Decision
+Accepted: add `build_data_readiness_backlog(...)`, expose it via `GET /data-readiness-backlog`, and render a Learning Page backlog helper. Deferred: live Destatis/GENESIS import and any automatic model mutation.
+
+### Question to Alex
+None.
+
+### Verification / Git
+`python3 -m py_compile data_ingestion.py api.py app.py tests/test_app_explanations.py tests/test_api.py` passed. Full suite passed: `83 passed`. Runtime smoke passed with 20 runs × 2 years: `df (60, 30)`, `reg (320, 6)`. Commit/push pending at log-write time.

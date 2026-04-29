@@ -42,6 +42,20 @@ def test_api_exposes_data_passport_for_registry_and_cache_status():
     assert "Registry" in population["passport_note"]
 
 
+def test_api_exposes_data_readiness_backlog_without_model_integration():
+    client = TestClient(api)
+    response = client.get("/data-readiness-backlog")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "data_readiness_backlog_not_model_integration"
+    assert "importiert keine Werte" in body["guardrail"]
+    assert body["items"]
+    first = body["items"][0]
+    assert {"parameter_key", "next_gate", "next_action", "guardrail"} <= set(first)
+    assert "Modelländerung" in first["guardrail"]
+
+
 def test_api_can_seed_reference_fixture_snapshots_without_model_import():
     client = TestClient(api)
     response = client.post("/data-fixtures/seed-reference-snapshots")

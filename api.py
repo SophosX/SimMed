@@ -14,6 +14,7 @@ from pydantic import BaseModel, Field
 
 from data_ingestion import (
     build_data_passport_rows,
+    build_data_readiness_backlog,
     build_parameter_snapshot_status,
     list_cached_snapshots,
     list_reviewed_transformations,
@@ -69,6 +70,18 @@ def get_data_passport() -> dict:
         "status": "registry_and_raw_cache_passport_not_model_integration",
         "guardrail": "'aus Daten' beschreibt den Registry-/Quellenstatus; Rohdaten-Cache und geprüfte Transformation bleiben getrennt sichtbar.",
         "parameters": build_data_passport_rows(parameters),
+    }
+
+
+@api.get("/data-readiness-backlog")
+def get_data_readiness_backlog() -> dict:
+    """Expose safe next data-foundation gates without mutating model values."""
+
+    parameters = list_parameters()
+    return {
+        "status": "data_readiness_backlog_not_model_integration",
+        "guardrail": "Diese Liste priorisiert Cache-/Review-/Integrationsarbeit; sie importiert keine Werte und beweist keine Policy-Wirkung.",
+        "items": build_data_readiness_backlog(parameters),
     }
 
 

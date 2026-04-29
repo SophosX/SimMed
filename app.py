@@ -29,7 +29,7 @@ import warnings
 
 from political_feasibility import assess_political_feasibility
 from expert_council import plain_language_workflow_summary
-from data_ingestion import build_data_passport_rows
+from data_ingestion import build_data_passport_rows, build_data_readiness_backlog
 from parameter_registry import PARAMETER_REGISTRY, list_parameters
 from simulation_report import build_simulation_report as build_policy_briefing_report
 
@@ -4035,6 +4035,38 @@ def render_learning_data_passport_overview():
 
 
 
+def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
+    """Summarize the next safe data-foundation gates for the Learning Page."""
+
+    backlog = build_data_readiness_backlog(list_parameters(), limit=limit)
+    return {
+        "title": "Nächste Daten-Schritte: erst Cache, dann Review, dann Integration",
+        "plain_language_note": (
+            "Diese Liste zeigt, was fehlt, bevor ein Parameter als geprüfter Datenwert im Modell gelten darf. "
+            "Sie ist bewusst kein Import-Knopf: Rohdaten, Transformation und Modellintegration bleiben getrennte Gates."
+        ),
+        "rows": [
+            {
+                "Parameter": item["label"],
+                "Nächstes Gate": item["next_gate"],
+                "Aktion": item["next_action"],
+                "Guardrail": item["guardrail"],
+            }
+            for item in backlog
+        ],
+    }
+
+
+def render_learning_data_readiness_backlog():
+    """Render the data-readiness backlog as a mobile-safe table."""
+
+    backlog = build_learning_data_readiness_backlog()
+    st.markdown(f"### {backlog['title']}")
+    st.markdown(f"<div class=\"learn-callout\"><b>Warum wichtig?</b> {backlog['plain_language_note']}</div>", unsafe_allow_html=True)
+    st.dataframe(pd.DataFrame(backlog["rows"]), use_container_width=True, hide_index=True)
+    st.caption("Guardrail: Eine Backlog-Zeile ist Arbeitsplanung für Provenienz — kein Live-Import, keine Modellmutation, kein Wirkungsbeweis.")
+
+
 def render_parameter_guide():
     """Kurzer, nutzerfreundlicher Guide: welche Parameter bewirken was?"""
     st.markdown("### Parameter verstehen")
@@ -4194,6 +4226,7 @@ def render_learning_page():
 
     st.markdown("### 5. Datenpass: Daten vs. Annahmen prüfen")
     render_learning_data_passport_overview()
+    render_learning_data_readiness_backlog()
 
     st.markdown("### 6. Wie kommen neue Beiträge ins Modell?")
     workflow_steps = plain_language_workflow_summary()
