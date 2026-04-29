@@ -1407,3 +1407,15 @@ Focused test: `16 passed`; full suite: `86 passed`. Commit/push follows in this 
 - **Integrator Decision:** Quelle strukturiert in `ai_healthcare_evidence.py` ergänzt und Regressionstest angelegt; `model_use_status` bleibt `catalog_only`.
 - **Question to Alex if needed:** Keine wichtige Produktentscheidung offen; sichere Evidenzvertiefung fortsetzen.
 - **Verification/Git:** Tests/Compile/Smoke und Git-Push folgen in diesem Lauf.
+
+## 2026-04-29 20:49 UTC — Heartbeat: AI-scribe validation-readiness counterweight
+
+- **Context:** Continued the AI-in-healthcare evidence catalogue on branch `feat/ai-healthcare-evidence-validation`, keeping main platform stable and AI evidence as catalogue-only.
+- **Project Manager:** Safe small slice: add one structured PubMed/E-utilities source rather than broaden model/UI behavior.
+- **Designer/UX:** Evidence passport remains the right eventual UI surface; this source should help users see “how mature/validated is this tool?” before any KPI interpretation.
+- **Creative Agent:** A future scenario-gallery card could show “KI-Scribe: Reifegrad prüfen” as a pre-simulation checklist, but not as an automatic productivity lever.
+- **Political Health-System Strategist:** Validation maturity matters for German deployment debates: early TRL/workflow-integration gaps should be visible before claims about relief for practices or hospitals.
+- **Evidence/Domain:** Added Journal of Medical Systems scoping-review metadata on digital-scribe validation practices; kept it as validation-readiness/implementation context, not clinical-outcome, cost-saving, or German-transfer proof.
+- **Integrator Decision:** Attached the source to `ambient_ai_scribes_documentation_burden`, preserved `catalog_only`, and added a regression test against overclaiming.
+- **Question to Alex if needed:** Keine — this is reversible evidence-catalogue work.
+- **Verification/Git:** `tests/test_ai_healthcare_evidence.py` passed (19 tests) and `py_compile` passed. Commit/push pending in this heartbeat after final status verification.

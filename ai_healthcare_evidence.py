@@ -323,6 +323,22 @@ EVIDENCE_SOURCES: dict[str, EvidenceSource] = {
         ),
         license_or_terms_note="PubMed metadata/abstract and DOI metadata only; article copyright/license may apply. Store citation/metadata only unless reuse terms permit more.",
     ),
+    "j_med_syst_validation_practices_digital_scribes_2026": EvidenceSource(
+        id="j_med_syst_validation_practices_digital_scribes_2026",
+        title="Validating Digital Scribes: A Scoping Review of Evaluation Practices and Clinical Use",
+        url="https://pubmed.ncbi.nlm.nih.gov/42026370/",
+        kind="paper",
+        retrieved_via="PubMed E-utilities search + abstract metadata",
+        retrieved_at="2026-04-29",
+        source_date="2026",
+        quality_note=(
+            "Journal of Medical Systems scoping review of digital-scribe validation practices using the Technology Readiness Level framework. "
+            "The abstract reports that most systems remain in early development stages, typically TRL 3-4, with only a small number progressing "
+            "to workflow integration. Use as validation-readiness and implementation-context evidence, not as proof of clinical outcomes, cost savings, "
+            "or automatic transfer into German routine care."
+        ),
+        license_or_terms_note="PubMed abstract metadata only; article copyright/license may apply. Store citation/metadata only unless reuse terms permit more.",
+    ),
     "x_jama_current_ambient_scribes_2026": EvidenceSource(
         id="x_jama_current_ambient_scribes_2026",
         title="JAMA X post: ambient scribes reduce documentation time but patient outcomes/equity evidence limited",
@@ -392,6 +408,7 @@ AI_HEALTHCARE_EVIDENCE: dict[str, AIHealthcareEvidenceRecord] = {
             "jmir_ai_ambient_scribes_rapid_review_2025",
             "jmir_med_inform_singapore_time_motion_2026",
             "npj_digital_medicine_scaling_ambient_scribes_2026",
+            "j_med_syst_validation_practices_digital_scribes_2026",
         ),
         transferability_to_germany=(
             "Medium: documentation burden and clinician workflow are relevant in Germany, but effects depend on German documentation rules, "

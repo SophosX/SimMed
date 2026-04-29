@@ -218,6 +218,21 @@ def test_ambient_scribes_include_scaling_perspective_as_implementation_context_o
     assert record.model_use_status == "catalog_only"
 
 
+def test_ambient_scribes_include_validation_readiness_scoping_review_context():
+    source = EVIDENCE_SOURCES["j_med_syst_validation_practices_digital_scribes_2026"]
+    record = AI_HEALTHCARE_EVIDENCE["ambient_ai_scribes_documentation_burden"]
+
+    assert source.kind == "paper"
+    assert source.retrieved_via == "PubMed E-utilities search + abstract metadata"
+    assert "Technology Readiness Level" in source.quality_note
+    assert "TRL 3-4" in source.quality_note
+    assert "validation-readiness" in source.quality_note
+    assert "not as proof of clinical outcomes" in source.quality_note
+    assert source.id in record.source_ids
+    assert "patient_outcome" not in record.outcome_types
+    assert record.model_use_status == "catalog_only"
+
+
 def test_youtube_context_pipeline_is_explicitly_grade_e_and_not_model_fact():
     record = AI_HEALTHCARE_EVIDENCE["ai_healthcare_youtube_context_pipeline"]
     summary = evidence_quality_summary(record.id)
