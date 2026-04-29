@@ -416,3 +416,17 @@ Small implementation slice:
 5. Add a focused regression test that verifies Medizinstudienplätze links to KPI detail targets, delayed timing, evidence grade, political caveat/not-vote-forecast wording, and the ordered input → result → assumption → implementation path.
 
 Guardrail: this is navigation/orchestration only. It must not add new model effects, real-world claims, stakeholder claims, scores, forecasts, or political advice.
+
+## 2026-04-29 next slice: Changed-lever executive question cards
+
+Problem: The audit trail is complete, but still reads like a technical checklist. A first-time user needs one compact, expandable question card per changed lever that answers Alex's five core questions in order: what changed, why the model moved, how strong/where to inspect the effect, which assumption limits interpretation, and what implementation/political caveat applies.
+
+Small implementation slice:
+
+1. Add a pure `build_changed_lever_question_cards(agg, params)` helper in `app.py`.
+2. Reuse only `build_changed_lever_result_audit_trail(...)`; do not invent new causal or stakeholder text.
+3. Return one card per changed lever with stable question rows: `Was wurde geändert?`, `Warum bewegt das Ergebnisse?`, `Wie stark/wo sichtbar?`, `Welche Annahme prüfen?`, `Was vor politischer Bewertung beachten?`, and `Nächster Klick`.
+4. Render these cards directly before the detailed audit trail so the page offers an answer-first path and then an audit path.
+5. Add a focused test that verifies the card reuses KPI targets, evidence/timing/political caveats, and keeps the not-a-forecast/not-lobbying guardrail.
+
+Guardrail: this is a readability layer over existing structured outputs only. It must not change model logic, introduce new evidence claims, or turn the qualitative political rubric into advice.

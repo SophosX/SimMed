@@ -1911,6 +1911,65 @@ def build_changed_lever_result_audit_trail(agg: pd.DataFrame, params: dict) -> L
     return rows
 
 
+def build_changed_lever_question_cards(agg: pd.DataFrame, params: dict) -> List[Dict[str, Any]]:
+    """Build answer-first question cards for each changed lever.
+
+    This helper is a readability layer over `build_changed_lever_result_audit_trail`.
+    It must not add new causal claims; every answer is assembled from the existing
+    audit row so users can read one lever as questions first and audit details next.
+    """
+    cards: List[Dict[str, Any]] = []
+    for row in build_changed_lever_result_audit_trail(agg, params):
+        detail_targets = "; ".join(target.get("next_step", "") for target in row.get("drilldown_targets", []))
+        visible_kpis = "; ".join(row.get("observed_kpis", [])) or "keine direkte KPI-Spur ausgewiesen"
+        strength_hint = detail_targets or visible_kpis
+        political_text = (
+            f"Unterstützer: {row['political_supporters']}; Bremser: {row['political_blockers']}; "
+            f"{row['political_caveat']}"
+        )
+        question_rows = [
+            {"question": "Was wurde geändert?", "answer": row["changed"]},
+            {"question": "Warum bewegt das Ergebnisse?", "answer": row["model_path"]},
+            {
+                "question": "Wie stark/wo sichtbar?",
+                "answer": f"KPI-Spuren: {visible_kpis}. Detailprüfung: {strength_hint}",
+            },
+            {
+                "question": "Welche Annahme prüfen?",
+                "answer": f"{row['assumption_check']}; Caveat: {row['assumption_caveat']}; Timing: {row['timing_guidance']} ({row['timing']})",
+            },
+            {
+                "question": "Was vor politischer Bewertung beachten?",
+                "answer": political_text,
+            },
+            {"question": "Nächster Klick", "answer": row["next_step"]},
+        ]
+        cards.append({
+            "label": row["label"],
+            "summary": (
+                f"{row['label']}: erst Eingabe und KPI-Spuren lesen, dann Annahmen/Timing prüfen, "
+                "danach politische Umsetzbarkeit als qualitative Rubrik einordnen."
+            ),
+            "question_rows": question_rows,
+            "guardrail": "Antwortkarte aus bestehenden Modellpfaden; keine amtliche Prognose, kein Vote-Forecast und keine Lobbying-Empfehlung.",
+        })
+    return cards
+
+
+def render_changed_lever_question_cards(agg: pd.DataFrame, params: dict):
+    """Render answer-first changed-lever cards before the detailed audit trail."""
+    cards = build_changed_lever_question_cards(agg, params)
+    if not cards:
+        return
+    with st.expander("Geänderte Hebel als Fragen lesen", expanded=True):
+        st.caption("Kurze Antwortkarten aus vorhandenen Erklärungen. Danach kannst du den detaillierten Audit-Pfad öffnen.")
+        for card in cards:
+            st.markdown(f"**{card['label']}** — {card['summary']}")
+            for row in card["question_rows"]:
+                st.markdown(f"- **{row['question']}:** {row['answer']}")
+            st.warning(card["guardrail"])
+
+
 def render_changed_lever_result_audit_trail(agg: pd.DataFrame, params: dict):
     """Render an input-to-result audit trail for changed levers."""
     rows = build_changed_lever_result_audit_trail(agg, params)
@@ -2197,6 +2256,7 @@ def render_result_narrative_summary(agg: pd.DataFrame, params: dict):
     st.caption(summary["next_step"])
     render_result_reading_path(agg, params)
     render_result_explorer_topics(agg, params)
+    render_changed_lever_question_cards(agg, params)
     render_changed_lever_result_audit_trail(agg, params)
     render_changed_parameter_impact_bridge(agg, params)
 

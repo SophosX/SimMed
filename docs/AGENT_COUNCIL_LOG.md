@@ -1015,3 +1015,32 @@ No important decision needed in this slice; it is reversible navigation over exi
 
 ### Verification / Git
 `tests/test_app_explanations.py::test_changed_lever_result_audit_trail_links_input_kpi_assumption_timing_and_politics` passed; full `python3 -m pytest -q` passed (66 tests); py_compile passed; 30-run/3-year smoke passed (`df=(120, 30)`, `reg=(480, 6)`). Synced and pushed main commit `1095db8`.
+
+## 2026-04-29 21:28 Europe/Berlin — Changed-lever question cards
+
+### Context
+The results page already has a detailed changed-lever audit trail, but it can still feel like a technical checklist. This heartbeat updated `docs/plans/results-experience-redesign.md` before implementation and added an answer-first card layer in `app.py`.
+
+### Project Manager
+Priority: keep improving the result-reading journey without adding new model logic. Risk: more explanation blocks can become clutter unless they reuse one structured source. Next tasks: verify the new cards, then continue with compact navigation/export patterns rather than new prose snippets.
+
+### Designer / UX
+The new slice turns each changed lever into six stable user questions before the detailed audit path: what changed, why, where visible, which assumption, political caveat, next click. This should help first-time users understand the value before scrolling into deeper details.
+
+### Creative Agent
+Idea: later let users pin one changed lever as “mein Reformpfad” so the dashboard filters explanations around that lever. Fit: useful for focus, but needs a deliberate UI plan; not implemented now.
+
+### Political Health-System Strategist
+Political text remains a qualitative feasibility rubric. The cards explicitly keep “kein Vote-Forecast” and “keine Lobbying-Empfehlung” so stakeholder friction is not framed as electoral prediction or advocacy.
+
+### Evidence / Domain
+No new empirical claim or parameter assumption was added. The card content reuses existing model path, KPI pointers, evidence-grade/assumption checks, timing caveats, and political rubric text.
+
+### Integrator Decision
+Accepted: add `build_changed_lever_question_cards(...)` and render it before the detailed audit trail. Deferred: any richer political strategy mode or evidence expansion.
+
+### Question to Alex
+No important decision open. Recommendation: keep iterating on answer-first/result-audit clarity before adding new simulation mechanics.
+
+### Verification / Git
+Targeted test passed (`tests/test_app_explanations.py::test_changed_lever_question_cards_answer_first_before_audit_details`); full `python3 -m pytest -q` passed (71 tests); py_compile passed; smoke test passed with 20 runs × 2 years (`df=(60, 30)`, `reg=(320, 6)`). Git sync/commit/push pending at log-writing time.

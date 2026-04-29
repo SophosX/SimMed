@@ -9,6 +9,7 @@ from app import (
     _parameter_evidence_badge,
     _parameter_provenance_help,
     build_changed_parameter_impact_bridge,
+    build_changed_lever_question_cards,
     build_changed_lever_result_audit_trail,
     build_kpi_answer_checklist,
     build_kpi_assumption_trace,
@@ -1143,3 +1144,46 @@ def test_changed_lever_result_audit_trail_links_input_kpi_assumption_timing_and_
     assert "Vote-Forecast" in combined
     assert "Eingabe → Ergebnis → Annahme → Umsetzbarkeit" in row["next_step"]
     assert build_changed_lever_result_audit_trail(agg, get_default_params()) == []
+
+
+def test_changed_lever_question_cards_answer_first_before_audit_details():
+    agg = pd.DataFrame([
+        {
+            "jahr": 2026,
+            "aerzte_pro_100k_mean": 430.0,
+            "wartezeit_fa_mean": 35.0,
+            "versorgungsindex_rural_mean": 0.72,
+        },
+        {
+            "jahr": 2040,
+            "aerzte_pro_100k_mean": 410.0,
+            "wartezeit_fa_mean": 44.0,
+            "versorgungsindex_rural_mean": 0.64,
+        },
+    ])
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] - 1500
+
+    cards = build_changed_lever_question_cards(agg, params)
+
+    assert [card["label"] for card in cards] == ["Medizinstudienplätze"]
+    card = cards[0]
+    questions = [row["question"] for row in card["question_rows"]]
+    combined = " ".join([card["summary"], card["guardrail"]] + [row["answer"] for row in card["question_rows"]])
+
+    assert questions == [
+        "Was wurde geändert?",
+        "Warum bewegt das Ergebnisse?",
+        "Wie stark/wo sichtbar?",
+        "Welche Annahme prüfen?",
+        "Was vor politischer Bewertung beachten?",
+        "Nächster Klick",
+    ]
+    assert "KPI-Detailkarte" in combined
+    assert "Facharzt" in combined or "Wartezeit" in combined
+    assert "Evidenzgrad" in combined
+    assert "2032" in combined
+    assert "Vote-Forecast" in combined
+    assert "Lobbying-Empfehlung" in combined
+    assert "keine amtliche Prognose" in combined
+    assert build_changed_lever_question_cards(agg, get_default_params()) == []
