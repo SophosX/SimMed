@@ -1120,3 +1120,15 @@ Keine.
 
 ### Verification / Git
 `72 passed`; `py_compile` for app/core/API/registry/provenance/data ingestion/tests; simulation smoke `20 runs × 2 years` OK with `(60, 30)` / `(320, 6)`. Branch `feat/platform-data-status-foundation`; commit/push pending at log-write time.
+
+## 2026-04-29T21:04Z — Rohdaten-Snapshot-Status für API/Data-Passport
+
+- **Context:** Primärtrack Plattform; nächster sicherer Daten-/Provenienz-Schritt nach `data_ingestion.py`: Raw-Snapshots müssen für Agenten/API sichtbar werden, ohne Modellparameter automatisch zu ändern. Keine neue externe Recherche in diesem Lauf.
+- **Project Manager:** Kleine, testbare Plattform-Scheibe statt weiterer KI-Evidenz; schafft Basis für späteren Datenpass in UI und echte GENESIS-Snapshots.
+- **Designer/UX:** Statussprache trennt klar „Rohdaten-Snapshot vorhanden“ von „Modellwert geprüft integriert“, damit Erstnutzer keine falsche Sicherheit bekommen.
+- **Creative Agent:** API-Status kann später als sichtbarer Datenpass pro Regler/KPI genutzt werden; jetzt bewusst schlicht und prüfbar.
+- **Political Health-System Strategist:** Keine neue politische Annahme; Guardrail verhindert, dass Rohdaten-Fund als politisch verwertbarer Wirkungsnachweis missverstanden wird.
+- **Evidence/Domain:** Snapshot-Existenz bleibt Provenienz-/Cache-Signal; Transformation/Review ist weiterhin separater Schritt.
+- **Integrator Decision:** `list_cached_snapshots()`, `build_parameter_snapshot_status()` und `GET /data-snapshots` ergänzt; keine Modelllogik und keine Parameterwerte geändert.
+- **Question to Alex if needed:** Keine wichtige Entscheidung offen; nächster Plattform-Schritt kann UI-Datenpass oder erster statischer GENESIS-Fixture-Snapshot sein.
+- **Verification/Git:** `tests/test_data_ingestion.py`, `tests/test_api.py`, volle Tests und kleiner Simulation-Smoke ausgeführt; Commit/Push folgt.

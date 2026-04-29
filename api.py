@@ -12,6 +12,7 @@ from typing import Any
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
 
+from data_ingestion import build_parameter_snapshot_status, list_cached_snapshots
 from data_sources import list_sources
 from parameter_registry import list_parameters
 from political_feasibility import assess_political_feasibility
@@ -35,6 +36,20 @@ def get_sources() -> list[dict]:
 @api.get("/parameters")
 def get_parameters() -> list[dict]:
     return list_parameters()
+
+
+@api.get("/data-snapshots")
+def get_data_snapshots() -> dict:
+    """Expose raw-source cache status without treating snapshots as model truth."""
+
+    parameters = list_parameters()
+    parameter_keys = [p["key"] for p in parameters]
+    return {
+        "status": "raw_snapshot_status_not_model_integration",
+        "guardrail": "Rohdaten-Snapshots zeigen Cache/Provenienz; Modellparameter ändern sich erst nach geprüfter Transformation.",
+        "snapshots": [snapshot.to_dict() for snapshot in list_cached_snapshots()],
+        "parameters": build_parameter_snapshot_status(parameter_keys),
+    }
 
 
 @api.post("/scenario-manifest")

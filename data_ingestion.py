@@ -100,3 +100,53 @@ def read_snapshot_manifest(path: Path | str) -> CachedSourceSnapshot:
     data = json.loads(Path(path).read_text(encoding="utf-8"))
     data["output_parameter_keys"] = tuple(data.get("output_parameter_keys", ()))
     return CachedSourceSnapshot(**data)
+
+
+def list_cached_snapshots(cache_root: Path | str = CACHE_ROOT) -> list[CachedSourceSnapshot]:
+    """Return all cache manifests sorted newest-first by retrieval timestamp.
+
+    This is a read-only status helper for API/UI data passports. It deliberately
+    does not infer that a parameter default is trustworthy just because a raw
+    snapshot exists; reviewed transformations remain a separate step.
+    """
+
+    root = Path(cache_root)
+    if not root.exists():
+        return []
+    snapshots: list[CachedSourceSnapshot] = []
+    for manifest_path in root.glob("*/manifests/*.manifest.json"):
+        snapshots.append(read_snapshot_manifest(manifest_path))
+    return sorted(snapshots, key=lambda item: item.retrieved_at, reverse=True)
+
+
+def build_parameter_snapshot_status(
+    parameter_keys: list[str] | tuple[str, ...],
+    *,
+    cache_root: Path | str = CACHE_ROOT,
+) -> list[dict]:
+    """Summarize whether each parameter has a cached raw-source snapshot.
+
+    The output is intentionally conservative: `has_cached_snapshot` means only
+    that raw source material is present in the local cache. It is not evidence
+    that the value has been reviewed, transformed, or integrated into the model.
+    """
+
+    snapshots = list_cached_snapshots(cache_root)
+    rows: list[dict] = []
+    for key in parameter_keys:
+        matching = [s for s in snapshots if key in s.output_parameter_keys]
+        latest = matching[0] if matching else None
+        rows.append(
+            {
+                "parameter_key": key,
+                "has_cached_snapshot": latest is not None,
+                "snapshot_count": len(matching),
+                "latest_snapshot": latest.to_dict() if latest else None,
+                "status_note": (
+                    "Rohdaten-Snapshot vorhanden; Modellwert bleibt bis zur geprüften Transformation getrennt."
+                    if latest
+                    else "Noch kein Rohdaten-Snapshot im lokalen Cache verknüpft."
+                ),
+            }
+        )
+    return rows
