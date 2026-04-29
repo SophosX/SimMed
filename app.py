@@ -896,7 +896,40 @@ def _parameter_evidence_badge(key: str) -> str:
         "E": "🔴",
     }.get(spec.evidence_grade, "⚪")
     sources = ", ".join(spec.source_ids)
-    return f"{grade_icon} Evidenz {spec.evidence_grade} · {sources}"
+    status = "aus Daten" if spec.data_status == "aus_daten" else "Annahme, nicht aus Daten"
+    return f"{grade_icon} {status} · Evidenz {spec.evidence_grade} · {sources}"
+
+
+def parameter_data_status_badge(key: str) -> str:
+    """Visible data-vs-assumption label for a parameter."""
+    spec = PARAMETER_REGISTRY.get(key)
+    if spec is None:
+        return "🔴 Annahme, nicht aus Daten · Register fehlt"
+    icon = "🟢" if spec.data_status == "aus_daten" else "🟠"
+    label = "aus Daten" if spec.data_status == "aus_daten" else "Annahme, nicht aus Daten"
+    freshness = f" · Stand {spec.source_version}" if spec.source_version else ""
+    return f"{icon} {label} · Evidenz {spec.evidence_grade}{freshness}"
+
+
+_KPI_SOURCE_PARAMETERS = {
+    "gesundheitsausgaben_mrd": ("gkv_anteil", "einkommen_durchschnitt"),
+    "gkv_saldo": ("gkv_anteil", "gkv_beitragssatz_basis", "staatliche_subventionen"),
+    "aerzte_pro_100k": ("aerzte_gesamt",),
+    "wartezeit_fa": ("fachpraxen", "patienten_pro_quartal"),
+    "lebenserwartung": ("praeventionsbudget",),
+    "kollaps_wahrscheinlichkeit": ("gkv_anteil", "aerzte_gesamt"),
+}
+
+
+def kpi_data_status_badge(kpi_key: str) -> str:
+    """Visible data-vs-assumption label for KPI interpretation."""
+    specs = [PARAMETER_REGISTRY.get(k) for k in _KPI_SOURCE_PARAMETERS.get(kpi_key, ())]
+    specs = [s for s in specs if s is not None]
+    if not specs:
+        return "🟠 Annahme, nicht aus Daten · KPI-Treiber noch nicht im Register verknüpft"
+    if all(s.data_status == "aus_daten" for s in specs):
+        return "🟢 aus Daten · KPI basiert auf registrierten Datenparametern"
+    return "🟠 Annahme, nicht aus Daten · KPI kombiniert Datenreferenzen mit Modellannahmen"
 
 
 def _parameter_provenance_help(key: str, plain_hint: str | None = None) -> str:
@@ -2108,6 +2141,7 @@ def render_metric_card_with_details(
     )
     detail = kpi_mobile_detail(metric_key)
     with st.popover(f"Details zu {label}", use_container_width=True):
+        st.caption(kpi_data_status_badge(metric_key))
         st.markdown(f"**Bedeutung:** {detail['meaning']}")
         st.markdown(f"**Warum verändert sich das?** {detail['why']}")
         st.markdown(f"**Wie lesen?** {detail['read']}")
@@ -2240,6 +2274,50 @@ def render_kpi_deep_dive(agg: pd.DataFrame, params: dict):
                 st.success(f"**8 · Nächster Klick:** {item['next_step']}")
 
 
+def build_trend_metric_reading_rows(
+    agg: pd.DataFrame,
+    selected_labels: List[str],
+    choices: Dict[str, str],
+) -> List[Dict[str, Any]]:
+    """Summarize selected trend lines so the chart is readable without hover.
+
+    The rows only describe already simulated time series. They do not infer new
+    causality or change model outputs; they make start/end/effect-strength and
+    next inspection prompts accessible on touch devices.
+    """
+    next_steps = {
+        "Gesundheitsausgaben": "Öffne die KPI-Details zu Gesundheitsausgaben und danach GKV-Saldo/BIP-Anteil.",
+        "BIP-Anteil Gesundheit": "Öffne die KPI-Details zu BIP-Anteil und Gesundheitsausgaben, um Finanzierungsdruck einzuordnen.",
+        "Facharzt-Wartezeit": "Öffne die KPI-Detailkarte Facharzt-Wartezeit und prüfe danach Ärztedichte sowie ländliche Versorgung.",
+        "GKV-Beitragssatz": "Öffne die KPI-Details zu Beitragssatz und GKV-Saldo; danach politische Umsetzbarkeit prüfen.",
+        "Ärzte pro 100k": "Öffne die KPI-Details zu Ärztedichte und Wartezeit; Kopfzahl ist nicht automatisch Kapazität.",
+        "Kollaps-Risiko": "Öffne zuerst die stärksten Einzel-KPIs: Wartezeit, GKV-Saldo und vermeidbare Mortalität.",
+    }
+    lower_is_better = {"Facharzt-Wartezeit", "GKV-Beitragssatz", "BIP-Anteil Gesundheit", "Gesundheitsausgaben", "Kollaps-Risiko"}
+    rows: List[Dict[str, Any]] = []
+    for label in selected_labels:
+        col = choices.get(label)
+        if not col or col not in agg.columns or agg.empty:
+            continue
+        start = float(agg.iloc[0][col])
+        end = float(agg.iloc[-1][col])
+        abs_delta = end - start
+        pct_delta = ((end / start) - 1) * 100 if start else 0.0
+        direction = _direction_word(abs_delta, higher_is_better=label not in lower_is_better)
+        rows.append({
+            "label": label,
+            "start": start,
+            "end": end,
+            "abs_delta": abs_delta,
+            "pct_delta": pct_delta,
+            "direction": direction,
+            "effect_strength": _effect_strength(pct_delta),
+            "caveat": "Gemischte Einheiten: diese Werte nur innerhalb derselben Kennzahl über die Zeit vergleichen, nicht Linie gegen Linie.",
+            "next_step": next_steps.get(label, "Öffne die passende KPI-Detailkarte und prüfe danach Annahmen und Zeitverlauf."),
+        })
+    return rows
+
+
 def build_trend_view_guidance(selected_labels: List[str]) -> Dict[str, str]:
     """Explain how to read the mixed-unit trend chart without adding model logic."""
     selected_text = ", ".join(selected_labels) if selected_labels else "keine Kennzahl ausgewählt"
@@ -2283,7 +2361,17 @@ def render_main_trend_chart(agg: pd.DataFrame):
         st.markdown(f"**1 · Verlauf lesen:** {guidance['how_to_read']}")
         st.warning(guidance["unit_warning"])
         st.markdown(f"**2 · Warum diese Auswahl?** {guidance['selection_meaning']}")
-        st.success(f"**3 · Nächster Klick:** {guidance['next_step']}")
+        trend_rows = build_trend_metric_reading_rows(agg, selected, choices)
+        if trend_rows:
+            st.markdown("**3 · Ausgewählte Linien ohne Hover lesen:**")
+            for row in trend_rows:
+                st.markdown(
+                    f"- **{row['label']}**: {row['start']:.2f} → {row['end']:.2f} "
+                    f"({row['abs_delta']:+.2f}; {row['pct_delta']:+.1f}%, {row['effect_strength']}, {row['direction']}). "
+                    f"{row['next_step']}"
+                )
+            st.caption(trend_rows[0]["caveat"])
+        st.success(f"**4 · Nächster Klick:** {guidance['next_step']}")
     fig = go.Figure()
     for label in selected:
         col = choices[label]

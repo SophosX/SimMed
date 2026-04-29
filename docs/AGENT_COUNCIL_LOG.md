@@ -837,3 +837,16 @@ No important decision open. Safe next slice: make the direct KPI↔Hebel matchin
 Local verification passed: `python3 -m pytest -q` (54 passed), `py_compile`, and 50-run/3-year simulation smoke test (`df=(200,30)`, `reg=(800,6)`). Git commit/push pending in this heartbeat after source→GitHub sync.
 
 Post-commit verification update: committed and pushed as `f8d37b3` (`Improve KPI lever matching explanations`); `git show --name-only --oneline -1` confirmed app.py, tests, plan and council log were included.
+
+
+## 2026-04-29 18:26 UTC — Trend rows without hover
+
+- **Context:** Alex wants the results page to become a coherent explanation journey. The trend chart already warned about mixed units, but still depended too much on hover for concrete start/end reading.
+- **Project Manager:** Safe low-risk UX slice: update the plan, add a pure helper, render inside the existing trend guide, keep model outputs unchanged.
+- **Designer/UX:** Added selected-line reading rows so touch/mobile users can see start, end, change, strength and next KPI card without hovering over the plot.
+- **Creative Agent:** Fit is pragmatic rather than flashy: the trend chart becomes a mini-reading table, reducing cognitive load before deeper charts are added.
+- **Political Health-System Strategist:** No new stakeholder or policy claim added; the change keeps political interpretation downstream in the existing rubric.
+- **Evidence/Domain:** No new research in this run; all text is model-reading guidance and explicitly cautions against comparing mixed units line-to-line.
+- **Integrator Decision:** Implemented `build_trend_metric_reading_rows(...)`, rendered it in `render_main_trend_chart()`, and documented the slice in `docs/plans/results-experience-redesign.md`.
+- **Question to Alex if needed:** No important product decision open for this small slice.
+- **Verification/Git:** Local tests and smoke test passed before sync/commit; push status recorded in final heartbeat.

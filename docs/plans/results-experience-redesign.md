@@ -278,3 +278,16 @@ Small implementation slice:
 4. Add a focused test proving Telemedizin appears for Facharzt-Wartezeit but not for an unrelated KPI when the scenario only changes Telemedizin.
 
 Guardrail: This is explanation routing only. Do not add new model effects, external factual claims, political claims or hidden causal scoring; use existing bridge text and simulated KPI pointers.
+
+## 2026-04-29 next slice: Trend rows for selected metrics
+
+Problem: The trend chart explains mixed units, but users still have to hover over the plot to answer the practical question: for each selected line, what was the start value, end value, direction, effect strength, and next KPI card to inspect? Hover is weak on mobile and makes the trend view feel separate from the result reading path.
+
+Small implementation slice:
+
+1. Add a pure `build_trend_metric_reading_rows(agg, selected_labels, choices)` helper in `app.py`.
+2. For every selected metric with an available aggregate column, return label, start value, end value, absolute change, percent change, direction, effect strength, a mixed-unit caveat, and a concrete next inspection prompt.
+3. Render these rows inside the existing trend-reading expander after the general guidance, so the chart becomes readable even without hover.
+4. Add a focused test that the rows expose start/end/effect strength, include the mixed-unit caution, map Facharzt-Wartezeit to the KPI detail next step, and skip missing columns safely.
+
+Guardrail: This is chart-reading UX only. Do not change simulation outputs, add empirical claims, or infer new causality beyond the selected time series.

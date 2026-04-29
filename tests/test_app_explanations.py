@@ -18,6 +18,7 @@ from app import (
     build_report_navigation_index,
     build_report_question_shortcuts,
     build_simulation_report,
+    build_trend_metric_reading_rows,
     build_trend_view_guidance,
     get_default_params,
     kpi_hover_help,
@@ -776,3 +777,42 @@ def test_report_question_shortcuts_route_reader_questions_to_existing_sections()
     assert "politische" in combined and "Vote-Forecast" in combined
     assert "Modellpfad" in combined
 
+
+
+def test_trend_metric_reading_rows_make_selected_lines_readable_without_hover():
+    agg = pd.DataFrame(
+        [
+            {
+                "jahr": 2026,
+                "wartezeit_fa_mean": 20.0,
+                "gkv_beitragssatz_mean": 16.0,
+            },
+            {
+                "jahr": 2040,
+                "wartezeit_fa_mean": 30.0,
+                "gkv_beitragssatz_mean": 17.6,
+            },
+        ]
+    )
+    choices = {
+        "Facharzt-Wartezeit": "wartezeit_fa_mean",
+        "GKV-Beitragssatz": "gkv_beitragssatz_mean",
+        "Fehlt": "missing_mean",
+    }
+
+    rows = build_trend_metric_reading_rows(
+        agg,
+        ["Facharzt-Wartezeit", "GKV-Beitragssatz", "Fehlt", "Unbekannt"],
+        choices,
+    )
+
+    assert [row["label"] for row in rows] == ["Facharzt-Wartezeit", "GKV-Beitragssatz"]
+    wait_row = rows[0]
+    assert wait_row["start"] == 20.0
+    assert wait_row["end"] == 30.0
+    assert wait_row["abs_delta"] == 10.0
+    assert wait_row["pct_delta"] == 50.0
+    assert wait_row["effect_strength"] in {"stark", "sehr stark"}
+    assert wait_row["direction"] == "verschlechtert"
+    assert "Gemischte Einheiten" in wait_row["caveat"]
+    assert "KPI-Detailkarte Facharzt-Wartezeit" in wait_row["next_step"]
