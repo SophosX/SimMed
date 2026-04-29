@@ -199,6 +199,20 @@ Small implementation slice:
 3. Render those prompts inside each KPI expander after the observation, before model drivers, so the reading path becomes: meaning → observation → related checks → drivers → changed levers → assumption → next click.
 4. Add a focused test that core KPI drill-downs include relevant related checks and do not rely on new external factual claims.
 
+
+## 2026-04-29 next slice: Policy-Briefing Leitfragen per section
+
+Problem: The report is now structured, but each expander still reads like a short summary. A user who asks “what changed, why, how strong, what assumption, what next?” should see those questions explicitly repeated across the report journey, not infer them from prose.
+
+Small implementation slice:
+
+1. Add structured `guide_questions` to every `build_simulation_report(...)` section: What changed? Why in the model? How strong/where to see strength? Which assumption limits interpretation? What should I inspect next?
+2. Render these questions before section points as a tap-friendly checklist inside each report expander.
+3. Keep all answers sourced from existing helper outputs (`summary`, bridge, KPI drilldowns, trend guidance, assumption checks, political rubric); do not add new model logic or real-world claims.
+4. Add a focused test that the report exposes the guide-question structure and includes the required plain-language prompts.
+
+Guardrail: This is information architecture, not a new claim layer. It should make the existing report easier to read on mobile and for newcomers.
+
 Guardrail: This is explanation/information architecture only. Do not change simulation outputs, political claims, scoring, or empirical assumptions.
 ## 2026-04-29 next slice: Guided result reading path
 

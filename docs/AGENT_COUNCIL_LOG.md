@@ -752,3 +752,16 @@ Local verification passed: `python3 -m pytest -q` (32 passed), py_compile, and 5
 **Question to Alex if needed:** Keine blockierende Entscheidung; nächster sicherer Schritt wäre die Report-Blöcke später mit exportierbaren Section-Objekten/API-Ausgabe zu verbinden.
 
 **Verification/Git:** Lokal verifiziert mit `pytest tests/test_app_explanations.py -q`, voller `pytest -q`, `py_compile` und 30-run Simulation-Smoke. Git-Sync/Push folgt in diesem Lauf.
+
+
+## 2026-04-29 18:05 UTC — Ergebnisbericht-Leitfragen
+
+- **Context:** Alex fordert tiefere, logischere Ergebnis-Erklärungen statt weiterer isolierter UI-Snippets. Vor Umsetzung wurde `docs/plans/results-experience-redesign.md` um die Slice-Idee „Policy-Briefing Leitfragen per section“ ergänzt.
+- **Project Manager:** Kleiner reversibler UX-Slice: vorhandenes Policy-Briefing bleibt strukturell gleich, erhält aber pro Abschnitt klare Leitfragen für Was geändert / Warum / Stärke / Annahme / Nächster Schritt.
+- **Designer/UX:** Bericht-Expander bekommen eine wiederholbare Lesehilfe („Leitfragen beim Lesen“) vor den Ergebnis-Punkten; das ist tap-freundlich und hilft Neulingen, nicht in Bulletlisten zu versanden.
+- **Creative Agent:** Die Berichtsebene wird wie ein geführtes Interview gelesen: Jede Sektion fragt aktiv nach Bedeutung, Modellpfad, Effektstärke, Evidenzgrenze und nächstem Klick. Gute Produkt-Passung, weil es Orientierung schafft ohne neue Claims.
+- **Political Health-System Strategist:** Politische Umsetzbarkeit bleibt explizit Rubrik/kein Vote-Forecast; neue Leitfragen betonen Hebelbezug, Umsetzungslag und Reibung statt bloßer Stakeholder-Wörter.
+- **Evidence/Domain:** Keine neue externe Recherche in diesem Lauf und keine neuen empirischen Behauptungen; alle Inhalte stammen aus bestehenden Helpern/Registern und werden als Modell-/Rubrik-Leseführung gerendert.
+- **Integrator Decision:** Implementiert in `app.py`: `build_simulation_report()` ergänzt `guide_questions`, `render_simulation_report()` rendert diese vor den Punkten. Test ergänzt in `tests/test_app_explanations.py`.
+- **Question to Alex if needed:** Keine wichtige Produktentscheidung offen; nächster sicherer Schritt ist weitere Bericht-Navigation/Quellenvertiefung.
+- **Verification/Git:** `pytest` vollständig grün (50 passed), py_compile grün, 50-run/3-year Simulation-Smoke grün. Git-Sync/Push folgt in diesem Lauf.

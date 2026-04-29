@@ -1632,7 +1632,7 @@ def build_simulation_report(agg: pd.DataFrame, params: dict) -> List[Dict[str, A
             )
         return points or [political_assessment.get("summary", "Noch keine politische Einordnung für geänderte Hebel vorhanden.")]
 
-    return [
+    sections = [
         {
             "id": "executive_summary",
             "title": "Executive Summary — was ist passiert?",
@@ -1683,6 +1683,42 @@ def build_simulation_report(agg: pd.DataFrame, params: dict) -> List[Dict[str, A
         },
     ]
 
+    guide_question_map = {
+        "executive_summary": [
+            "Was hat sich am stärksten verändert?",
+            "Wie stark ist die Bewegung laut Modellpfad?",
+            "Welche Detailkarte soll ich zuerst öffnen?",
+        ],
+        "changed_levers": [
+            "Welche meiner Eingaben unterscheiden sich vom Standardpfad?",
+            "Über welchen Modellpfad kann der Hebel wirken?",
+            "Welche KPI-Spuren und Verzögerungen soll ich prüfen?",
+        ],
+        "kpi_deep_dive": [
+            "Was bedeutet die Kennzahl in Alltagssprache?",
+            "Was ist Start, Ende und Effektstärke?",
+            "Welche verwandten Kennzahlen verhindern eine isolierte Fehlinterpretation?",
+        ],
+        "trend_timing": [
+            "Wann entsteht die Bewegung im Zeitverlauf?",
+            "Welche Linien haben unterschiedliche Einheiten und dürfen nicht direkt verglichen werden?",
+            "Passt die Timing-Logik zu verzögerten Hebeln wie Prävention oder Studienplätzen?",
+        ],
+        "evidence_assumptions": [
+            "Welche Evidenzgrade und Quellen stehen hinter geänderten Hebeln?",
+            "Welche Unsicherheit oder Register-Caveats begrenzen die Aussage?",
+            "Welche Annahme müsste vor einer politischen Schlussfolgerung vertieft werden?",
+        ],
+        "political_feasibility": [
+            "Welche Unterstützer/Bremser erscheinen wegen welcher geänderten Hebel?",
+            "Welche Umsetzungslags oder Reibungen erklären die politische Lesespur?",
+            "Warum ist das nur eine qualitative Rubrik und kein Vote-Forecast?",
+        ],
+    }
+    for section in sections:
+        section["guide_questions"] = guide_question_map[section["id"]]
+    return sections
+
 
 def render_simulation_report(agg: pd.DataFrame, params: dict):
     """Render the structured Policy-Briefing navigator."""
@@ -1692,6 +1728,10 @@ def render_simulation_report(agg: pd.DataFrame, params: dict):
     for section in build_simulation_report(agg, params):
         with st.expander(section["title"], expanded=section["id"] == "executive_summary"):
             st.markdown(f"**Wozu dieser Abschnitt dient:** {section['purpose']}")
+            st.markdown("**Leitfragen beim Lesen:**")
+            for question in section.get("guide_questions", []):
+                st.markdown(f"- {question}")
+            st.markdown("**Was SimMed hier zeigt:**")
             for point in section["points"]:
                 st.markdown(f"- {point}")
             st.info(f"Caveat: {section['caveat']}")
