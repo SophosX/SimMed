@@ -23,6 +23,7 @@ import time
 import io
 import hashlib
 import json
+import html
 from typing import Dict, List, Optional, Tuple, Any
 import warnings
 
@@ -204,6 +205,7 @@ CUSTOM_CSS = """
     }
     .mv { font-size: 2em; font-weight: 700; margin: 4px 0; }
     .ml { font-size: 0.88em; opacity: 0.92; }
+    .metric-help { font-size: 0.92em; margin-left: 5px; opacity: 0.95; cursor: help; }
     .md { font-size: 0.82em; margin-top: 6px; }
 </style>
 """
@@ -222,8 +224,11 @@ def metric_card(
     delta: Optional[float] = None,
     delta_good: bool = True,
     css_class: str = "metric-card",
+    help_text: Optional[str] = None,
 ) -> str:
-    """Erzeugt HTML für eine Dashboard-Metrik-Karte."""
+    """Erzeugt HTML für eine Dashboard-Metrik-Karte mit Hover-Erklärung."""
+    title_attr = f' title="{html.escape(help_text, quote=True)}"' if help_text else ""
+    help_badge = '<span class="metric-help">ⓘ</span>' if help_text else ""
     delta_html = ""
     if delta is not None:
         if delta > 0.05:
@@ -239,9 +244,9 @@ def metric_card(
             f"{arrow} {sign}{delta:.1f} %</div>"
         )
     return (
-        f'<div class="{css_class}">'
-        f'<div class="ml">{label}</div>'
-        f'<div class="mv">{value}</div>'
+        f'<div class="{css_class}"{title_attr}>'
+        f'<div class="ml">{html.escape(label)} {help_badge}</div>'
+        f'<div class="mv">{html.escape(value)}</div>'
         f"{delta_html}</div>"
     )
 
@@ -1445,7 +1450,23 @@ def kpi_detail_texts() -> Dict[str, Dict[str, str]]:
         "wartezeit_fa": {"label": "Facharzt-Wartezeit", "meaning": "Durchschnittliche modellierte Wartezeit auf fachärztliche Versorgung.", "why": "Steigt, wenn Nachfrage schneller wächst als verfügbare Kapazität. Sinkt bei besserer Kapazität, Entlastung oder weniger Nachfrage.", "read": "Sehr intuitiver Zugangsindikator: längere Wartezeit heißt oft mehr Frust, spätere Diagnosen und politische Angreifbarkeit."},
         "aerzte_pro_100k": {"label": "Ärzte pro 100.000", "meaning": "Arztdichte relativ zur Bevölkerung.", "why": "Verändert sich durch Nachwuchs, Ruhestand, Zuwanderung und Bevölkerung. Studienplätze wirken stark verzögert.", "read": "Nicht mit echter Kapazität gleichsetzen: Arbeitszeit, Fachrichtung und Region sind entscheidend."},
         "kollaps_wahrscheinlichkeit": {"label": "Kollaps-Risiko", "meaning": "Modellierter Stressindikator aus Wartezeit-, Mortalitäts- und Finanzdruck.", "why": "Steigt, wenn mehrere Probleme gleichzeitig eskalieren: Zugang schlechter, Mortalität höher, Finanzierung unter Druck.", "read": "Kein reales Katastrophen-Orakel, sondern Warnlampe: Hier sollte man genauer in die Ursachen schauen."},
+        "vermeidbare_mortalitaet": {"label": "Vermeidbare Mortalität", "meaning": "Todesfälle pro 100.000 Einwohner, die bei guter Prävention, frühem Zugang und wirksamer Versorgung teilweise vermeidbar wären.", "why": "Reagiert auf Krankheitslast, Prävention, Wartezeiten und Überlastung. Effekte sind träge und im Modell vereinfacht.", "read": "Zusammen mit Lebenserwartung und Zugang lesen, nicht isoliert."},
+        "chroniker_rate": {"label": "Chroniker-Rate", "meaning": "Anteil der Bevölkerung mit relevanten chronischen Erkrankungen im Modell.", "why": "Wächst durch Alterung und Morbidität; Prävention kann langfristig dämpfen, aber selten sofort stark senken.", "read": "Hohe Werte bedeuten langfristige Nachfrage nach kontinuierlicher Versorgung."},
+        "bevoelkerung_mio": {"label": "Bevölkerung", "meaning": "Modellierte Gesamtbevölkerung in Millionen.", "why": "Verändert sich durch Startwert, Geburten, Nettozuwanderung und Sterblichkeit.", "read": "Mehr Bevölkerung erhöht oft Nachfrage und Ausgaben; pro-Kopf-Kennzahlen bleiben trotzdem wichtig."},
+        "versorgungsindex_rural": {"label": "Versorgung Land", "meaning": "Index von 0 bis 100 für modellierte ländliche Erreichbarkeit und Kapazität.", "why": "Hängt an regionaler Arztdichte, Praxen, Digitalisierung, Fahrzeiten und Nachfrage.", "read": "Niedrige Werte zeigen regionale Zugangsprobleme; nicht als amtlicher Versorgungsgrad lesen."},
+        "gini_versorgung": {"label": "Gini Versorgung", "meaning": "Ungleichheitsmaß der Versorgung: 0 heißt gleichmäßig, höhere Werte heißen stärker ungleich verteilt.", "why": "Sinkt, wenn ländliche/unterversorgte Regionen relativ aufholen; steigt bei regionaler Konzentration.", "read": "Immer zusammen mit dem ländlichen Versorgungsindex prüfen."},
+        "burnout_rate": {"label": "Burnout Ärzte", "meaning": "Modellierter Belastungsindikator für ärztliches Personal.", "why": "Steigt bei hoher Nachfrage, langen Arbeitszeiten und knapper Kapazität; sinkt bei Entlastung und besserer Organisation.", "read": "Warnsignal für Umsetzbarkeit: überlastetes Personal begrenzt Reformwirkung."},
+        "telemedizin_rate": {"label": "Telemedizin", "meaning": "Anteil geeigneter Kontakte, die im Modell telemedizinisch laufen.", "why": "Wird durch Telemedizin- und Digitalisierungshebel getrieben; Wirkung hängt von Adoption und Eignung ab.", "read": "Entlastet eher Zugang/Wege als automatisch Gesamtkosten."},
+        "zufriedenheit_patienten": {"label": "Patientenzufriedenheit", "meaning": "Modellierter Index von 0 bis 100 für wahrgenommene Versorgung aus Zugang, Wartezeit, Kosten-/Systemstress und Outcomes.", "why": "Sinkt typischerweise bei längeren Wartezeiten, schlechterem Zugang oder Finanzdruck; steigt bei spürbarer Entlastung.", "read": "Als Akzeptanzindikator lesen, nicht als echte Umfrage."},
     }
+
+
+def kpi_hover_help(metric_key: str) -> str:
+    """Short tooltip text for the visible KPI card title/hover state."""
+    details = kpi_detail_texts().get(metric_key)
+    if not details:
+        return "Kurzerklärungen folgen: Bedeutung, wichtigste Treiber und richtige Lesart."
+    return f"{details['meaning']} Warum verändert sich das? {details['why']} Lesart: {details['read']}"
 
 
 def build_kpi_drilldown_items(agg: pd.DataFrame, params: dict) -> List[Dict[str, str]]:
@@ -1594,22 +1615,22 @@ def render_dashboard(agg: pd.DataFrame, params: dict):
     with c1:
         v = last["gesundheitsausgaben_mrd_mean"]
         st.markdown(metric_card("Gesundheitsausgaben", f"{v:.0f} Mrd. \u20ac",
-            delta_pct("gesundheitsausgaben_mrd"), False, "metric-card"), unsafe_allow_html=True)
+            delta_pct("gesundheitsausgaben_mrd"), False, "metric-card", kpi_hover_help("gesundheitsausgaben_mrd")), unsafe_allow_html=True)
     with c2:
         v = last["bip_anteil_mean"]
         d = v - first["bip_anteil_mean"]
         st.markdown(metric_card("BIP-Anteil Gesundheit", f"{v:.1f} %",
-            d * 8, False, "mc-orange"), unsafe_allow_html=True)
+            d * 8, False, "mc-orange", kpi_hover_help("bip_anteil")), unsafe_allow_html=True)
     with c3:
         v = last["gkv_beitragssatz_mean"]
         d = v - first["gkv_beitragssatz_mean"]
         st.markdown(metric_card("GKV-Beitragssatz (eff.)", f"{v:.1f} %",
-            d * 5, False, "mc-red"), unsafe_allow_html=True)
+            d * 5, False, "mc-red", kpi_hover_help("gkv_beitragssatz")), unsafe_allow_html=True)
     with c4:
         v = last["gkv_saldo_mean"]
         cls = "mc-green" if v >= 0 else "mc-red"
         st.markdown(metric_card("GKV-Saldo", f"{v:+.1f} Mrd. \u20ac",
-            css_class=cls), unsafe_allow_html=True)
+            css_class=cls, help_text=kpi_hover_help("gkv_saldo")), unsafe_allow_html=True)
 
     # Zeile 2: Gesundheit
     c1, c2, c3, c4 = st.columns(4)
@@ -1617,40 +1638,40 @@ def render_dashboard(agg: pd.DataFrame, params: dict):
         v = last["lebenserwartung_mean"]
         d = v - first["lebenserwartung_mean"]
         st.markdown(metric_card("Lebenserwartung", f"{v:.1f} J.",
-            d * 8, True, "mc-green"), unsafe_allow_html=True)
+            d * 8, True, "mc-green", kpi_hover_help("lebenserwartung")), unsafe_allow_html=True)
     with c2:
         v = last["vermeidbare_mortalitaet_mean"]
         st.markdown(metric_card("Vermeidb. Mortalität", f"{v:.0f} /100k",
-            delta_pct("vermeidbare_mortalitaet"), False, "mc-red"), unsafe_allow_html=True)
+            delta_pct("vermeidbare_mortalitaet"), False, "mc-red", kpi_hover_help("vermeidbare_mortalitaet")), unsafe_allow_html=True)
     with c3:
         v = last["chroniker_rate_mean"]
         d = v - first["chroniker_rate_mean"]
         st.markdown(metric_card("Chroniker-Rate", f"{v:.1f} %",
-            d * 2, False, "mc-orange"), unsafe_allow_html=True)
+            d * 2, False, "mc-orange", kpi_hover_help("chroniker_rate")), unsafe_allow_html=True)
     with c4:
         v = last["bevoelkerung_mio_mean"]
         st.markdown(metric_card("Bevölkerung", f"{v:.1f} Mio.",
-            delta_pct("bevoelkerung_mio"), css_class="mc-blue"), unsafe_allow_html=True)
+            delta_pct("bevoelkerung_mio"), css_class="mc-blue", help_text=kpi_hover_help("bevoelkerung_mio")), unsafe_allow_html=True)
 
     # Zeile 3: Versorgung
     c1, c2, c3, c4 = st.columns(4)
     with c1:
         v = last["aerzte_pro_100k_mean"]
         st.markdown(metric_card("Ärzte / 100k", f"{v:.0f}",
-            delta_pct("aerzte_pro_100k"), True, "mc-blue"), unsafe_allow_html=True)
+            delta_pct("aerzte_pro_100k"), True, "mc-blue", kpi_hover_help("aerzte_pro_100k")), unsafe_allow_html=True)
     with c2:
         v = last["wartezeit_fa_mean"]
         st.markdown(metric_card("Wartezeit FA", f"{v:.0f} Tage",
-            delta_pct("wartezeit_fa"), False, "mc-orange"), unsafe_allow_html=True)
+            delta_pct("wartezeit_fa"), False, "mc-orange", kpi_hover_help("wartezeit_fa")), unsafe_allow_html=True)
     with c3:
         v = last["versorgungsindex_rural_mean"]
         d = v - first["versorgungsindex_rural_mean"]
         st.markdown(metric_card("Versorgung Land", f"{v:.0f} / 100",
-            d * 1.5, True, "mc-green"), unsafe_allow_html=True)
+            d * 1.5, True, "mc-green", kpi_hover_help("versorgungsindex_rural")), unsafe_allow_html=True)
     with c4:
         v = last["gini_versorgung_mean"]
         st.markdown(metric_card("Gini Versorgung", f"{v:.3f}",
-            delta_pct("gini_versorgung"), False, "metric-card"), unsafe_allow_html=True)
+            delta_pct("gini_versorgung"), False, "metric-card", kpi_hover_help("gini_versorgung")), unsafe_allow_html=True)
 
     # Zeile 4: System & Personal
     c1, c2, c3, c4 = st.columns(4)
@@ -1658,22 +1679,22 @@ def render_dashboard(agg: pd.DataFrame, params: dict):
         v = last["burnout_rate_mean"]
         d = v - first["burnout_rate_mean"]
         st.markdown(metric_card("Burnout Ärzte", f"{v:.1f} %",
-            d * 3, False, "mc-red"), unsafe_allow_html=True)
+            d * 3, False, "mc-red", kpi_hover_help("burnout_rate")), unsafe_allow_html=True)
     with c2:
         v = last["telemedizin_rate_mean"]
         st.markdown(metric_card("Telemedizin", f"{v:.0f} %",
-            css_class="mc-blue"), unsafe_allow_html=True)
+            css_class="mc-blue", help_text=kpi_hover_help("telemedizin_rate")), unsafe_allow_html=True)
     with c3:
         v = last["kollaps_wahrscheinlichkeit_mean"]
         cls = "mc-red" if v > 15 else "mc-green"
         st.markdown(metric_card("Kollaps-Risiko", f"{v:.1f} %",
-            css_class=cls), unsafe_allow_html=True)
+            css_class=cls, help_text=kpi_hover_help("kollaps_wahrscheinlichkeit")), unsafe_allow_html=True)
     with c4:
         v = last["zufriedenheit_patienten_mean"]
         d = v - first["zufriedenheit_patienten_mean"]
         cls = "mc-green" if v > 60 else "mc-orange"
         st.markdown(metric_card("Patientenzufr.", f"{v:.0f} / 100",
-            d, True, cls), unsafe_allow_html=True)
+            d, True, cls, kpi_hover_help("zufriedenheit_patienten")), unsafe_allow_html=True)
 
     render_kpi_deep_dive(agg, params)
     render_main_trend_chart(agg)

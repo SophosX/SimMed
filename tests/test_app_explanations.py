@@ -13,7 +13,9 @@ from app import (
     build_result_narrative_summary,
     build_trend_view_guidance,
     get_default_params,
+    kpi_hover_help,
     learning_page_next_actions,
+    metric_card,
     plain_language_workflow_summary,
     sidebar_quick_start_steps,
 )
@@ -316,3 +318,35 @@ def test_trend_view_guidance_warns_about_mixed_units_and_next_step():
     assert "KPI-Detailkarte" in combined
     assert "keine amtliche Prognose" in combined
 
+
+
+def test_metric_cards_expose_hover_explanations_for_core_kpis():
+    help_text = kpi_hover_help("gesundheitsausgaben_mrd")
+    assert "Gesamtausgaben" in help_text
+    assert "Warum verändert" in help_text
+    html = metric_card("Gesundheitsausgaben", "767 Mrd. €", 61.9, False, "metric-card", help_text)
+    assert 'title="' in html
+    assert "ⓘ" in html
+    assert "Gesamtausgaben" in html
+
+    required = [
+        "bip_anteil",
+        "gkv_beitragssatz",
+        "gkv_saldo",
+        "lebenserwartung",
+        "vermeidbare_mortalitaet",
+        "chroniker_rate",
+        "bevoelkerung_mio",
+        "aerzte_pro_100k",
+        "wartezeit_fa",
+        "versorgungsindex_rural",
+        "gini_versorgung",
+        "burnout_rate",
+        "telemedizin_rate",
+        "kollaps_wahrscheinlichkeit",
+        "zufriedenheit_patienten",
+    ]
+    for key in required:
+        text = kpi_hover_help(key)
+        assert "Warum" in text
+        assert "Lesart" in text
