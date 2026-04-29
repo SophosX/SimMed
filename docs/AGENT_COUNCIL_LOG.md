@@ -1077,4 +1077,4 @@ Targeted test passed (`tests/test_app_explanations.py::test_changed_lever_questi
 - **Evidence/Domain:** Keine neue Recherche in diesem Lauf; keine neuen Sachclaims kodiert, nur vorhandene Modellpfade, Evidenzgrade und Caveats neu angeordnet.
 - **Integrator Decision:** Plan erweitert und `build_result_storyboard(...)`/Renderer mit fokussiertem Test ergänzt.
 - **Question to Alex if needed:** Keine wichtige Entscheidung offen; sicherer, reversibler UX-Orchestrierungs-Slice.
-- **Verification/Git:** Lokal: `pytest -q` 73 passed; `py_compile` OK; 20-run Smoke `df=(60,30)`, `reg=(320,6)`. Git-Sync/Push folgt.
+- **Verification/Git:** Lokal: `pytest -q` 73 passed; `py_compile` OK; 20-run Smoke `df=(60,30)`, `reg=(320,6)`. Commit `0d37c9d` nach `origin/main` gepusht.
