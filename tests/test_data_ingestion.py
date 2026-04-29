@@ -10,6 +10,7 @@ from data_ingestion import (
     build_data_readiness_gate_plan,
     build_data_readiness_summary,
     build_parameter_snapshot_status,
+    build_transformation_review_template,
     cache_source_payload,
     execute_connector_snapshot_request,
     list_cached_snapshots,
@@ -467,3 +468,47 @@ def test_connector_execution_workbench_turns_requests_into_next_safe_actions(tmp
         "transformation_review",
         "explicit_model_integration",
     ]
+    template = row["transformation_review_template"]
+    assert template["parameter_key"] == "bevoelkerung_mio"
+    assert "source_snapshot_sha256" in template["required_review_fields"]
+    assert any("Nenner" in item for item in template["checklist"])
+    assert "keine offizielle Prognose" in template["guardrail"]
+
+
+def test_transformation_review_template_is_pre_model_integration_guidance(tmp_path):
+    request = build_connector_snapshot_requests(
+        build_data_readiness_backlog(
+            [
+                {
+                    "key": "krankenhausbetten",
+                    "label": "Krankenhausbetten",
+                    "unit": "beds",
+                    "evidence_grade": "A",
+                    "source_ids": ["destatis_genesis"],
+                    "data_status": "aus_daten",
+                }
+            ],
+            cache_root=tmp_path,
+        )
+    )[0]
+    passport = build_data_passport_rows(
+        [
+            {
+                "key": "krankenhausbetten",
+                "label": "Krankenhausbetten",
+                "unit": "beds",
+                "evidence_grade": "A",
+                "source_ids": ["destatis_genesis"],
+                "data_status": "aus_daten",
+            }
+        ],
+        cache_root=tmp_path,
+    )[0]
+
+    template = build_transformation_review_template(request, passport)
+
+    assert template["table_code"] == "23111-0001"
+    assert template["suggested_status_flow"] == ["not_reviewed", "reviewed_no_model_import", "reviewed_model_ready"]
+    assert "Rohsnapshot" in template["raw_snapshot_status"]
+    assert "ReviewedTransformation" in template["next_safe_action"]
+    assert "keinen Datenwert im Modell" in template["guardrail"]

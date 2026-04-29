@@ -37,6 +37,7 @@ from data_ingestion import (
     build_data_readiness_backlog,
     build_data_readiness_gate_plan,
     build_data_readiness_summary,
+    build_transformation_review_template,
 )
 from parameter_registry import PARAMETER_REGISTRY, list_parameters
 from simulation_report import build_simulation_report as build_policy_briefing_report
@@ -4095,6 +4096,7 @@ def build_learning_connector_execution_status(limit: int = 4) -> dict[str, Any]:
                 "Cache": cache_status,
                 "Transformation": transformation_status,
                 "Sichere Reihenfolge": " → ".join(step["label"] for step in build_connector_execution_plan(request, passport)),
+                "Review-Checkliste": " · ".join(build_transformation_review_template(request, passport)["checklist"][:3]),
                 "Nächster sicherer Schritt": request["next_safe_action"],
                 "Guardrail": "Dry-run: kein Netzwerkabruf, kein Rohdaten-Cache, nicht Modellintegration und kein Wirkungsbeweis.",
             }

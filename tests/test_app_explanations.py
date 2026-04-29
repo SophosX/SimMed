@@ -133,6 +133,7 @@ def test_learning_connector_execution_status_keeps_dry_run_and_cache_gates_separ
         "Cache",
         "Transformation",
         "Sichere Reihenfolge",
+        "Review-Checkliste",
         "Nächster sicherer Schritt",
         "Guardrail",
     } <= set(first)
@@ -143,6 +144,8 @@ def test_learning_connector_execution_status_keeps_dry_run_and_cache_gates_separ
     assert "kein Netzwerkabruf" in combined
     assert "nicht Modellintegration" in combined
     assert "Transformation" in combined
+    assert "Nenner" in combined
+    assert "SHA256" in combined
 
 
 def test_landing_hero_content_sets_first_contact_expectations():

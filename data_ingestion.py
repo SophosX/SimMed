@@ -245,6 +245,50 @@ def build_connector_execution_plan(request: ConnectorSnapshotRequest | dict, pas
 
 
 
+def build_transformation_review_template(request: ConnectorSnapshotRequest | dict, passport_row: dict | None = None) -> dict:
+    """Return a structured checklist for the review after a raw snapshot is cached.
+
+    The template is intentionally pre-integration guidance. It tells humans/agents
+    what evidence must be written into a ReviewedTransformation record before any
+    registry default or model path can change.
+    """
+
+    data = request.to_dict() if isinstance(request, ConnectorSnapshotRequest) else dict(request)
+    passport = passport_row or {}
+    raw_snapshot = passport.get("raw_snapshot", {}) if isinstance(passport, dict) else {}
+    parameter_keys = data.get("output_parameter_keys", [])
+    parameter_key = parameter_keys[0] if parameter_keys else ""
+    return {
+        "parameter_key": parameter_key,
+        "parameter_label": data.get("parameter_label", parameter_key),
+        "source_id": data.get("source_id", ""),
+        "source_label": data.get("source_label", ""),
+        "table_code": data.get("table_code", ""),
+        "source_period": data.get("source_period", ""),
+        "raw_snapshot_status": raw_snapshot.get("label", "Rohsnapshot noch nicht im Cache"),
+        "required_review_fields": [
+            "source_snapshot_sha256",
+            "reviewer",
+            "method_note",
+            "output_value",
+            "output_unit",
+            "caveat",
+            "status",
+        ],
+        "checklist": [
+            "Rohdatei und SHA256-Manifest öffnen; keine Werte aus UI-Anzeigen abschreiben.",
+            "Tabellendimensionen, Filter, Berichtsjahr und Nenner dokumentieren.",
+            "Einheit und Aggregationsweg vom Rohwert zum Parameterwert beschreiben.",
+            "Plausibilitätscheck gegen Registry-Min/Max und Modellrolle durchführen.",
+            "Caveat notieren: Review ist noch keine Registry- oder Modellintegration.",
+        ],
+        "suggested_status_flow": ["not_reviewed", "reviewed_no_model_import", "reviewed_model_ready"],
+        "next_safe_action": "Nach Rohsnapshot-Cache einen ReviewedTransformation-Datensatz schreiben; erst danach eine explizite Modellintegration entscheiden.",
+        "guardrail": "Review-Template erzeugt keinen Datenwert im Modell, keine offizielle Prognose und keinen Policy-Wirkungsbeweis.",
+    }
+
+
+
 def build_connector_execution_workbench(
     requests: list[dict],
     passport_rows: list[dict],
@@ -279,6 +323,7 @@ def build_connector_execution_workbench(
                 "transformation_review_status": review_step["status"],
                 "next_safe_gate": _next_connector_safe_gate(plan),
                 "execution_plan": plan,
+                "transformation_review_template": build_transformation_review_template(request, passport),
                 "guardrail": "Workbench ist nur Planung/Status: kein Netzwerkabruf, keine Registry- oder Modellmutation, kein Wirkungsbeweis.",
             }
         )

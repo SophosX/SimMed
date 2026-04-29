@@ -1470,3 +1470,33 @@ Keine.
 
 ### Verification / Git
 Tests: `pytest tests/test_data_ingestion.py tests/test_api.py -q` (19 passed), full `pytest -q` (91 passed), `py_compile`, Simulation-Smoke 30x3 OK. Commit/Push folgt in diesem Heartbeat; Zip-Artefakt wird aktualisiert.
+
+
+## 2026-04-30 00:28 Europe/Berlin — Connector-Review-Template Slice
+
+### Context
+Alex korrigierte die Heartbeat-Priorität: zuerst Kernplattform. Dieser Lauf blieb daher im Dateningestion-/Provenienz-Track und baute die Lücke nach dem Rohdaten-Cache weiter aus.
+
+### Project Manager
+Priorität: aus der Connector-Workbench einen ausführbaren, prüfbaren Arbeitsfluss machen. Risiko: Rohdaten-Cache könnte ohne klares Review-Template fälschlich als Modellintegration gelesen werden. Nächste Tasks: Review-Template in API/UI weiter nutzbar machen, danach echte Review-Erfassung vorbereiten.
+
+### Designer / UX
+Die Learning Page zeigt jetzt nicht nur Dry-run und Gate-Ladder, sondern auch eine kurze Review-Checkliste. Das hilft Erstnutzer:innen zu verstehen, was nach dem Cache konkret geprüft werden muss.
+
+### Creative Agent
+Produktidee: später aus dem Template einen "Review-Assistenten" machen, der Reviewer Schritt für Schritt durch SHA256, Nenner, Einheit und Caveat führt. Fit: hoch für Glaubwürdigkeit, aber erst nach stabiler Template-/API-Schicht.
+
+### Political Health-System Strategist
+Keine neuen politischen Claims. Der Review-Schritt ist wichtig, weil Krankenhaus-/Bevölkerungsdaten sonst schnell als politische Wirkungsbeweise missverstanden werden könnten.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Änderung dokumentiert nur Prüfpflichten: Rohdatei/Manifest, Tabellenform, Nenner, Einheit, Berichtsjahr, Plausibilität, Caveat; keine Modellmutation.
+
+### Integrator Decision
+Akzeptiert: `build_transformation_review_template(...)` als strukturierter Pre-Integration-Schritt und Einbindung in Workbench/Learning-Status. Keine Live-Fetches, keine Registry-/Modelländerungen.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; nächster sicherer Schritt ist weiterhin Daten-Provenienz-Workflow.
+
+### Verification / Git
+Vor Commit: `pytest tests/test_data_ingestion.py tests/test_app_explanations.py::test_learning_connector_execution_status_keeps_dry_run_and_cache_gates_separate -q` → 13 passed; full `pytest -q` → 92 passed; `py_compile` Kernmodule OK; Simulation-Smoke 20 Runs/2 Jahre OK. Commit/Push folgt nach Log-Eintrag.
