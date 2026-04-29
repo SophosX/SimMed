@@ -1441,3 +1441,32 @@ Keine.
 
 ### Verification / Git
 Focused tests passed: `pytest tests/test_api.py::test_api_plans_connector_snapshot_execution_as_dry_run_by_default tests/test_app_explanations.py::test_learning_connector_execution_status_keeps_dry_run_and_cache_gates_separate -q` (2 passed). Full verification/commit/push follows in heartbeat summary.
+
+## 2026-04-30 00:23 Europe/Berlin — Heartbeat: Connector-Workbench für API
+
+### Context
+Alexs Korrektur priorisiert Kernplattform statt KI-Recherche. Dieser Lauf arbeitete auf `feat/platform-data-status-foundation` an der Data-Ingestion/Provenienz-Brücke: geplante Connector-Requests sollen als konkrete, sichere Arbeitsliste sichtbar werden.
+
+### Project Manager
+Priorität: aus passiver Data-Readiness eine ausführbare, aber weiterhin sichere Plattform-Werkbank machen. Nächste Tasks: Workbench in Learning Page sichtbarer machen; danach kontrollierte `execute=True`-UX nur mit Warnung; anschließend Transformationsreview-Form/Status.
+
+### Designer / UX
+Die API liefert jetzt nicht nur Requests, sondern pro Parameter den nächsten sicheren Gate-Schritt. Das hilft Erstnutzer:innen/Agenten: “Was ist als Nächstes zu tun?” statt nur eine technische Liste von Endpoints zu sehen.
+
+### Creative Agent
+Idee: später eine kleine “Daten-Werkbank”-Ansicht wie ein Kanban bauen: Geplant → Rohdaten gecacht → Transformation geprüft → Integrationsentscheidung. Fit: stark für Vertrauen und Onboarding; noch kein Live-Button ohne Alex-Entscheid.
+
+### Political Health-System Strategist
+Für politisch sensible Gesundheitssimulationen ist diese Trennung wichtig: Rohdaten-Caching darf nicht als offizieller Wert, Prognose oder Wirkungsbeweis erscheinen. Die Workbench hält diese Guardrails explizit.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Es wurden keine neuen Sachbehauptungen oder Parameterwerte eingeführt; die Änderung reorganisiert vorhandene Data-Passport/Connector-Statusdaten.
+
+### Integrator Decision
+Akzeptiert: `build_connector_execution_workbench(...)` als read-only API/UI-Brücke und Einbindung in `/data-readiness-backlog`. Kein Netzwerkabruf, keine Registry-/Modellmutation.
+
+### Question to Alex
+Keine.
+
+### Verification / Git
+Tests: `pytest tests/test_data_ingestion.py tests/test_api.py -q` (19 passed), full `pytest -q` (91 passed), `py_compile`, Simulation-Smoke 30x3 OK. Commit/Push folgt in diesem Heartbeat; Zip-Artefakt wird aktualisiert.

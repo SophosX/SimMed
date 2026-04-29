@@ -245,6 +245,79 @@ def build_connector_execution_plan(request: ConnectorSnapshotRequest | dict, pas
 
 
 
+def build_connector_execution_workbench(
+    requests: list[dict],
+    passport_rows: list[dict],
+    *,
+    limit: int | None = None,
+) -> dict:
+    """Summarize planned connector work as an actionable, read-only workbench.
+
+    This is the UI/API bridge from "a list of requests" to "what should an
+    integrator do next?". It intentionally reuses Data Passport rows and the
+    connector execution ladder, so it cannot infer model integration from raw
+    cache or review status.
+    """
+
+    passport_by_key = {row.get("parameter_key"): row for row in passport_rows}
+    rows: list[dict] = []
+    ordered_requests = requests[: limit or None]
+    for request in ordered_requests:
+        parameter_keys = request.get("output_parameter_keys", [])
+        parameter_key = parameter_keys[0] if parameter_keys else ""
+        passport = passport_by_key.get(parameter_key, {})
+        plan = build_connector_execution_plan(request, passport)
+        raw_step = next(step for step in plan if step["gate"] == "raw_snapshot_cache")
+        review_step = next(step for step in plan if step["gate"] == "transformation_review")
+        rows.append(
+            {
+                "parameter_key": parameter_key,
+                "parameter_label": request.get("parameter_label", parameter_key),
+                "source_label": request.get("source_label", ""),
+                "table_code": request.get("table_code", ""),
+                "raw_snapshot_status": raw_step["status"],
+                "transformation_review_status": review_step["status"],
+                "next_safe_gate": _next_connector_safe_gate(plan),
+                "execution_plan": plan,
+                "guardrail": "Workbench ist nur Planung/Status: kein Netzwerkabruf, keine Registry- oder Modellmutation, kein Wirkungsbeweis.",
+            }
+        )
+    return {
+        "summary": {
+            "planned_request_count": len(requests),
+            "shown_request_count": len(rows),
+            "guardrail": "Connector-Workbench plant sichere Rohdaten-Schritte; Modellintegration bleibt ein späterer expliziter Code-/Registry-Entscheid.",
+        },
+        "rows": rows,
+    }
+
+
+def _next_connector_safe_gate(plan: list[dict]) -> dict:
+    """Pick the first incomplete connector gate after dry-run for concise UI/API display."""
+
+    for step in plan:
+        if step["gate"] == "dry_run":
+            continue
+        status = str(step.get("status", "")).lower()
+        if "noch nicht" in status or "wartet" in status or "not_reviewed" in status:
+            return {
+                "gate": step["gate"],
+                "label": step["label"],
+                "status": step["status"],
+                "instruction": step["instruction"],
+                "guardrail": step["guardrail"],
+            }
+    final_step = plan[-1]
+    return {
+        "gate": final_step["gate"],
+        "label": final_step["label"],
+        "status": final_step["status"],
+        "instruction": final_step["instruction"],
+        "guardrail": final_step["guardrail"],
+    }
+
+
+
 def execute_connector_snapshot_request(
     request: ConnectorSnapshotRequest | dict,
     *,

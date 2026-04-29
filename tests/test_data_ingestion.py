@@ -2,6 +2,7 @@ import json
 
 from data_ingestion import (
     ReviewedTransformation,
+    build_connector_execution_workbench,
     build_connector_snapshot_requests,
     build_data_connector_queue,
     build_data_passport_rows,
@@ -434,3 +435,35 @@ def test_execute_connector_snapshot_request_caches_raw_payload_without_model_imp
     assert rows[0]["cache"]["has_cached_snapshot"] is True
     assert rows[0]["transformation_review"]["status"] == "not_reviewed"
     assert "geprüfte Transformation separat" in rows[0]["passport_note"]
+
+
+def test_connector_execution_workbench_turns_requests_into_next_safe_actions(tmp_path):
+    parameters = [
+        {
+            "key": "bevoelkerung_mio",
+            "label": "Bevölkerung",
+            "unit": "million people",
+            "evidence_grade": "A",
+            "source_ids": ["destatis_genesis"],
+            "data_status": "aus_daten",
+        }
+    ]
+    backlog = build_data_readiness_backlog(parameters, cache_root=tmp_path)
+    requests = build_connector_snapshot_requests(backlog)
+    passport = build_data_passport_rows(parameters, cache_root=tmp_path)
+
+    workbench = build_connector_execution_workbench(requests, passport)
+
+    assert workbench["summary"]["planned_request_count"] == 1
+    assert "Modellintegration bleibt" in workbench["summary"]["guardrail"]
+    row = workbench["rows"][0]
+    assert row["parameter_key"] == "bevoelkerung_mio"
+    assert row["table_code"] == "12411-0001"
+    assert row["next_safe_gate"]["gate"] == "raw_snapshot_cache"
+    assert "kein Netzwerkabruf" in row["guardrail"]
+    assert [step["gate"] for step in row["execution_plan"]] == [
+        "dry_run",
+        "raw_snapshot_cache",
+        "transformation_review",
+        "explicit_model_integration",
+    ]

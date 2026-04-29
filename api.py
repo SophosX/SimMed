@@ -14,6 +14,7 @@ from pydantic import BaseModel, Field
 
 from data_ingestion import (
     build_connector_execution_plan,
+    build_connector_execution_workbench,
     build_connector_snapshot_requests,
     build_data_connector_queue,
     build_data_passport_rows,
@@ -100,6 +101,10 @@ def get_data_readiness_backlog() -> dict:
         "gate_plan": build_data_readiness_gate_plan(items),
         "connector_queue": build_data_connector_queue(items),
         "connector_snapshot_requests": build_connector_snapshot_requests(items),
+        "connector_execution_workbench": build_connector_execution_workbench(
+            build_connector_snapshot_requests(items),
+            build_data_passport_rows(parameters),
+        ),
         "items": items,
     }
 

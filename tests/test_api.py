@@ -66,6 +66,11 @@ def test_api_exposes_data_readiness_backlog_without_model_integration():
     assert first_request["table_code"] in {"12411-0001", "23111-0001"}
     assert "endpoint_url" in first_request
     assert "not a model import" in first_request["guardrail"]
+    assert body["connector_execution_workbench"]["summary"]["planned_request_count"] >= 1
+    first_workbench_row = body["connector_execution_workbench"]["rows"][0]
+    assert first_workbench_row["source_label"] == "Destatis/GENESIS"
+    assert first_workbench_row["next_safe_gate"]["gate"] in {"raw_snapshot_cache", "transformation_review", "explicit_model_integration"}
+    assert "keine Registry- oder Modellmutation" in first_workbench_row["guardrail"]
     first_connector = body["connector_queue"][0]
     assert {"source_id", "source_label", "open_parameter_count", "connector_next_action", "guardrail"} <= set(first_connector)
     assert "keine automatische" in first_connector["guardrail"]
