@@ -86,6 +86,20 @@ Connect changed parameters to result explanations:
 
 Implemented as the first Bühne 1 slice only: add a small top-of-page hero before result tabs/start content that answers “Was ist SimMed?” for first-time users. The block contains one mission sentence, three safe button-like navigation prompts, and a disclaimer that SimMed is not an official forecast. The buttons only store a session-state hint and do not change parameters, run simulations, or introduce model/data changes. Next logical slice remains Bühne 1 Slice 1.2: concrete example scenarios.
 
+## 2026-04-29 next slice: Question-first result explorer
+
+Problem: Even with a reading path and KPI details, users may arrive with practical questions rather than metric names: “Is access worse?”, “Is financing under pressure?”, “Which assumption should I distrust first?”, or “What political friction belongs to my changed lever?”. The result page should offer a compact question-first explorer that routes these questions to already existing KPI, trend, assumption, and political sections.
+
+Small implementation slice:
+
+1. Add a pure `build_result_explorer_topics(agg, params)` helper in `app.py`.
+2. Reuse existing structured helpers only: KPI drill-down items, changed-parameter bridge, assumption checks, trend guidance, and political lever detail sections.
+3. Return 4-5 topic cards with: question, short answer, strongest related KPI/lever if available, assumption/caveat, and next click.
+4. Render it near the top narrative as expandable “Mit welcher Frage willst du starten?”.
+5. Add a focused test that verifies question-first routing covers access, financing, assumptions, trend timing, and political feasibility without adding unsupported causal claims.
+
+Guardrail: this is navigation/orchestration only. Do not create new empirical claims, new model effects, or a hidden political score; every answer must be assembled from existing explanation structures and caveats.
+
 ## Verification
 
 Run:

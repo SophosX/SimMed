@@ -1671,6 +1671,99 @@ def render_result_reading_path(agg: pd.DataFrame, params: dict):
             st.caption(item["body"])
 
 
+def build_result_explorer_topics(agg: pd.DataFrame, params: dict) -> List[Dict[str, str]]:
+    """Build question-first result topics from existing explanation structures.
+
+    This is a navigation layer only. It assembles answers from KPI drill-downs,
+    changed-lever bridges, trend guidance, assumption checks and the political
+    rubric without adding model effects, empirical claims or vote forecasts.
+    """
+    kpi_items = build_kpi_drilldown_items(agg, params)
+    by_key = {item["key"]: item for item in kpi_items}
+    bridge_items = build_changed_parameter_impact_bridge(agg, params)
+    assumption_checks = build_changed_parameter_assumption_checks(agg, params)
+    trend_guidance = build_trend_view_guidance(["Gesundheitsausgaben", "Facharzt-Wartezeit", "GKV-Beitragssatz"])
+
+    defaults = get_default_params()
+    parameter_changes = {k: v for k, v in params.items() if k in defaults and v != defaults[k]}
+    political_sections = build_political_lever_detail_sections(assess_political_feasibility(parameter_changes))
+
+    def kpi_answer(key: str, fallback: str) -> str:
+        item = by_key.get(key)
+        if not item:
+            return fallback
+        return f"{item['label']}: {item['observation']}"
+
+    def first_bridge_summary() -> str:
+        if not bridge_items:
+            return "Keine direkte Brücke zu einem geänderten Haupthebel; prüfe zuerst, ob ein Szenario-Hebel verändert wurde."
+        first = bridge_items[0]
+        return f"{first['label']}: {first['change']} — {first['model_path']}"
+
+    def first_assumption() -> str:
+        if not assumption_checks:
+            return "Keine geänderten Haupthebel mit Register-Check; Quellen- und Annahmenregister bei neuen Eingaben prüfen."
+        first = assumption_checks[0]
+        return f"{first['label']}: {first['evidence']}; Caveat: {first['registry_caveat']}"
+
+    def political_answer() -> str:
+        if not political_sections:
+            return "Keine geänderten Hebel mit politischer Lesespur; die Rubrik bleibt ohne Szenarioänderung allgemein."
+        first = political_sections[0]
+        supporters = ", ".join(row["stakeholder"] for row in first.get("supporters", [])[:2]) or "keine Unterstützergruppe ausgewiesen"
+        blockers = ", ".join(row["stakeholder"] for row in first.get("blockers", [])[:2]) or "keine Bremsergruppe ausgewiesen"
+        return f"{first['label']}: Unterstützer {supporters}; Bremser {blockers}. Caveat: {first['caveat']}"
+
+    return [
+        {
+            "topic": "Zugang & Versorgung",
+            "question": "Wird der Zugang für Patient:innen besser oder schlechter?",
+            "answer": kpi_answer("wartezeit_fa", "Prüfe Wartezeit, Ärztedichte und ländliche Versorgung im KPI-Detail."),
+            "assumption": by_key.get("wartezeit_fa", {}).get("assumption", "Kopfzahl ist nicht automatisch reale Kapazität."),
+            "next_click": "Öffne KPI-Detail Facharzt-Wartezeit und danach den Zeitverlauf.",
+        },
+        {
+            "topic": "Finanzierung",
+            "question": "Entsteht Finanzierungsdruck?",
+            "answer": kpi_answer("gkv_saldo", kpi_answer("gkv_beitragssatz", "Prüfe GKV-Saldo, Beitragssatz und Gesundheitsausgaben zusammen.")),
+            "assumption": by_key.get("gkv_saldo", {}).get("assumption", "Saldo nie ohne Beitragssatz, Bundeszuschuss und Ausgabenpfad lesen."),
+            "next_click": "Öffne KPI-Details zu GKV-Saldo/Beitragssatz und die politische Lesespur.",
+        },
+        {
+            "topic": "Geänderte Hebel",
+            "question": "Welche meiner Eingaben passt zu den Ergebnisbewegungen?",
+            "answer": first_bridge_summary(),
+            "assumption": first_assumption(),
+            "next_click": "Öffne „Was bedeuten deine geänderten Hebel?“ und danach den Annahmen-Check.",
+        },
+        {
+            "topic": "Zeit & Stärke",
+            "question": "Passiert der Effekt sofort, spät oder nur schwach?",
+            "answer": trend_guidance["how_to_read"],
+            "assumption": trend_guidance["unit_warning"],
+            "next_click": trend_guidance["next_step"],
+        },
+        {
+            "topic": "Politische Umsetzbarkeit",
+            "question": "Wer könnte unterstützen oder bremsen — und warum?",
+            "answer": political_answer(),
+            "assumption": "Qualitative Rubrik, keine gesicherte Vorhersage, kein Vote-Forecast und keine Lobbying-Empfehlung.",
+            "next_click": "Öffne die politische Lesespur nach geändertem Hebel.",
+        },
+    ]
+
+
+def render_result_explorer_topics(agg: pd.DataFrame, params: dict):
+    """Render practical starting questions for the result page."""
+    with st.expander("Mit welcher Frage willst du starten?", expanded=True):
+        st.caption("Diese Einstiege sortieren vorhandene Erklärungen nach Nutzerfragen; sie ändern keine Simulationsergebnisse.")
+        for topic in build_result_explorer_topics(agg, params):
+            st.markdown(f"**{topic['topic']} — {topic['question']}**")
+            st.markdown(f"Antwort: {topic['answer']}")
+            st.info(f"Annahme/Caveat: {topic['assumption']}")
+            st.success(f"Nächster Klick: {topic['next_click']}")
+
+
 def build_simulation_report(agg: pd.DataFrame, params: dict) -> List[Dict[str, Any]]:
     """Build structured Policy-Briefing sections from existing result helpers.
 
@@ -1936,6 +2029,7 @@ def render_result_narrative_summary(agg: pd.DataFrame, params: dict):
     st.info(summary["scenario_text"])
     st.caption(summary["next_step"])
     render_result_reading_path(agg, params)
+    render_result_explorer_topics(agg, params)
     render_changed_parameter_impact_bridge(agg, params)
 
 

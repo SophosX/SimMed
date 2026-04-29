@@ -15,6 +15,7 @@ from app import (
     build_landing_hero_content,
     build_political_lever_detail_sections,
     build_political_stakeholder_rows,
+    build_result_explorer_topics,
     build_result_narrative_summary,
     build_result_reading_path,
     build_report_navigation_index,
@@ -819,6 +820,24 @@ def test_report_navigation_index_guides_which_expander_to_open_next():
     assert "Executive Summary zuerst" in combined
     assert "öffne danach den Abschnitt" in combined
     assert all(item["target"].startswith("#policy-briefing-") for item in index["items"])
+
+
+def test_result_explorer_topics_route_practical_questions_to_existing_explanations():
+    agg, params = _sample_report_inputs()
+    topics = build_result_explorer_topics(agg, params)
+    combined = " ".join(
+        f"{topic['topic']} {topic['question']} {topic['answer']} {topic['assumption']} {topic['next_click']}"
+        for topic in topics
+    )
+
+    assert len(topics) == 5
+    assert "Zugang" in combined and "Facharzt" in combined
+    assert "Finanzierung" in combined and ("GKV-Saldo" in combined or "GKV-Beitrag" in combined)
+    assert "Geänderte Hebel" in combined and "Telemedizin" in combined
+    assert "Zeit" in combined and "unterschiedliche Einheiten" in combined
+    assert "Politische Umsetzbarkeit" in combined and "Vote-Forecast" in combined
+    assert all(topic["next_click"] for topic in topics)
+    assert "keine gesicherte Realwelt-Kausalität" not in combined  # no new causality claim; bridge wording remains model-path based here
 
 
 def test_report_question_shortcuts_route_reader_questions_to_existing_sections():

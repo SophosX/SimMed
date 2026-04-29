@@ -879,3 +879,33 @@ Keine wichtige Entscheidung offen.
 
 ### Verification / Git
 Lokal verifiziert: gezielter neuer Test, gesamte Pytest-Suite, py_compile und kleiner Simulation-Smoke-Test bestanden. Git: Commit `3cd0997` auf `main` nach GitHub gepusht.
+
+
+## 2026-04-29 20:45 Europe/Berlin — Question-first result explorer
+
+### Context
+Alex's priority remains a deeper, logical results experience. Before touching UI, the results redesign plan was updated with a small question-first explorer slice.
+
+### Project Manager
+Priority: reduce result-page cognitive load by letting users start from practical questions rather than KPI names. Risk: adding another block could become snippet sprawl, so this slice only routes to existing structured explanations. Next: continue consolidating report/dashboard navigation around the same helper outputs.
+
+### Designer / UX
+The page now gives a compact entry point: Zugang, Finanzierung, geänderte Hebel, Zeit/Stärke, politische Umsetzbarkeit. Each topic answers what to look at, the caveat, and the next click.
+
+### Creative Agent
+Idea: later turn these question topics into a guided “Ergebnis-Rundgang” mode. Fit: useful for newcomers, but defer until the static explorer proves clear.
+
+### Political Health-System Strategist
+Political content remains linked to changed levers and explicitly framed as qualitative rubric, not vote forecast or lobbying advice.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. No new empirical claims were added; the explorer reuses KPI drill-downs, trend guidance, assumption checks, and political rubric text.
+
+### Integrator Decision
+Accepted a safe/reversible UX orchestration slice: plan update, pure helper, renderer, and regression test. No model logic changed.
+
+### Question to Alex
+No important decision open in this slice.
+
+### Verification / Git
+Local verification before sync: `python3 -m pytest -q` → 59 passed; py_compile passed; 20-run/2-year simulation smoke passed with df (60, 30), reg (320, 6). Git sync/commit/push follows in clone.
