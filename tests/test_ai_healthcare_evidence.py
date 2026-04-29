@@ -233,6 +233,21 @@ def test_ambient_scribes_include_validation_readiness_scoping_review_context():
     assert record.model_use_status == "catalog_only"
 
 
+def test_ambient_scribes_include_scoping_review_protocol_as_research_agenda_only():
+    source = EVIDENCE_SOURCES["jmir_res_protoc_hcp_genai_ambient_scribes_2025"]
+    record = AI_HEALTHCARE_EVIDENCE["ambient_ai_scribes_documentation_burden"]
+
+    assert source.kind == "paper"
+    assert source.retrieved_via == "PubMed E-utilities search + abstract metadata"
+    assert "scoping-review protocol" in source.quality_note
+    assert "benefits, risks, expectations, uncertainties" in source.quality_note
+    assert "planned methods rather than completed outcome results" in source.quality_note
+    assert "not evidence of effectiveness" in source.quality_note
+    assert source.id in record.source_ids
+    assert "review_protocol" in record.study_designs
+    assert record.model_use_status == "catalog_only"
+
+
 def test_youtube_context_pipeline_is_explicitly_grade_e_and_not_model_fact():
     record = AI_HEALTHCARE_EVIDENCE["ai_healthcare_youtube_context_pipeline"]
     summary = evidence_quality_summary(record.id)

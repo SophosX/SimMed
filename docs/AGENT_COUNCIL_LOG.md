@@ -1419,3 +1419,32 @@ Focused test: `16 passed`; full suite: `86 passed`. Commit/push follows in this 
 - **Integrator Decision:** Attached the source to `ambient_ai_scribes_documentation_burden`, preserved `catalog_only`, and added a regression test against overclaiming.
 - **Question to Alex if needed:** Keine — this is reversible evidence-catalogue work.
 - **Verification/Git:** `tests/test_ai_healthcare_evidence.py` passed (19 tests) and `py_compile` passed. Commit/push pending in this heartbeat after final status verification.
+
+## 2026-04-29 22:54 Europe/Berlin — Heartbeat: AI-healthcare evidence protocol guardrail
+
+### Context
+Continued the relevant `feat/ai-healthcare-evidence-validation` branch. Added one PubMed/E-utilities sourced ambient-scribe item that is explicitly a scoping-review protocol, not completed effectiveness evidence.
+
+### Project Manager
+Priority: keep deep ambient-AI-scribe evidence intake moving while protecting the platform from premature model effects. Next: continue adding primary studies/reports, then expose passports/API/UI only after catalogue guardrails remain stable.
+
+### Designer / UX
+Future evidence UI should distinguish “completed evidence” from “review protocol / research agenda” so users do not mistake planned review methods for proven effects.
+
+### Creative Agent
+Idea: an evidence “maturity ladder” card for AI tools (signal → protocol → observational → randomized → German transfer review → model candidate). Fit: good onboarding, but defer implementation until more records are stable.
+
+### Political Health-System Strategist
+For German policy audiences, protocol sources can justify why SimMed watches a domain, but not why a reform should be funded or scaled. Keep procurement/payer conclusions separate from catalogue context.
+
+### Evidence / Domain
+Added JMIR Research Protocols/PubMed record `40779760` as research-agenda context: planned scoping review themes include HCP benefits/risks/expectations/uncertainties and use/avoidance patterns; no patient, capacity, cost, or effectiveness inference encoded.
+
+### Integrator Decision
+Accepted a small structured-data/test slice only. No model parameters, UI claims, or patient-outcome claims changed.
+
+### Question to Alex
+Keine wichtige Entscheidung offen.
+
+### Verification / Git
+`tests/test_ai_healthcare_evidence.py -q` passed (20); `py_compile` passed. Commit/push status follows in heartbeat report.

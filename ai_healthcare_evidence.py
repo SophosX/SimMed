@@ -27,6 +27,7 @@ StudyDesign = Literal[
     "retrospective_observational",
     "systematic_review",
     "narrative_review",
+    "review_protocol",
     "institutional_report",
     "social_signal",
     "expert_context",
@@ -339,6 +340,22 @@ EVIDENCE_SOURCES: dict[str, EvidenceSource] = {
         ),
         license_or_terms_note="PubMed abstract metadata only; article copyright/license may apply. Store citation/metadata only unless reuse terms permit more.",
     ),
+    "jmir_res_protoc_hcp_genai_ambient_scribes_2025": EvidenceSource(
+        id="jmir_res_protoc_hcp_genai_ambient_scribes_2025",
+        title="Health Care Professionals' Experiences and Opinions About Generative AI and Ambient Scribes in Clinical Documentation: Protocol for a Scoping Review",
+        url="https://pubmed.ncbi.nlm.nih.gov/40779760/",
+        kind="paper",
+        retrieved_via="PubMed E-utilities search + abstract metadata",
+        retrieved_at="2026-04-29",
+        source_date="2025",
+        quality_note=(
+            "JMIR Research Protocols scoping-review protocol for mapping health care professionals' experiences and opinions about GenAI "
+            "and ambient scribes in clinical documentation. It is useful as a review-roadmap and guardrail for themes to extract "
+            "(benefits, risks, expectations, uncertainties, avoidance/use patterns, ethics and oversight), but it reports planned methods rather "
+            "than completed outcome results. Keep it as research-agenda context, not evidence of effectiveness, patient outcomes, German capacity, or cost savings."
+        ),
+        license_or_terms_note="PubMed/PMC metadata and abstract only; open-access status should be checked before storing or redistributing full text.",
+    ),
     "x_jama_current_ambient_scribes_2026": EvidenceSource(
         id="x_jama_current_ambient_scribes_2026",
         title="JAMA X post: ambient scribes reduce documentation time but patient outcomes/equity evidence limited",
@@ -387,6 +404,7 @@ AI_HEALTHCARE_EVIDENCE: dict[str, AIHealthcareEvidenceRecord] = {
             "institutional_report",
             "systematic_review",
             "narrative_review",
+            "review_protocol",
         ),
         evidence_grade="B",
         source_ids=(
@@ -409,6 +427,7 @@ AI_HEALTHCARE_EVIDENCE: dict[str, AIHealthcareEvidenceRecord] = {
             "jmir_med_inform_singapore_time_motion_2026",
             "npj_digital_medicine_scaling_ambient_scribes_2026",
             "j_med_syst_validation_practices_digital_scribes_2026",
+            "jmir_res_protoc_hcp_genai_ambient_scribes_2025",
         ),
         transferability_to_germany=(
             "Medium: documentation burden and clinician workflow are relevant in Germany, but effects depend on German documentation rules, "
