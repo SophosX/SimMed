@@ -82,6 +82,10 @@ Connect changed parameters to result explanations:
 - Research/source real-world claims later before making them authoritative.
 - Keep UI clear; do not bury users in walls of text.
 
+## 2026-04-29 clarity/UX Slice 1.1: landing hero
+
+Implemented as the first Bühne 1 slice only: add a small top-of-page hero before result tabs/start content that answers “Was ist SimMed?” for first-time users. The block contains one mission sentence, three safe button-like navigation prompts, and a disclaimer that SimMed is not an official forecast. The buttons only store a session-state hint and do not change parameters, run simulations, or introduce model/data changes. Next logical slice remains Bühne 1 Slice 1.2: concrete example scenarios.
+
 ## Verification
 
 Run:
@@ -292,15 +296,15 @@ Small implementation slice:
 
 Guardrail: This is chart-reading UX only. Do not change simulation outputs, add empirical claims, or infer new causality beyond the selected time series.
 
-## 2026-04-29 next slice: KPI interpretation checkpoint
+## 2026-04-29 next slice: KPI detail answer checklist
 
-Problem: KPI drill-down cards now show start/end, effect strength, related checks and matching changed levers, but the reader still has to infer whether a movement should be treated as improvement, deterioration, or a neutral/ambiguous context change. This is especially risky for metrics like Gesundheitsausgaben or Bevölkerung where “more” is not automatically good or bad.
+Problem: KPI expanders already contain the right ingredients, but a newcomer still has to map them back to Alex's core result questions: what changed, why, how strong, which assumptions, and what to inspect next. The card should make this journey explicit at the top before the longer detail text.
 
 Small implementation slice:
 
-1. Add a pure `kpi_interpretation_checkpoint(metric_key, summary)` helper in `app.py`.
-2. Reuse the existing `_metric_delta_summary(...)` direction and `kpi_detail_texts()[metric_key]["read"]` copy. Return a short status, a plain-language interpretation, and a concrete “what to verify before concluding” prompt.
-3. Add the checkpoint to `build_kpi_drilldown_items(...)` and render it between Beobachtung and Verwandte Prüfungen, so every KPI detail explicitly says how to read the movement before naming drivers.
-4. Add a focused test proving Facharzt-Wartezeit worsening is labelled as a deterioration/access warning, while Gesundheitsausgaben are labelled as ambiguous rather than automatically bad.
+1. Add a pure `build_kpi_answer_checklist(item)` helper in `app.py` that derives short answer rows from an existing KPI drill-down item.
+2. Return stable rows for exactly the same five questions: `Was hat sich verändert?`, `Warum im Modell?`, `Wie stark?`, `Welche Annahme begrenzt die Lesart?`, and `Was als Nächstes prüfen?`.
+3. Render the checklist at the top of each KPI expander before the detailed numbered path. Keep all text derived from existing drill-down fields so this is information architecture, not new causal content.
+4. Add a focused test proving the checklist is complete, uses the KPI's observation/effect strength/assumption/next-step fields, and includes direct changed-lever context when available.
 
-Guardrail: This is interpretation hygiene only. Do not change simulation outputs, add empirical claims, or turn ambiguous KPIs into hidden scores; the text must explicitly ask users to verify related KPIs before drawing policy conclusions.
+Guardrail: This must not add empirical claims or new model effects. It only makes the existing KPI detail card answer the user's questions faster and more coherently.

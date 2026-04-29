@@ -896,7 +896,45 @@ def _parameter_evidence_badge(key: str) -> str:
         "E": "🔴",
     }.get(spec.evidence_grade, "⚪")
     sources = ", ".join(spec.source_ids)
-    return f"{grade_icon} Evidenz {spec.evidence_grade} · {sources}"
+    data_status = getattr(spec, "data_status", None)
+    if data_status is None:
+        return f"{grade_icon} Evidenz {spec.evidence_grade} · {sources}"
+    status = "aus Daten" if data_status == "aus_daten" else "Annahme, nicht aus Daten"
+    return f"{grade_icon} {status} · Evidenz {spec.evidence_grade} · {sources}"
+
+
+def parameter_data_status_badge(key: str) -> str:
+    """Visible data-vs-assumption label for a parameter."""
+    spec = PARAMETER_REGISTRY.get(key)
+    if spec is None:
+        return "🔴 Annahme, nicht aus Daten · Register fehlt"
+    data_status = getattr(spec, "data_status", "annahme")
+    source_version = getattr(spec, "source_version", "")
+    icon = "🟢" if data_status == "aus_daten" else "🟠"
+    label = "aus Daten" if data_status == "aus_daten" else "Annahme, nicht aus Daten"
+    freshness = f" · Stand {source_version}" if source_version else ""
+    return f"{icon} {label} · Evidenz {spec.evidence_grade}{freshness}"
+
+
+_KPI_SOURCE_PARAMETERS = {
+    "gesundheitsausgaben_mrd": ("gkv_anteil", "einkommen_durchschnitt"),
+    "gkv_saldo": ("gkv_anteil", "gkv_beitragssatz_basis", "staatliche_subventionen"),
+    "aerzte_pro_100k": ("aerzte_gesamt",),
+    "wartezeit_fa": ("fachpraxen", "patienten_pro_quartal"),
+    "lebenserwartung": ("praeventionsbudget",),
+    "kollaps_wahrscheinlichkeit": ("gkv_anteil", "aerzte_gesamt"),
+}
+
+
+def kpi_data_status_badge(kpi_key: str) -> str:
+    """Visible data-vs-assumption label for KPI interpretation."""
+    specs = [PARAMETER_REGISTRY.get(k) for k in _KPI_SOURCE_PARAMETERS.get(kpi_key, ())]
+    specs = [s for s in specs if s is not None]
+    if not specs:
+        return "🟠 Annahme, nicht aus Daten · KPI-Treiber noch nicht im Register verknüpft"
+    if all(getattr(s, "data_status", "annahme") == "aus_daten" for s in specs):
+        return "🟢 aus Daten · KPI basiert auf registrierten Datenparametern"
+    return "🟠 Annahme, nicht aus Daten · KPI kombiniert Datenreferenzen mit Modellannahmen"
 
 
 def _parameter_provenance_help(key: str, plain_hint: str | None = None) -> str:
@@ -982,6 +1020,42 @@ def _parameter_effect_hint(key: str) -> str:
     return hints.get(key, "Was passiert beim Ändern? Dieser Regler verändert ein Szenario, ist aber noch nicht mit einer eigenen Kurz-Erklärung dokumentiert.")
 
 
+def build_landing_hero_content() -> Dict[str, Any]:
+    """Return static first-contact copy for the landing hero.
+
+    The hero explains what SimMed is without running simulations or changing
+    model parameters. Button actions are navigation hints only for this slice.
+    """
+    return {
+        "title": "Was ist SimMed?",
+        "mission": (
+            "SimMed hilft, mögliche Folgen gesundheitspolitischer Entscheidungen "
+            "für das deutsche Gesundheitssystem bis 2040 verständlich zu erkunden."
+        ),
+        "actions": [
+            {
+                "label": "Was passiert, wenn …?",
+                "description": "Eine Frage formulieren und später passende Beispiel-Szenarien auswählen.",
+                "hint": "frage",
+            },
+            {
+                "label": "Stellschrauben verstehen",
+                "description": "Sehen, welche Parameter links verändert werden können und was sie bedeuten.",
+                "hint": "parameter",
+            },
+            {
+                "label": "Ergebnis lesen lernen",
+                "description": "Nach einer Simulation zuerst Klartext, KPIs und Annahmen einordnen.",
+                "hint": "ergebnis",
+            },
+        ],
+        "disclaimer": (
+            "SimMed ist ein Lern- und Szenario-Werkzeug, keine amtliche Prognose "
+            "und keine medizinische oder politische Empfehlung."
+        ),
+    }
+
+
 def sidebar_quick_start_steps() -> List[str]:
     """Kurze Orientierung, damit neue Nutzer:innen sofort wissen, was zu tun ist."""
     return [
@@ -989,6 +1063,22 @@ def sidebar_quick_start_steps() -> List[str]:
         "2. Starte die Simulation und lies zuerst: Was hat sich verändert? Dort steht die Klartext-Erklärung.",
         "3. Öffne danach Wer unterstützt? Wer bremst?, um politische Machbarkeit und Konflikte einzuordnen.",
     ]
+
+
+def render_landing_hero() -> None:
+    """Render the mobile-first landing hero before tabs/results."""
+    content = build_landing_hero_content()
+    st.markdown(f"### {content['title']}")
+    st.write(content["mission"])
+
+    columns = st.columns(3)
+    for column, action in zip(columns, content["actions"]):
+        with column:
+            if st.button(action["label"], key=f"landing_hero_{action['hint']}", use_container_width=True):
+                st.session_state["landing_hero_hint"] = action["hint"]
+            st.caption(action["description"])
+
+    st.caption(f"Hinweis: {content['disclaimer']}")
 
 
 def render_sidebar() -> dict:
@@ -2108,51 +2198,11 @@ def render_metric_card_with_details(
     )
     detail = kpi_mobile_detail(metric_key)
     with st.popover(f"Details zu {label}", use_container_width=True):
+        st.caption(kpi_data_status_badge(metric_key))
         st.markdown(f"**Bedeutung:** {detail['meaning']}")
         st.markdown(f"**Warum verändert sich das?** {detail['why']}")
         st.markdown(f"**Wie lesen?** {detail['read']}")
         st.caption("Mobil/Tablet: Diese Schaltfläche ersetzt den unzuverlässigen Hover-Effekt.")
-
-
-def kpi_interpretation_checkpoint(metric_key: str, summary: Dict[str, Any]) -> Dict[str, str]:
-    """Explain how to interpret a KPI movement before drawing conclusions.
-
-    This is a reading aid, not model logic: it classifies simulated movement as
-    warning/improvement/ambiguous context and tells the user which neighboring
-    checks to open before treating the movement as policy evidence.
-    """
-    details = kpi_detail_texts().get(metric_key, {})
-    direction = summary.get("direction", "kaum verändert")
-    read_hint = details.get("read", "Diese Kennzahl nur zusammen mit verwandten Prüfungen und dem Zeitverlauf lesen.")
-    ambiguous_metrics = {
-        "gesundheitsausgaben_mrd": "Mehr Gesundheitsausgaben sind nicht automatisch schlecht; entscheidend ist, ob Zugang, Gesundheit und Finanzierbarkeit mitlaufen.",
-        "bip_anteil": "Ein höherer BIP-Anteil ist ein Finanzierungs- und Prioritätssignal, aber kein Qualitätsurteil allein.",
-        "bevoelkerung_mio": "Mehr oder weniger Bevölkerung ist kein Erfolgsscore; wichtig sind Nachfrage, pro-Kopf-Kapazität und regionale Verteilung.",
-        "telemedizin_rate": "Mehr Telemedizin ist kein Selbstzweck; prüfe, ob Wartezeit, Zugang und Zufriedenheit plausibel mitlaufen.",
-    }
-    verify_next = {
-        "gesundheitsausgaben_mrd": "Vor einem Urteil GKV-Saldo, BIP-Anteil und die verwandte Prüfungen öffnen.",
-        "wartezeit_fa": "Vor einem Urteil die verwandte Prüfungen zu Ärztedichte, ländlicher Versorgung und Trendverlauf öffnen.",
-        "gkv_saldo": "Vor einem Urteil Beitragssatz, Ausgabenpfad und politische Umsetzbarkeit gegenlesen.",
-        "versorgungsindex_rural": "Vor einem Urteil Gini Versorgung, Wartezeit und regionale Kapazitätsannahmen prüfen.",
-    }
-    if metric_key in ambiguous_metrics:
-        status = "Einordnen, nicht automatisch werten"
-        interpretation = f"{ambiguous_metrics[metric_key]} Lesart im Detail: {read_hint}"
-    elif direction == "verschlechtert":
-        status = "Warnsignal"
-        interpretation = f"Diese Bewegung verschlechtert die Modell-Lesart dieser KPI. Prüfe besonders, ob Zugang, Finanzierung oder Outcomes gemeinsam unter Druck geraten. Lesart im Detail: {read_hint}"
-    elif direction == "verbessert":
-        status = "Verbesserung im Modell"
-        interpretation = f"Diese Bewegung verbessert die Modell-Lesart dieser KPI. Behandle sie trotzdem als SimMed-Ergebnis, nicht als bewiesene Realwelt-Wirkung. Lesart im Detail: {read_hint}"
-    else:
-        status = "Kaum Bewegung"
-        interpretation = f"Diese KPI bewegt sich im Modell nur schwach. Ziehe keine starke Schlussfolgerung ohne Zeitverlauf und verwandte Prüfungen. Lesart im Detail: {read_hint}"
-    return {
-        "status": status,
-        "interpretation": interpretation,
-        "verify_next": verify_next.get(metric_key, "Vor einem Urteil Zeitverlauf, verwandte Prüfungen und Annahmen-Check öffnen."),
-    }
 
 
 def kpi_matching_changed_levers(metric_key: str, agg: pd.DataFrame, params: dict) -> List[Dict[str, str]]:
@@ -2182,6 +2232,45 @@ def kpi_matching_changed_levers(metric_key: str, agg: pd.DataFrame, params: dict
             "next_step": bridge_item["next_step"],
         })
     return matches
+
+
+def build_kpi_answer_checklist(item: Dict[str, Any]) -> List[Dict[str, str]]:
+    """Turn one KPI drill-down item into the five core result questions.
+
+    This is a navigation/reading aid only: every answer is derived from the
+    existing KPI drill-down fields, so it does not add causal assumptions or
+    empirical claims.
+    """
+    matching_levers = item.get("matching_changed_levers") or []
+    if matching_levers:
+        lever_answer = "; ".join(
+            f"{lever['label']}: {lever['model_path']}" for lever in matching_levers
+        )
+    else:
+        lever_answer = item.get("lever_context", "Keine direkte Brücke zu einem geänderten Hebel ausgewiesen.")
+    return [
+        {
+            "question": "Was hat sich verändert?",
+            "answer": item.get("observation", "Diese KPI ist im aktuellen Ergebnis noch nicht zusammengefasst."),
+        },
+        {
+            "question": "Warum im Modell?",
+            "answer": f"{item.get('drivers', '')} Geänderte Hebel: {lever_answer}".strip(),
+        },
+        {
+            "question": "Wie stark?",
+            "answer": f"Effektstärke: {item.get('effect_strength', 'noch nicht bewertet')}; Prozentänderung: {float(item.get('pct_delta', 0.0)):+.1f}%.",
+        },
+        {
+            "question": "Welche Annahme begrenzt die Lesart?",
+            "answer": item.get("assumption", "Diese Kennzahl nur zusammen mit Annahmen und Nachbar-KPIs lesen."),
+        },
+        {
+            "question": "Was als Nächstes prüfen?",
+            "answer": item.get("next_step", "Öffne den Zeitverlauf und verwandte KPI-Details."),
+        },
+    ]
+
 
 
 def build_kpi_drilldown_items(agg: pd.DataFrame, params: dict) -> List[Dict[str, str]]:
@@ -2225,7 +2314,6 @@ def build_kpi_drilldown_items(agg: pd.DataFrame, params: dict) -> List[Dict[str,
             f"Veränderung {summary['abs_delta']:+.2f} ({summary['pct_delta']:+.1f}%). "
             f"Das ist im Modell {summary['strength']} {summary['direction']}."
         )
-        interpretation_checkpoint = kpi_interpretation_checkpoint(key, summary)
         matching_levers = kpi_matching_changed_levers(key, agg, params)
         if matching_levers:
             lever_context = "\n".join(
@@ -2245,7 +2333,6 @@ def build_kpi_drilldown_items(agg: pd.DataFrame, params: dict) -> List[Dict[str,
             "meaning": info["meaning"],
             "observation": observation,
             "related_inspections": kpi_related_inspections(key),
-            "interpretation_checkpoint": interpretation_checkpoint,
             "drivers": info["why"],
             "matching_changed_levers": matching_levers,
             "lever_context": lever_context,
@@ -2264,25 +2351,26 @@ def render_kpi_deep_dive(agg: pd.DataFrame, params: dict):
     """Explains KPI cards as a coherent reading path below the dashboard."""
     st.markdown("---")
     st.markdown("### Kernkennzahlen verstehen")
-    st.caption("Jede Karte folgt derselben Logik: Bedeutung → Beobachtung → Interpretation → verwandte Prüfungen → Modelltreiber → Annahme → nächster Klick.")
+    st.caption("Jede Karte folgt derselben Logik: Bedeutung → Beobachtung → verwandte Prüfungen → Modelltreiber → Annahme → nächster Klick.")
     cols = st.columns(2)
     for i, item in enumerate(build_kpi_drilldown_items(agg, params)):
         with cols[i % 2]:
             with st.expander(item["title"], expanded=False):
+                st.markdown("**Schnellantworten zu dieser Kennzahl:**")
+                for row in build_kpi_answer_checklist(item):
+                    st.markdown(f"- **{row['question']}** {row['answer']}")
                 st.markdown(f"**1 · Bedeutung:** {item['meaning']}")
                 st.markdown(f"**2 · Beobachtung in dieser Simulation:** {item['observation']}")
-                check = item["interpretation_checkpoint"]
-                st.warning(f"**3 · Interpretation:** {check['status']} — {check['interpretation']} {check['verify_next']}")
-                st.markdown("**4 · Verwandte Prüfungen, damit du die Kennzahl nicht isoliert liest:**")
+                st.markdown("**3 · Verwandte Prüfungen, damit du die Kennzahl nicht isoliert liest:**")
                 for prompt in item["related_inspections"]:
                     st.markdown(f"- {prompt}")
-                st.markdown(f"**5 · Warum im Modell?** {item['drivers']}")
-                st.markdown("**6 · Welche deiner geänderten Hebel passen direkt zu dieser KPI?**")
+                st.markdown(f"**4 · Warum im Modell?** {item['drivers']}")
+                st.markdown("**5 · Welche deiner geänderten Hebel passen direkt zu dieser KPI?**")
                 st.markdown(item["lever_context"])
-                st.markdown("**7 · Alle geänderten Haupthebel als Kontext:**")
+                st.markdown("**6 · Alle geänderten Haupthebel als Kontext:**")
                 st.markdown(item["scenario_focus"])
-                st.info(f"**8 · Annahme prüfen:** {item['assumption']}")
-                st.success(f"**9 · Nächster Klick:** {item['next_step']}")
+                st.info(f"**7 · Annahme prüfen:** {item['assumption']}")
+                st.success(f"**8 · Nächster Klick:** {item['next_step']}")
 
 
 def build_trend_metric_reading_rows(
@@ -3387,6 +3475,7 @@ def main():
         "Monte-Carlo-Simulationsplattform für das deutsche Gesundheitssystem \u2013 "
         f"{params['n_runs']:,} Runs \u00d7 {params['sim_jahre']} Jahre"
     )
+    render_landing_hero()
 
     # Warnung bei geänderten Parametern
     if "last_params_hash" in st.session_state and "agg" in st.session_state:

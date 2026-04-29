@@ -9,8 +9,10 @@ from app import (
     _parameter_evidence_badge,
     _parameter_provenance_help,
     build_changed_parameter_impact_bridge,
+    build_kpi_answer_checklist,
     build_kpi_drilldown_items,
     build_kpi_explanations,
+    build_landing_hero_content,
     build_political_lever_detail_sections,
     build_political_stakeholder_rows,
     build_result_narrative_summary,
@@ -21,8 +23,8 @@ from app import (
     build_trend_metric_reading_rows,
     build_trend_view_guidance,
     get_default_params,
+    kpi_data_status_badge,
     kpi_hover_help,
-    kpi_interpretation_checkpoint,
     kpi_matching_changed_levers,
     kpi_mobile_detail,
     kpi_related_inspections,
@@ -33,6 +35,29 @@ from app import (
     plain_language_workflow_summary,
     sidebar_quick_start_steps,
 )
+
+
+def test_data_status_badges_are_backward_compatible_without_registry_field():
+    # Current main ParameterSpec does not yet guarantee data_status/source_version.
+    # UI helpers must not crash while the data-ingestion branch evolves separately.
+    assert _parameter_evidence_badge("bevoelkerung_mio")
+    kpi_badge = kpi_data_status_badge("gesundheitsausgaben_mrd")
+    assert "Daten" in kpi_badge or "Annahme" in kpi_badge
+
+
+
+def test_landing_hero_content_sets_first_contact_expectations():
+    content = build_landing_hero_content()
+    combined_actions = " ".join(action["label"] + " " + action["description"] for action in content["actions"])
+
+    assert content["title"] == "Was ist SimMed?"
+    assert len(content["mission"].split(".")) <= 2
+    assert "Gesundheitssystem" in content["mission"]
+    assert len(content["actions"]) == 3
+    assert "Was passiert, wenn" in combined_actions
+    assert "Stellschrauben verstehen" in combined_actions
+    assert "Ergebnis lesen" in combined_actions
+    assert "keine amtliche Prognose" in content["disclaimer"]
 
 
 def test_direction_word_uses_plain_language_and_preference_direction():
@@ -591,31 +616,42 @@ def test_kpi_drilldowns_match_changed_levers_to_specific_kpis():
     assert "nicht als direkte Ursache" in items["gkv_saldo"]["lever_context"]
 
 
-def test_kpi_interpretation_checkpoint_separates_warnings_from_ambiguous_metrics():
+def test_kpi_answer_checklist_answers_core_result_questions_from_existing_item():
     agg = pd.DataFrame([
         {
             "jahr": 2025,
             "wartezeit_fa_mean": 20.0,
-            "gesundheitsausgaben_mrd_mean": 500.0,
+            "telemedizin_rate_mean": 10.0,
+            "zufriedenheit_patienten_mean": 70.0,
         },
         {
             "jahr": 2040,
-            "wartezeit_fa_mean": 32.0,
-            "gesundheitsausgaben_mrd_mean": 560.0,
+            "wartezeit_fa_mean": 26.0,
+            "telemedizin_rate_mean": 18.0,
+            "zufriedenheit_patienten_mean": 73.0,
         },
     ])
     params = get_default_params()
-    items = {item["key"]: item for item in build_kpi_drilldown_items(agg, params)}
+    params["telemedizin_rate"] = params["telemedizin_rate"] + 0.15
+    item = {item["key"]: item for item in build_kpi_drilldown_items(agg, params)}["wartezeit_fa"]
 
-    wait_check = items["wartezeit_fa"]["interpretation_checkpoint"]
-    spending_check = items["gesundheitsausgaben_mrd"]["interpretation_checkpoint"]
+    checklist = build_kpi_answer_checklist(item)
+    questions = [row["question"] for row in checklist]
+    combined = " ".join(f"{row['question']} {row['answer']}" for row in checklist)
 
-    assert wait_check["status"] == "Warnsignal"
-    assert "Zugang" in wait_check["interpretation"]
-    assert "verwandte Prüfungen" in wait_check["verify_next"]
-    assert spending_check["status"] == "Einordnen, nicht automatisch werten"
-    assert "nicht automatisch schlecht" in spending_check["interpretation"]
-    assert "GKV-Saldo" in spending_check["verify_next"]
+    assert questions == [
+        "Was hat sich verändert?",
+        "Warum im Modell?",
+        "Wie stark?",
+        "Welche Annahme begrenzt die Lesart?",
+        "Was als Nächstes prüfen?",
+    ]
+    assert item["observation"] in combined
+    assert "Effektstärke" in combined and item["effect_strength"] in combined
+    assert "Telemedizin" in combined
+    assert item["assumption"] in combined
+    assert item["next_step"] in combined
+
 
 
 def test_result_reading_path_guides_full_result_journey():

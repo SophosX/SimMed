@@ -851,15 +851,31 @@ Post-commit verification update: committed and pushed as `f8d37b3` (`Improve KPI
 - **Question to Alex if needed:** No important product decision open for this small slice.
 - **Verification/Git:** Local tests and smoke test passed before sync/commit; push status recorded in final heartbeat.
 
+## 2026-04-29 20:39 Europe/Berlin — KPI detail answer checklist heartbeat
 
-## 2026-04-29 18:33 UTC — KPI-Interpretationscheckpoint
+### Context
+Alexs priority bleibt: Ergebnis-Erfahrung tiefer und logisch machen. Vor Umsetzung wurde `docs/plans/results-experience-redesign.md` um den Slice „KPI detail answer checklist“ ergänzt.
 
-- **Context:** Alex fordert tiefere, logischere Resultaterklärungen. Dieser Lauf hat vor der UX-Änderung den Plan `docs/plans/results-experience-redesign.md` um den Slice „KPI interpretation checkpoint“ erweitert.
-- **Project Manager:** Kleine, reversible UX-Informationsarchitektur statt neuer Modelllogik; Fokus auf Fehlinterpretationen bei KPI-Bewegungen.
-- **Designer/UX:** KPI-Detailkarten bekommen nach der Beobachtung einen expliziten Interpretationsschritt: Warnsignal, Verbesserung, kaum Bewegung oder „einordnen, nicht automatisch werten“.
-- **Creative Agent:** Ambivalente Metriken wie Gesundheitsausgaben werden nicht moralisch gefärbt, sondern als Prüfpunkt erzählt: erst verwandte KPIs öffnen, dann bewerten.
-- **Political Health-System Strategist:** Keine neuen Stakeholder- oder Politikclaims; die Änderung reduziert Überinterpretation von Ausgaben-/Zugangs-KPIs als schnelle politische Beweise.
-- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; keine neuen Realweltfakten kodiert. Texte bleiben SimMed-Lesart und verweisen auf Annahmen/Prüfungen.
-- **Integrator Decision:** Implementiert `kpi_interpretation_checkpoint(...)`, in `build_kpi_drilldown_items(...)` und Renderer integriert, plus Regressionstest für Warnsignal vs. ambivalente Gesundheitsausgaben.
-- **Question to Alex if needed:** Keine wichtige Entscheidung offen; nächster sicherer Slice kann die Policy-Briefing-/KPI-Navigation weiter verdichten.
-- **Verification/Git:** Lokal: `pytest -q` 56 passed, `py_compile` OK, Simulation-Smoke 30 Runs × 3 Jahre OK. Git-Sync/Push folgt im Integrator-Schritt.
+### Project Manager
+Priorität: bestehende KPI-Detailkarten schneller verständlich machen, ohne neue Modelllogik. Risiko: zu viel Text in Expandern; deshalb nur kurze Schnellantworten vor der vorhandenen Detail-Lesespur. Nächste Tasks: weitere Result-Navigation konsolidieren, danach größere UX erst wieder planen.
+
+### Designer / UX
+Die KPI-Expander beantworten jetzt direkt die fünf Nutzerfragen: was geändert, warum, wie stark, welche Annahme, nächster Klick. Das reduziert Sucharbeit auf Mobile/Tablet, weil die Detailkarte nicht erst komplett gelesen werden muss.
+
+### Creative Agent
+Idee: später könnte jede KPI eine kleine „Diagnosekarte“ mit Ampel + Evidenzstatus bekommen. Fit: motivierend und verständlich, aber erst nach weiterer Strukturarbeit, damit keine neue Snippet-Sammlung entsteht.
+
+### Political Health-System Strategist
+Keine neue politische Behauptung eingebaut. Die Schnellantworten leiten bei passenden Hebeln nur auf vorhandene Modellpfade und politische/Annahmen-Prüfung weiter.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf; keine neuen Realwelt-Claims. Die Änderung nutzt bestehende KPI-Texte, beobachtete Simulationsergebnisse und bereits dokumentierte Caveats.
+
+### Integrator Decision
+Akzeptiert: `build_kpi_answer_checklist(item)` als reine Informationsarchitektur und Rendering im KPI-Expander. Keine Modelloutputs, Parameter oder Evidenzgrade geändert.
+
+### Question to Alex
+Keine wichtige Entscheidung offen.
+
+### Verification / Git
+Lokal verifiziert: gezielter neuer Test, gesamte Pytest-Suite, py_compile und kleiner Simulation-Smoke-Test bestanden. Git-Sync/Push folgt im selben Heartbeat.
