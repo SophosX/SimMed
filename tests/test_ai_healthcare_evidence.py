@@ -98,6 +98,20 @@ def test_ambient_scribes_include_emergency_department_mixed_comparator_evidence(
     assert record.model_use_status == "catalog_only"
 
 
+def test_ambient_scribes_include_primary_care_note_quality_counterweight():
+    source = EVIDENCE_SOURCES["ann_intern_med_vha_primary_care_note_quality_2026"]
+    record = AI_HEALTHCARE_EVIDENCE["ambient_ai_scribes_documentation_burden"]
+
+    assert source.kind == "paper"
+    assert source.retrieved_via == "PubMed E-utilities search + abstract metadata"
+    assert "standardized primary-care audio cases" in source.quality_note
+    assert "Human-produced notes scored higher" in source.quality_note
+    assert "documentation-quality counterweight" in source.quality_note
+    assert "not workflow-time or patient-outcome proof" in source.quality_note
+    assert source.id in record.source_ids
+    assert record.model_use_status == "catalog_only"
+
+
 def test_youtube_context_pipeline_is_explicitly_grade_e_and_not_model_fact():
     record = AI_HEALTHCARE_EVIDENCE["ai_healthcare_youtube_context_pipeline"]
     summary = evidence_quality_summary(record.id)

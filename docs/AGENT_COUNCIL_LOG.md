@@ -1221,3 +1221,33 @@ Keine wichtige Entscheidung offen.
 
 ### Verification / Git
 Spezifische Tests/Compile bestanden: `pytest tests/test_ai_healthcare_evidence.py -q` → 10 passed; `py_compile` für Evidenzmodul/Test bestanden. Commit/Push folgt in diesem Lauf.
+
+
+## 2026-04-29 20:15 Europe/Berlin — AI-Scribe evidence heartbeat
+
+### Context
+Continued the active `feat/ai-healthcare-evidence-validation` branch. The AI-healthcare catalogue already contains ambient-scribe trials, reports, YouTube/context guardrails, and validation tests.
+
+### Project Manager
+Priority: deepen ambient-scribe evidence with mixed/negative quality findings before any SimMed model-effect discussion. Next: add more structured primary evidence, then expose evidence passports safely in UI/API.
+
+### Designer / UX
+Evidence passports should eventually show “hilft bei welcher Aussage?” and “reicht nicht für welche Aussage?” so non-experts do not read AI-scribe pilots as proven patient-outcome gains.
+
+### Creative Agent
+Idea: a future “AI Nutzen-Ampel” per use case could separate workload, quality/safety, patient outcomes, cost and equity. Fit: useful, but only after enough structured records exist.
+
+### Political Health-System Strategist
+For German transfer, the documentation-quality counterweight matters: clinicians, Datenschutz, KBV/KVen, hospitals and payers will ask whether AI drafts create review burden, liability and coding incentives, not only time savings.
+
+### Evidence / Domain
+Added PubMed/E-utilities metadata for a 2026 Annals of Internal Medicine VHA standardized primary-care evaluation where human-produced notes scored higher than AI-generated notes on PDQI-9 domains. Kept it as catalogue evidence only, not workflow-time or patient-outcome proof.
+
+### Integrator Decision
+Accepted a small safe evidence-catalogue increment in `ai_healthcare_evidence.py` and a regression test ensuring the source is treated as a documentation-quality counterweight and remains `catalog_only`.
+
+### Question to Alex
+Keine wichtige Entscheidung offen.
+
+### Verification / Git
+Targeted AI evidence tests passed (11). Full pytest passed (81). py_compile passed for AI evidence files. Commit/push and zip refresh completed after verification.
