@@ -168,3 +168,32 @@ No blocking question. Later decision needed: whether the learning page should be
 
 ### Verification / Git
 Pending: tests, zip refresh, commit, push.
+
+## 2026-04-29 14:10 UTC — Heartbeat: Political Feasibility API Rubric
+
+### Context
+Alex chose transparent decision-support now and later Strategy Mode. This heartbeat added a small explanation-only feasibility rubric module and exposed it through the API without changing numeric simulation behavior.
+
+### Project Manager
+Priority: turn the accepted product direction into a tested, reusable layer before larger UI scoring. Risk: political labels could look like hidden advocacy if mixed into the model; therefore the rubric is explicitly explanation-only and separate from `simulation_core.py`. Next tasks: (1) show feasibility notes in the Streamlit result view, (2) add more source-backed stakeholder notes, (3) design Strategy Mode sequencing from the same metadata.
+
+### Designer / UX
+The learning page already explains the concept, but scenario results still need live “why/so what/who blocks?” cards. The new API shape gives UI a clean source for those cards.
+
+### Creative Agent
+Idea: “Reform-Reibungskarte” — each policy lever gets a simple card with supporters, blockers, delay and caveat. Fit: strong for understanding and shareability; it stays credible because it is labelled as an explanation aid rather than a forecast.
+
+### Political Health-System Strategist
+The first covered levers map to realistic German friction points: Länder/universities for study places, KVen/KBV and digital adoption for telemedicine/ePA, budget actors for prevention, and hospitals/workforce for staffing keys. This is public institutional analysis, not party-political advice.
+
+### Evidence / Domain
+No new numeric model assumptions were added. Qualitative stakeholder rules are still assumptions and must later receive citations or expert review before being used for scoring or public claims.
+
+### Integrator Decision
+Accepted: new `political_feasibility.py`, tests, API endpoint `/political-feasibility`, and README/docs updates. Deferred: UI result cards and any leaderboard/competition scoring.
+
+### Question to Alex
+No blocking decision: Alex already selected decision-support now and Strategy Mode later. A future non-blocking decision will be whether feasibility should appear as neutral text cards or as badges in the Streamlit results.
+
+### Verification / Git
+Local verification passed before sync: `python3 -m pytest -q` = 13 passed; `py_compile` passed for app/core/API/registry/provenance/new feasibility module/tests. Zip refreshed at `/opt/data/cache/documents/health_simulation_app_updated.zip`. Git commit/push status is completed in the heartbeat report.

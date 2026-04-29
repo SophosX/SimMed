@@ -14,6 +14,7 @@ from pydantic import BaseModel, Field
 
 from data_sources import list_sources
 from parameter_registry import list_parameters
+from political_feasibility import assess_political_feasibility
 from simulation_core import MODEL_VERSION, build_scenario_manifest, get_default_params, run_scenario
 
 api = FastAPI(title="SimMed Deutschland 2040 API", version="0.2.0")
@@ -50,6 +51,12 @@ def scenario_manifest(req: ScenarioRequest) -> dict:
         return {"error": "invalid_scenario", "unknown": unknown, "detail": str(exc)}
 
 
+@api.post("/political-feasibility")
+def political_feasibility(req: ScenarioRequest) -> dict:
+    """Explain likely political implementation friction for changed levers."""
+    return assess_political_feasibility(req.parameter_changes)
+
+
 @api.post("/simulate")
 def simulate(req: ScenarioRequest) -> dict:
     try:
@@ -63,4 +70,5 @@ def simulate(req: ScenarioRequest) -> dict:
         unknown = sorted(set(req.parameter_changes) - set(get_default_params()))
         return {"error": "unknown_parameter", "unknown": unknown, "detail": str(exc)}
     result["model"] = MODEL_VERSION
+    result["political_feasibility"] = assess_political_feasibility(req.parameter_changes)
     return result

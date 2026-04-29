@@ -38,6 +38,7 @@ Main capabilities:
 - data-source registry for official German/EU sources
 - FastAPI endpoints for agent-facing scenario runs
 - scenario manifests with model version, seed, changed parameters, and caveats
+- first transparent political-feasibility rubric for selected levers, kept separate from numeric model outputs
 
 ## Repository structure
 
@@ -46,6 +47,7 @@ Main capabilities:
 ├── app.py                         # Streamlit user interface
 ├── simulation_core.py             # UI-independent simulation engine
 ├── api.py                         # FastAPI wrapper for agents/tools
+├── political_feasibility.py       # Plain-language feasibility rubric (explanation layer)
 ├── parameter_registry.py          # Parameter metadata, evidence grades, caveats
 ├── data_sources.py                # Authoritative source registry
 ├── provenance.py                  # Ingest records, SHA256 hashing, JSONL logs
@@ -133,7 +135,13 @@ curl http://127.0.0.1:8000/sources
 curl -X POST http://127.0.0.1:8000/scenario-manifest \
   -H 'Content-Type: application/json' \
   -d '{"parameter_changes":{"medizinstudienplaetze":9000},"n_runs":100,"n_years":15,"seed":42}'
+
+curl -X POST http://127.0.0.1:8000/political-feasibility \
+  -H 'Content-Type: application/json' \
+  -d '{"parameter_changes":{"medizinstudienplaetze":9000,"telemedizin_rate":0.12},"n_runs":100,"n_years":15,"seed":42}'
 ```
+
+The feasibility endpoint explains, in plain language, why a lever may be easy or hard to implement, who may support or block it, and what caveat matters. It is an explanation aid only, not a validated political forecast and not yet a competition score.
 
 ## Evidence grades
 

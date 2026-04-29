@@ -29,12 +29,11 @@ For major policy levers, later feasibility notes should identify likely incentiv
 - G-BA/IQTIG and quality/regulatory bodies
 - patient groups, rural communities, Pflege actors, and media framing
 
-## Product decision still open
+## Product decision
 
-Before implementing political feasibility scores or badges, Alex should decide the product tone:
+Alex chose the direction:
 
-1. **Neutral explainer:** feasibility notes only, no score.
-2. **Decision-support mode:** transparent feasibility rubric, clearly separated from health/economic outcomes.
-3. **Competition mode:** feasibility becomes one scoring dimension, with anti-gaming controls and hidden stress tests.
+1. **Build now — decision-support mode:** a transparent feasibility rubric, clearly separated from health/economic outcomes.
+2. **Later — strategy mode:** sequencing, coalitions, veto players, framing, compensation/trade packages, and legislative timing.
 
-Until that decision is made, keep political feasibility work in docs and explanatory metadata only.
+This means feasibility can be implemented as an explanation/API layer now, but it must not silently become a hidden model constant, partisan recommendation, or leaderboard score.
