@@ -1125,6 +1125,81 @@ def build_data_readiness_integration_preflight(
     }
 
 
+
+def build_data_readiness_integration_plan(
+    preflight: dict,
+    *,
+    limit: int = 3,
+) -> dict:
+    """Return read-only implementation-plan skeletons for integration-ready rows.
+
+    The plan is deliberately not executable automation. It translates a green
+    preflight row into the files, tests, and verification commands an integrator
+    should prepare in a separate PR before any reviewed value can become a model
+    default. Blocked parameters are excluded so operators do not confuse missing
+    raw/review gates with integration work.
+    """
+
+    ready_rows = [
+        row for row in preflight.get("rows", [])
+        if row.get("preflight_status") == "bereit_fuer_separaten_integrationsplan"
+    ][:limit]
+    plans: list[dict] = []
+    for row in ready_rows:
+        parameter_key = row["parameter_key"]
+        plans.append({
+            "parameter_key": parameter_key,
+            "label": row["label"],
+            "status": "planbar_aber_nicht_ausgefuehrt",
+            "goal": "Geprüften Transformationswert nur in einem separaten, getesteten Registry-/Modell-PR integrieren.",
+            "required_inputs": [
+                "Rohsnapshot-Pfad und SHA256 aus Manifest prüfen",
+                "ReviewedTransformation mit Methode, Einheit, Nenner, Berichtsjahr und Caveat lesen",
+                "bisherigen Registry-Default, plausible Grenzen, source_ids und uncertainty_treatment vergleichen",
+                "UI/API-Labels vorab definieren: Quelle, Review und Modelleffekt getrennt sichtbar halten",
+            ],
+            "proposed_files": [
+                "parameter_registry.py",
+                "simulation_core.py falls der Modellpfad den Wert direkt nutzt",
+                "tests/test_registries.py",
+                "tests/test_simulation_core.py oder ein fokussierter neuer Regressionstest",
+                "docs/SOURCE_PROVENANCE_POLICY.md oder docs/AGENT_COUNCIL_LOG.md für die Integrationsentscheidung",
+            ],
+            "test_plan": [
+                f"python3 -m pytest -q tests/test_registries.py -k {parameter_key}",
+                "python3 -m pytest -q tests/test_data_ingestion.py tests/test_api.py",
+                "python3 -m py_compile app.py data_sources.py parameter_registry.py provenance.py api.py simulation_core.py",
+                "kleiner run_simulation-Smoke-Test nach jeder Modellpfad-Änderung",
+            ],
+            "definition_of_done": row.get("definition_of_done", []) + [
+                "Data Passport zeigt nach Integration weiterhin Rohcache, Review und Modelleffekt getrennt",
+                "Commit/PR benennt Quelle, Transformationsreview und verbleibende Caveats ausdrücklich",
+            ],
+            "workflow_api": row.get("workflow_api"),
+            "review_template_api": row.get("review_template_api"),
+            "guardrail": "Integrationsplan ist read-only: keine Registry-/Modellmutation, kein execute=true, kein Cache-Schreiben, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+        })
+    return {
+        "title": "Parameter-spezifischer Integrationsplan (nur nach grünem Preflight)",
+        "plain_language_note": (
+            "Diese Pläne sagen, wie ein geprüfter Datenwert später sauber in Registry/Modell gelangen könnte. "
+            "Sie führen nichts aus und zeigen geblockte Parameter bewusst nicht als integrationsbereit."
+        ),
+        "summary": {
+            "ready_rows_in_preflight": len([
+                row for row in preflight.get("rows", [])
+                if row.get("preflight_status") == "bereit_fuer_separaten_integrationsplan"
+            ]),
+            "shown_plans": len(plans),
+            "blocked_rows_seen": len([
+                row for row in preflight.get("rows", [])
+                if row.get("preflight_status") != "bereit_fuer_separaten_integrationsplan"
+            ]),
+        },
+        "plans": plans,
+        "guardrail": "Read-only/Planung-only: keine Datenaktion, keine Review-Erzeugung, keine Registry-/Modellmutation, keine amtliche Prognose und kein Wirkungsbeweis.",
+    }
+
 def build_data_connector_queue(backlog_items: list[dict], *, per_source_limit: int = 4) -> list[dict]:
     """Group snapshot-needed parameters by source so connector work can start safely.
 

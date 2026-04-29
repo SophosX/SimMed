@@ -39,6 +39,7 @@ from data_ingestion import (
     build_data_readiness_dashboard_cards,
     build_data_readiness_first_contact_guide,
     build_data_readiness_integration_preflight,
+    build_data_readiness_integration_plan,
     build_data_readiness_gate_plan,
     build_data_readiness_operator_handoff,
     build_data_readiness_platform_brief,
@@ -4112,6 +4113,7 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
     backlog = full_backlog[:limit]
     summary = build_data_readiness_summary(full_backlog)
     next_actions = build_next_data_readiness_actions(full_backlog, limit=3)
+    integration_preflight = build_data_readiness_integration_preflight(full_backlog, build_data_passport_rows(list_parameters()), limit=5)
     return {
         "title": "Nächste Daten-Schritte: erst Cache, dann Review, dann Integration",
         "plain_language_note": (
@@ -4128,7 +4130,8 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         "action_packet": build_data_readiness_action_packet(next_actions),
         "operator_handoff": build_data_readiness_operator_handoff(next_actions),
         "platform_brief": build_data_readiness_platform_brief(next_actions),
-        "integration_preflight": build_data_readiness_integration_preflight(full_backlog, build_data_passport_rows(list_parameters()), limit=5),
+        "integration_preflight": integration_preflight,
+        "integration_plan": build_data_readiness_integration_plan(integration_preflight),
         "rows": [
             {
                 "Parameter": item["label"],
@@ -4341,7 +4344,27 @@ def render_learning_data_readiness_backlog():
             for row in preflight["rows"]
         ]
         st.dataframe(pd.DataFrame(preflight_rows), use_container_width=True, hide_index=True)
-        st.caption("Diese Liste priorisiert Plattformarbeit: erst Status/Dry-run, dann Rohdaten-Cache nur bewusst, danach Review und explizite Modellintegration. Preflight bleibt read-only.")
+        integration_plan = backlog["integration_plan"]
+        st.markdown(f"**{integration_plan['title']}**")
+        st.caption(integration_plan["plain_language_note"])
+        plan_rows = [
+            {
+                "Parameter": row["label"],
+                "Status": row["status"],
+                "Benötigte Inputs": " · ".join(row["required_inputs"][:2]),
+                "Dateien": " · ".join(row["proposed_files"][:3]),
+                "Tests": " · ".join(row["test_plan"][:2]),
+                "Workflow": row["workflow_api"],
+                "Guardrail": row["guardrail"],
+            }
+            for row in integration_plan["plans"]
+        ]
+        if plan_rows:
+            st.dataframe(pd.DataFrame(plan_rows), use_container_width=True, hide_index=True)
+        else:
+            st.info("Noch kein Parameter ist preflight-grün für einen separaten Integrationsplan; zuerst Snapshot/Review-Gates schließen.")
+        st.caption(integration_plan["guardrail"])
+        st.caption("Diese Liste priorisiert Plattformarbeit: erst Status/Dry-run, dann Rohdaten-Cache nur bewusst, danach Review und explizite Modellintegration. Preflight/Integrationsplan bleiben read-only.")
     with st.expander("Warum diese Reihenfolge? Daten-Gates als Arbeitsplan", expanded=False):
         for gate in backlog["gate_plan"]:
             examples = ", ".join(gate["example_parameters"]) if gate["example_parameters"] else "aktuell keine Beispiele"

@@ -11,6 +11,7 @@ from data_ingestion import (
     build_data_readiness_first_contact_guide,
     build_data_readiness_gate_plan,
     build_data_readiness_integration_preflight,
+    build_data_readiness_integration_plan,
     build_data_readiness_platform_brief,
     build_data_readiness_summary,
     build_next_data_readiness_actions,
@@ -729,3 +730,35 @@ def test_data_readiness_integration_preflight_blocks_until_review_and_separate_p
         "krankenhaeuser": "blockiert_bis_rohsnapshot",
     }
     assert "keine Registry-/Modellmutation" in preflight["guardrail"]
+
+
+def test_integration_plan_only_includes_preflight_ready_rows():
+    preflight = {
+        "rows": [
+            {
+                "parameter_key": "bevoelkerung_mio",
+                "label": "Bevölkerung",
+                "preflight_status": "bereit_fuer_separaten_integrationsplan",
+                "definition_of_done": ["Registry-/Modelländerung als eigener PR"],
+                "workflow_api": "GET /data-readiness/bevoelkerung_mio",
+                "review_template_api": "GET /data-connectors/transformation-review-template/bevoelkerung_mio",
+            },
+            {
+                "parameter_key": "krankenhausbetten",
+                "label": "Krankenhausbetten",
+                "preflight_status": "blockiert_bis_transformation_review",
+            },
+        ]
+    }
+
+    plan = build_data_readiness_integration_plan(preflight)
+
+    assert plan["summary"] == {"ready_rows_in_preflight": 1, "shown_plans": 1, "blocked_rows_seen": 1}
+    item = plan["plans"][0]
+    assert item["parameter_key"] == "bevoelkerung_mio"
+    assert item["status"] == "planbar_aber_nicht_ausgefuehrt"
+    assert "parameter_registry.py" in item["proposed_files"]
+    assert "tests/test_data_ingestion.py tests/test_api.py" in item["test_plan"][1]
+    assert "Data Passport" in " ".join(item["definition_of_done"])
+    assert "keine Registry-/Modellmutation" in item["guardrail"]
+    assert "krankenhausbetten" not in str(plan["plans"])

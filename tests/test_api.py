@@ -171,6 +171,8 @@ def test_api_exposes_integration_preflight_without_model_mutation():
     assert row["review_template_api"].startswith("GET /data-connectors/transformation-review-template/")
     assert "Registry-/Modelländerung" in " ".join(row["definition_of_done"])
     assert "keine Registry-/Modellmutation" in row["guardrail"]
+    assert body["integration_plan"]["title"].startswith("Parameter-spezifischer Integrationsplan")
+    assert "keine Registry-/Modellmutation" in body["integration_plan"]["guardrail"]
 
 
 def test_api_exposes_data_readiness_dashboard_cards_without_execution():
@@ -403,3 +405,21 @@ def test_simulate_embeds_political_feasibility_summary():
     assert response.status_code == 200
     body = response.json()
     assert body["political_feasibility"]["lever_notes"][0]["key"] == "telemedizin_rate"
+
+
+def test_api_exposes_focused_integration_plan_without_execution():
+    client = TestClient(api)
+    response = client.get("/data-readiness/integration-plan?limit=2")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "data_readiness_integration_plan_not_executed"
+    assert "keine Registry-/Modellmutation" in body["guardrail"]
+    plan = body["integration_plan"]
+    assert plan["title"].startswith("Parameter-spezifischer Integrationsplan")
+    assert plan["summary"]["shown_plans"] <= 2
+    assert "keine Registry-/Modellmutation" in plan["guardrail"]
+    for item in plan["plans"]:
+        assert item["workflow_api"].startswith("GET /data-readiness/")
+        assert "parameter_registry.py" in item["proposed_files"]
+        assert "Data Passport" in " ".join(item["definition_of_done"])

@@ -96,6 +96,12 @@ def test_learning_data_readiness_backlog_includes_integration_preflight():
     assert row["workflow_api"].startswith("GET /data-readiness/")
     assert "kein execute=true" in row["guardrail"]
     assert "keine Registry-/Modellmutation" in preflight["guardrail"]
+    plan = backlog["integration_plan"]
+    assert plan["title"].startswith("Parameter-spezifischer Integrationsplan")
+    assert "keine Registry-/Modellmutation" in plan["guardrail"]
+    for item in plan["plans"]:
+        assert item["workflow_api"].startswith("GET /data-readiness/")
+        assert "parameter_registry.py" in item["proposed_files"]
 
 
 def test_learning_data_readiness_backlog_prioritizes_safe_data_gates():

@@ -1863,3 +1863,32 @@ Keine wichtige Entscheidung offen.
 
 ### Verification / Git
 Focused tests für Data-Ingestion/API/Learning Page bestanden; full suite `115 passed`; `py_compile` bestanden; Simulation-Smoke `df=(60, 30)`, `reg=(320, 6)`. Commit/Push folgt in diesem Heartbeat.
+
+## 2026-04-30 01:50 Europe/Berlin — Heartbeat: Data integration plan bridge
+
+### Context
+Core-platform heartbeat on `feat/platform-data-status-foundation`: extended the Data Readiness/Preflight path from “is this ready?” to a read-only parameter-specific integration-plan skeleton.
+
+### Project Manager
+Priority remains real data/provenance foundation. This slice closes the next safe planning gap after green transformation reviews: exact inputs, files, tests, and done criteria before any Registry/model PR.
+
+### Designer / UX
+Learning Page now has a clearer “what happens after preflight?” answer. If no parameter is ready, users see an explicit message instead of an empty table that could look broken.
+
+### Creative Agent
+Idea: later turn each integration plan into a downloadable PR checklist. Fit is high for operator discipline, but keep it read-only until Alex approves actual model-value integration workflow.
+
+### Political Health-System Strategist
+Good guardrail for politically sensitive simulations: reviewed data still does not become a policy proof or official forecast; integration remains a separate accountable code/review decision.
+
+### Evidence / Domain
+No new factual claims or external research in this run. The new helper requires raw snapshot hash, ReviewedTransformation, units/denominators/year/caveats, and source/uncertainty comparison before integration.
+
+### Integrator Decision
+Accepted: add `build_data_readiness_integration_plan(...)`, expose it via `/data-readiness/integration-preflight`, focused `/data-readiness/integration-plan`, and the Learning Page backlog area. Deferred: actual Registry/model value mutation.
+
+### Question to Alex
+None; this is safe/reversible platform groundwork.
+
+### Verification / Git
+Targeted tests passed locally; full verification/commit status recorded in heartbeat message.
