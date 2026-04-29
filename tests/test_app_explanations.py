@@ -16,8 +16,11 @@ from app import (
     build_trend_view_guidance,
     get_default_params,
     kpi_hover_help,
+    kpi_mobile_detail,
     learning_page_next_actions,
     metric_card,
+    kpi_mobile_detail,
+    render_metric_card_with_details,
     plain_language_workflow_summary,
     sidebar_quick_start_steps,
 )
@@ -389,6 +392,20 @@ def test_changed_parameter_impact_bridge_connects_inputs_to_kpi_pointers():
 
 
 
+def test_kpi_mobile_detail_reuses_central_detail_copy():
+    detail = kpi_mobile_detail("gesundheitsausgaben_mrd")
+    combined = " ".join(detail.values())
+
+    assert "Gesamtausgaben" in combined
+    assert "Alterung" in combined
+    assert "automatisch schlecht" in combined
+
+    fallback = kpi_mobile_detail("noch_unbekannt")
+    assert "Erklärung ergänzt" in fallback["meaning"]
+    assert "Detailkarten" in fallback["why"]
+    assert "Zeitverlauf" in fallback["read"]
+
+
 def test_metric_cards_expose_hover_explanations_for_core_kpis():
     help_text = kpi_hover_help("gesundheitsausgaben_mrd")
     assert "Gesamtausgaben" in help_text
@@ -419,3 +436,11 @@ def test_metric_cards_expose_hover_explanations_for_core_kpis():
         text = kpi_hover_help(key)
         assert "Warum" in text
         assert "Lesart" in text
+
+
+def test_mobile_kpi_detail_is_tap_friendly_and_renderer_exists():
+    detail = kpi_mobile_detail("wartezeit_fa")
+    assert "Bedeutung" not in detail["meaning"]  # content, not a preformatted label
+    assert "Warum" not in detail["why"]
+    assert "Wartezeit" in detail["meaning"] or "fachärztliche" in detail["meaning"]
+    assert callable(render_metric_card_with_details)

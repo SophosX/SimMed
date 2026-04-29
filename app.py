@@ -1643,6 +1643,37 @@ def kpi_hover_help(metric_key: str) -> str:
     return f"{details['meaning']} Warum verändert sich das? {details['why']} Lesart: {details['read']}"
 
 
+def kpi_mobile_detail(metric_key: str) -> Dict[str, str]:
+    """Tap-friendly explanation content for mobile/tablet KPI cards."""
+    details = kpi_detail_texts().get(metric_key, {})
+    return {
+        "meaning": details.get("meaning", "Für diese Kennzahl wird gerade eine Erklärung ergänzt."),
+        "why": details.get("why", "Die wichtigsten Modelltreiber werden in den Detailkarten erklärt."),
+        "read": details.get("read", "Nutze diese Kennzahl zusammen mit den verwandten KPIs und dem Zeitverlauf."),
+    }
+
+
+def render_metric_card_with_details(
+    label: str,
+    value: str,
+    metric_key: str,
+    delta: Optional[float] = None,
+    delta_good: bool = True,
+    css_class: str = "metric-card",
+):
+    """Render a KPI card plus a tap-friendly detail popover for touch devices."""
+    st.markdown(
+        metric_card(label, value, delta, delta_good, css_class, kpi_hover_help(metric_key)),
+        unsafe_allow_html=True,
+    )
+    detail = kpi_mobile_detail(metric_key)
+    with st.popover(f"Details zu {label}", use_container_width=True):
+        st.markdown(f"**Bedeutung:** {detail['meaning']}")
+        st.markdown(f"**Warum verändert sich das?** {detail['why']}")
+        st.markdown(f"**Wie lesen?** {detail['read']}")
+        st.caption("Mobil/Tablet: Diese Schaltfläche ersetzt den unzuverlässigen Hover-Effekt.")
+
+
 def build_kpi_drilldown_items(agg: pd.DataFrame, params: dict) -> List[Dict[str, str]]:
     """Return a coherent reading path for KPI detail expanders.
 
@@ -1789,87 +1820,71 @@ def render_dashboard(agg: pd.DataFrame, params: dict):
     c1, c2, c3, c4 = st.columns(4)
     with c1:
         v = last["gesundheitsausgaben_mrd_mean"]
-        st.markdown(metric_card("Gesundheitsausgaben", f"{v:.0f} Mrd. \u20ac",
-            delta_pct("gesundheitsausgaben_mrd"), False, "metric-card", kpi_hover_help("gesundheitsausgaben_mrd")), unsafe_allow_html=True)
+        render_metric_card_with_details("Gesundheitsausgaben", f"{v:.0f} Mrd. €", "gesundheitsausgaben_mrd", delta_pct("gesundheitsausgaben_mrd"), False, "metric-card")
     with c2:
         v = last["bip_anteil_mean"]
         d = v - first["bip_anteil_mean"]
-        st.markdown(metric_card("BIP-Anteil Gesundheit", f"{v:.1f} %",
-            d * 8, False, "mc-orange", kpi_hover_help("bip_anteil")), unsafe_allow_html=True)
+        render_metric_card_with_details("BIP-Anteil Gesundheit", f"{v:.1f} %", "bip_anteil", d * 8, False, "mc-orange")
     with c3:
         v = last["gkv_beitragssatz_mean"]
         d = v - first["gkv_beitragssatz_mean"]
-        st.markdown(metric_card("GKV-Beitragssatz (eff.)", f"{v:.1f} %",
-            d * 5, False, "mc-red", kpi_hover_help("gkv_beitragssatz")), unsafe_allow_html=True)
+        render_metric_card_with_details("GKV-Beitragssatz (eff.)", f"{v:.1f} %", "gkv_beitragssatz", d * 5, False, "mc-red")
     with c4:
         v = last["gkv_saldo_mean"]
         cls = "mc-green" if v >= 0 else "mc-red"
-        st.markdown(metric_card("GKV-Saldo", f"{v:+.1f} Mrd. \u20ac",
-            css_class=cls, help_text=kpi_hover_help("gkv_saldo")), unsafe_allow_html=True)
+        render_metric_card_with_details("GKV-Saldo", f"{v:+.1f} Mrd. €", "gkv_saldo", css_class=cls)
 
     # Zeile 2: Gesundheit
     c1, c2, c3, c4 = st.columns(4)
     with c1:
         v = last["lebenserwartung_mean"]
         d = v - first["lebenserwartung_mean"]
-        st.markdown(metric_card("Lebenserwartung", f"{v:.1f} J.",
-            d * 8, True, "mc-green", kpi_hover_help("lebenserwartung")), unsafe_allow_html=True)
+        render_metric_card_with_details("Lebenserwartung", f"{v:.1f} J.", "lebenserwartung", d * 8, True, "mc-green")
     with c2:
         v = last["vermeidbare_mortalitaet_mean"]
-        st.markdown(metric_card("Vermeidb. Mortalität", f"{v:.0f} /100k",
-            delta_pct("vermeidbare_mortalitaet"), False, "mc-red", kpi_hover_help("vermeidbare_mortalitaet")), unsafe_allow_html=True)
+        render_metric_card_with_details("Vermeidb. Mortalität", f"{v:.0f} /100k", "vermeidbare_mortalitaet", delta_pct("vermeidbare_mortalitaet"), False, "mc-red")
     with c3:
         v = last["chroniker_rate_mean"]
         d = v - first["chroniker_rate_mean"]
-        st.markdown(metric_card("Chroniker-Rate", f"{v:.1f} %",
-            d * 2, False, "mc-orange", kpi_hover_help("chroniker_rate")), unsafe_allow_html=True)
+        render_metric_card_with_details("Chroniker-Rate", f"{v:.1f} %", "chroniker_rate", d * 2, False, "mc-orange")
     with c4:
         v = last["bevoelkerung_mio_mean"]
-        st.markdown(metric_card("Bevölkerung", f"{v:.1f} Mio.",
-            delta_pct("bevoelkerung_mio"), css_class="mc-blue", help_text=kpi_hover_help("bevoelkerung_mio")), unsafe_allow_html=True)
+        render_metric_card_with_details("Bevölkerung", f"{v:.1f} Mio.", "bevoelkerung_mio", delta_pct("bevoelkerung_mio"), css_class="mc-blue")
 
     # Zeile 3: Versorgung
     c1, c2, c3, c4 = st.columns(4)
     with c1:
         v = last["aerzte_pro_100k_mean"]
-        st.markdown(metric_card("Ärzte / 100k", f"{v:.0f}",
-            delta_pct("aerzte_pro_100k"), True, "mc-blue", kpi_hover_help("aerzte_pro_100k")), unsafe_allow_html=True)
+        render_metric_card_with_details("Ärzte / 100k", f"{v:.0f}", "aerzte_pro_100k", delta_pct("aerzte_pro_100k"), True, "mc-blue")
     with c2:
         v = last["wartezeit_fa_mean"]
-        st.markdown(metric_card("Wartezeit FA", f"{v:.0f} Tage",
-            delta_pct("wartezeit_fa"), False, "mc-orange", kpi_hover_help("wartezeit_fa")), unsafe_allow_html=True)
+        render_metric_card_with_details("Wartezeit FA", f"{v:.0f} Tage", "wartezeit_fa", delta_pct("wartezeit_fa"), False, "mc-orange")
     with c3:
         v = last["versorgungsindex_rural_mean"]
         d = v - first["versorgungsindex_rural_mean"]
-        st.markdown(metric_card("Versorgung Land", f"{v:.0f} / 100",
-            d * 1.5, True, "mc-green", kpi_hover_help("versorgungsindex_rural")), unsafe_allow_html=True)
+        render_metric_card_with_details("Versorgung Land", f"{v:.0f} / 100", "versorgungsindex_rural", d * 1.5, True, "mc-green")
     with c4:
         v = last["gini_versorgung_mean"]
-        st.markdown(metric_card("Gini Versorgung", f"{v:.3f}",
-            delta_pct("gini_versorgung"), False, "metric-card", kpi_hover_help("gini_versorgung")), unsafe_allow_html=True)
+        render_metric_card_with_details("Gini Versorgung", f"{v:.3f}", "gini_versorgung", delta_pct("gini_versorgung"), False, "metric-card")
 
     # Zeile 4: System & Personal
     c1, c2, c3, c4 = st.columns(4)
     with c1:
         v = last["burnout_rate_mean"]
         d = v - first["burnout_rate_mean"]
-        st.markdown(metric_card("Burnout Ärzte", f"{v:.1f} %",
-            d * 3, False, "mc-red", kpi_hover_help("burnout_rate")), unsafe_allow_html=True)
+        render_metric_card_with_details("Burnout Ärzte", f"{v:.1f} %", "burnout_rate", d * 3, False, "mc-red")
     with c2:
         v = last["telemedizin_rate_mean"]
-        st.markdown(metric_card("Telemedizin", f"{v:.0f} %",
-            css_class="mc-blue", help_text=kpi_hover_help("telemedizin_rate")), unsafe_allow_html=True)
+        render_metric_card_with_details("Telemedizin", f"{v:.0f} %", "telemedizin_rate", css_class="mc-blue")
     with c3:
         v = last["kollaps_wahrscheinlichkeit_mean"]
         cls = "mc-red" if v > 15 else "mc-green"
-        st.markdown(metric_card("Kollaps-Risiko", f"{v:.1f} %",
-            css_class=cls, help_text=kpi_hover_help("kollaps_wahrscheinlichkeit")), unsafe_allow_html=True)
+        render_metric_card_with_details("Kollaps-Risiko", f"{v:.1f} %", "kollaps_wahrscheinlichkeit", css_class=cls)
     with c4:
         v = last["zufriedenheit_patienten_mean"]
         d = v - first["zufriedenheit_patienten_mean"]
         cls = "mc-green" if v > 60 else "mc-orange"
-        st.markdown(metric_card("Patientenzufr.", f"{v:.0f} / 100",
-            d, True, cls, kpi_hover_help("zufriedenheit_patienten")), unsafe_allow_html=True)
+        render_metric_card_with_details("Patientenzufr.", f"{v:.0f} / 100", "zufriedenheit_patienten", d, True, cls)
 
     render_kpi_deep_dive(agg, params)
     render_main_trend_chart(agg)
