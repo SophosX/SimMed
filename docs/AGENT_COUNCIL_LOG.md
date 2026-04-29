@@ -1892,3 +1892,32 @@ None; this is safe/reversible platform groundwork.
 
 ### Verification / Git
 Targeted tests passed locally; full verification/commit status recorded in heartbeat message.
+
+## 2026-04-30 01:56 Europe/Berlin — Heartbeat: Data-Integration PR-Brief
+
+### Context
+Alexs Korrektur priorisiert Core-Plattformarbeit. Dieser Lauf erweitert die Datenreife-Kette nach Integrations-Preflight/Integrationsplan um einen read-only PR-Brief, damit geprüfte Transformationswerte später kontrolliert in einen separaten Registry-/Modell-PR überführt werden können.
+
+### Project Manager
+Priorität: Dateningestion/Provenienz weiter operationalisieren, ohne vorzeitig Modellwerte zu ändern. Nächste Aufgaben: 1) echten reviewed_model_ready-Fixturefall für einen Parameter aufbauen, 2) PR-Brief in Datenwerkbank/Parameterkarte fokussiert anzeigen, 3) danach deliberate Integrations-PR-Fluss designen.
+
+### Designer / UX
+Der neue PR-Brief ergänzt die Learning Page um konkrete Branch-/PR-/Review-Hinweise. Für Erstnutzer bleibt wichtig: Status/Planung/Integration müssen visuell getrennt bleiben; keine Apply-/Integrationsbuttons vor Alexs Entscheidung.
+
+### Creative Agent
+Idee: später ein „Integrations-Rezept“ pro Parameter als kopierbaren PR-Entwurf anbieten. Fit: motiviert Operatoren und externe Agenten, bleibt glaubwürdig, solange es read-only ist und keine Datenaktion auslöst.
+
+### Political Health-System Strategist
+Keine neue politische Behauptung. Der Guardrail bleibt wichtig: ein integrierter Datenwert ist keine amtliche Prognose und kein Policy-Wirkungsbeweis; politische Bewertung darf erst nach transparenter Modell-/Caveat-Prüfung erfolgen.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Änderung nutzt vorhandene Provenienz-/Review-Gates und verstärkt die Trennung von Rohsnapshot, ReviewedTransformation, Registry-/Modellmutation und Wirkungsinterpretation.
+
+### Integrator Decision
+Akzeptiert: `build_data_readiness_integration_pr_brief(...)`, API-Surface `/data-readiness/integration-pr-brief`, Einbettung in bestehende Integrationsplan-Antworten und Learning-Page-Datenreife-Expander. Keine Live-Datenaktion, kein Branch-Autostart, keine Modellmutation.
+
+### Question to Alex
+Keine.
+
+### Verification / Git
+Lokal verifiziert: `pytest -q tests/test_data_ingestion.py tests/test_api.py tests/test_app_explanations.py` → 97 passed; `py_compile` für app/data_ingestion/api/tests; Simulation-Smoke 20 Runs × 2 Jahre → `df (60, 30)`, `reg (320, 6)`. Git-Commit/Push folgt in diesem Heartbeat.

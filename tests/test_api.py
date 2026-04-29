@@ -423,3 +423,24 @@ def test_api_exposes_focused_integration_plan_without_execution():
         assert item["workflow_api"].startswith("GET /data-readiness/")
         assert "parameter_registry.py" in item["proposed_files"]
         assert "Data Passport" in " ".join(item["definition_of_done"])
+    assert body["integration_pr_brief"]["summary"]["shown_pr_briefs"] == plan["summary"]["shown_plans"]
+    assert "keine Registry-/Modellmutation" in body["integration_pr_brief"]["guardrail"]
+
+
+def test_api_exposes_focused_integration_pr_brief_without_branch_or_mutation():
+    client = TestClient(api)
+    response = client.get("/data-readiness/integration-pr-brief?limit=2")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "data_readiness_integration_pr_brief_not_executed"
+    assert "kein Branch" in body["guardrail"]
+    brief = body["integration_pr_brief"]
+    assert brief["title"].startswith("Integrations-PR-Brief")
+    assert brief["summary"]["shown_pr_briefs"] <= 2
+    assert "keine Registry-/Modellmutation" in brief["guardrail"]
+    for item in brief["briefs"]:
+        assert item["branch_name"].startswith("feat/integrate-reviewed-")
+        assert item["status"] == "pr_brief_bereit_aber_nicht_ausgefuehrt"
+        assert "ReviewedTransformation" in " ".join(item["review_checklist"])
+        assert "keine amtliche Prognose" in item["guardrail"]

@@ -12,6 +12,7 @@ from data_ingestion import (
     build_data_readiness_gate_plan,
     build_data_readiness_integration_preflight,
     build_data_readiness_integration_plan,
+    build_data_readiness_integration_pr_brief,
     build_data_readiness_platform_brief,
     build_data_readiness_summary,
     build_next_data_readiness_actions,
@@ -762,3 +763,28 @@ def test_integration_plan_only_includes_preflight_ready_rows():
     assert "Data Passport" in " ".join(item["definition_of_done"])
     assert "keine Registry-/Modellmutation" in item["guardrail"]
     assert "krankenhausbetten" not in str(plan["plans"])
+
+
+def test_integration_pr_brief_turns_green_plans_into_safe_handoff():
+    integration_plan = {
+        "plans": [
+            {
+                "parameter_key": "bevoelkerung_mio",
+                "label": "Bevölkerung",
+                "workflow_api": "GET /data-readiness/bevoelkerung_mio",
+                "review_template_api": "GET /data-connectors/transformation-review-template/bevoelkerung_mio",
+                "definition_of_done": ["Data Passport trennt Cache, Review und Modelleffekt"],
+            }
+        ]
+    }
+
+    brief = build_data_readiness_integration_pr_brief(integration_plan)
+
+    assert brief["summary"] == {"plan_rows_seen": 1, "shown_pr_briefs": 1}
+    item = brief["briefs"][0]
+    assert item["status"] == "pr_brief_bereit_aber_nicht_ausgefuehrt"
+    assert item["branch_name"] == "feat/integrate-reviewed-bevoelkerung_mio"
+    assert "ReviewedTransformation" in " ".join(item["review_checklist"])
+    assert "GET /data-readiness/bevoelkerung_mio" in " ".join(item["copyable_pr_body_outline"])
+    assert "kein Branch" in item["guardrail"]
+    assert "keine Registry-/Modellmutation" in brief["guardrail"]

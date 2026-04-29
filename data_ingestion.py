@@ -1200,6 +1200,67 @@ def build_data_readiness_integration_plan(
         "guardrail": "Read-only/Planung-only: keine Datenaktion, keine Review-Erzeugung, keine Registry-/Modellmutation, keine amtliche Prognose und kein Wirkungsbeweis.",
     }
 
+def build_data_readiness_integration_pr_brief(integration_plan: dict) -> dict:
+    """Turn read-only integration plans into a conservative PR handoff.
+
+    This is the final planning layer before a human/integrator opens a real code
+    change. It deliberately uses only already-green integration-plan rows, keeps
+    the action as branch/PR preparation, and repeats the separation between
+    reviewed data, Registry/model defaults, and policy-effect interpretation.
+    """
+
+    plans = integration_plan.get("plans", [])
+    briefs: list[dict] = []
+    for plan in plans:
+        parameter_key = plan["parameter_key"]
+        briefs.append({
+            "parameter_key": parameter_key,
+            "label": plan["label"],
+            "status": "pr_brief_bereit_aber_nicht_ausgefuehrt",
+            "branch_name": f"feat/integrate-reviewed-{parameter_key}",
+            "pr_title": f"Integrate reviewed data value for {plan['label']}",
+            "first_commit_scope": [
+                "Registry-Default/Metadaten nur mit ReviewedTransformation und SHA256-Bezug ändern",
+                "UI/API-Labels prüfen: Rohdaten-Cache, Review und Modelleffekt bleiben getrennt",
+                "keine Simulationseffekte ändern, außer der dokumentierte Modellpfad nutzt den Parameter bereits explizit",
+            ],
+            "review_checklist": [
+                "Quelle/Manifest/SHA256 im PR-Text verlinken",
+                "Reviewer, Methode, Einheit, Nenner, Berichtsjahr und Caveat aus ReviewedTransformation zitieren",
+                "alte vs. neue Registry-Grenzen/Defaults und Unsicherheit begründen",
+                "Tests für Registry, Data Passport, API/UI-Labeltrennung und ggf. Simulation-Smoke ausführen",
+                "klar sagen: integrierter Datenwert ist keine amtliche Prognose und kein Policy-Wirkungsbeweis",
+            ],
+            "copyable_pr_body_outline": [
+                f"Parameter: {plan['label']} ({parameter_key})",
+                f"Workflow: {plan.get('workflow_api')}",
+                f"Review-Template: {plan.get('review_template_api')}",
+                "Geprüfte Inputs: Rohsnapshot-SHA256, ReviewedTransformation, Einheit/Nenner/Jahr, Caveat",
+                "Tests: Registry/Data-Passport/API/UI-Labeltrennung + Simulation-Smoke falls Modellpfad betroffen",
+                "Guardrail: keine automatische Datenaktion, keine amtliche Prognose, kein Wirkungsbeweis",
+            ],
+            "definition_of_done_before_merge": plan.get("definition_of_done", []) + [
+                "PR beschreibt verbleibende Annahmen/Caveats in Alltagssprache",
+                "Git-Historie trennt Datenintegration klar von späteren Policy-/Szenarioeffekten",
+            ],
+            "guardrail": "PR-Brief ist Planung-only: kein Branch wird erstellt, kein Code geändert, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+        })
+    return {
+        "title": "Integrations-PR-Brief (nur für grüne Preflight-Pläne)",
+        "plain_language_note": (
+            "Dieser Handoff sagt, wie ein separater Datenintegrations-PR aussehen soll. "
+            "Er startet keinen Branch und ändert keine Werte."
+        ),
+        "summary": {
+            "plan_rows_seen": len(plans),
+            "shown_pr_briefs": len(briefs),
+        },
+        "briefs": briefs,
+        "guardrail": "Read-only/Planung-only: kein execute=true, kein Netzwerkabruf, kein Cache-Schreiben, keine Review-Erzeugung, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+    }
+
+
+
 def build_data_connector_queue(backlog_items: list[dict], *, per_source_limit: int = 4) -> list[dict]:
     """Group snapshot-needed parameters by source so connector work can start safely.
 

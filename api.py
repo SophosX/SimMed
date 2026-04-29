@@ -24,6 +24,7 @@ from data_ingestion import (
     build_data_readiness_first_contact_guide,
     build_data_readiness_integration_preflight,
     build_data_readiness_integration_plan,
+    build_data_readiness_integration_pr_brief,
     build_data_readiness_operator_handoff,
     build_data_readiness_platform_brief,
     build_data_readiness_gate_plan,
@@ -226,7 +227,8 @@ def get_data_readiness_integration_preflight(limit: int = 5) -> dict:
         "guardrail": "Integrations-Preflight ist Status/Planung-only: kein execute=true, kein Netzwerkabruf, kein Cache-Schreibvorgang, keine Review-Erzeugung, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
         "summary": build_data_readiness_summary(items),
         "integration_preflight": (preflight := build_data_readiness_integration_preflight(items, passport_rows, limit=limit)),
-        "integration_plan": build_data_readiness_integration_plan(preflight),
+        "integration_plan": (plan := build_data_readiness_integration_plan(preflight)),
+        "integration_pr_brief": build_data_readiness_integration_pr_brief(plan),
     }
 
 
@@ -252,7 +254,35 @@ def get_data_readiness_integration_plan(limit: int = 3) -> dict:
         "guardrail": "Integrationspläne sind read-only: kein execute=true, kein Netzwerkabruf, kein Cache-Schreiben, keine Review-Erzeugung, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
         "summary": build_data_readiness_summary(items),
         "integration_preflight": preflight,
-        "integration_plan": build_data_readiness_integration_plan(preflight, limit=limit),
+        "integration_plan": (plan := build_data_readiness_integration_plan(preflight, limit=limit)),
+        "integration_pr_brief": build_data_readiness_integration_pr_brief(plan),
+    }
+
+
+@api.get("/data-readiness/integration-pr-brief")
+def get_data_readiness_integration_pr_brief(limit: int = 3) -> dict:
+    """Return a read-only PR handoff for reviewed data integration candidates."""
+
+    if limit < 1 or limit > 10:
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "status": "invalid_data_readiness_integration_pr_brief_limit",
+                "limit": limit,
+                "guardrail": "Limit muss zwischen 1 und 10 liegen; kein PR/Branch und keine Integration wurde ausgeführt.",
+            },
+        )
+    parameters = list_parameters()
+    items = build_data_readiness_backlog(parameters)
+    passport_rows = build_data_passport_rows(parameters)
+    preflight = build_data_readiness_integration_preflight(items, passport_rows, limit=10)
+    plan = build_data_readiness_integration_plan(preflight, limit=limit)
+    return {
+        "status": "data_readiness_integration_pr_brief_not_executed",
+        "guardrail": "PR-Brief ist read-only: kein Branch, kein execute=true, kein Netzwerkabruf, keine Cache-/Review-Erzeugung, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+        "summary": build_data_readiness_summary(items),
+        "integration_plan": plan,
+        "integration_pr_brief": build_data_readiness_integration_pr_brief(plan),
     }
 
 

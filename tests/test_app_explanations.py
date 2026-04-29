@@ -99,6 +99,10 @@ def test_learning_data_readiness_backlog_includes_integration_preflight():
     plan = backlog["integration_plan"]
     assert plan["title"].startswith("Parameter-spezifischer Integrationsplan")
     assert "keine Registry-/Modellmutation" in plan["guardrail"]
+    pr_brief = backlog["integration_pr_brief"]
+    assert pr_brief["title"].startswith("Integrations-PR-Brief")
+    assert pr_brief["summary"]["shown_pr_briefs"] == plan["summary"]["shown_plans"]
+    assert "keine Registry-/Modellmutation" in pr_brief["guardrail"]
     for item in plan["plans"]:
         assert item["workflow_api"].startswith("GET /data-readiness/")
         assert "parameter_registry.py" in item["proposed_files"]

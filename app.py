@@ -40,6 +40,7 @@ from data_ingestion import (
     build_data_readiness_first_contact_guide,
     build_data_readiness_integration_preflight,
     build_data_readiness_integration_plan,
+    build_data_readiness_integration_pr_brief,
     build_data_readiness_gate_plan,
     build_data_readiness_operator_handoff,
     build_data_readiness_platform_brief,
@@ -4114,6 +4115,7 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
     summary = build_data_readiness_summary(full_backlog)
     next_actions = build_next_data_readiness_actions(full_backlog, limit=3)
     integration_preflight = build_data_readiness_integration_preflight(full_backlog, build_data_passport_rows(list_parameters()), limit=5)
+    integration_plan = build_data_readiness_integration_plan(integration_preflight)
     return {
         "title": "Nächste Daten-Schritte: erst Cache, dann Review, dann Integration",
         "plain_language_note": (
@@ -4131,7 +4133,8 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         "operator_handoff": build_data_readiness_operator_handoff(next_actions),
         "platform_brief": build_data_readiness_platform_brief(next_actions),
         "integration_preflight": integration_preflight,
-        "integration_plan": build_data_readiness_integration_plan(integration_preflight),
+        "integration_plan": integration_plan,
+        "integration_pr_brief": build_data_readiness_integration_pr_brief(integration_plan),
         "rows": [
             {
                 "Parameter": item["label"],
@@ -4364,7 +4367,27 @@ def render_learning_data_readiness_backlog():
         else:
             st.info("Noch kein Parameter ist preflight-grün für einen separaten Integrationsplan; zuerst Snapshot/Review-Gates schließen.")
         st.caption(integration_plan["guardrail"])
-        st.caption("Diese Liste priorisiert Plattformarbeit: erst Status/Dry-run, dann Rohdaten-Cache nur bewusst, danach Review und explizite Modellintegration. Preflight/Integrationsplan bleiben read-only.")
+        pr_brief = backlog["integration_pr_brief"]
+        st.markdown(f"**{pr_brief['title']}**")
+        st.caption(pr_brief["plain_language_note"])
+        pr_rows = [
+            {
+                "Parameter": row["label"],
+                "Status": row["status"],
+                "Branch-Vorschlag": row["branch_name"],
+                "PR-Titel": row["pr_title"],
+                "Review-Check": " · ".join(row["review_checklist"][:3]),
+                "Definition of done": " · ".join(row["definition_of_done_before_merge"][:2]),
+                "Guardrail": row["guardrail"],
+            }
+            for row in pr_brief["briefs"]
+        ]
+        if pr_rows:
+            st.dataframe(pd.DataFrame(pr_rows), use_container_width=True, hide_index=True)
+        else:
+            st.caption("Noch kein PR-Brief, weil kein Integrationsplan preflight-grün ist.")
+        st.caption(pr_brief["guardrail"])
+        st.caption("Diese Liste priorisiert Plattformarbeit: erst Status/Dry-run, dann Rohdaten-Cache nur bewusst, danach Review und explizite Modellintegration. Preflight/Integrationsplan/PR-Brief bleiben read-only.")
     with st.expander("Warum diese Reihenfolge? Daten-Gates als Arbeitsplan", expanded=False):
         for gate in backlog["gate_plan"]:
             examples = ", ".join(gate["example_parameters"]) if gate["example_parameters"] else "aktuell keine Beispiele"
