@@ -86,6 +86,18 @@ def test_learning_data_passport_overview_separates_registry_cache_and_transforma
 
 
 
+def test_learning_data_readiness_backlog_includes_integration_preflight():
+    backlog = build_learning_data_readiness_backlog(limit=3)
+
+    preflight = backlog["integration_preflight"]
+    assert preflight["title"].startswith("Integrations-Preflight")
+    assert preflight["rows"]
+    row = preflight["rows"][0]
+    assert row["workflow_api"].startswith("GET /data-readiness/")
+    assert "kein execute=true" in row["guardrail"]
+    assert "keine Registry-/Modellmutation" in preflight["guardrail"]
+
+
 def test_learning_data_readiness_backlog_prioritizes_safe_data_gates():
     backlog = build_learning_data_readiness_backlog(limit=5)
 

@@ -1048,6 +1048,83 @@ def _dashboard_gate_caption(gate: str) -> str:
 
 
 
+def build_data_readiness_integration_preflight(
+    backlog_items: list[dict],
+    passport_rows: list[dict],
+    *,
+    limit: int = 5,
+) -> dict:
+    """Return a preflight checklist before any reviewed data can enter the model.
+
+    This is the last safety rail after raw snapshots and transformation reviews: it
+    tells operators whether a parameter is actually ready for an explicit, tested
+    Registry/model integration slice. It performs no integration and treats
+    missing snapshots/reviews as blockers, not as failures to hide.
+    """
+
+    passport_by_key = {row.get("parameter_key"): row for row in passport_rows}
+    integration_ready = [
+        item for item in backlog_items if item.get("next_gate") == "explicit_model_integration_needed"
+    ]
+    blockers = [
+        item for item in backlog_items if item.get("next_gate") in {"snapshot_needed", "transformation_review_needed"}
+    ]
+    selected = (integration_ready + blockers)[:limit]
+    rows: list[dict] = []
+    for item in selected:
+        parameter_key = item["parameter_key"]
+        passport = passport_by_key.get(parameter_key, {})
+        cache = passport.get("cache") or passport.get("raw_snapshot", {})
+        review = passport.get("transformation_review", {})
+        next_gate = item.get("next_gate")
+        ready = next_gate == "explicit_model_integration_needed"
+        if ready:
+            preflight_status = "bereit_fuer_separaten_integrationsplan"
+            first_blocker = "kein Blocker im Daten-Gate; jetzt separaten Registry-/Modell-PR planen"
+            required_next_step = "Integrationsplan mit Registry-Default, Tests, Modell-Smoke und Provenienz-Diff schreiben; erst danach Code ändern."
+        elif next_gate == "transformation_review_needed":
+            preflight_status = "blockiert_bis_transformation_review"
+            first_blocker = "Rohdaten existieren, aber die Transformation ist noch nicht reviewed."
+            required_next_step = "Review-Template ausfüllen und ReviewedTransformation dokumentieren, bevor Integration diskutiert wird."
+        else:
+            preflight_status = "blockiert_bis_rohsnapshot"
+            first_blocker = "Rohdaten-Snapshot/Manifest fehlt noch."
+            required_next_step = "Status/Dry-run prüfen und Rohpayload nur bewusst unverändert cachen; danach Transformation reviewen."
+        rows.append({
+            "parameter_key": parameter_key,
+            "label": item["label"],
+            "next_gate": next_gate,
+            "preflight_status": preflight_status,
+            "raw_cache": cache.get("label", "Rohsnapshot nicht geprüft"),
+            "transformation_review": review.get("label", "Transformation nicht geprüft"),
+            "first_blocker": first_blocker,
+            "required_next_step": required_next_step,
+            "workflow_api": f"GET /data-readiness/{parameter_key}",
+            "review_template_api": f"GET /data-connectors/transformation-review-template/{parameter_key}",
+            "definition_of_done": [
+                "geprüfter Rohsnapshot mit SHA256/Manifest nachvollziehbar",
+                "Transformation mit Methode, Einheit, Nenner, Berichtsjahr und Caveat reviewed",
+                "Registry-/Modelländerung als eigener PR mit Tests und Smoke-Test umgesetzt",
+                "UI/API beschriften weiterhin Quelle, Review und Modelleffekt getrennt",
+            ],
+            "guardrail": "Preflight ist Status/Planung: kein execute=true, kein Netzwerkabruf, kein Cache-Schreiben, keine Review-Erzeugung, keine Registry-/Modellmutation und kein Policy-Wirkungsbeweis.",
+        })
+    return {
+        "title": "Integrations-Preflight: erst Daten-Gates, dann Modell-PR",
+        "plain_language_note": (
+            "Diese Prüfung verhindert, dass ein Quellenhinweis oder ein Rohdaten-Cache versehentlich als Modellwert gilt. "
+            "Nur Parameter mit geprüftem Transformationsreview dürfen in einem separaten, getesteten Integrationsplan weitergehen."
+        ),
+        "summary": {
+            "ready_for_integration_plan": len(integration_ready),
+            "blocked_before_integration": len(blockers),
+            "shown_rows": len(rows),
+        },
+        "rows": rows,
+        "guardrail": "Integrations-Preflight ist read-only/status-only: kein execute=true, kein Live-Fetch, kein Cache-Schreiben, keine Review-Erzeugung, keine Registry-/Modellmutation, keine amtliche Prognose und kein Wirkungsbeweis.",
+    }
+
+
 def build_data_connector_queue(backlog_items: list[dict], *, per_source_limit: int = 4) -> list[dict]:
     """Group snapshot-needed parameters by source so connector work can start safely.
 

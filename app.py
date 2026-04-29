@@ -38,6 +38,7 @@ from data_ingestion import (
     build_data_readiness_backlog,
     build_data_readiness_dashboard_cards,
     build_data_readiness_first_contact_guide,
+    build_data_readiness_integration_preflight,
     build_data_readiness_gate_plan,
     build_data_readiness_operator_handoff,
     build_data_readiness_platform_brief,
@@ -4127,6 +4128,7 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         "action_packet": build_data_readiness_action_packet(next_actions),
         "operator_handoff": build_data_readiness_operator_handoff(next_actions),
         "platform_brief": build_data_readiness_platform_brief(next_actions),
+        "integration_preflight": build_data_readiness_integration_preflight(full_backlog, build_data_passport_rows(list_parameters()), limit=5),
         "rows": [
             {
                 "Parameter": item["label"],
@@ -4323,7 +4325,23 @@ def render_learning_data_readiness_backlog():
             for row in platform_brief["rows"]
         ]
         st.dataframe(pd.DataFrame(platform_rows), use_container_width=True, hide_index=True)
-        st.caption("Diese Liste priorisiert Plattformarbeit: erst Status/Dry-run, dann Rohdaten-Cache nur bewusst, danach Review und explizite Modellintegration.")
+        preflight = backlog["integration_preflight"]
+        st.markdown(f"**{preflight['title']}**")
+        st.caption(preflight["plain_language_note"])
+        preflight_rows = [
+            {
+                "Parameter": row["label"],
+                "Status": row["preflight_status"],
+                "Blocker/Start": row["first_blocker"],
+                "Nächster Schritt": row["required_next_step"],
+                "Workflow": row["workflow_api"],
+                "Review": row["review_template_api"],
+                "Guardrail": row["guardrail"],
+            }
+            for row in preflight["rows"]
+        ]
+        st.dataframe(pd.DataFrame(preflight_rows), use_container_width=True, hide_index=True)
+        st.caption("Diese Liste priorisiert Plattformarbeit: erst Status/Dry-run, dann Rohdaten-Cache nur bewusst, danach Review und explizite Modellintegration. Preflight bleibt read-only.")
     with st.expander("Warum diese Reihenfolge? Daten-Gates als Arbeitsplan", expanded=False):
         for gate in backlog["gate_plan"]:
             examples = ", ".join(gate["example_parameters"]) if gate["example_parameters"] else "aktuell keine Beispiele"

@@ -22,6 +22,7 @@ from data_ingestion import (
     build_data_readiness_backlog,
     build_data_readiness_dashboard_cards,
     build_data_readiness_first_contact_guide,
+    build_data_readiness_integration_preflight,
     build_data_readiness_operator_handoff,
     build_data_readiness_platform_brief,
     build_data_readiness_gate_plan,
@@ -200,6 +201,30 @@ def get_data_readiness_platform_brief(limit: int = 3) -> dict:
         "dashboard_cards": build_data_readiness_dashboard_cards(summary, actions),
         "first_contact_guide": build_data_readiness_first_contact_guide(summary, actions),
         "platform_brief": build_data_readiness_platform_brief(actions),
+    }
+
+
+@api.get("/data-readiness/integration-preflight")
+def get_data_readiness_integration_preflight(limit: int = 5) -> dict:
+    """Return the safe preflight before any data-backed model integration PR."""
+
+    if limit < 1 or limit > 10:
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "status": "invalid_data_readiness_integration_preflight_limit",
+                "limit": limit,
+                "guardrail": "Limit muss zwischen 1 und 10 liegen; keine Datenaktion wurde ausgeführt.",
+            },
+        )
+    parameters = list_parameters()
+    items = build_data_readiness_backlog(parameters)
+    passport_rows = build_data_passport_rows(parameters)
+    return {
+        "status": "data_readiness_integration_preflight_not_executed",
+        "guardrail": "Integrations-Preflight ist Status/Planung-only: kein execute=true, kein Netzwerkabruf, kein Cache-Schreibvorgang, keine Review-Erzeugung, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+        "summary": build_data_readiness_summary(items),
+        "integration_preflight": build_data_readiness_integration_preflight(items, passport_rows, limit=limit),
     }
 
 

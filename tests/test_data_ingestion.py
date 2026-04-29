@@ -10,6 +10,7 @@ from data_ingestion import (
     build_data_readiness_dashboard_cards,
     build_data_readiness_first_contact_guide,
     build_data_readiness_gate_plan,
+    build_data_readiness_integration_preflight,
     build_data_readiness_platform_brief,
     build_data_readiness_summary,
     build_next_data_readiness_actions,
@@ -666,3 +667,65 @@ def test_transformation_review_template_is_pre_model_integration_guidance(tmp_pa
     assert "Rohsnapshot" in template["raw_snapshot_status"]
     assert "ReviewedTransformation" in template["next_safe_action"]
     assert "keinen Datenwert im Modell" in template["guardrail"]
+
+
+def test_data_readiness_integration_preflight_blocks_until_review_and_separate_pr():
+    backlog_items = [
+        {
+            "parameter_key": "bevoelkerung_mio",
+            "label": "Bevölkerung",
+            "next_gate": "explicit_model_integration_needed",
+            "next_action": "separate integration",
+            "guardrail": "no mutation",
+        },
+        {
+            "parameter_key": "krankenhausbetten",
+            "label": "Krankenhausbetten",
+            "next_gate": "transformation_review_needed",
+            "next_action": "review",
+            "guardrail": "no mutation",
+        },
+        {
+            "parameter_key": "krankenhaeuser",
+            "label": "Krankenhäuser",
+            "next_gate": "snapshot_needed",
+            "next_action": "snapshot",
+            "guardrail": "no mutation",
+        },
+    ]
+    passport_rows = [
+        {
+            "parameter_key": "bevoelkerung_mio",
+            "cache": {"label": "Rohsnapshot im Cache vorhanden"},
+            "transformation_review": {"label": "reviewed_model_ready"},
+        },
+        {
+            "parameter_key": "krankenhausbetten",
+            "cache": {"label": "Rohsnapshot im Cache vorhanden"},
+            "transformation_review": {"label": "Transformation nicht geprüft"},
+        },
+        {
+            "parameter_key": "krankenhaeuser",
+            "cache": {"label": "Rohsnapshot noch nicht im Cache"},
+            "transformation_review": {"label": "Transformation nicht geprüft"},
+        },
+    ]
+
+    preflight = build_data_readiness_integration_preflight(backlog_items, passport_rows, limit=3)
+
+    assert preflight["summary"] == {
+        "ready_for_integration_plan": 1,
+        "blocked_before_integration": 2,
+        "shown_rows": 3,
+    }
+    ready = preflight["rows"][0]
+    assert ready["parameter_key"] == "bevoelkerung_mio"
+    assert ready["preflight_status"] == "bereit_fuer_separaten_integrationsplan"
+    assert "separaten Registry-/Modell-PR" in ready["first_blocker"]
+    assert "Tests und Smoke-Test" in " ".join(ready["definition_of_done"])
+    blocked = {row["parameter_key"]: row["preflight_status"] for row in preflight["rows"][1:]}
+    assert blocked == {
+        "krankenhausbetten": "blockiert_bis_transformation_review",
+        "krankenhaeuser": "blockiert_bis_rohsnapshot",
+    }
+    assert "keine Registry-/Modellmutation" in preflight["guardrail"]

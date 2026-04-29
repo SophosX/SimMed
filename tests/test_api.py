@@ -154,6 +154,25 @@ def test_api_exposes_platform_brief_as_core_platform_status_endpoint():
     assert "kein execute=true" in guide["guardrail"]
 
 
+def test_api_exposes_integration_preflight_without_model_mutation():
+    client = TestClient(api)
+    response = client.get("/data-readiness/integration-preflight?limit=3")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "data_readiness_integration_preflight_not_executed"
+    assert "kein execute=true" in body["guardrail"]
+    preflight = body["integration_preflight"]
+    assert preflight["title"].startswith("Integrations-Preflight")
+    assert preflight["rows"]
+    assert preflight["summary"]["shown_rows"] <= 3
+    row = preflight["rows"][0]
+    assert row["workflow_api"].startswith("GET /data-readiness/")
+    assert row["review_template_api"].startswith("GET /data-connectors/transformation-review-template/")
+    assert "Registry-/Modelländerung" in " ".join(row["definition_of_done"])
+    assert "keine Registry-/Modellmutation" in row["guardrail"]
+
+
 def test_api_exposes_data_readiness_dashboard_cards_without_execution():
     client = TestClient(api)
     response = client.get("/data-readiness/dashboard-cards?limit=2")

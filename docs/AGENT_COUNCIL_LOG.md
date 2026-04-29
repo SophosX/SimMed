@@ -1833,3 +1833,33 @@ Keine wichtige Entscheidung offen.
 
 ### Verification / Git
 Focused tests passed for data ingestion/API/Learning Page; full suite passed (`112 passed`); py_compile passed; 50-run simulation smoke passed. Commit/push status follows in heartbeat summary.
+
+
+## 2026-04-30 01:45 Europe/Berlin — Heartbeat: Integrations-Preflight für Datenwerte
+
+### Context
+Alex priorisiert weiter Core-Plattformarbeit. Dieser Lauf setzt an der Dateningestion/Provenienz-Kette an: nach Passport, Backlog, Workbench, Action-Packet, Handoff, Plattform-Brief und First-contact Guide fehlte noch eine klare Vor-Modellintegration-Prüfung.
+
+### Project Manager
+Priorität: verhindern, dass Rohdaten-Cache oder Transformationsreview versehentlich als Modellintegration gelesen werden. Nächster sinnvoller Schritt bleibt danach: einen echten parameterbezogenen Integrationsplan für reviewed_model_ready-Datenpunkte vorbereiten, sobald ein solcher Review vorliegt.
+
+### Designer / UX
+Die Learning Page bekommt im bestehenden Plattform-Aktionsbereich einen „Integrations-Preflight“: Status, erster Blocker, nächster Schritt, Workflow-/Review-API und Guardrail in einer mobilen Tabelle. Das macht die letzte Gate-Logik vor einem Modell-PR für Erstnutzer sichtbar.
+
+### Creative Agent
+Produktfit: Der Preflight ist ein Daten-Werkbank-Baustein — später kann daraus eine klare Ampel vor dem Button „Modellintegration planen“ werden. Jetzt bleibt es bewusst read-only und kein Apply-/Import-Button.
+
+### Political Health-System Strategist
+Für politische Glaubwürdigkeit bleibt wichtig: selbst ein geprüfter Datenwert ist noch kein Policy-Wirkungsbeweis. Der neue Preflight verlangt einen separaten, getesteten Registry-/Modell-PR, bevor Ergebnisse politisch interpretiert werden.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Keine neuen Quellen, Parameterwerte oder Realweltbehauptungen wurden eingeführt; die Änderung reorganisiert bestehende Daten-Gates und Guardrails.
+
+### Integrator Decision
+Accepted: `build_data_readiness_integration_preflight(...)` in `data_ingestion.py`, API `GET /data-readiness/integration-preflight`, Learning-Page-Einbettung und Regressionstests. Deferred: live fetch/cache UI, Review-Erzeugung, Registry-/Modellmutation.
+
+### Question to Alex
+Keine wichtige Entscheidung offen.
+
+### Verification / Git
+Focused tests für Data-Ingestion/API/Learning Page bestanden; full suite `115 passed`; `py_compile` bestanden; Simulation-Smoke `df=(60, 30)`, `reg=(320, 6)`. Commit/Push folgt in diesem Heartbeat.
