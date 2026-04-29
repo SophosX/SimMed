@@ -2,6 +2,7 @@ import json
 
 from data_ingestion import (
     ReviewedTransformation,
+    build_data_connector_queue,
     build_data_passport_rows,
     build_data_readiness_backlog,
     build_data_readiness_gate_plan,
@@ -295,3 +296,44 @@ def test_data_readiness_summary_counts_gates_without_model_import(tmp_path):
     assert "keine Live-Datenübernahme" in combined
     assert "keine Modellmutation" in combined
     assert "kein Wirkungsbeweis" in combined
+
+
+def test_data_connector_queue_groups_snapshot_work_by_authoritative_source(tmp_path):
+    parameters = [
+        {
+            "key": "bevoelkerung_mio",
+            "label": "Bevölkerung",
+            "unit": "million people",
+            "evidence_grade": "A",
+            "source_ids": ["destatis_genesis"],
+            "data_status": "aus_daten",
+        },
+        {
+            "key": "fertilitaetsrate",
+            "label": "Fertilität",
+            "unit": "births per woman",
+            "evidence_grade": "A",
+            "source_ids": ["destatis_genesis"],
+            "data_status": "aus_daten",
+        },
+        {
+            "key": "telemedizin_rate",
+            "label": "Telemedizin-Nutzung",
+            "unit": "share",
+            "evidence_grade": "E",
+            "source_ids": ["expert_assumption"],
+            "data_status": "annahme",
+        },
+    ]
+    backlog = build_data_readiness_backlog(parameters, cache_root=tmp_path)
+
+    queue = build_data_connector_queue(backlog)
+
+    assert len(queue) == 1
+    assert queue[0]["source_id"] == "destatis_genesis"
+    assert queue[0]["source_label"] == "Destatis/GENESIS"
+    assert queue[0]["open_parameter_count"] == 2
+    assert queue[0]["example_parameters"] == ["Bevölkerung", "Fertilität"]
+    assert "SHA256-Manifest" in queue[0]["connector_next_action"]
+    assert "keine automatische Registry- oder Modellmutation" in queue[0]["guardrail"]
+    assert "Telemedizin-Nutzung" not in queue[0]["example_parameters"]

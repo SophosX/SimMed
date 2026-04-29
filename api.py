@@ -13,6 +13,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel, Field
 
 from data_ingestion import (
+    build_data_connector_queue,
     build_data_passport_rows,
     build_data_readiness_backlog,
     build_data_readiness_gate_plan,
@@ -86,6 +87,7 @@ def get_data_readiness_backlog() -> dict:
         "guardrail": "Diese Liste priorisiert Cache-/Review-/Integrationsarbeit; sie importiert keine Werte und beweist keine Policy-Wirkung.",
         "summary": build_data_readiness_summary(items),
         "gate_plan": build_data_readiness_gate_plan(items),
+        "connector_queue": build_data_connector_queue(items),
         "items": items,
     }
 

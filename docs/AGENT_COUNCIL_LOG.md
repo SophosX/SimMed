@@ -1301,3 +1301,16 @@ Keine wichtige Entscheidung offen. Recommendation: next platform slice should be
 
 ### Verification / Git
 Targeted tests: `62 passed`. Full suite: `84 passed`. Py compile passed for core modules. Simulation smoke: `OK smoke (120, 30) (480, 6)`. Commit/push status follows in the heartbeat report.
+
+
+## 2026-04-29T21:50Z — Data-Connector-Queue für Provenienzarbeit
+
+- **Context:** Alex priorisiert wieder Core-Plattform vor KI/Evidence; nächster sicherer Schritt in der Datenfundament-Schiene war, aus dem Data-Readiness-Backlog konkrete Connector-Arbeit abzuleiten.
+- **Project Manager:** Kleine, reversible Plattform-Scheibe: Snapshot-Gates nach Quelle gruppieren, damit der nächste Heartbeat gezielt einen Live-/Download-Connector beginnen kann.
+- **Designer/UX:** Learning Page ergänzt eine touch-/mobile-sichere Expander-Lesespur „Welche Live-Connectoren zuerst?“ statt nur technische Backlog-Zeilen zu zeigen.
+- **Creative Agent:** Kein neues Gamification-/MiroFish-Feature; Produktfit spricht hier für nüchterne Arbeitsplanung, weil Datenvertrauen vor Demo-Effekt geht.
+- **Political Health-System Strategist:** Keine neuen Stakeholder-/Policy-Behauptungen; Datenarbeit bleibt Vorbedingung für spätere politische Bewertbarkeit.
+- **Evidence/Domain:** Keine neue externe Recherche in diesem Lauf. Guardrail bleibt: Connector-Queue holt/cacht Rohdaten, aber keine automatische Registry-/Modellmutation und kein Wirkungsbeweis.
+- **Integrator Decision:** `build_data_connector_queue(...)` in `data_ingestion.py`, API-Feld `connector_queue` in `/data-readiness-backlog`, Learning-Page-Expander und Tests ergänzt.
+- **Question to Alex if needed:** Keine wichtige Produktentscheidung offen; nächster sicherer Schritt ist der erste echte Destatis/GENESIS-Connector-Slice.
+- **Verification/Git:** 85 Tests grün, py_compile grün, 20-run/2-year Simulation-Smoke grün. Push folgt nach Commit.

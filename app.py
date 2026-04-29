@@ -30,6 +30,7 @@ import warnings
 from political_feasibility import assess_political_feasibility
 from expert_council import plain_language_workflow_summary
 from data_ingestion import (
+    build_data_connector_queue,
     build_data_passport_rows,
     build_data_readiness_backlog,
     build_data_readiness_gate_plan,
@@ -4054,6 +4055,7 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         ),
         "summary": summary,
         "gate_plan": build_data_readiness_gate_plan(full_backlog),
+        "connector_queue": build_data_connector_queue(full_backlog),
         "rows": [
             {
                 "Parameter": item["label"],
@@ -4083,6 +4085,14 @@ def render_learning_data_readiness_backlog():
             examples = ", ".join(gate["example_parameters"]) if gate["example_parameters"] else "aktuell keine Beispiele"
             st.markdown(f"**{gate['order']}. {gate['label']}** ({gate['open_count']} offen)  ")
             st.caption(f"{gate['why_this_gate']} Beispiele: {examples}. Guardrail: {gate['guardrail']}")
+    with st.expander("Welche Live-Connectoren zuerst?", expanded=False):
+        if backlog["connector_queue"]:
+            for connector in backlog["connector_queue"][:5]:
+                examples = ", ".join(connector["example_parameters"])
+                st.markdown(f"**{connector['source_label']}** — {connector['open_parameter_count']} offene Snapshot-Parameter")
+                st.caption(f"Beispiele: {examples}. {connector['connector_next_action']} Guardrail: {connector['guardrail']}")
+        else:
+            st.caption("Aktuell keine source-backed Snapshot-Aufgaben für eine Live-Connector-Queue.")
     st.dataframe(pd.DataFrame(backlog["rows"]), use_container_width=True, hide_index=True)
     st.caption("Guardrail: Eine Backlog-Zeile ist Arbeitsplanung für Provenienz — kein Live-Import, keine Modellmutation, kein Wirkungsbeweis.")
 

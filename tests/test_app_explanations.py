@@ -98,6 +98,11 @@ def test_learning_data_readiness_backlog_prioritizes_safe_data_gates():
     ]
     assert all("guardrail" in gate for gate in backlog["gate_plan"])
     assert "Manifest" in backlog["gate_plan"][0]["why_this_gate"]
+    assert backlog["connector_queue"]
+    connector = backlog["connector_queue"][0]
+    assert {"source_label", "open_parameter_count", "connector_next_action", "guardrail"} <= set(connector)
+    assert "SHA256-Manifest" in connector["connector_next_action"]
+    assert "keine automatische" in connector["guardrail"]
     assert 1 <= len(backlog["rows"]) <= 5
     first = backlog["rows"][0]
     assert {"Parameter", "Nächstes Gate", "Aktion", "Guardrail"} <= set(first)

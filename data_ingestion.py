@@ -350,6 +350,55 @@ def build_data_readiness_summary(backlog_items: list[dict]) -> dict:
     }
 
 
+def build_data_connector_queue(backlog_items: list[dict], *, per_source_limit: int = 4) -> list[dict]:
+    """Group snapshot-needed parameters by source so connector work can start safely.
+
+    This is the bridge from a passive data-readiness backlog to concrete connector
+    implementation slices. It still does not fetch live data or mutate model values;
+    it only tells agents which source connector would unlock which source-backed
+    parameters first. Assumption-only parameters remain outside this connector
+    queue unless they cite a real source id in the registry.
+    """
+
+    source_labels = {
+        "destatis_genesis": "Destatis/GENESIS",
+        "eurostat": "Eurostat",
+        "bmg_gbe": "BMG/GBE",
+        "bundesaerztekammer": "Bundesärztekammer",
+        "kbv_zi": "KBV/Zi",
+        "gematik_bfarm": "gematik/BfArM",
+        "gkv_spitzenverband": "GKV-Spitzenverband",
+        "bas_bundesamt_soziale_sicherung": "BAS",
+        "hrk_destatis_hochschulstatistik": "HRK/Destatis Hochschulstatistik",
+    }
+    blocked_source_ids = {"expert_assumption"}
+    grouped: dict[str, list[dict]] = {}
+    for item in backlog_items:
+        if item.get("next_gate") != "snapshot_needed":
+            continue
+        for source_id in item.get("source_ids", []):
+            if source_id in blocked_source_ids:
+                continue
+            grouped.setdefault(source_id, []).append(item)
+
+    queue: list[dict] = []
+    for source_id, items in grouped.items():
+        examples = items[:per_source_limit]
+        queue.append({
+            "source_id": source_id,
+            "source_label": source_labels.get(source_id, source_id),
+            "open_parameter_count": len(items),
+            "example_parameters": [item["label"] for item in examples],
+            "parameter_keys": [item["parameter_key"] for item in examples],
+            "connector_next_action": (
+                f"Live/Download-Connector für {source_labels.get(source_id, source_id)} bauen oder prüfen, "
+                "Payload unverändert cachen, SHA256-Manifest schreiben und noch keine Modellwerte ändern."
+            ),
+            "guardrail": "Connector-Queue ist Arbeitsplanung: Rohdaten holen/cachen, aber keine automatische Registry- oder Modellmutation.",
+        })
+    return sorted(queue, key=lambda item: (-item["open_parameter_count"], item["source_label"]))
+
+
 def build_data_readiness_gate_plan(backlog_items: list[dict], *, per_gate_limit: int = 3) -> list[dict]:
     """Group the data-readiness backlog into a sequential, safe implementation plan.
 
@@ -424,6 +473,7 @@ def build_data_readiness_backlog(
             "parameter_key": row["parameter_key"],
             "label": row["label"],
             "evidence_grade": row["evidence_grade"],
+            "source_ids": row["source_ids"],
             "registry_label": row["registry_label"],
             "has_cached_snapshot": has_snapshot,
             "transformation_status": review_status,
