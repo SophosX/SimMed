@@ -909,3 +909,16 @@ No important decision open in this slice.
 
 ### Verification / Git
 Local verification before sync: `python3 -m pytest -q` → 59 passed; py_compile passed; 20-run/2-year simulation smoke passed with df (60, 30), reg (320, 6). Git sync/commit/push follows in clone.
+
+## 2026-04-29T18:50Z — Results UX: exact KPI drill-down targets for changed levers
+
+- **Context:** Heartbeat continued the results-experience redesign. Existing bridge explained changed levers and KPI traces, but users still had to infer which KPI detail card to open next.
+- **Project Manager:** Safe, reversible navigation slice; no model/data changes. Maintains the top priority of coherent result reading rather than adding unrelated UI.
+- **Designer/UX:** Added exact KPI-detail targets inside each changed-lever expander so the path is now: changed lever → observed KPI trace → concrete detail card → assumption check.
+- **Creative Agent:** Kept this as a “guided reading map” rather than decorative cards; fit is high because it reduces cognitive translation.
+- **Political Health-System Strategist:** No new stakeholder claims. Political rubric remains unchanged; implementation still points users to political feasibility after KPI checks.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf. This change only reuses simulated KPI traces and existing caveats; no new empirical assumptions encoded.
+- **Integrator Decision:** Implemented `drilldown_targets` in `build_changed_parameter_impact_bridge(...)`, rendered them in the existing bridge, updated the results redesign plan, and added a focused regression test.
+- **Question to Alex if needed:** No major product decision open; next safe slice can continue strengthening result/report navigation.
+- **Verification/Git:** Local source tests passed (`60 passed`), py_compile passed, smoke simulation passed (`df (60, 30)`, regional `(320, 6)`). Git sync/push pending in this heartbeat step.
+

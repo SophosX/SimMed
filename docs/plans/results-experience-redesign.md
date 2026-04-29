@@ -322,3 +322,17 @@ Small implementation slice:
 4. Add a focused test proving the checklist is complete, uses the KPI's observation/effect strength/assumption/next-step fields, and includes direct changed-lever context when available.
 
 Guardrail: This must not add empirical claims or new model effects. It only makes the existing KPI detail card answer the user's questions faster and more coherently.
+
+## 2026-04-29 next slice: Lever bridge to exact KPI drill-down targets
+
+Problem: The changed-parameter bridge already names observed KPI traces, but a user still has to translate those traces into the exact detail cards to open. This is a small coherence gap in the journey “I changed X → what moved → where do I click next?”.
+
+Small implementation slice:
+
+1. Extend `build_changed_parameter_impact_bridge(agg, params)` with a `drilldown_targets` list for each changed lever.
+2. Each target should reuse existing KPI labels and pointer text only: metric key, label, observed trace, and the exact recommended detail-card prompt.
+3. Render these targets inside the existing changed-lever expander after observed KPI traces, so users get an explicit click path without adding a new standalone UI block.
+4. Add a focused test proving Medizinstudienplätze links to Ärzte pro 100k, Facharzt-Wartezeit, and ländliche Versorgung targets with existing start/end traces and a KPI-detail next step.
+
+Guardrail: This is navigation UX only. Do not add model effects, empirical claims, political claims, or a hidden causal score; every target is derived from existing bridge KPI pointers.
+

@@ -490,6 +490,41 @@ def test_changed_parameter_impact_bridge_connects_inputs_to_kpi_pointers():
     assert "Zeitverlauf" in combined
 
 
+def test_changed_parameter_bridge_exposes_exact_kpi_drilldown_targets():
+    agg = pd.DataFrame([
+        {
+            "jahr": 2026,
+            "aerzte_pro_100k_mean": 420.0,
+            "wartezeit_fa_mean": 20.0,
+            "versorgungsindex_rural_mean": 70.0,
+        },
+        {
+            "jahr": 2040,
+            "aerzte_pro_100k_mean": 405.0,
+            "wartezeit_fa_mean": 31.0,
+            "versorgungsindex_rural_mean": 66.0,
+        },
+    ])
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] - 1000
+
+    item = build_changed_parameter_impact_bridge(agg, params)[0]
+    targets = item["drilldown_targets"]
+    combined_targets = " ".join(
+        f"{target['metric_key']} {target['label']} {target['observed']} {target['next_step']}"
+        for target in targets
+    )
+
+    assert [target["metric_key"] for target in targets] == [
+        "aerzte_pro_100k",
+        "wartezeit_fa",
+        "versorgungsindex_rural",
+    ]
+    assert "Start" in combined_targets and "Ende" in combined_targets
+    assert "KPI-Detailkarte" in combined_targets
+    assert "Wartezeit" in combined_targets
+    assert "ländlich" in combined_targets or "Land" in combined_targets
+
 
 def test_kpi_mobile_detail_reuses_central_detail_copy():
     detail = kpi_mobile_detail("gesundheitsausgaben_mrd")

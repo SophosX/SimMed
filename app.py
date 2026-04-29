@@ -1536,12 +1536,23 @@ def build_changed_parameter_impact_bridge(agg: pd.DataFrame, params: dict) -> Li
     for spec in specs:
         if not changed(spec["key"]):
             continue
+        observed = [kpi_pointer(key, better) for key, better in spec["kpis"]]
+        drilldown_targets = [
+            {
+                "metric_key": key,
+                "label": KPI_LABELS.get(key, kpi_detail_texts().get(key, {}).get("label", key)),
+                "observed": pointer,
+                "next_step": f"Öffne die KPI-Detailkarte „{KPI_LABELS.get(key, kpi_detail_texts().get(key, {}).get('label', key))}“ und lies Bedeutung, Beobachtung, Annahme und verwandte Prüfungen.",
+            }
+            for (key, _better), pointer in zip(spec["kpis"], observed)
+        ]
         items.append({
             "key": spec["key"],
             "label": spec["label"],
             "change": spec["change"](),
             "model_path": spec["model_path"],
-            "observed_kpis": [kpi_pointer(key, better) for key, better in spec["kpis"]],
+            "observed_kpis": observed,
+            "drilldown_targets": drilldown_targets,
             "caveat": spec["caveat"],
             "next_step": spec["next"],
         })
@@ -1614,8 +1625,12 @@ def render_changed_parameter_impact_bridge(agg: pd.DataFrame, params: dict):
             st.markdown("**3 · Beobachtete KPI-Spuren:**")
             for pointer in item["observed_kpis"]:
                 st.markdown(f"- {pointer}")
-            st.info(f"**4 · Annahme prüfen:** {item['caveat']}")
-            st.success(f"**5 · Nächster Klick:** {item['next_step']}")
+            if item.get("drilldown_targets"):
+                st.markdown("**4 · Exakte KPI-Detailkarten öffnen:**")
+                for target in item["drilldown_targets"]:
+                    st.markdown(f"- {target['next_step']} ({target['observed']})")
+            st.info(f"**5 · Annahme prüfen:** {item['caveat']}")
+            st.success(f"**6 · Nächster Klick:** {item['next_step']}")
     render_changed_parameter_assumption_checks(agg, params)
 
 
