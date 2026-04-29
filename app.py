@@ -1063,6 +1063,52 @@ def _direction_word(delta: float, higher_is_better: bool) -> str:
     return "verschlechtert" if delta > 0 else "verbessert"
 
 
+def _changed_policy_lever_notes(params: dict) -> List[str]:
+    """Beschreibt veränderte Szenario-Hebel in Klartext.
+
+    Diese Hinweise sind bewusst qualitativ. Sie helfen Nutzer:innen zu sehen,
+    welche von ihnen geänderten Stellschrauben die Ergebnis-Erklärungen besonders
+    relevant machen, ohne neue Modellzahlen zu erfinden.
+    """
+    defaults = get_default_params()
+    notes: List[str] = []
+
+    def changed(key: str, tolerance: float = 1e-9) -> bool:
+        if key not in params or key not in defaults:
+            return False
+        try:
+            return abs(float(params[key]) - float(defaults[key])) > tolerance
+        except (TypeError, ValueError):
+            return params[key] != defaults[key]
+
+    if changed("telemedizin_rate"):
+        direction = "mehr" if params["telemedizin_rate"] > defaults["telemedizin_rate"] else "weniger"
+        notes.append(
+            f"Telemedizin wurde auf {direction} digitale Kontakte gestellt. Das beeinflusst vor allem Wege, einfache Kontakte und Praxisentlastung — nicht jede fachärztliche Leistung."
+        )
+    if changed("digitalisierung_epa"):
+        direction = "stärker" if params["digitalisierung_epa"] > defaults["digitalisierung_epa"] else "schwächer"
+        notes.append(
+            f"ePA/Digitalisierung wurde {direction} gesetzt. Der Effekt hängt davon ab, ob Daten wirklich genutzt werden und ob Praxen dadurch weniger Doppelarbeit haben."
+        )
+    if changed("praeventionsbudget"):
+        direction = "erhöht" if params["praeventionsbudget"] > defaults["praeventionsbudget"] else "gesenkt"
+        notes.append(
+            f"Das Präventionsbudget wurde {direction}. Prävention kann spätere Krankheitslast senken, kostet aber kurzfristig Geld und wirkt verzögert."
+        )
+    if changed("medizinstudienplaetze"):
+        direction = "mehr" if params["medizinstudienplaetze"] > defaults["medizinstudienplaetze"] else "weniger"
+        notes.append(
+            f"Es wurden {direction} Medizinstudienplätze eingestellt. Das verändert die Versorgung kaum sofort, sondern erst nach Ausbildung und Weiterbildung."
+        )
+    if changed("pflegepersonal_schluessel"):
+        direction = "verbessert" if params["pflegepersonal_schluessel"] > defaults["pflegepersonal_schluessel"] else "verschlechtert"
+        notes.append(
+            f"Der Pflegepersonalschlüssel wurde {direction}. Das kann Qualität und Belastung verändern, braucht aber echte verfügbare Fachkräfte."
+        )
+    return notes
+
+
 def build_kpi_explanations(agg: pd.DataFrame, params: dict) -> List[Dict[str, str]]:
     """Erzeugt kurze Klartext-Erklärungen für zentrale Live-Ergebnisse.
 
@@ -1072,6 +1118,8 @@ def build_kpi_explanations(agg: pd.DataFrame, params: dict) -> List[Dict[str, st
     """
     first = agg.iloc[0]
     last = agg.iloc[-1]
+    lever_notes = _changed_policy_lever_notes(params)
+    scenario_focus = "\n".join(f"- {note}" for note in lever_notes) if lever_notes else "Keine der aktuell erklärten Haupt-Stellschrauben wurde gegenüber dem Startwert verändert."
 
     def delta(col: str) -> float:
         return float(last[f"{col}_mean"] - first[f"{col}_mean"])
@@ -1118,6 +1166,8 @@ def build_kpi_explanations(agg: pd.DataFrame, params: dict) -> List[Dict[str, st
             ),
         },
     ]
+    for explanation in explanations:
+        explanation["scenario_focus"] = scenario_focus
     return explanations
 
 
@@ -1132,6 +1182,9 @@ def render_kpi_explanation_card(agg: pd.DataFrame, params: dict):
     for explanation in build_kpi_explanations(agg, params):
         with st.expander(f"{explanation['title']} — {explanation['status']}", expanded=False):
             st.write(explanation["body"])
+            if explanation.get("scenario_focus"):
+                st.markdown("**Was in diesem Szenario besonders zählt:**")
+                st.markdown(explanation["scenario_focus"])
             st.info(explanation["assumption"])
 
 

@@ -287,3 +287,33 @@ Keine wichtige Entscheidung offen. Weiter mit sicheren Erklärungshilfen; größ
 
 ### Verification / Git
 `python3 -m pytest -q` passed (15 tests). `py_compile` passed for app/core/API/registry/provenance/feasibility/tests. Zip refreshed at `/opt/data/cache/documents/health_simulation_app_updated.zip`. Git sync/commit/push handled by Integrator after this entry.
+
+
+## 2026-04-29 17:58 Europe/Berlin — Heartbeat: Scenario-Hebel in Live-Erklärungen
+
+### Context
+Die bestehende KPI-Erklärung erklärte Wartezeit, GKV-Saldo und ländliche Versorgung allgemein. Dieser Heartbeat verbindet die Erklärungen stärker mit tatsächlich geänderten Szenario-Hebeln, ohne Modelloutputs zu verändern.
+
+### Project Manager
+Priorität: Option 2 (transparente Entscheidungs-/Umsetzbarkeits-Erklärung) weiter operationalisieren. Risiko: Erklärtexte dürfen nicht wie zusätzliche Prognosen wirken. Nächste Schritte: (1) Erklärungen für weitere Hebel ausbauen, (2) Quellen-/Parameterhinweise näher an UI-Hebel bringen, (3) später Strategy-Mode nur auf dieser transparenten Grundlage ergänzen.
+
+### Designer / UX
+Nutzer:innen brauchen direkt im Ergebnisbereich die Antwort: „Welche meiner Änderungen treiben diese Erklärung?“ Deshalb erscheint nun unter jeder KPI-Erklärung ein kurzer Abschnitt „Was in diesem Szenario besonders zählt“.
+
+### Creative Agent
+Idee: später eine „Hebel-Lupe“ bauen, die pro veränderter Stellschraube ein kurzes Ursache-Wirkungs-Kärtchen zeigt. Fit: stärkt Verständnis und Motivation; risikoarm, solange es klar als Erklärung und nicht als geheimes Scoring markiert bleibt.
+
+### Political Health-System Strategist
+Die Hebelnotizen helfen, politische Kommunikation realistischer zu machen: Telemedizin, Prävention, Studienplätze, ePA und Pflegepersonal haben unterschiedliche Zeitachsen, Betroffene und Erwartungsrisiken. Besonders Studienplätze müssen wegen der 6-/11–13-Jahres-Verzögerung klar erklärt werden.
+
+### Evidence / Domain
+Keine neuen Zahlen oder Annahmen eingeführt. Die Hinweise spiegeln bestehende Modell-/Produktcaveats wider und bleiben qualitativ; Quellen-/Provenanzarbeit bleibt für spätere harte Parameter nötig.
+
+### Integrator Decision
+Akzeptiert: `_changed_policy_lever_notes()` in `app.py`, Anzeige im KPI-Erklärungsbereich und Tests. Deferred: eigene Hebel-Lupe/Strategy-Mode-UI.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; dies ist eine reversible UX-Erklärungsschicht innerhalb der bereits gewählten Option 2.
+
+### Verification / Git
+Pending: vollständige Tests, Zip-Refresh, Sync, Commit und Push.

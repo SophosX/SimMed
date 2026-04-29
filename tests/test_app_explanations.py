@@ -1,6 +1,6 @@
 import pandas as pd
 
-from app import _direction_word, build_kpi_explanations
+from app import _changed_policy_lever_notes, _direction_word, build_kpi_explanations, get_default_params
 
 
 def test_direction_word_uses_plain_language_and_preference_direction():
@@ -44,3 +44,19 @@ def test_build_kpi_explanations_mentions_core_causal_assumptions():
     assert "Kopfzahl ist nicht automatisch Kapazität" in combined_text
     assert "11–13 Jahren" in combined_text
     assert "keine zusätzliche Prognose" not in combined_text
+    assert "Telemedizin wurde auf" in explanations[0]["scenario_focus"]
+
+
+def test_changed_policy_lever_notes_names_only_changed_scenario_levers():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] - 1000
+    params["praeventionsbudget"] = params["praeventionsbudget"] + 0.5
+
+    notes = _changed_policy_lever_notes(params)
+    combined = " ".join(notes)
+
+    assert len(notes) == 2
+    assert "weniger Medizinstudienplätze" in combined
+    assert "Präventionsbudget wurde erhöht" in combined
+    assert "Telemedizin" not in combined
+    assert "kaum sofort" in combined
