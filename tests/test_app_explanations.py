@@ -23,6 +23,7 @@ from app import (
     build_kpi_result_story,
     build_landing_hero_content,
     build_scenario_gallery_cards,
+    build_scenario_gallery_guided_apply_plan,
     build_scenario_gallery_manifest_previews,
     build_political_lever_detail_sections,
     build_political_result_checkpoints,
@@ -235,6 +236,42 @@ def test_scenario_gallery_manifest_previews_are_reproducible_and_read_only():
     assert prevention_param["key"] == "praeventionsbudget"
     assert prevention_param["registered"] is True
     assert prevention_param["evidence_grade"] in {"A", "B", "C", "D", "E"}
+
+
+def test_scenario_gallery_guided_apply_plan_bridges_cards_to_manual_run_without_mutation():
+    plans = build_scenario_gallery_guided_apply_plan(n_runs=100, n_years=15, seed=42)
+    combined = " ".join(str(value) for plan in plans for value in plan.values())
+
+    assert len(plans) == len(build_scenario_gallery_cards())
+    first = plans[0]
+    assert {
+        "card_id",
+        "scenario_id",
+        "manual_sidebar_steps",
+        "api_payload",
+        "copy_hint",
+        "reading_order",
+        "guardrail",
+    } <= set(first)
+    assert all(plan["manual_sidebar_steps"] for plan in plans)
+    assert all("parameter_changes" in plan["api_payload"] for plan in plans)
+    assert "Werte manuell in der Sidebar setzen" in combined
+    assert "POST /simulate" in combined
+    assert "Ergebnis-Storyboard öffnen" in combined
+    assert "KPI-Detailkarte" in combined
+    assert "kein automatischer Apply-Button" in combined
+    assert "keine Session-State-Mutation" in combined
+    assert "kein Simulationslauf" in combined
+    assert "keine amtliche Prognose" in combined
+    assert "kein Wirksamkeitsnachweis" in combined
+    assert "keine Lobbying-Empfehlung" in combined
+
+    medical_plan = next(plan for plan in plans if plan["card_id"] == "medical_training_pipeline")
+    assert medical_plan["api_payload"]["parameter_changes"] == {"medizinstudienplaetze": 9000}
+    step = medical_plan["manual_sidebar_steps"][0]
+    assert step["parameter_key"] == "medizinstudienplaetze"
+    assert "Sidebar-Regler" in step["instruction"]
+    assert step["evidence_grade"] in {"A", "B", "C", "D", "E"}
 
 
 def test_direction_word_uses_plain_language_and_preference_direction():

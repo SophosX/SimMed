@@ -1647,3 +1647,32 @@ Keine wichtige Entscheidung offen; nächster sicherer Schritt ist weiterhin read
 
 ### Verification / Git
 Targeted tests passed: `tests/test_app_explanations.py::test_scenario_gallery_cards_offer_safe_guided_starts_without_model_claims` and `::test_scenario_gallery_manifest_previews_are_reproducible_and_read_only`. Full suite passed: `101 passed`. `py_compile` and scenario-gallery preview smoke passed. Commit/push status follows in heartbeat summary.
+
+## 2026-04-30 01:00 Europe/Berlin — Heartbeat: Scenario-Galerie Guided Apply Plan
+
+### Context
+Alexs Korrektur priorisiert wieder Core-Plattform statt KI/Evidence. Aktueller Branch `feat/platform-data-status-foundation`; vorhandene Galerie hatte Karten und Manifest-Vorschau, aber noch keine konkrete sichere Brücke vom Starter-Szenario zur manuellen/API-Ausführung.
+
+### Project Manager
+Priorität: Guided Workflow nutzbarer machen, ohne einen riskanten Apply-Button einzuführen. Nächste Tasks: (1) Galerie-Plan ggf. als fokussierten API-/Download-Endpunkt spiegeln, (2) danach echte user-kontrollierte Apply-UX planen, (3) Datenconnector-Workbench weiterführen.
+
+### Designer / UX
+Die Galerie zeigt jetzt nicht nur Idee und Manifest, sondern konkrete manuelle Sidebar-Schritte, API-Payload und Lesereihenfolge. Das verbessert First-Run-Verständnis auf Mobile/Tablet, ohne Hover oder versteckte Bedienung.
+
+### Creative Agent
+MiroFish-Inspiration wird als „demo-first, aber kontrolliert“ umgesetzt: keine freie Zukunftsmaschine, sondern copy-ready Szenario-Rezepte mit Evidenz-/Caveat-Geländer. Produktfit gut, solange späterer Apply bewusst bestätigt wird.
+
+### Political Health-System Strategist
+Die neue Lesereihenfolge zwingt vor politischer Bewertung zuerst Ergebnis-Storyboard, geänderte Hebel, KPI-Details und Annahmen-Check. Das reduziert Überinterpretation und vermeidet Lobbying-/Vote-Forecast-Framing.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Die Änderung nutzt vorhandene Registry-Evidenzgrade/Caveats aus der Manifest-Vorschau und erzeugt keine neuen Wirkungsclaims.
+
+### Integrator Decision
+Akzeptiert: `build_scenario_gallery_guided_apply_plan(...)` als read-only Brücke und Landing-Page-Darstellung. Zurückgestellt: echter Apply-Button/Session-State-Mutation bis Alex oder Plan die UX bestätigt.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; nächster sicherer Schritt ist eine fokussierte API-/Download-Surface oder ein Plan für bewusst bestätigtes Apply.
+
+### Verification / Git
+Gezielt: `2 passed`; komplett: `102 passed`; `py_compile` für Kernmodule OK; Simulation-Smoke `OK smoke (60, 30) (320, 6)`. Commit/Push folgt in diesem Heartbeat; Zip-Artefakt wird aktualisiert.

@@ -1161,6 +1161,64 @@ def build_scenario_gallery_manifest_previews(
     return previews
 
 
+def build_scenario_gallery_guided_apply_plan(
+    *, n_runs: int = 100, n_years: int = 15, seed: int = 42
+) -> List[dict[str, Any]]:
+    """Return copy-ready, read-only next steps from starter card to manual scenario.
+
+    This is the deliberate bridge before an actual Apply button: users get the
+    exact sidebar values, API payload and reading order, but the helper does not
+    mutate Streamlit state, run a simulation, or claim policy effectiveness.
+    """
+    previews = {
+        item["card_id"]: item
+        for item in build_scenario_gallery_manifest_previews(n_runs=n_runs, n_years=n_years, seed=seed)
+    }
+    plans: List[dict[str, Any]] = []
+    for card in build_scenario_gallery_cards():
+        preview = previews[card["id"]]
+        sidebar_steps = []
+        for parameter in preview["changed_parameters"]:
+            spec = PARAMETER_REGISTRY.get(parameter["key"])
+            label = parameter.get("label") or (spec.label if spec else parameter["key"])
+            direction = card["parameter_changes"][parameter["key"]].get("direction", "setzen")
+            sidebar_steps.append({
+                "parameter_key": parameter["key"],
+                "label": label,
+                "target_value": parameter["value"],
+                "instruction": f"Sidebar-Regler '{label}' auf {parameter['value']} {direction}.",
+                "evidence_grade": parameter.get("evidence_grade", "E"),
+                "caveat": parameter.get("caveat") or (spec.caveat if spec else "Registry-Caveat prüfen."),
+            })
+
+        api_payload = {
+            "parameter_changes": preview["parameter_changes"],
+            "n_runs": n_runs,
+            "n_years": n_years,
+            "seed": seed,
+        }
+        plans.append({
+            "card_id": card["id"],
+            "title": card["title"],
+            "scenario_id": preview["scenario_id"],
+            "manual_sidebar_steps": sidebar_steps,
+            "api_payload": api_payload,
+            "copy_hint": "Werte manuell in der Sidebar setzen oder Payload an POST /simulate senden.",
+            "reading_order": [
+                "Simulation starten",
+                "Ergebnis-Storyboard öffnen",
+                "Geänderte Hebel als Fragen lesen",
+                "KPI-Detailkarte und Annahmen-Check prüfen",
+                "Policy-Briefing und politische Rubrik lesen",
+            ],
+            "guardrail": (
+                "Guided-Apply-Plan: kein automatischer Apply-Button, keine Session-State-Mutation, "
+                "kein Simulationslauf, keine amtliche Prognose, kein Wirksamkeitsnachweis und keine Lobbying-Empfehlung."
+            ),
+        })
+    return plans
+
+
 def sidebar_quick_start_steps() -> List[str]:
     """Kurze Orientierung, damit neue Nutzer:innen sofort wissen, was zu tun ist."""
     return [
@@ -1187,8 +1245,8 @@ def render_landing_hero() -> None:
 
     with st.expander("Beispiel-Szenarien sicher starten", expanded=False):
         st.caption("Demo-Galerie: Die Karten geben eine Lesespur vor, ändern aber noch keine Parameter automatisch.")
-        manifest_previews = {
-            item["card_id"]: item for item in build_scenario_gallery_manifest_previews()
+        guided_plans = {
+            item["card_id"]: item for item in build_scenario_gallery_guided_apply_plan()
         }
         for card in build_scenario_gallery_cards():
             st.markdown(f"**{card['title']}**")
@@ -1197,13 +1255,16 @@ def render_landing_hero() -> None:
             st.caption("Workflow: " + " → ".join(card["workflow"]))
             st.caption("Nächster Klick: " + card["next_click"])
             st.caption("Guardrail: " + card["guardrail"])
-            preview = manifest_previews[card["id"]]
+            plan = guided_plans[card["id"]]
             changed = ", ".join(
-                f"{item['key']}={item['value']} (Evidenzgrad {item['evidence_grade']})"
-                for item in preview["changed_parameters"]
+                f"{step['parameter_key']}={step['target_value']} (Evidenzgrad {step['evidence_grade']})"
+                for step in plan["manual_sidebar_steps"]
             )
-            st.caption(f"Manifest-Vorschau: {preview['scenario_id']} · {changed}")
-            st.caption("API: " + preview["api_endpoint"] + " · Guardrail: " + preview["guardrail"])
+            st.caption(f"Manifest-Vorschau: {plan['scenario_id']} · {changed}")
+            st.caption("Manuell: " + " | ".join(step["instruction"] for step in plan["manual_sidebar_steps"]))
+            st.caption("Lesereihenfolge: " + " → ".join(plan["reading_order"]))
+            st.caption("API-Payload: " + json.dumps(plan["api_payload"], ensure_ascii=False))
+            st.caption("Guardrail: " + plan["guardrail"])
 
 
 def render_sidebar() -> dict:
