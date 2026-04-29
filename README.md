@@ -55,7 +55,8 @@ Main capabilities:
 │   ├── IMPLEMENTATION_PLAN.md     # Roadmap from prototype to platform
 │   ├── SOURCE_PROVENANCE_POLICY.md# Rules for sources and assumptions
 │   ├── AGENT_WORKFLOW.md          # Multi-agent development workflow
-│   └── AGENT_COUNCIL_LOG.md       # Persistent structured reasoning log
+│   ├── AGENT_COUNCIL_LOG.md       # Persistent structured reasoning log
+│   └── PRODUCT_DIRECTION.md       # Product decisions: explanation mode, later strategy mode
 └── tests/
     ├── test_provenance.py
     ├── test_registries.py

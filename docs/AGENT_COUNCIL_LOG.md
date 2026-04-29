@@ -110,3 +110,32 @@ How should SimMed handle political feasibility long-term? Options: (1) neutral e
 
 ### Verification / Git
 `python3 -m pytest -q` passed (9 tests). `py_compile` passed for app/core/API/registry/provenance/tests. Zip refreshed at `/opt/data/cache/documents/health_simulation_app_updated.zip`. Synced to GitHub clone, committed as `300f92a`, and pushed to `main`.
+
+## 2026-04-29 14:45 Europe/Berlin — Product Direction: Explanation Mode
+
+### Context
+Alex clarified the political explanation direction. He wants Option 2 implemented now and Option 3 later.
+
+### Project Manager
+Priority: build a clear transparent decision/feasibility rubric before adding a full strategy simulator. This creates the foundation for later strategy mode without overcomplicating the app immediately.
+
+### Designer / UX
+The app must explain results in plain language: why SimMed reached a conclusion, why a policy lever causes effects, and what assumptions are uncertain. Explanations should be visible in the platform, not hidden in docs only.
+
+### Creative Agent
+Future idea: turn causal chains into “effect cards” or a readable timeline, e.g. “Policy change → delayed workforce effect → access change → financial side-effect.” Fit: strong, because it helps users understand without making the app unserious.
+
+### Political Health-System Strategist
+Accepted direction: transparent decision rubric now. Later, strategy mode should add sequencing, coalitions, veto players, framing, compensation, and legislative timing. This should remain politically realistic but not partisan.
+
+### Evidence / Domain
+Explanations must cite assumptions and uncertainty, not just tell stories. Parameter provenance and caveats still belong in the registries and source docs.
+
+### Integrator Decision
+Create `docs/PRODUCT_DIRECTION.md` to record: Option 2 now, Option 3 strategy mode later, and clear explanation quality as a platform requirement.
+
+### Question to Alex
+No open question: Alex decided Option 2 now and Option 3 later.
+
+### Verification / Git
+Pending: tests, zip refresh, commit, push.
