@@ -64,6 +64,7 @@ Make trend chart easier:
 - hover values
 - short “how to read this” text
 - default to 3 important metrics only
+- mobile/tablet rule: never rely on hover alone; every tooltip explanation must also be available through tap-friendly captions, popovers, or expanders, and KPI grids must remain readable on narrow screens
 
 ### Slice 5: Parameter-impact mapping
 

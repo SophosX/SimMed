@@ -207,6 +207,23 @@ CUSTOM_CSS = """
     .ml { font-size: 0.88em; opacity: 0.92; }
     .metric-help { font-size: 0.92em; margin-left: 5px; opacity: 0.95; cursor: help; }
     .md { font-size: 0.82em; margin-top: 6px; }
+    @media (max-width: 900px) {
+        .metric-card, .mc-green, .mc-red, .mc-blue, .mc-orange {
+            min-height: 96px;
+            padding: 14px 15px;
+            margin: 6px 0 10px 0;
+        }
+        .mv { font-size: 1.55em; line-height: 1.15; }
+        .ml { font-size: 0.92em; }
+        .md { font-size: 0.86em; }
+    }
+    @media (max-width: 520px) {
+        .metric-card, .mc-green, .mc-red, .mc-blue, .mc-orange {
+            border-radius: 12px;
+            min-height: 86px;
+        }
+        .mv { font-size: 1.35em; }
+    }
 </style>
 """
 
@@ -1649,6 +1666,7 @@ def render_dashboard(agg: pd.DataFrame, params: dict):
     render_result_narrative_summary(agg, params)
 
     st.markdown(f"### Kernkennzahlen {endjahr} (Mittelwerte über alle Runs)")
+    st.caption("Desktop: ⓘ/Hover erklärt jede Karte. Mobil/Tablet: dieselben Erklärungen stehen direkt darunter in den aufklappbaren KPI-Details.")
 
     def delta_pct(col: str) -> float:
         v0, v1 = first[f"{col}_mean"], last[f"{col}_mean"]
