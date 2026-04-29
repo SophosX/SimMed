@@ -1078,3 +1078,16 @@ Targeted test passed (`tests/test_app_explanations.py::test_changed_lever_questi
 - **Integrator Decision:** Plan erweitert und `build_result_storyboard(...)`/Renderer mit fokussiertem Test ergänzt.
 - **Question to Alex if needed:** Keine wichtige Entscheidung offen; sicherer, reversibler UX-Orchestrierungs-Slice.
 - **Verification/Git:** Lokal: `pytest -q` 73 passed; `py_compile` OK; 20-run Smoke `df=(60,30)`, `reg=(320,6)`. Commit `0d37c9d` nach `origin/main` gepusht.
+
+
+## 2026-04-29 19:46 UTC — KPI-Detail-Navigation vor Expandern
+
+- **Context:** Weiterer Cron-Heartbeat zur Result-Experience. Vor Implementierung wurde `docs/plans/results-experience-redesign.md` um eine kleine, reversible Slice-Planung ergänzt.
+- **Project Manager:** Priorität bleibt ein zusammenhängender Ergebnis-Lesepfad. Risiko: Nutzer sehen viele KPI-Expander, wissen aber nicht, welche zuerst wichtig ist. Der Slice macht die vorhandene Effektstärke-Sortierung sichtbar.
+- **Designer/UX:** Neuer Expander „Welche KPI-Detailkarte soll ich zuerst öffnen?“ steht direkt unter „Kernkennzahlen verstehen“ und erklärt Rangfolge, Signal, passenden Hebel/Evidenzcheck, nächsten Klick und Guardrail.
+- **Creative Agent:** Die Verbesserung ist ein Inhaltsverzeichnis für die Ergebnis-Erkundung, keine neue Story-Schicht. Fit: reduziert kognitive Last, ohne mehr Behauptungen zu erzeugen.
+- **Political Health-System Strategist:** Keine neuen stakeholderpolitischen Aussagen; politische Rubrik bleibt getrennt von KPI-Navigation und wird nicht als Empfehlung verwendet.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; keine neuen Realwelt-Claims. Navigation wird ausschließlich aus bestehenden KPI-Drilldown-Feldern, Annahmenchecks und Caveats gebaut.
+- **Integrator Decision:** `build_kpi_drilldown_navigation(...)` und Renderer akzeptiert; vorhandene KPI-Karten bleiben unverändert, nur der Einstieg wird klarer.
+- **Question to Alex if needed:** Keine wichtige Entscheidung offen. Empfehlung: weiter kleine Orchestrierungs-Slices, bis der Ergebnisfluss für Erstnutzer konsistent wirkt.
+- **Verification/Git:** Targeted Test bestanden; full `pytest -q` 74 passed; `py_compile` OK; Smoke `20 runs × 2 Jahre` mit `df=(60, 30)`, `reg=(320, 6)` bestanden. Git-Sync/Commit/Push folgt in diesem Lauf.

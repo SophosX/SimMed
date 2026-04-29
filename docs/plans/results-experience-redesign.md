@@ -460,3 +460,17 @@ Small implementation slice:
 5. Add a focused test that verifies the storyboard links changed levers to KPI detail targets, assumptions/evidence, trend timing, political qualitative guardrails, and keeps the no-official-forecast/no-vote-forecast/no-lobbying wording.
 
 Guardrail: This is a navigation/orchestration slice only. It must not add new empirical claims, model effects, or stakeholder claims; it makes the existing evidence/assumption/timing/political audit path explicit.
+
+## 2026-04-29 next slice: KPI-Detail-Navigation vor den Expandern
+
+Problem: Die KPI-Detailkarten sind sortiert und reich, aber der Abschnitt beginnt noch direkt mit vielen Expandern. Ein Nutzer sollte vor dem Öffnen sehen, welche Kernkennzahl zuerst relevant ist, warum sie oben steht, welcher geänderte Hebel dazu passt, ob ein Annahmencheck existiert und was danach zu prüfen ist.
+
+Small implementation slice:
+
+1. Add a pure `build_kpi_drilldown_navigation(agg, params)` helper in `app.py`.
+2. Reuse only `build_kpi_drilldown_items(...)` and existing fields (`title`, `observation`, `effect_strength`, `lever_context`, `assumption_trace`, `next_step`, `scope_caveat`).
+3. Return short ordered navigation rows with rank, KPI title, signal, why open, matched lever/evidence checkpoint status, next click, and guardrail.
+4. Render this as a compact expander directly under “Kernkennzahlen verstehen” before the two-column KPI cards.
+5. Add a focused test that verifies the navigation starts with the strongest movement, points to exact KPI detail cards, names matched changed levers/evidence checks when present, and preserves the no-official-forecast/model-path caveat.
+
+Guardrail: This is section navigation only. Do not add new empirical claims, model effects, or recommendations; the helper only explains how to read the already-existing KPI detail cards.

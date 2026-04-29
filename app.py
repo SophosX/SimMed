@@ -2897,11 +2897,57 @@ def build_kpi_result_story(item: Dict[str, Any]) -> Dict[str, str]:
     }
 
 
+def build_kpi_drilldown_navigation(agg: pd.DataFrame, params: dict) -> List[Dict[str, str]]:
+    """Build a compact table of contents for KPI drill-down cards.
+
+    Navigation rows only summarize already-built KPI drill-down items. They do
+    not add model effects, evidence claims, or recommendations; they tell users
+    which existing card to open first and what guardrail to keep in mind.
+    """
+    rows: List[Dict[str, str]] = []
+    for rank, item in enumerate(build_kpi_drilldown_items(agg, params), start=1):
+        assumption_trace = item.get("assumption_trace") or []
+        matched_levers = ", ".join(check.get("label", "geänderter Hebel") for check in assumption_trace)
+        if matched_levers:
+            evidence_status = f"Direkter Annahmen-/Evidenzcheck für: {matched_levers}."
+        else:
+            evidence_status = "Kein direkt gemappter Annahmencheck in dieser KPI-Karte; globale Hebel danach separat prüfen."
+
+        rows.append({
+            "rank": str(rank),
+            "title": item.get("title", "KPI-Detailkarte"),
+            "signal": item.get("observation", "Start-/Endwert und Richtung in der Detailkarte prüfen."),
+            "why_open": f"Rang {rank}, weil die Detailkarten nach Effektstärke sortiert sind: {item.get('effect_strength', 'nicht bewertet')}.",
+            "matched_levers": matched_levers or "kein direkter geänderter Haupthebel gemappt",
+            "evidence_status": evidence_status,
+            "next_click": item.get("next_step", "Diese KPI-Detailkarte öffnen und danach Annahmen sowie Trend prüfen."),
+            "guardrail": item.get("scope_caveat", "Diese Lesereihenfolge ist Modellnavigation, keine amtliche Prognose."),
+        })
+    return rows
+
+
+def render_kpi_drilldown_navigation(agg: pd.DataFrame, params: dict):
+    """Render a table-of-contents expander before detailed KPI cards."""
+    rows = build_kpi_drilldown_navigation(agg, params)
+    if not rows:
+        return
+    with st.expander("Welche KPI-Detailkarte soll ich zuerst öffnen?", expanded=True):
+        st.caption("Die Reihenfolge folgt der stärksten simulierten Bewegung. Öffne zuerst Rang 1, prüfe dann Hebel, Annahmen und Trend — nicht als amtliche Prognose lesen.")
+        for row in rows:
+            st.markdown(f"**{row['rank']}. {row['title']}**")
+            st.markdown(f"- **Signal:** {row['signal']}")
+            st.markdown(f"- **Warum zuerst/weiter?** {row['why_open']}")
+            st.markdown(f"- **Geänderte Hebel/Evidenz:** {row['evidence_status']}")
+            st.markdown(f"- **Nächster Klick:** {row['next_click']}")
+            st.caption(f"Guardrail: {row['guardrail']}")
+
+
 def render_kpi_deep_dive(agg: pd.DataFrame, params: dict):
     """Explains KPI cards as a coherent reading path below the dashboard."""
     st.markdown("---")
     st.markdown("### Kernkennzahlen verstehen")
     st.caption("Jede Karte folgt derselben Logik: Bedeutung → Beobachtung → verwandte Prüfungen → Modelltreiber → Annahme → nächster Klick.")
+    render_kpi_drilldown_navigation(agg, params)
     cols = st.columns(2)
     for i, item in enumerate(build_kpi_drilldown_items(agg, params)):
         with cols[i % 2]:

@@ -14,6 +14,7 @@ from app import (
     build_kpi_answer_checklist,
     build_kpi_assumption_trace,
     build_kpi_drilldown_items,
+    build_kpi_drilldown_navigation,
     build_kpi_explanations,
     build_kpi_result_story,
     build_landing_hero_content,
@@ -1232,6 +1233,49 @@ def test_result_decision_checkpoints_prevent_overclaiming_before_kpi_grid():
     assert "keinen Wirksamkeitsbeweis" in combined
     assert "Ergebnis → Wirkpfad → Annahme → Zeitverlauf" in combined
 
+
+
+def test_kpi_drilldown_navigation_orders_and_contextualizes_detail_cards():
+    agg = pd.DataFrame([
+        {
+            "jahr": 2026,
+            "aerzte_pro_100k_mean": 430.0,
+            "wartezeit_fa_mean": 35.0,
+            "versorgungsindex_rural_mean": 0.72,
+            "gkv_saldo_mean": 1.0,
+        },
+        {
+            "jahr": 2040,
+            "aerzte_pro_100k_mean": 410.0,
+            "wartezeit_fa_mean": 44.0,
+            "versorgungsindex_rural_mean": 0.64,
+            "gkv_saldo_mean": -2.0,
+        },
+    ])
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] - 1500
+
+    rows = build_kpi_drilldown_navigation(agg, params)
+
+    assert rows[0]["rank"] == "1"
+    assert rows[0]["title"]
+    assert "Effektstärke" in rows[0]["why_open"]
+    combined = " ".join(
+        " ".join([
+            row["title"],
+            row["signal"],
+            row["why_open"],
+            row["matched_levers"],
+            row["evidence_status"],
+            row["next_click"],
+            row["guardrail"],
+        ])
+        for row in rows
+    )
+    assert "KPI-Detailkarte" in combined or "Detailkarte" in combined
+    assert "Medizinstudienplätze" in combined
+    assert "Annahmen-/Evidenzcheck" in combined
+    assert "keine amtliche Prognose" in combined or "Modell" in combined
 
 
 def test_result_storyboard_orders_sections_from_signal_to_politics():
