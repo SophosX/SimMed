@@ -111,6 +111,26 @@ def test_versorgung_controls_now_have_combined_registry_help():
     assert "Was passiert beim Ändern?" in throughput_help
 
 
+def test_remaining_pipeline_finance_and_policy_controls_have_registry_help():
+    pipeline_help = _parameter_control_help("einwanderung_aerzte")
+    copay_help = _parameter_control_help("zuzahlungen_gkv")
+    prevention_help = _parameter_control_help("praevention_effektivitaet")
+    waiting_target_help = _parameter_control_help("wartezeit_grenze_tage")
+
+    assert "Evidenzgrad B" in pipeline_help
+    assert "annual external inflow" in pipeline_help
+    assert "Was passiert beim Ändern?" in pipeline_help
+    assert "Evidenzgrad B" in copay_help
+    assert "patient cost-sharing" in copay_help
+    assert "Was passiert beim Ändern?" in copay_help
+    assert "Evidenzgrad D" in prevention_help
+    assert "scenario assumption" in prevention_help
+    assert "Was passiert beim Ändern?" in prevention_help
+    assert "Evidenzgrad B" in waiting_target_help
+    assert "does not create appointments" in waiting_target_help
+    assert "Was passiert beim Ändern?" in waiting_target_help
+
+
 def test_parameter_evidence_badge_is_short_and_registry_based():
     badge = _parameter_evidence_badge("medizinstudienplaetze")
 

@@ -547,3 +547,16 @@ Local verification before sync: targeted app/registry tests, py_compile, and 100
 - **Integrator Decision:** Sichere reversible UX-/Provenance-Erweiterung übernommen; Strategie-Modus bleibt später.
 - **Question to Alex if needed:** Keine wichtige Entscheidung offen.
 - **Verification/Git:** `pytest tests/test_app_explanations.py tests/test_registries.py`, `py_compile`, 100-run Smoke-Test erfolgreich; Commit/Push folgt.
+
+
+## 2026-04-29T17:00:57Z — Registry-backed help for remaining policy controls
+
+- Context: Short heartbeat focused on the top UX directive: sidebar controls should explain source/evidence and practical effect in one tooltip.
+- Project Manager: Safe low-risk scope; expanded provenance/help coverage without changing simulation equations or outputs.
+- Designer/UX: Converted remaining Ärzte-Pipeline, financing and political sliders from effect-only hints to combined registry + action guidance so newcomers see “what is this?” and “what happens if I change it?” together.
+- Creative Agent: Product fit is strong because richer tooltips keep the dense simulator usable without adding a new page or flow.
+- Political Health-System Strategist: Added explicit caveats for copayments, Morbi-RSA, DRG level, AMNOG, staffing ratio, waiting-time target and IGeL; these remain orientation levers, not vote forecasts or policy endorsements.
+- Evidence/Domain: Added registry entries for remaining pipeline/finance/policy controls and source registry entries for G-BA/IQTIG and InEK. Evidence grades B/D where defaults or causal strengths remain simplified scenario assumptions. Keine neue externe Recherche in diesem Lauf.
+- Integrator Decision: Ship this UX/provenance coverage improvement now; postpone deeper evidence ingestion and Strategy Mode UI.
+- Question to Alex if needed: Keine wichtige Entscheidung offen.
+- Verification/Git: Targeted tests and compile passed; 100-run simulation smoke test passed. Sync/commit/push follows in this heartbeat.

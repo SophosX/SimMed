@@ -1088,19 +1088,19 @@ def render_sidebar() -> dict:
         )
         params["ausbildungsdauer_jahre"] = st.slider(
             "Studiumsdauer (Jahre)", 5.0, 8.0, params["ausbildungsdauer_jahre"], 0.5,
-            help=_parameter_effect_hint("ausbildungsdauer_jahre"),
+            help=_parameter_control_help("ausbildungsdauer_jahre"),
         )
         params["abwanderungsquote"] = st.slider(
             "Abwanderungsquote", 0.00, 0.15, params["abwanderungsquote"], 0.005,
-            help=_parameter_effect_hint("abwanderungsquote"),
+            help=_parameter_control_help("abwanderungsquote"),
         )
         params["einwanderung_aerzte"] = st.slider(
             "Ärzte-Einwanderung/Jahr", 0, 15_000, params["einwanderung_aerzte"], 100,
-            help=_parameter_effect_hint("einwanderung_aerzte"),
+            help=_parameter_control_help("einwanderung_aerzte"),
         )
         params["ruhestandsquote"] = st.slider(
             "Ruhestandsquote/Jahr", 0.010, 0.060, params["ruhestandsquote"], 0.005,
-            help=_parameter_effect_hint("ruhestandsquote"),
+            help=_parameter_control_help("ruhestandsquote"),
         )
 
     # ── Versicherung & Finanzierung ──
@@ -1120,11 +1120,11 @@ def render_sidebar() -> dict:
         )
         params["zuzahlungen_gkv"] = st.slider(
             "GKV-Zuzahlungen (Mrd. \u20ac)", 0.0, 10.0, params["zuzahlungen_gkv"], 0.5,
-            help=_parameter_effect_hint("zuzahlungen_gkv"),
+            help=_parameter_control_help("zuzahlungen_gkv"),
         )
         params["morbi_rsa_staerke"] = st.slider(
             "Morbi-RSA Intensität", 0.0, 2.0, params["morbi_rsa_staerke"], 0.1,
-            help=_parameter_effect_hint("morbi_rsa_staerke"),
+            help=_parameter_control_help("morbi_rsa_staerke"),
         )
         params["staatliche_subventionen"] = st.slider(
             "Bundeszuschuss (Mrd. \u20ac)", 0.0, 30.0,
@@ -1150,29 +1150,29 @@ def render_sidebar() -> dict:
         params["praevention_effektivitaet"] = st.slider(
             "Präventions-Effektivität", 0.0, 1.0,
             params["praevention_effektivitaet"], 0.05,
-            help=_parameter_effect_hint("praevention_effektivitaet"),
+            help=_parameter_control_help("praevention_effektivitaet"),
         )
         params["amnog_preisreduktion"] = st.slider(
             "AMNOG-Preisreduktion", 0.0, 0.30, params["amnog_preisreduktion"], 0.01,
-            help=_parameter_effect_hint("amnog_preisreduktion"),
+            help=_parameter_control_help("amnog_preisreduktion"),
         )
         params["drg_niveau"] = st.slider(
             "DRG-Fallpauschalen-Niveau", 0.70, 1.50, params["drg_niveau"], 0.05,
-            help=_parameter_effect_hint("drg_niveau"),
+            help=_parameter_control_help("drg_niveau"),
         )
         params["pflegepersonal_schluessel"] = st.slider(
             "Pflegepersonal-Schlüssel", 0.5, 2.0,
             params["pflegepersonal_schluessel"], 0.05,
-            help=_parameter_effect_hint("pflegepersonal_schluessel"),
+            help=_parameter_control_help("pflegepersonal_schluessel"),
         )
         params["wartezeit_grenze_tage"] = st.slider(
             "Wartezeit-Grenze FA (Tage)", 7, 60,
             params["wartezeit_grenze_tage"],
-            help=_parameter_effect_hint("wartezeit_grenze_tage"),
+            help=_parameter_control_help("wartezeit_grenze_tage"),
         )
         params["igel_rate"] = st.slider(
             "IGeL/Selbstzahler-Rate", 0.0, 0.25, params["igel_rate"], 0.01,
-            help=_parameter_effect_hint("igel_rate"),
+            help=_parameter_control_help("igel_rate"),
         )
 
     st.session_state["user_params"] = params

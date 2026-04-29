@@ -152,6 +152,32 @@ DATA_SOURCES: dict[str, DataSource] = {
         caveats="Adoption metrics do not equal productivity gains; model productivity as uncertain and delayed.",
         url="https://www.gematik.de/",
     ),
+    "g_ba_iqtig": DataSource(
+        id="g_ba_iqtig",
+        name="G-BA / IQTIG quality and benefit-assessment sources",
+        authority="Gemeinsamer Bundesausschuss / IQTIG",
+        coverage="Germany, statutory quality assurance, benefit assessments and care-quality context",
+        access="reports, resolutions, quality indicators and downloads",
+        formats=("pdf", "xlsx", "csv", "html"),
+        update_cadence="varies by procedure/report",
+        parameters=("quality", "benefit_assessment", "staffing_quality", "access_targets"),
+        evidence_grade="A",
+        caveats="Use exact resolution/report vintage; quality indicators are not direct causal effects without transformation notes.",
+        url="https://www.g-ba.de/",
+    ),
+    "inek": DataSource(
+        id="inek",
+        name="InEK / German DRG and hospital payment data",
+        authority="Institut für das Entgeltsystem im Krankenhaus",
+        coverage="German hospital payment catalogues, DRG system data and calculation documents",
+        access="catalogues, reports and download files",
+        formats=("pdf", "xlsx", "csv", "zip"),
+        update_cadence="annual with periodic updates",
+        parameters=("drg_catalogue", "hospital_payment", "case_mix", "inpatient_costs"),
+        evidence_grade="A",
+        caveats="DRG catalogues are payment instruments; convert carefully before using as real resource or quality measures.",
+        url="https://www.g-drg.de/",
+    ),
 }
 
 
