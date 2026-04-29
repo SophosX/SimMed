@@ -168,6 +168,7 @@ Recommended roles:
 - Project Manager Agent: reviews priorities, risks, backlog, and next steps
 - Designer/UX Agent: improves usability, onboarding, and information hierarchy
 - Creative Agent: proposes unusual but product-relevant ideas, then the team discusses whether they fit the app
+- Political Health-System Strategist Agent: stress-tests scenarios for German health-policy realism, stakeholder incentives, veto players, and implementation feasibility
 - Evidence/Domain Agent: checks assumptions, source quality, and provenance gaps
 - Implementation Agent: implements small scoped tasks with tests
 
