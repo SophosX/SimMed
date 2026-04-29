@@ -21,6 +21,7 @@ from app import (
     build_trend_view_guidance,
     get_default_params,
     kpi_hover_help,
+    kpi_matching_changed_levers,
     kpi_mobile_detail,
     kpi_related_inspections,
     learning_page_next_actions,
@@ -555,6 +556,37 @@ def test_changed_parameter_assumption_checks_expose_evidence_and_caveats():
     assert "Unsicherheit" in combined or "uncertainty" in combined.lower()
     assert "KPI-Spuren" in combined and "Zeitverlauf" in combined
     assert "keine gesicherte Realwelt-Wirkung" in combined
+
+
+def test_kpi_drilldowns_match_changed_levers_to_specific_kpis():
+    agg = pd.DataFrame([
+        {
+            "jahr": 2025,
+            "wartezeit_fa_mean": 20.0,
+            "telemedizin_rate_mean": 10.0,
+            "zufriedenheit_patienten_mean": 70.0,
+            "gkv_saldo_mean": -2.0,
+        },
+        {
+            "jahr": 2040,
+            "wartezeit_fa_mean": 26.0,
+            "telemedizin_rate_mean": 18.0,
+            "zufriedenheit_patienten_mean": 73.0,
+            "gkv_saldo_mean": -3.0,
+        },
+    ])
+    params = get_default_params()
+    params["telemedizin_rate"] = params["telemedizin_rate"] + 0.15
+
+    wait_matches = kpi_matching_changed_levers("wartezeit_fa", agg, params)
+    saldo_matches = kpi_matching_changed_levers("gkv_saldo", agg, params)
+    items = {item["key"]: item for item in build_kpi_drilldown_items(agg, params)}
+
+    assert [item["label"] for item in wait_matches] == ["Telemedizin"]
+    assert saldo_matches == []
+    assert "Telemedizin" in items["wartezeit_fa"]["lever_context"]
+    assert "keine direkte Brücke" in items["gkv_saldo"]["lever_context"]
+    assert "nicht als direkte Ursache" in items["gkv_saldo"]["lever_context"]
 
 
 def test_result_reading_path_guides_full_result_journey():

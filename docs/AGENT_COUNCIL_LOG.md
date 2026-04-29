@@ -806,3 +806,32 @@ No important decision open for this low-risk navigation slice.
 
 ### Verification / Git
 Local verification passed: targeted shortcut test, full pytest suite, py_compile, and 50-run/3-year simulation smoke test. Synced to GitHub as commit `1348bf9` and pushed to `main`.
+
+## 2026-04-29 20:21 Europe/Berlin — Heartbeat: KPI-specific lever matching
+
+### Context
+Alex's current priority is a deeper results experience: when a user changes a parameter, KPI details should explain what changed, why, strength, assumptions and next inspection. Existing KPI drill-downs still showed the same global changed-lever context in every card.
+
+### Project Manager
+Priority: improve result explanation quality without changing model logic. Risk: implying causality too broadly if every KPI shows every changed lever. Next: continue with small information-architecture slices, then later consider richer visual navigation.
+
+### Designer / UX
+KPI expanders now separate direct lever matches from global scenario context, so a user opening Facharzt-Wartezeit sees Telemedizin only when the existing bridge points to that KPI; unrelated KPIs explicitly say there is no direct bridge yet.
+
+### Creative Agent
+Idea: later add a small “Warum diese Karte?” badge in KPI cards that previews the direct matched lever. Fit: useful for discoverability, but deferred until the result layout is stable.
+
+### Political Health-System Strategist
+No new political claims added. This slice reduces overclaiming by preventing a changed lever from appearing as equally relevant to every KPI.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. The change reuses existing model bridge text and caveats only; no new factual claims, source claims, or parameter assumptions were introduced.
+
+### Integrator Decision
+Accepted: update plan, add `kpi_matching_changed_levers(...)`, extend KPI drill-down items/rendering with direct-match context plus fallback warning, add regression test.
+
+### Question to Alex
+No important decision open. Safe next slice: make the direct KPI↔Hebel matching more visually scannable without adding new claims.
+
+### Verification / Git
+Local verification passed: `python3 -m pytest -q` (54 passed), `py_compile`, and 50-run/3-year simulation smoke test (`df=(200,30)`, `reg=(800,6)`). Git commit/push pending in this heartbeat after source→GitHub sync.

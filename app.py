@@ -2114,6 +2114,35 @@ def render_metric_card_with_details(
         st.caption("Mobil/Tablet: Diese Schaltfläche ersetzt den unzuverlässigen Hover-Effekt.")
 
 
+def kpi_matching_changed_levers(metric_key: str, agg: pd.DataFrame, params: dict) -> List[Dict[str, str]]:
+    """Return changed levers that directly point to this KPI in the result bridge.
+
+    This is explanation routing only: it reuses the already documented bridge
+    between changed parameters and observed KPI traces. It does not create new
+    model effects, empirical claims, or causal scores.
+    """
+    details = kpi_detail_texts().get(metric_key, {})
+    aliases = {
+        details.get("label", ""),
+        KPI_LABELS.get(metric_key, ""),
+        metric_key,
+    }
+    aliases = {alias for alias in aliases if alias}
+    matches: List[Dict[str, str]] = []
+    for bridge_item in build_changed_parameter_impact_bridge(agg, params):
+        observed = " ".join(bridge_item.get("observed_kpis", []))
+        if not any(alias in observed for alias in aliases):
+            continue
+        matches.append({
+            "label": bridge_item["label"],
+            "change": bridge_item["change"],
+            "model_path": bridge_item["model_path"],
+            "caveat": bridge_item["caveat"],
+            "next_step": bridge_item["next_step"],
+        })
+    return matches
+
+
 def build_kpi_drilldown_items(agg: pd.DataFrame, params: dict) -> List[Dict[str, str]]:
     """Return a coherent reading path for KPI detail expanders.
 
@@ -2155,6 +2184,18 @@ def build_kpi_drilldown_items(agg: pd.DataFrame, params: dict) -> List[Dict[str,
             f"Veränderung {summary['abs_delta']:+.2f} ({summary['pct_delta']:+.1f}%). "
             f"Das ist im Modell {summary['strength']} {summary['direction']}."
         )
+        matching_levers = kpi_matching_changed_levers(key, agg, params)
+        if matching_levers:
+            lever_context = "\n".join(
+                f"- **{lever['label']}**: {lever['model_path']} Annahme: {lever['caveat']}"
+                for lever in matching_levers
+            )
+        else:
+            lever_context = (
+                "Für diese KPI gibt es in den bereits erklärten geänderten Haupthebeln keine direkte Brücke. "
+                "Nutze die globalen Szenario-Hinweise nur als Kontext, nicht als direkte Ursache:\n"
+                f"{scenario_focus}"
+            )
         items.append({
             "key": key,
             "label": info["label"],
@@ -2163,6 +2204,8 @@ def build_kpi_drilldown_items(agg: pd.DataFrame, params: dict) -> List[Dict[str,
             "observation": observation,
             "related_inspections": kpi_related_inspections(key),
             "drivers": info["why"],
+            "matching_changed_levers": matching_levers,
+            "lever_context": lever_context,
             "scenario_focus": scenario_focus,
             "assumption": info["read"],
             "next_step": next_steps.get(key, "Prüfe danach den Zeitverlauf und die politische Umsetzbarkeit."),
@@ -2189,10 +2232,12 @@ def render_kpi_deep_dive(agg: pd.DataFrame, params: dict):
                 for prompt in item["related_inspections"]:
                     st.markdown(f"- {prompt}")
                 st.markdown(f"**4 · Warum im Modell?** {item['drivers']}")
-                st.markdown("**5 · Geänderte Hebel, die dazu passen könnten:**")
+                st.markdown("**5 · Welche deiner geänderten Hebel passen direkt zu dieser KPI?**")
+                st.markdown(item["lever_context"])
+                st.markdown("**6 · Alle geänderten Haupthebel als Kontext:**")
                 st.markdown(item["scenario_focus"])
-                st.info(f"**6 · Annahme prüfen:** {item['assumption']}")
-                st.success(f"**7 · Nächster Klick:** {item['next_step']}")
+                st.info(f"**7 · Annahme prüfen:** {item['assumption']}")
+                st.success(f"**8 · Nächster Klick:** {item['next_step']}")
 
 
 def build_trend_view_guidance(selected_labels: List[str]) -> Dict[str, str]:

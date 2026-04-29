@@ -265,3 +265,16 @@ Small implementation slice:
 4. Add a focused test that verifies every shortcut points to an existing section, covers KPI/trend/evidence/politics, and does not introduce new factual claims beyond existing section metadata.
 
 Guardrail: This is navigation UX only. It must not add model logic, empirical assumptions, stakeholder assertions, or duplicate long explanation copy.
+
+## 2026-04-29 next slice: KPI-specific changed-lever matching
+
+Problem: KPI detail cards currently show the same global list of changed scenario levers in every expander. That is honest but still too shallow: a user who opens “Facharzt-Wartezeit” should immediately see which of their changed levers plausibly connects to that KPI path, while “GKV-Saldo” should not imply the same relevance if the lever only touches access.
+
+Small implementation slice:
+
+1. Add a pure `kpi_matching_changed_levers(metric_key, agg, params)` helper in `app.py`.
+2. Reuse `build_changed_parameter_impact_bridge(...)` and its observed KPI pointers; match only already explained changed levers whose KPI pointers include the current KPI label. Return lever label, model path, caveat and next step.
+3. Extend `build_kpi_drilldown_items(...)` with `matching_changed_levers` and render it before the fallback global scenario notes. If no direct match exists, explicitly say there is no direct bridge yet and use the global notes only as context.
+4. Add a focused test proving Telemedizin appears for Facharzt-Wartezeit but not for an unrelated KPI when the scenario only changes Telemedizin.
+
+Guardrail: This is explanation routing only. Do not add new model effects, external factual claims, political claims or hidden causal scoring; use existing bridge text and simulated KPI pointers.
