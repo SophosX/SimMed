@@ -1317,6 +1317,64 @@ def render_kpi_explanation_card(agg: pd.DataFrame, params: dict):
             st.info(explanation["assumption"])
 
 
+
+def kpi_detail_texts() -> Dict[str, Dict[str, str]]:
+    """Human-readable explanations for dashboard KPIs."""
+    return {
+        "gesundheitsausgaben_mrd": {"label": "Gesundheitsausgaben", "meaning": "Gesamtausgaben für Gesundheit im Modell: GKV, PKV, private Zusatz-/Selbstzahleranteile und Präventionsbudget.", "why": "Steigen vor allem durch Alterung, höhere Krankheitslast, Preise, Krankenhaus-/Arzneikosten und zusätzliche Programme. Sinken nicht automatisch durch Digitalisierung oder Prävention, weil diese oft erst investieren und später wirken.", "read": "Mehr Ausgaben sind nicht automatisch schlecht: Entscheidend ist, ob bessere Versorgung, Gesundheit und Zugang entstehen."},
+        "bip_anteil": {"label": "BIP-Anteil Gesundheit", "meaning": "Anteil der Gesundheitsausgaben an der gesamten Wirtschaftsleistung.", "why": "Steigt, wenn Gesundheitsausgaben schneller wachsen als das BIP. Das kann durch Demografie, Morbidität oder teure Reformen passieren.", "read": "Ein hoher Anteil zeigt Finanzierungsdruck, aber auch gesellschaftliche Priorität für Gesundheit."},
+        "gkv_beitragssatz": {"label": "GKV-Beitragssatz", "meaning": "Effektiver Beitragssatz inklusive Zusatzbeitrag im Modell.", "why": "Kann steigen, wenn Ausgaben dauerhaft höher sind als Einnahmen und Politik Beitragsanhebungen zulässt.", "read": "Wichtig für Akzeptanz: höhere Beiträge stabilisieren Finanzen, belasten aber Beschäftigte und Arbeitgeber."},
+        "gkv_saldo": {"label": "GKV-Saldo", "meaning": "Differenz zwischen Einnahmen und Ausgaben der gesetzlichen Krankenversicherung.", "why": "Verbessert sich durch höhere Einnahmen, Bundeszuschüsse oder geringere Ausgaben; verschlechtert sich bei höherer Krankheitslast, Preisen und Nutzung.", "read": "Negativer Saldo heißt: politischer Handlungsdruck — Beiträge, Leistungen, Zuschüsse oder Strukturreformen."},
+        "lebenserwartung": {"label": "Lebenserwartung", "meaning": "Modellindikator für langfristige Gesundheitslage, kein echtes amtliches Prognosemodell.", "why": "Reagiert auf Morbidität, Prävention, Zugang und Überlastung. Effekte sind langsam und unsicher.", "read": "Kleine Änderungen nicht überinterpretieren; wichtiger ist die Richtung zusammen mit Mortalität und Versorgung."},
+        "wartezeit_fa": {"label": "Facharzt-Wartezeit", "meaning": "Durchschnittliche modellierte Wartezeit auf fachärztliche Versorgung.", "why": "Steigt, wenn Nachfrage schneller wächst als verfügbare Kapazität. Sinkt bei besserer Kapazität, Entlastung oder weniger Nachfrage.", "read": "Sehr intuitiver Zugangsindikator: längere Wartezeit heißt oft mehr Frust, spätere Diagnosen und politische Angreifbarkeit."},
+        "aerzte_pro_100k": {"label": "Ärzte pro 100.000", "meaning": "Arztdichte relativ zur Bevölkerung.", "why": "Verändert sich durch Nachwuchs, Ruhestand, Zuwanderung und Bevölkerung. Studienplätze wirken stark verzögert.", "read": "Nicht mit echter Kapazität gleichsetzen: Arbeitszeit, Fachrichtung und Region sind entscheidend."},
+        "kollaps_wahrscheinlichkeit": {"label": "Kollaps-Risiko", "meaning": "Modellierter Stressindikator aus Wartezeit-, Mortalitäts- und Finanzdruck.", "why": "Steigt, wenn mehrere Probleme gleichzeitig eskalieren: Zugang schlechter, Mortalität höher, Finanzierung unter Druck.", "read": "Kein reales Katastrophen-Orakel, sondern Warnlampe: Hier sollte man genauer in die Ursachen schauen."},
+    }
+
+
+def render_kpi_deep_dive(agg: pd.DataFrame):
+    """Explains KPI cards in plain language below the dashboard."""
+    st.markdown("---")
+    st.markdown("### Kernkennzahlen verstehen")
+    st.caption("Klicke die Kennzahlen auf: Was bedeutet sie, warum bewegt sie sich, wie liest man sie?")
+    first, last = agg.iloc[0], agg.iloc[-1]
+    texts = kpi_detail_texts()
+    cols = st.columns(2)
+    for i, (key, info) in enumerate(texts.items()):
+        mean_col = f"{key}_mean"
+        if mean_col not in agg.columns:
+            continue
+        start = float(first[mean_col]); end = float(last[mean_col]); diff = end - start
+        with cols[i % 2]:
+            with st.expander(f"{info['label']}: {start:.2f} → {end:.2f}", expanded=False):
+                st.markdown(f"**Was ist das?** {info['meaning']}")
+                st.markdown(f"**Warum kann sich das verändern?** {info['why']}")
+                st.markdown(f"**Wie lese ich das?** {info['read']}")
+                st.markdown(f"**In dieser Simulation:** Veränderung um `{diff:+.2f}` Modellpunkte/Einheiten vom Start- bis Endjahr.")
+
+
+def render_main_trend_chart(agg: pd.DataFrame):
+    """Larger, readable trend chart with hover instead of tiny sparklines."""
+    st.markdown("---")
+    st.markdown("### Zeitverlauf der wichtigsten Kennzahlen")
+    st.caption("Hier siehst du wirklich den Verlauf über die Jahre. Fahre mit der Maus über die Linien, um Werte pro Jahr zu sehen.")
+    choices = {
+        "Gesundheitsausgaben": "gesundheitsausgaben_mrd_mean",
+        "BIP-Anteil Gesundheit": "bip_anteil_mean",
+        "Facharzt-Wartezeit": "wartezeit_fa_mean",
+        "GKV-Beitragssatz": "gkv_beitragssatz_mean",
+        "Ärzte pro 100k": "aerzte_pro_100k_mean",
+        "Kollaps-Risiko": "kollaps_wahrscheinlichkeit_mean",
+    }
+    selected = st.multiselect("Kennzahlen anzeigen", list(choices.keys()), default=["Gesundheitsausgaben", "Facharzt-Wartezeit", "GKV-Beitragssatz"])
+    fig = go.Figure()
+    for label in selected:
+        col = choices[label]
+        if col in agg.columns:
+            fig.add_trace(go.Scatter(x=agg["jahr"], y=agg[col], mode="lines+markers", name=label, hovertemplate="Jahr %{x}<br>Wert %{y:.2f}<extra>"+label+"</extra>"))
+    fig.update_layout(height=430, hovermode="x unified", margin=dict(l=20,r=20,t=20,b=20), legend=dict(orientation="h"), xaxis_title="Jahr", yaxis_title="Modellwert")
+    st.plotly_chart(fig, use_container_width=True)
+
 def render_dashboard(agg: pd.DataFrame, params: dict):
     """Zeigt Dashboard-Karten mit Trend-Pfeilen."""
     st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
@@ -1417,44 +1475,8 @@ def render_dashboard(agg: pd.DataFrame, params: dict):
         st.markdown(metric_card("Patientenzufr.", f"{v:.0f} / 100",
             d, True, cls), unsafe_allow_html=True)
 
-    # Schnell-Überblick: Trend-Sparklines
-    st.markdown("---")
-    st.markdown("### Trendübersicht")
-    key_kpis = [
-        ("gesundheitsausgaben_mrd", "#667eea"),
-        ("lebenserwartung", "#11998e"),
-        ("wartezeit_fa", "#eb3349"),
-        ("gkv_beitragssatz", "#f2994a"),
-    ]
-    cols = st.columns(len(key_kpis))
-    for col, (kpi, color) in zip(cols, key_kpis):
-        with col:
-            mean_col = f"{kpi}_mean"
-            if mean_col in agg.columns:
-                fig = go.Figure(go.Scatter(
-                    x=agg["jahr"], y=agg[mean_col],
-                    mode="lines", fill="tozeroy",
-                    line=dict(color=color, width=2),
-                    fillcolor=_hex_to_rgba(color, 0.15),
-                ))
-                fig.update_layout(
-                    height=120, margin=dict(l=5, r=5, t=25, b=5),
-                    title=dict(text=KPI_LABELS.get(kpi, kpi), font=dict(size=11)),
-                    xaxis=dict(visible=False), yaxis=dict(visible=False),
-                    showlegend=False,
-                )
-                st.plotly_chart(fig, use_container_width=True)
-
-    render_kpi_explanation_card(agg, params)
-
-    render_political_stakeholder_card(params)
-
-
-def render_political_stakeholder_card(params: dict):
-    """Zeigt die qualitative Stakeholder-Orientierung direkt im Dashboard."""
-    feasibility = assess_political_feasibility(params)
-    overview = feasibility.get("stakeholder_overview", {})
-    lever_notes = feasibility.get("lever_notes", [])
+    render_kpi_deep_dive(agg)
+    render_main_trend_chart(agg)
 
     st.markdown("---")
     st.markdown("### Wer unterstützt? Wer bremst? Warum?")
