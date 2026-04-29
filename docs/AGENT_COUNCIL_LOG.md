@@ -256,4 +256,4 @@ Akzeptiert: kleine UI-Erweiterung in `app.py`, die vorhandene Feasibility-Rubrik
 Keine wichtige Entscheidung offen. Eine spätere Entscheidung wird sein, ob diese Einordnung als Textkarte, Ampel/Badge oder eigener Strategie-Tab erscheinen soll.
 
 ### Verification / Git
-Pending at log time: pytest, py_compile, zip refresh, source-to-GitHub sync, commit and push.
+`python3 -m pytest -q` passed (13 tests). `py_compile` passed for app/core/API/registry/provenance/feasibility/tests. Zip refreshed at `/opt/data/cache/documents/health_simulation_app_updated.zip`. Synced to GitHub clone, committed as `b1fb824`, and pushed to `main`.
