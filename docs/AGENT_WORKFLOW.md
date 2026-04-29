@@ -132,6 +132,24 @@ Preferred flow:
 
 For now, the heartbeat may simulate PM/designer review by spawning focused subagents or by writing explicit review sections. As the project grows, move more work into branch/PR workflows.
 
+## Agent Council Log
+
+Maintain `docs/AGENT_COUNCIL_LOG.md` as the persistent reasoning log for the multi-agent process. The log is not a chat transcript; it is a structured record of what the roles discussed, which ideas fit or did not fit, what the Integrator decided, and which questions were escalated to Alex.
+
+Every meaningful heartbeat should append a concise entry with:
+
+- context
+- Project Manager review
+- Designer/UX review
+- Creative Agent idea + fit discussion
+- Political Health-System Strategist assessment
+- Evidence/Domain concerns
+- Integrator decision
+- Question to Alex, if needed
+- verification and git status
+
+Use the council log so future agents can build on previous reasoning instead of restarting the discussion each time.
+
 ## Heartbeat report format
 
 Every 30-minute heartbeat should send Alex a German status message with:
