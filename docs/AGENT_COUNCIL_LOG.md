@@ -1394,3 +1394,16 @@ Focused test: `16 passed`; full suite: `86 passed`. Commit/push follows in this 
 - **Integrator Decision:** Strukturierte Quelle + Regressionstest ergänzt; `model_use_status` bleibt `catalog_only`, Record bleibt Evidence Grade B nur für Workload/Prozess/Safety-Kontext.
 - **Question to Alex if needed:** Keine neue Produktentscheidung nötig.
 - **Verification/Git:** Tests/Compile folgen im selben Heartbeat; Commit/Push nach erfolgreicher Prüfung.
+
+
+## 2026-04-29 20:44 UTC — Heartbeat: Ambient-Scribe Skalierungs-Caveat
+
+- **Context:** Kurzer Evidence/KI-Slice auf aktiver Branch `feat/ai-healthcare-evidence-validation`; Plattform-main bleibt stabil, kein UI/Modell-Umbau in diesem Lauf.
+- **Project Manager:** Sinnvoller kleiner Schritt: Evidenzkatalog vertiefen, aber keine Modellparameter aus Ambient-Scribe-Hinweisen ableiten.
+- **Designer/UX:** Spätere UI sollte Skalierungs- und Transfer-Caveats sichtbar machen, bevor Nutzer AI-Scribe-Effekte als Kapazitätsgewinn interpretieren.
+- **Creative Agent:** Ein Evidence-Passport kann künftig einen eigenen Abschnitt „Skaliert das in anderen Settings?“ bekommen.
+- **Political Health-System Strategist:** Für Deutschland sind Datenschutz, PVS/KIS-Integration, ambulant/stationär unterschiedliche Dokumentationslogiken und Haftung zentrale Transferhürden; kein automatischer Nutzen-Transfer.
+- **Evidence/Domain:** PubMed/NCBI E-utilities-Metadaten für NPJ Digital Medicine 2026 Scaling-Perspective geprüft; als Implementierungs-/Ethik-/Scale-up-Kontext katalogisiert, nicht als Trial, Effektgröße oder Patient-Outcome-Beweis.
+- **Integrator Decision:** Quelle strukturiert in `ai_healthcare_evidence.py` ergänzt und Regressionstest angelegt; `model_use_status` bleibt `catalog_only`.
+- **Question to Alex if needed:** Keine wichtige Produktentscheidung offen; sichere Evidenzvertiefung fortsetzen.
+- **Verification/Git:** Tests/Compile/Smoke und Git-Push folgen in diesem Lauf.

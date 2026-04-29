@@ -308,6 +308,21 @@ EVIDENCE_SOURCES: dict[str, EvidenceSource] = {
         ),
         license_or_terms_note="PubMed abstract metadata only; article copyright/license may apply. Store citation/metadata only unless reuse terms permit more.",
     ),
+    "npj_digital_medicine_scaling_ambient_scribes_2026": EvidenceSource(
+        id="npj_digital_medicine_scaling_ambient_scribes_2026",
+        title="Barriers and opportunities of scaling ambient AI scribes for clinical documentation across diverse healthcare settings",
+        url="https://pubmed.ncbi.nlm.nih.gov/41866429/",
+        kind="paper",
+        retrieved_via="PubMed E-utilities search + abstract metadata",
+        retrieved_at="2026-04-29",
+        source_date="2026",
+        quality_note=(
+            "NPJ Digital Medicine perspective on scaling ambient AI scribes beyond initially tested low-acuity ambulatory settings into more diverse care settings. "
+            "Use as implementation, technical, ethical and scale-up context; it is not a quantitative trial, pooled effect size, patient-outcome proof, "
+            "or evidence that benefits transfer automatically to German ambulatory/hospital workflows."
+        ),
+        license_or_terms_note="PubMed metadata/abstract and DOI metadata only; article copyright/license may apply. Store citation/metadata only unless reuse terms permit more.",
+    ),
     "x_jama_current_ambient_scribes_2026": EvidenceSource(
         id="x_jama_current_ambient_scribes_2026",
         title="JAMA X post: ambient scribes reduce documentation time but patient outcomes/equity evidence limited",
@@ -376,6 +391,7 @@ AI_HEALTHCARE_EVIDENCE: dict[str, AIHealthcareEvidenceRecord] = {
             "jamia_clinician_editing_rationale_ambient_2026",
             "jmir_ai_ambient_scribes_rapid_review_2025",
             "jmir_med_inform_singapore_time_motion_2026",
+            "npj_digital_medicine_scaling_ambient_scribes_2026",
         ),
         transferability_to_germany=(
             "Medium: documentation burden and clinician workflow are relevant in Germany, but effects depend on German documentation rules, "

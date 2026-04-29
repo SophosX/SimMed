@@ -203,6 +203,21 @@ def test_ambient_scribes_include_singapore_time_motion_as_observational_workflow
     assert record.model_use_status == "catalog_only"
 
 
+def test_ambient_scribes_include_scaling_perspective_as_implementation_context_only():
+    source = EVIDENCE_SOURCES["npj_digital_medicine_scaling_ambient_scribes_2026"]
+    record = AI_HEALTHCARE_EVIDENCE["ambient_ai_scribes_documentation_burden"]
+
+    assert source.kind == "paper"
+    assert source.retrieved_via == "PubMed E-utilities search + abstract metadata"
+    assert "diverse care settings" in source.quality_note
+    assert "implementation, technical, ethical and scale-up context" in source.quality_note
+    assert "not a quantitative trial" in source.quality_note
+    assert "benefits transfer automatically to German" in source.quality_note
+    assert source.id in record.source_ids
+    assert "patient_outcome" not in record.outcome_types
+    assert record.model_use_status == "catalog_only"
+
+
 def test_youtube_context_pipeline_is_explicitly_grade_e_and_not_model_fact():
     record = AI_HEALTHCARE_EVIDENCE["ai_healthcare_youtube_context_pipeline"]
     summary = evidence_quality_summary(record.id)
