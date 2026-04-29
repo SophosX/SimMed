@@ -1072,6 +1072,55 @@ def build_landing_hero_content() -> Dict[str, Any]:
     }
 
 
+def build_scenario_gallery_cards() -> List[dict[str, Any]]:
+    """Return evidence-guarded starter scenarios for a guided first run.
+
+    The gallery is inspired by demo-first workflows, but remains status-only in
+    this slice: cards explain which parameters a user may change manually and
+    how to read results. They do not mutate session state, run simulations, or
+    claim that the described reform effects are proven.
+    """
+    workflow = [
+        "Ausgangslage verstehen",
+        "Reform auswählen",
+        "Annahmen prüfen",
+        "Simulation laufen lassen",
+        "Policy-Briefing lesen",
+    ]
+    return [
+        {
+            "id": "medical_training_pipeline",
+            "title": "Medizinstudienplätze: verzögerte Pipeline testen",
+            "question": "Was passiert, wenn heute weniger oder mehr Studienplätze beschlossen werden?",
+            "parameter_changes": {"medizinstudienplaetze": {"suggested_value": 9000, "direction": "senken"}},
+            "why_this_matters": "Der Effekt darf nicht sofort als Facharztkapazität erscheinen; wichtig ist das 6+/11–13-Jahre-Zeitfenster.",
+            "workflow": workflow,
+            "guardrail": "Starterkarte, keine amtliche Prognose und nicht automatisch ein Nachweis für Versorgungseffekte.",
+            "next_click": "Nach der Simulation: Ergebnis-Storyboard → KPI-Detail Ärzte/Facharzt-Wartezeit → Annahmen-Check.",
+        },
+        {
+            "id": "digital_access_relief",
+            "title": "Telemedizin: Zugang entlasten, Evidenz prüfen",
+            "question": "Kann ein höherer Telemedizin-Anteil Wartezeiten senken, ohne ländliche Versorgung zu überschätzen?",
+            "parameter_changes": {"telemedizin_rate": {"suggested_value": 0.25, "direction": "erhöhen"}},
+            "why_this_matters": "Digitalisierung ist im Modell ein Szenariohebel mit Adoptions- und Umsetzungsunsicherheit, kein pauschaler Kostensenker.",
+            "workflow": workflow,
+            "guardrail": "Starterkarte, keine amtliche Prognose; Telemedizin-Effekte sind nicht automatisch Patientennutzen oder Einsparungen.",
+            "next_click": "Nach der Simulation: geänderte Hebel als Fragen lesen → Facharzt-Wartezeit → Evidenz/Annahmen.",
+        },
+        {
+            "id": "prevention_finance_tradeoff",
+            "title": "Prävention: spätere Wirkung gegen kurzfristige Kosten abwägen",
+            "question": "Wie verändert mehr Präventionsbudget den Zielkonflikt zwischen Gesundheit und GKV-Finanzen?",
+            "parameter_changes": {"praevention_budget": {"suggested_value": 8.0, "direction": "erhöhen"}},
+            "why_this_matters": "Prävention kann verzögert wirken und kurzfristig Ausgaben erhöhen; die Karte erzwingt deshalb Ergebnis- und Annahmenprüfung.",
+            "workflow": workflow,
+            "guardrail": "Starterkarte, keine amtliche Prognose und kein Beweis für sofortige Einsparungen.",
+            "next_click": "Nach der Simulation: GKV-Saldo/BIP-Anteil → Trend-Timing → Annahmen-Check.",
+        },
+    ]
+
+
 def sidebar_quick_start_steps() -> List[str]:
     """Kurze Orientierung, damit neue Nutzer:innen sofort wissen, was zu tun ist."""
     return [
@@ -1095,6 +1144,16 @@ def render_landing_hero() -> None:
             st.caption(action["description"])
 
     st.caption(f"Hinweis: {content['disclaimer']}")
+
+    with st.expander("Beispiel-Szenarien sicher starten", expanded=False):
+        st.caption("Demo-Galerie: Die Karten geben eine Lesespur vor, ändern aber noch keine Parameter automatisch.")
+        for card in build_scenario_gallery_cards():
+            st.markdown(f"**{card['title']}**")
+            st.write(card["question"])
+            st.caption(f"Warum relevant: {card['why_this_matters']}")
+            st.caption("Workflow: " + " → ".join(card["workflow"]))
+            st.caption("Nächster Klick: " + card["next_click"])
+            st.caption("Guardrail: " + card["guardrail"])
 
 
 def render_sidebar() -> dict:

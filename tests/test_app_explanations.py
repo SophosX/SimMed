@@ -22,6 +22,7 @@ from app import (
     build_kpi_explanations,
     build_kpi_result_story,
     build_landing_hero_content,
+    build_scenario_gallery_cards,
     build_political_lever_detail_sections,
     build_political_result_checkpoints,
     build_political_stakeholder_rows,
@@ -191,6 +192,24 @@ def test_landing_hero_content_sets_first_contact_expectations():
     assert "Stellschrauben verstehen" in combined_actions
     assert "Ergebnis lesen" in combined_actions
     assert "keine amtliche Prognose" in content["disclaimer"]
+
+
+def test_scenario_gallery_cards_offer_safe_guided_starts_without_model_claims():
+    cards = build_scenario_gallery_cards()
+    combined = " ".join(
+        " ".join(str(value) for value in card.values()) for card in cards
+    )
+
+    assert len(cards) >= 3
+    assert {"id", "title", "question", "parameter_changes", "workflow", "guardrail"}.issubset(cards[0])
+    assert any("Medizinstudienplätze" in card["title"] for card in cards)
+    assert any("Telemedizin" in card["title"] for card in cards)
+    assert "Ausgangslage verstehen" in combined
+    assert "Annahmen prüfen" in combined
+    assert "Policy-Briefing lesen" in combined
+    assert "keine amtliche Prognose" in combined
+    assert "nicht automatisch" in combined
+    assert all(card["parameter_changes"] for card in cards)
 
 
 def test_direction_word_uses_plain_language_and_preference_direction():

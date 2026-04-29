@@ -1588,3 +1588,33 @@ Keine.
 
 ### Verification / Git
 Verifiziert: fokussierte App-Tests `2 passed`; Full suite `99 passed`; `py_compile` Kernmodule OK; Simulation-Smoke `20 runs × 2 years` OK `(60, 30)/(320, 6)`. Commit/Push und Zip folgen nach diesem Log-Eintrag.
+
+
+## 2026-04-30 00:49 Europe/Berlin — Heartbeat: sichere Szenario-Galerie als Einstieg
+
+### Context
+Alex will mehr Core-Plattform statt reiner KI/Evidence-Slices. Dieser Lauf beginnt den MiroFish-inspirierten, aber evidenz-guarded Scenario-Gallery-Track als kleine, reversible UX-/Plattform-Slice.
+
+### Project Manager
+Priorität: Erstnutzer schneller zu einer sinnvollen Simulation führen, ohne Parameter automatisch oder unkontrolliert zu ändern. Nächste 1-3 Aufgaben: Gallery-Karten mit echten Apply-Buttons nur nach klarer Review-Sicherheitslogik; Karten an Scenario-Manifeste anbinden; mobile Darstellung kompakter machen.
+
+### Designer / UX
+Die Landing Page bekommt einen klaren Demo-Einstieg: Beispiel-Szenarien zeigen Frage, relevante Annahme, Workflow und nächsten Klick. Wichtig: touch-/mobil-sicher als Expander statt Hover-only.
+
+### Creative Agent
+MiroFish-Inspiration wird selektiv genutzt: demo-first und geführter Ablauf, aber nicht „Predict Anything“. Fit ist gut, weil SimMed dadurch schneller erlebbar wird; die Guardrails bleiben sichtbar.
+
+### Political Health-System Strategist
+Die Karten sind als policy questions formuliert, nicht als Empfehlung. Politische Bewertung bleibt nachgelagert im Policy-Briefing/Stakeholder-Teil, damit keine Starterkarte als Lobbying-Route wirkt.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Es wurden keine neuen externen Fakten oder Wirkannahmen eingeführt; die Karten verweisen nur auf bereits dokumentierte Modellpfade/Caveats wie Studienplatz-Verzögerung, Telemedizin-Unsicherheit und Präventions-Timing.
+
+### Integrator Decision
+Akzeptiert: `build_scenario_gallery_cards()` als strukturierter Helper plus Landing-Page-Expander und Regressionstest. Noch nicht akzeptiert: automatische Parameterübernahme; dafür braucht es einen expliziten, getesteten Szenario-Manifest-/Apply-Schritt.
+
+### Question to Alex
+Keine.
+
+### Verification / Git
+Verifiziert: fokussierter Gallery-Test passierte; Full suite `100 passed`; `py_compile` Kernmodule OK; Simulation-Smoke `20 runs × 2 years` OK `(60, 30)/(320, 6)`. Commit/Push und Zip folgen nach diesem Log-Eintrag.
