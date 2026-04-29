@@ -45,7 +45,24 @@ Responsibilities:
 
 The designer agent should usually produce a design brief first, then implementation tasks.
 
-### 4. Domain / Evidence Agent
+### 4. Creative Agent
+
+Responsibilities:
+
+- propose surprising but product-relevant features, metaphors, interaction patterns, scenario ideas, visualizations, narrative hooks, and sharing/game mechanics
+- challenge the team to make SimMed engaging without making it unserious
+- explicitly mark ideas as low-risk, medium-risk, or speculative
+- explain which user problem each idea solves
+
+Creative ideas are not accepted automatically. They must be discussed against fit criteria:
+
+- Does it improve understanding, motivation, or decision quality?
+- Does it preserve credibility and avoid gamifying away real-world caveats?
+- Can it be implemented without derailing the core roadmap?
+- Is it explainable to a newcomer?
+- Does Alex need to decide before we proceed?
+
+### 5. Domain / Evidence Agent
 
 Responsibilities:
 
@@ -54,7 +71,7 @@ Responsibilities:
 - propose official German/EU data sources
 - ensure model caveats stay visible
 
-### 5. Implementation Agent(s)
+### 6. Implementation Agent(s)
 
 Responsibilities:
 

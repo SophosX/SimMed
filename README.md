@@ -167,6 +167,7 @@ Recommended roles:
 - Integrator/Maintainer: keeps `main` stable, runs tests, commits and pushes verified changes
 - Project Manager Agent: reviews priorities, risks, backlog, and next steps
 - Designer/UX Agent: improves usability, onboarding, and information hierarchy
+- Creative Agent: proposes unusual but product-relevant ideas, then the team discusses whether they fit the app
 - Evidence/Domain Agent: checks assumptions, source quality, and provenance gaps
 - Implementation Agent: implements small scoped tasks with tests
 
