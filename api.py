@@ -12,7 +12,7 @@ from typing import Any
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
 
-from data_ingestion import build_parameter_snapshot_status, list_cached_snapshots
+from data_ingestion import build_data_passport_rows, build_parameter_snapshot_status, list_cached_snapshots
 from data_sources import list_sources
 from parameter_registry import list_parameters
 from political_feasibility import assess_political_feasibility
@@ -49,6 +49,19 @@ def get_data_snapshots() -> dict:
         "guardrail": "Rohdaten-Snapshots zeigen Cache/Provenienz; Modellparameter ändern sich erst nach geprüfter Transformation.",
         "snapshots": [snapshot.to_dict() for snapshot in list_cached_snapshots()],
         "parameters": build_parameter_snapshot_status(parameter_keys),
+        "data_passport": build_data_passport_rows(parameters),
+    }
+
+
+@api.get("/data-passport")
+def get_data_passport() -> dict:
+    """Expose registry status plus raw-cache status as a user-facing data passport."""
+
+    parameters = list_parameters()
+    return {
+        "status": "registry_and_raw_cache_passport_not_model_integration",
+        "guardrail": "'aus Daten' beschreibt den Registry-/Quellenstatus; Rohdaten-Cache und geprüfte Transformation bleiben getrennt sichtbar.",
+        "parameters": build_data_passport_rows(parameters),
     }
 
 

@@ -21,6 +21,25 @@ def test_api_exposes_data_snapshot_status_guardrail():
         "status_note",
     }
     assert "Rohdaten-Snapshot" in population["status_note"]
+    passport_population = next(row for row in body["data_passport"] if row["parameter_key"] == "bevoelkerung_mio")
+    assert passport_population["registry_label"] == "aus Daten"
+    assert "cache" in passport_population
+    assert "Snapshot" in passport_population["passport_note"]
+
+
+def test_api_exposes_data_passport_for_registry_and_cache_status():
+    client = TestClient(api)
+    response = client.get("/data-passport")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "registry_and_raw_cache_passport_not_model_integration"
+    assert "Rohdaten-Cache" in body["guardrail"]
+    population = next(row for row in body["parameters"] if row["parameter_key"] == "bevoelkerung_mio")
+    assert population["registry_label"] == "aus Daten"
+    assert population["source_version"]
+    assert population["cache"]["parameter_key"] == "bevoelkerung_mio"
+    assert "Registry" in population["passport_note"]
 
 
 def test_api_exposes_political_feasibility_endpoint():

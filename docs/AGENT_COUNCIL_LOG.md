@@ -1132,3 +1132,16 @@ Keine.
 - **Integrator Decision:** `list_cached_snapshots()`, `build_parameter_snapshot_status()` und `GET /data-snapshots` ergänzt; keine Modelllogik und keine Parameterwerte geändert.
 - **Question to Alex if needed:** Keine wichtige Entscheidung offen; nächster Plattform-Schritt kann UI-Datenpass oder erster statischer GENESIS-Fixture-Snapshot sein.
 - **Verification/Git:** `tests/test_data_ingestion.py`, `tests/test_api.py`, volle Tests und kleiner Simulation-Smoke ausgeführt; Commit/Push folgt.
+
+
+## 2026-04-29 21:09 UTC — Datenpass-API für Registry + Rohdaten-Cache
+
+- **Context:** Alex priorisiert Core-Plattform vor KI-Recherche; bestehende Snapshot-API zeigte Rohdaten-Cache, aber noch keinen kombinierten Nutzer-Datenpass aus Registry-Status (`aus Daten`/`Annahme`) plus Cache/Transformations-Guardrail.
+- **Project Manager:** Kleiner, reversibler Plattform-Slice auf Priorität 1 Dateningestion/Provenienz; keine Modellparameter-Mutation, keine neue externe Datenbehauptung.
+- **Designer/UX:** API/UI-Vorbereitung trennt verständlich: Registry-Status, Quellenstand, Datenlinie und Rohdaten-Snapshot sind getrennte Lesefelder statt ein implizites Vertrauenssignal.
+- **Creative Agent:** Datenpass als zukünftige Karte/Inspektionslayer verwendbar: jeder Parameter bekommt einen prüfbaren Pass statt verstreuter Badges.
+- **Political Health-System Strategist:** Guardrail verhindert, dass source-backed Defaults als amtlich geprüfte 2040-Prognosen oder importierte Echtzeitdaten missverstanden werden.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; bestehende Registry-Quellen werden nur strukturiert exposed. Rohdaten-Cache bleibt ausdrücklich kein Modellfakt bis Review/Transformation.
+- **Integrator Decision:** `build_data_passport_rows(...)` in `data_ingestion.py` ergänzt und API `/data-passport` plus eingebettetes `data_passport` in `/data-snapshots` hinzugefügt; Tests decken Registry/Cache-Trennung ab.
+- **Question to Alex if needed:** Keine neue Produktentscheidung offen; nächster sicherer Schritt ist UI-Datenpass/Sidebar- oder Learning-Page-Surface.
+- **Verification/Git:** `pytest tests/test_data_ingestion.py tests/test_api.py -q`, `py_compile`, Full Suite `76 passed`, FastAPI Smoke `/data-passport` OK. Commit/Push folgt in diesem Lauf.

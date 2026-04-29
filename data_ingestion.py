@@ -136,17 +136,75 @@ def build_parameter_snapshot_status(
     for key in parameter_keys:
         matching = [s for s in snapshots if key in s.output_parameter_keys]
         latest = matching[0] if matching else None
+        rows.append(_snapshot_status_row(key, matching, latest))
+    return rows
+
+
+def _snapshot_status_row(
+    parameter_key: str,
+    matching_snapshots: list[CachedSourceSnapshot],
+    latest: CachedSourceSnapshot | None,
+) -> dict:
+    return {
+        "parameter_key": parameter_key,
+        "has_cached_snapshot": latest is not None,
+        "snapshot_count": len(matching_snapshots),
+        "latest_snapshot": latest.to_dict() if latest else None,
+        "status_note": (
+            "Rohdaten-Snapshot vorhanden; Modellwert bleibt bis zur geprüften Transformation getrennt."
+            if latest
+            else "Noch kein Rohdaten-Snapshot im lokalen Cache verknüpft."
+        ),
+    }
+
+
+def build_data_passport_rows(
+    parameters: list[dict],
+    *,
+    cache_root: Path | str = CACHE_ROOT,
+) -> list[dict]:
+    """Combine registry provenance with raw-cache status for UI/API data passports.
+
+    A passport row answers two separate questions that users often conflate:
+    1. Is the current model default source-referenced or still an assumption?
+    2. Is there already a raw cached snapshot connected to that parameter?
+
+    It never marks a parameter as imported just because the registry cites a source.
+    Reviewed transformations remain outside this read-only helper.
+    """
+
+    snapshot_by_key = {
+        row["parameter_key"]: row
+        for row in build_parameter_snapshot_status([p["key"] for p in parameters], cache_root=cache_root)
+    }
+    rows: list[dict] = []
+    for parameter in parameters:
+        key = parameter["key"]
+        data_status = parameter.get("data_status", "annahme")
+        cache_status = snapshot_by_key[key]
         rows.append(
             {
                 "parameter_key": key,
-                "has_cached_snapshot": latest is not None,
-                "snapshot_count": len(matching),
-                "latest_snapshot": latest.to_dict() if latest else None,
-                "status_note": (
-                    "Rohdaten-Snapshot vorhanden; Modellwert bleibt bis zur geprüften Transformation getrennt."
-                    if latest
-                    else "Noch kein Rohdaten-Snapshot im lokalen Cache verknüpft."
-                ),
+                "label": parameter.get("label", key),
+                "unit": parameter.get("unit", ""),
+                "evidence_grade": parameter.get("evidence_grade", "E"),
+                "source_ids": parameter.get("source_ids", []),
+                "registry_data_status": data_status,
+                "registry_label": "aus Daten" if data_status == "aus_daten" else "Annahme, nicht aus Daten",
+                "source_version": parameter.get("source_version", ""),
+                "data_lineage": parameter.get("data_lineage", ""),
+                "cache": cache_status,
+                "passport_note": _data_passport_note(data_status, cache_status["has_cached_snapshot"]),
             }
         )
     return rows
+
+
+def _data_passport_note(data_status: str, has_cached_snapshot: bool) -> str:
+    if data_status == "aus_daten" and has_cached_snapshot:
+        return "Registry ist source-backed und ein Rohdaten-Snapshot ist vorhanden; geprüfte Transformation separat prüfen."
+    if data_status == "aus_daten":
+        return "Registry ist source-backed, aber der automatisierte Rohdaten-Snapshot fehlt noch."
+    if has_cached_snapshot:
+        return "Rohdaten-Snapshot vorhanden, aber Registry markiert den Modellwert weiter als Annahme bis zur Review."
+    return "Annahme ohne verknüpften Rohdaten-Snapshot; nicht als gemessenen Datenwert lesen."

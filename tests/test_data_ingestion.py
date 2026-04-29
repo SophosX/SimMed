@@ -1,6 +1,7 @@
 import json
 
 from data_ingestion import (
+    build_data_passport_rows,
     build_parameter_snapshot_status,
     cache_source_payload,
     list_cached_snapshots,
@@ -83,3 +84,51 @@ def test_snapshot_status_is_read_only_and_conservative(tmp_path):
         "latest_snapshot": None,
         "status_note": "Noch kein Rohdaten-Snapshot im lokalen Cache verknüpft.",
     }
+
+
+def test_data_passport_separates_registry_status_from_raw_cache(tmp_path):
+    cache_source_payload(
+        source_id="destatis_genesis",
+        source_url="https://www-genesis.destatis.de/genesis/online",
+        payload=b"year,value\n2025,84.5\n",
+        filename="population.csv",
+        cache_root=tmp_path,
+        source_period="2025",
+        output_parameter_keys=("bevoelkerung_mio",),
+        transformation_note="fixture only; no model mutation",
+        retrieved_at="2026-04-29T20:00:00+00:00",
+    )
+    parameters = [
+        {
+            "key": "bevoelkerung_mio",
+            "label": "Bevölkerung",
+            "unit": "million people",
+            "evidence_grade": "A",
+            "source_ids": ["destatis_genesis"],
+            "data_status": "aus_daten",
+            "source_version": "Destatis referenced baseline; automated snapshot pending",
+            "data_lineage": "Registry baseline; reviewed import pending.",
+        },
+        {
+            "key": "telemedizin_rate",
+            "label": "Telemedizin-Nutzung",
+            "unit": "share",
+            "evidence_grade": "E",
+            "source_ids": ["expert_assumption"],
+            "data_status": "annahme",
+            "source_version": "",
+            "data_lineage": "Scenario assumption.",
+        },
+    ]
+
+    rows = build_data_passport_rows(parameters, cache_root=tmp_path)
+
+    population = rows[0]
+    assert population["registry_label"] == "aus Daten"
+    assert population["cache"]["has_cached_snapshot"] is True
+    assert "geprüfte Transformation separat" in population["passport_note"]
+
+    telemedicine = rows[1]
+    assert telemedicine["registry_label"] == "Annahme, nicht aus Daten"
+    assert telemedicine["cache"]["has_cached_snapshot"] is False
+    assert "nicht als gemessenen Datenwert" in telemedicine["passport_note"]
