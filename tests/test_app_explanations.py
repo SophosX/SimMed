@@ -86,10 +86,18 @@ def test_learning_data_readiness_backlog_prioritizes_safe_data_gates():
 
     assert backlog["title"].startswith("Nächste Daten-Schritte")
     assert "kein Import-Knopf" in backlog["plain_language_note"]
-    assert backlog["summary"]["total_items"] == len(backlog["rows"])
+    assert backlog["summary"]["total_items"] >= len(backlog["rows"])
     assert "snapshot_needed" in backlog["summary"]["counts_by_gate"]
     assert "kein Wirkungsbeweis" in backlog["summary"]["plain_language_note"]
     assert backlog["summary"]["primary_focus"]["next_action"]
+    assert [gate["gate"] for gate in backlog["gate_plan"]] == [
+        "snapshot_needed",
+        "transformation_review_needed",
+        "explicit_model_integration_needed",
+        "monitor_only",
+    ]
+    assert all("guardrail" in gate for gate in backlog["gate_plan"])
+    assert "Manifest" in backlog["gate_plan"][0]["why_this_gate"]
     assert 1 <= len(backlog["rows"]) <= 5
     first = backlog["rows"][0]
     assert {"Parameter", "Nächstes Gate", "Aktion", "Guardrail"} <= set(first)

@@ -4,6 +4,7 @@ from data_ingestion import (
     ReviewedTransformation,
     build_data_passport_rows,
     build_data_readiness_backlog,
+    build_data_readiness_gate_plan,
     build_data_readiness_summary,
     build_parameter_snapshot_status,
     cache_source_payload,
@@ -275,3 +276,22 @@ def test_data_readiness_summary_counts_gates_without_model_import(tmp_path):
     assert summary["primary_focus"]["parameter"] == "Telemedizin-Nutzung"
     assert "kein Live-Import" in summary["plain_language_note"]
     assert "kein Wirkungsbeweis" in summary["plain_language_note"]
+
+    gate_plan = build_data_readiness_gate_plan(backlog)
+    assert [gate["gate"] for gate in gate_plan] == [
+        "snapshot_needed",
+        "transformation_review_needed",
+        "explicit_model_integration_needed",
+        "monitor_only",
+    ]
+    snapshot_gate = gate_plan[0]
+    review_gate = gate_plan[1]
+    assert snapshot_gate["open_count"] == 1
+    assert snapshot_gate["example_parameters"] == ["Telemedizin-Nutzung"]
+    assert "Manifest" in snapshot_gate["why_this_gate"]
+    assert review_gate["open_count"] == 1
+    assert review_gate["example_parameters"] == ["Bevölkerung"]
+    combined = " ".join(str(value) for gate in gate_plan for value in gate.values())
+    assert "keine Live-Datenübernahme" in combined
+    assert "keine Modellmutation" in combined
+    assert "kein Wirkungsbeweis" in combined

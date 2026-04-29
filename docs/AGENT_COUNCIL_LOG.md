@@ -1272,3 +1272,32 @@ Keine wichtige Entscheidung offen.
 
 ### Verification / Git
 Focused tests passed: `14 passed` for data ingestion/API/Learning Page readiness tests. Full suite passed: `84 passed`. Py-compile passed for touched modules. Runtime smoke passed with 20 runs × 2 years: `df (60, 30)`, `reg (320, 6)`. Commit `05ee026` pushed to `feat/platform-data-status-foundation`; updated zip at `/opt/data/cache/documents/health_simulation_app_updated.zip`.
+
+## 2026-04-29 23:45 Europe/Berlin — Data-readiness gate plan
+
+### Context
+Heartbeat primary track stayed on core platform data/provenance. Existing Data Passport/Data Readiness Backlog listed next gates but the Learning Page/API did not yet present the full gate order as a clear implementation plan.
+
+### Project Manager
+Priority: make real-data ingestion work easier to execute repeatedly. Risk: users/agents may treat a backlog row as a one-step import; the plan now keeps cache, transformation review, explicit model integration, and monitoring separate. Next tasks: add a real connector slice for a safe Destatis/GENESIS snapshot, then review one transformation without model mutation.
+
+### Designer / UX
+Learning Page now explains “Warum diese Reihenfolge?” with a mobile-safe expander before the raw table, so first-time users see the path rather than only a technical backlog.
+
+### Creative Agent
+Idea: later turn the gate plan into a small progress ladder per parameter. Fit is good for motivation/onboarding, but current slice stays textual and testable.
+
+### Political Health-System Strategist
+Keeping explicit integration separate matters politically: a cached official source is not yet a policy effect, forecast, or accepted model premise. This protects SimMed from overstating data authority.
+
+### Evidence / Domain
+No new external research in this run. The change is a provenance workflow/UX layer only; it adds no new factual claims, effect sizes, or model parameters.
+
+### Integrator Decision
+Accepted: add `build_data_readiness_gate_plan(...)`, expose it via `/data-readiness-backlog`, and render it in the Learning Page. Also fixed Learning Page summary counts to use the full backlog while rows remain limited for readability.
+
+### Question to Alex
+Keine wichtige Entscheidung offen. Recommendation: next platform slice should be a reviewed live/reference Destatis snapshot connector, still without automatic model mutation.
+
+### Verification / Git
+Targeted tests: `62 passed`. Full suite: `84 passed`. Py compile passed for core modules. Simulation smoke: `OK smoke (120, 30) (480, 6)`. Commit/push status follows in the heartbeat report.

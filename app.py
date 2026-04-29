@@ -29,7 +29,12 @@ import warnings
 
 from political_feasibility import assess_political_feasibility
 from expert_council import plain_language_workflow_summary
-from data_ingestion import build_data_passport_rows, build_data_readiness_backlog, build_data_readiness_summary
+from data_ingestion import (
+    build_data_passport_rows,
+    build_data_readiness_backlog,
+    build_data_readiness_gate_plan,
+    build_data_readiness_summary,
+)
 from parameter_registry import PARAMETER_REGISTRY, list_parameters
 from simulation_report import build_simulation_report as build_policy_briefing_report
 
@@ -4038,8 +4043,9 @@ def render_learning_data_passport_overview():
 def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
     """Summarize the next safe data-foundation gates for the Learning Page."""
 
-    backlog = build_data_readiness_backlog(list_parameters(), limit=limit)
-    summary = build_data_readiness_summary(backlog)
+    full_backlog = build_data_readiness_backlog(list_parameters())
+    backlog = full_backlog[:limit]
+    summary = build_data_readiness_summary(full_backlog)
     return {
         "title": "Nächste Daten-Schritte: erst Cache, dann Review, dann Integration",
         "plain_language_note": (
@@ -4047,6 +4053,7 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
             "Sie ist bewusst kein Import-Knopf: Rohdaten, Transformation und Modellintegration bleiben getrennte Gates."
         ),
         "summary": summary,
+        "gate_plan": build_data_readiness_gate_plan(full_backlog),
         "rows": [
             {
                 "Parameter": item["label"],
@@ -4071,6 +4078,11 @@ def render_learning_data_readiness_backlog():
     col2.metric("Snapshot fehlt", summary["counts_by_gate"]["snapshot_needed"])
     col3.metric("Review fehlt", summary["counts_by_gate"]["transformation_review_needed"])
     st.info(f"Nächster Fokus: {summary['primary_focus']['parameter']} — {summary['primary_focus']['next_action']}")
+    with st.expander("Warum diese Reihenfolge? Daten-Gates als Arbeitsplan", expanded=False):
+        for gate in backlog["gate_plan"]:
+            examples = ", ".join(gate["example_parameters"]) if gate["example_parameters"] else "aktuell keine Beispiele"
+            st.markdown(f"**{gate['order']}. {gate['label']}** ({gate['open_count']} offen)  ")
+            st.caption(f"{gate['why_this_gate']} Beispiele: {examples}. Guardrail: {gate['guardrail']}")
     st.dataframe(pd.DataFrame(backlog["rows"]), use_container_width=True, hide_index=True)
     st.caption("Guardrail: Eine Backlog-Zeile ist Arbeitsplanung für Provenienz — kein Live-Import, keine Modellmutation, kein Wirkungsbeweis.")
 

@@ -311,6 +311,14 @@ def build_data_passport_rows(
 
 
 
+DATA_READINESS_GATE_LABELS = {
+    "snapshot_needed": "Rohdaten-Snapshot fehlt",
+    "transformation_review_needed": "Transformationsreview fehlt",
+    "explicit_model_integration_needed": "explizite Modellintegration offen",
+    "monitor_only": "nur beobachten",
+}
+
+
 def build_data_readiness_summary(backlog_items: list[dict]) -> dict:
     """Summarize data-readiness gates for API/UI status cards.
 
@@ -319,13 +327,7 @@ def build_data_readiness_summary(backlog_items: list[dict]) -> dict:
     not about policy truth or import success.
     """
 
-    gate_labels = {
-        "snapshot_needed": "Rohdaten-Snapshot fehlt",
-        "transformation_review_needed": "Transformationsreview fehlt",
-        "explicit_model_integration_needed": "explizite Modellintegration offen",
-        "monitor_only": "nur beobachten",
-    }
-    counts = {gate: 0 for gate in gate_labels}
+    counts = {gate: 0 for gate in DATA_READINESS_GATE_LABELS}
     for item in backlog_items:
         gate = item.get("next_gate", "")
         if gate in counts:
@@ -336,7 +338,7 @@ def build_data_readiness_summary(backlog_items: list[dict]) -> dict:
     return {
         "total_items": len(backlog_items),
         "counts_by_gate": counts,
-        "labels_by_gate": gate_labels,
+        "labels_by_gate": DATA_READINESS_GATE_LABELS,
         "primary_focus": {
             "parameter": first_parameter,
             "next_action": first_action,
@@ -346,6 +348,39 @@ def build_data_readiness_summary(backlog_items: list[dict]) -> dict:
             "danach erst explizit Modell/Registry ändern. Sie ist kein Live-Import und kein Wirkungsbeweis."
         ),
     }
+
+
+def build_data_readiness_gate_plan(backlog_items: list[dict], *, per_gate_limit: int = 3) -> list[dict]:
+    """Group the data-readiness backlog into a sequential, safe implementation plan.
+
+    This is intentionally a planning/readability layer for API and Learning Page:
+    it does not import data, does not mark a parameter as model-ready, and does
+    not change registry defaults. It helps agents/users see the order of work:
+    snapshot -> transformation review -> explicit integration -> monitoring.
+    """
+
+    gate_explanations = {
+        "snapshot_needed": "Zuerst Rohdaten aus der dokumentierten Quelle speichern und mit Manifest/Hash nachvollziehbar machen.",
+        "transformation_review_needed": "Danach prüfen, wie Rohdaten in genau diese Modellgröße übersetzt würden.",
+        "explicit_model_integration_needed": "Erst nach Review bewusst Registry/Modellcode ändern; kein automatischer Import.",
+        "monitor_only": "Bereits geprüfte oder bewusst nicht integrierte Daten beobachten und bei neuen Quellen erneut prüfen.",
+    }
+    plan: list[dict] = []
+    for order, gate in enumerate(DATA_READINESS_GATE_LABELS, start=1):
+        items = [item for item in backlog_items if item.get("next_gate") == gate]
+        plan.append(
+            {
+                "order": order,
+                "gate": gate,
+                "label": DATA_READINESS_GATE_LABELS[gate],
+                "open_count": len(items),
+                "why_this_gate": gate_explanations[gate],
+                "example_parameters": [item["label"] for item in items[:per_gate_limit]],
+                "next_actions": [item["next_action"] for item in items[:per_gate_limit]],
+                "guardrail": "Planungsstatus nur für Provenienzarbeit: keine Live-Datenübernahme, keine Modellmutation, kein Wirkungsbeweis.",
+            }
+        )
+    return plan
 
 
 def build_data_readiness_backlog(

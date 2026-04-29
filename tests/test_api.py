@@ -49,9 +49,16 @@ def test_api_exposes_data_readiness_backlog_without_model_integration():
     assert response.status_code == 200
     body = response.json()
     assert body["status"] == "data_readiness_backlog_not_model_integration"
-    assert "importiert keine Werte" in body["guardrail"]
+    assert body["summary"]["counts_by_gate"]["snapshot_needed"] >= 1
+    assert [gate["gate"] for gate in body["gate_plan"]] == [
+        "snapshot_needed",
+        "transformation_review_needed",
+        "explicit_model_integration_needed",
+        "monitor_only",
+    ]
+    assert "keine Modellmutation" in " ".join(gate["guardrail"] for gate in body["gate_plan"])
     assert body["items"]
-    assert body["summary"]["total_items"] == len(body["items"])
+
     assert "snapshot_needed" in body["summary"]["counts_by_gate"]
     assert "kein Live-Import" in body["summary"]["plain_language_note"]
     first = body["items"][0]

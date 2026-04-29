@@ -15,6 +15,7 @@ from pydantic import BaseModel, Field
 from data_ingestion import (
     build_data_passport_rows,
     build_data_readiness_backlog,
+    build_data_readiness_gate_plan,
     build_data_readiness_summary,
     build_parameter_snapshot_status,
     list_cached_snapshots,
@@ -84,6 +85,7 @@ def get_data_readiness_backlog() -> dict:
         "status": "data_readiness_backlog_not_model_integration",
         "guardrail": "Diese Liste priorisiert Cache-/Review-/Integrationsarbeit; sie importiert keine Werte und beweist keine Policy-Wirkung.",
         "summary": build_data_readiness_summary(items),
+        "gate_plan": build_data_readiness_gate_plan(items),
         "items": items,
     }
 
