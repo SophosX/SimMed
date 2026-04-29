@@ -1064,4 +1064,4 @@ Targeted test passed (`tests/test_app_explanations.py::test_changed_lever_questi
 
 **Question to Alex if needed:** Keine wichtige Entscheidung offen; nächster sicherer Schritt ist die gleiche Entscheidungslogik in den Policy-Briefing-Navigationsindex zu spiegeln.
 
-**Verification/Git:** Lokale Tests bestanden (`72 passed`), py_compile bestanden, Simulation-Smoke `30 runs × 3 Jahre` bestanden. Git-Sync/Push folgt in diesem Lauf.
+**Verification/Git:** Lokale Tests bestanden (`72 passed`), py_compile bestanden, Simulation-Smoke `30 runs × 3 Jahre` bestanden. Synced und nach GitHub gepusht: `253bad6` (`app.py`, Plan, Test, Council Log).
