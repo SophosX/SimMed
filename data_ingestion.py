@@ -936,6 +936,56 @@ def build_data_readiness_platform_brief(actions: list[dict]) -> dict:
 
 
 
+def build_data_readiness_first_contact_guide(summary: dict, actions: list[dict]) -> dict:
+    """Return a plain-language first-contact guide for the data-readiness cockpit.
+
+    This explains what a newcomer should do with the cockpit before they see the
+    denser backlog tables. It is intentionally read-only and only references
+    status/Dry-run routes; it never includes execute=true or implies that a data
+    source, cached snapshot, or review has already changed model values.
+    """
+
+    counts = summary.get("counts_by_gate", {})
+    first_action = actions[0] if actions else None
+    steps = [
+        {
+            "order": 1,
+            "question": "Welche Datenarbeit ist insgesamt noch offen?",
+            "answer": f"{summary.get('total_items', 0)} Parameter haben noch ein Daten-Reife-Gate offen.",
+            "open": "GET /data-readiness/dashboard-cards",
+            "guardrail": "Das ist ein Arbeitsstatus, kein importierter Modellwert.",
+        },
+        {
+            "order": 2,
+            "question": "Wo starte ich sicher, ohne etwas zu verändern?",
+            "answer": (
+                f"Öffne zuerst {first_action['label']} und prüfe {first_action['next_gate_label']}."
+                if first_action else
+                "Es gibt aktuell keine priorisierte Aktion; prüfe den Datenpass."
+            ),
+            "open": first_action["workflow_api"] if first_action else "GET /data-passport",
+            "guardrail": "Workflow-/Statusroute ist read-only: kein Netzwerkabruf, kein Cache-Schreiben, keine Modellintegration.",
+        },
+        {
+            "order": 3,
+            "question": "Warum ist ein Quellenhinweis noch kein Modelleffekt?",
+            "answer": (
+                f"Snapshot fehlt: {counts.get('snapshot_needed', 0)} · Review fehlt: {counts.get('transformation_review_needed', 0)} · "
+                f"explizite Integration fehlt: {counts.get('explicit_model_integration_needed', 0)}."
+            ),
+            "open": "GET /data-readiness-backlog",
+            "guardrail": "Registry-Quelle, Rohdaten-Cache, Transformationsreview und Modellintegration bleiben vier getrennte Prüfungen.",
+        },
+    ]
+    return {
+        "title": "So liest du die Daten-Reife in 60 Sekunden",
+        "plain_language_note": "Erst Status verstehen, dann Dry-run/Workflow öffnen, erst später bewusst Rohdaten cachen oder Modellintegration planen.",
+        "steps": steps,
+        "guardrail": "First-contact-Guide ist Status/Navigation-only: kein execute=true, kein Live-Fetch, kein Cache-Schreiben, keine Review-Erzeugung, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+    }
+
+
+
 def build_data_readiness_dashboard_cards(summary: dict, actions: list[dict]) -> dict:
     """Return mobile-safe status cards for the data-readiness platform dashboard.
 

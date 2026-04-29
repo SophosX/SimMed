@@ -37,6 +37,7 @@ from data_ingestion import (
     build_data_readiness_action_packet,
     build_data_readiness_backlog,
     build_data_readiness_dashboard_cards,
+    build_data_readiness_first_contact_guide,
     build_data_readiness_gate_plan,
     build_data_readiness_operator_handoff,
     build_data_readiness_platform_brief,
@@ -4118,6 +4119,7 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         ),
         "summary": summary,
         "dashboard_cards": build_data_readiness_dashboard_cards(summary, next_actions),
+        "first_contact_guide": build_data_readiness_first_contact_guide(summary, next_actions),
         "gate_plan": build_data_readiness_gate_plan(full_backlog),
         "connector_queue": build_data_connector_queue(full_backlog),
         "connector_snapshot_requests": build_connector_snapshot_requests(full_backlog),
@@ -4233,6 +4235,21 @@ def render_learning_data_readiness_backlog():
     col3.metric("Review fehlt", summary["counts_by_gate"]["transformation_review_needed"])
     st.info(f"Nächster Fokus: {summary['primary_focus']['parameter']} — {summary['primary_focus']['next_action']}")
     cockpit = backlog["dashboard_cards"]
+    guide = backlog["first_contact_guide"]
+    with st.expander(guide["title"], expanded=True):
+        st.caption(guide["plain_language_note"])
+        guide_rows = [
+            {
+                "Reihenfolge": step["order"],
+                "Frage": step["question"],
+                "Antwort": step["answer"],
+                "Öffnen": step["open"],
+                "Guardrail": step["guardrail"],
+            }
+            for step in guide["steps"]
+        ]
+        st.dataframe(pd.DataFrame(guide_rows), use_container_width=True, hide_index=True)
+        st.caption(guide["guardrail"])
     st.markdown(f"**{cockpit['title']}**")
     st.caption(cockpit["plain_language_note"])
     card_cols = st.columns(2)

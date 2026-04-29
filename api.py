@@ -21,6 +21,7 @@ from data_ingestion import (
     build_data_readiness_action_packet,
     build_data_readiness_backlog,
     build_data_readiness_dashboard_cards,
+    build_data_readiness_first_contact_guide,
     build_data_readiness_operator_handoff,
     build_data_readiness_platform_brief,
     build_data_readiness_gate_plan,
@@ -197,6 +198,7 @@ def get_data_readiness_platform_brief(limit: int = 3) -> dict:
         "guardrail": "Plattform-Brief ist read-only: kein Netzwerkabruf, kein Cache-Schreibvorgang, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
         "summary": summary,
         "dashboard_cards": build_data_readiness_dashboard_cards(summary, actions),
+        "first_contact_guide": build_data_readiness_first_contact_guide(summary, actions),
         "platform_brief": build_data_readiness_platform_brief(actions),
     }
 
@@ -223,6 +225,7 @@ def get_data_readiness_dashboard_cards(limit: int = 3) -> dict:
         "guardrail": "Daten-Reife-Cockpit ist Status/Navigation-only: kein execute=true, kein Netzwerkabruf, kein Cache-Schreibvorgang, keine Review-Erzeugung, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
         "summary": summary,
         "dashboard_cards": build_data_readiness_dashboard_cards(summary, actions),
+        "first_contact_guide": build_data_readiness_first_contact_guide(summary, actions),
     }
 
 

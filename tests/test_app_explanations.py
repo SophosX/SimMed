@@ -98,6 +98,12 @@ def test_learning_data_readiness_backlog_prioritizes_safe_data_gates():
     assert backlog["dashboard_cards"]["cards"]
     assert backlog["dashboard_cards"]["first_safe_action"]
     assert "kein execute=true" in backlog["dashboard_cards"]["guardrail"]
+    guide = backlog["first_contact_guide"]
+    assert guide["title"].startswith("So liest du")
+    assert [step["order"] for step in guide["steps"]] == [1, 2, 3]
+    assert guide["steps"][1]["open"].startswith("GET /data-readiness/")
+    assert "Registry-Quelle" in guide["steps"][2]["guardrail"]
+    assert "kein execute=true" in guide["guardrail"]
     assert any(card["id"] == "snapshot_needed" for card in backlog["dashboard_cards"]["cards"])
     assert [gate["gate"] for gate in backlog["gate_plan"]] == [
         "snapshot_needed",

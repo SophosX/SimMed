@@ -148,6 +148,10 @@ def test_api_exposes_platform_brief_as_core_platform_status_endpoint():
     assert cockpit["cards"]
     assert cockpit["first_safe_action"]
     assert "kein execute=true" in cockpit["guardrail"]
+    guide = body["first_contact_guide"]
+    assert guide["title"].startswith("So liest du")
+    assert guide["steps"][1]["open"].startswith("GET /data-readiness/")
+    assert "kein execute=true" in guide["guardrail"]
 
 
 def test_api_exposes_data_readiness_dashboard_cards_without_execution():
@@ -166,6 +170,10 @@ def test_api_exposes_data_readiness_dashboard_cards_without_execution():
     }
     assert cockpit["first_safe_action"]["workflow_api"].startswith("GET /data-readiness/")
     assert "keine Modellintegration" in cockpit["guardrail"]
+    guide = body["first_contact_guide"]
+    assert [step["order"] for step in guide["steps"]] == [1, 2, 3]
+    assert "Status verstehen" in guide["plain_language_note"]
+    assert "keine Registry-/Modellmutation" in guide["guardrail"]
 
 
 def test_api_exposes_operator_handoff_as_focused_data_platform_work_order():

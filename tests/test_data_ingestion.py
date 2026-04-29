@@ -8,6 +8,7 @@ from data_ingestion import (
     build_data_passport_rows,
     build_data_readiness_backlog,
     build_data_readiness_dashboard_cards,
+    build_data_readiness_first_contact_guide,
     build_data_readiness_gate_plan,
     build_data_readiness_platform_brief,
     build_data_readiness_summary,
@@ -502,6 +503,33 @@ def test_data_readiness_dashboard_cards_summarize_status_without_execution(tmp_p
     assert "kein execute=true" in cockpit["guardrail"]
     assert "keine Modellintegration" in cockpit["guardrail"]
 
+
+def test_first_contact_guide_explains_data_readiness_before_backlog_tables(tmp_path):
+    parameters = [
+        {
+            "key": "krankenhausbetten",
+            "label": "Krankenhausbetten",
+            "unit": "beds",
+            "evidence_grade": "A",
+            "source_ids": ["destatis_genesis"],
+            "data_status": "aus_daten",
+        }
+    ]
+    backlog = build_data_readiness_backlog(parameters, cache_root=tmp_path)
+    summary = build_data_readiness_summary(backlog)
+    actions = build_next_data_readiness_actions(backlog, limit=1)
+
+    guide = build_data_readiness_first_contact_guide(summary, actions)
+
+    assert guide["title"].startswith("So liest du")
+    assert len(guide["steps"]) == 3
+    assert guide["steps"][0]["question"] == "Welche Datenarbeit ist insgesamt noch offen?"
+    assert "1 Parameter" in guide["steps"][0]["answer"]
+    assert guide["steps"][1]["open"] == "GET /data-readiness/krankenhausbetten"
+    assert "Snapshot fehlt: 1" in guide["steps"][2]["answer"]
+    assert "Registry-Quelle, Rohdaten-Cache, Transformationsreview und Modellintegration" in guide["steps"][2]["guardrail"]
+    assert "kein execute=true" in guide["guardrail"]
+    assert "keine Registry-/Modellmutation" in guide["guardrail"]
 
 
 def test_connector_execution_workbench_turns_requests_into_next_safe_actions(tmp_path):

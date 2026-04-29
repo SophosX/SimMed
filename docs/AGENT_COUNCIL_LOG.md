@@ -1804,3 +1804,32 @@ Focused tests passed for API and Learning Page helpers; full suite passed (`106 
 - **Integrator Decision:** `build_data_readiness_dashboard_cards(...)` in `data_ingestion.py`, API `GET /data-readiness/dashboard-cards`, Einbettung in Learning-Page Daten-Backlog; Tests ergänzt.
 - **Question to Alex if needed:** Keine wichtige Entscheidung offen.
 - **Verification/Git:** 111 Tests, py_compile und 20x2 Simulation-Smoke erfolgreich; Commit/Push folgt.
+
+## 2026-04-30 01:40 Europe/Berlin — Heartbeat: Data-readiness first-contact guide
+
+### Context
+Alex corrected the heartbeat priority toward core platform implementation. This slice continued the data-ingestion/provenance UX path in `data_ingestion.py`, `api.py`, and the Learning Page.
+
+### Project Manager
+Priority: make the Daten-Reife cockpit easier for first-time users before adding live connector execution. Risk: more tables without a reading order can hide the important guardrails. Next tasks: focused source-level connector status, then a deliberate confirm-before-cache plan.
+
+### Designer / UX
+Added a 60-second first-contact guide before dense backlog tables: what is open, where to start safely, and why source/cache/review/model integration are separate. Mobile-safe table/expander pattern reused.
+
+### Creative Agent
+Idea: later turn the same guide into a checklist card on a future data workbench. Fit is good for operator confidence, but implementation should remain read-only until Alex approves live execution UX.
+
+### Political Health-System Strategist
+Clear separation between evidence status and model effect is important for credibility in politically contested health policy debates; no new stakeholder or policy claims were added.
+
+### Evidence / Domain
+No new research claim in this run. The new helper only reorganizes existing provenance gates and repeats the guardrail that a source reference or raw snapshot is not a policy-effect proof.
+
+### Integrator Decision
+Accepted: add `build_data_readiness_first_contact_guide(...)`, expose it through dashboard/platform API responses, and render it on the Learning Page. Deferred: any execute=true UI or automatic model integration.
+
+### Question to Alex
+Keine wichtige Entscheidung offen.
+
+### Verification / Git
+Focused tests passed for data ingestion/API/Learning Page; full suite passed (`112 passed`); py_compile passed; 50-run simulation smoke passed. Commit/push status follows in heartbeat summary.
