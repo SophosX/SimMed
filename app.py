@@ -1984,6 +1984,24 @@ def render_export(df: pd.DataFrame, agg: pd.DataFrame, df_reg: pd.DataFrame, par
 # UI: LEARNING PAGE
 # ═══════════════════════════════════════════════════════════════════════════════
 
+def learning_page_next_actions() -> list[dict[str, str]]:
+    """Concrete first actions for newcomers; kept testable outside Streamlit."""
+    return [
+        {
+            "title": "1. Stellschraube wählen",
+            "body": "Starte links in der Seitenleiste mit einem sichtbaren Hebel: Studienplätze, Telemedizin, Prävention oder GKV-Beitrag.",
+        },
+        {
+            "title": "2. Simulation starten",
+            "body": "Klicke auf „Simulation starten“. Erst danach sind Ergebnisgrafiken, Erklärungen und politische Einordnung aktualisiert.",
+        },
+        {
+            "title": "3. Ergebnis lesen",
+            "body": "Prüfe zuerst: Was hat sich verändert? Warum passiert das? Wer unterstützt oder bremst die Reform?",
+        },
+    ]
+
+
 def render_learning_page():
     """Erklärt SimMed als übersichtliche, schön strukturierte Lernseite."""
     st.markdown("""
@@ -2038,6 +2056,18 @@ def render_learning_page():
   </p>
 </div>
 """, unsafe_allow_html=True)
+
+    st.markdown("### Sofort loslegen: Was soll ich konkret tun?")
+    for action in learning_page_next_actions():
+        st.markdown(
+            f"""
+<div class="learn-step">
+  <div class="learn-num">{action['title'].split('.')[0]}</div>
+  <div><h4>{action['title']}</h4><p>{action['body']}</p></div>
+</div>
+""",
+            unsafe_allow_html=True,
+        )
 
     st.markdown("### 1. Wofür ist SimMed gedacht?")
     st.markdown("""

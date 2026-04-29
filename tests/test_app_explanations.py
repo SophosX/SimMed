@@ -7,6 +7,7 @@ from app import (
     _parameter_provenance_help,
     build_kpi_explanations,
     get_default_params,
+    learning_page_next_actions,
     plain_language_workflow_summary,
 )
 
@@ -85,6 +86,17 @@ def test_changed_policy_lever_notes_names_only_changed_scenario_levers():
     assert "Präventionsbudget wurde erhöht" in combined
     assert "Telemedizin" not in combined
     assert "kaum sofort" in combined
+
+
+def test_learning_page_next_actions_are_concrete_for_newcomers():
+    actions = learning_page_next_actions()
+    combined = " ".join(f"{item['title']} {item['body']}" for item in actions)
+
+    assert len(actions) == 3
+    assert "Seitenleiste" in combined
+    assert "Simulation starten" in combined
+    assert "Was hat sich verändert" in combined
+    assert "Wer unterstützt oder bremst" in combined
 
 
 def test_learning_page_reuses_expert_council_plain_language_workflow():

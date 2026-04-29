@@ -436,3 +436,33 @@ This is engineering stability, not model evidence. Added regression tests for de
 
 ### Verification / Git
 Pending: full tests, runtime smoke test, zip, commit, push.
+
+
+## 2026-04-29 16:28 UTC — Heartbeat UX next-action clarity
+
+### Context
+Learning page already explains purpose and governance, but newcomer action order could still be more explicit before the conceptual sections.
+
+### Project Manager
+Priority: reduce first-use confusion with a small reversible UI copy improvement. Risk low because it only adds tested helper text and does not affect model outputs.
+
+### Designer / UX
+Add a concrete “Sofort loslegen” sequence: pick a sidebar lever, start simulation, then read what changed/why/who supports or blocks.
+
+### Creative Agent
+Idea: treat the learning page as a mini guided tour instead of static documentation. Fit is good for onboarding; defer richer interactive tour until the basic action path is consistently visible.
+
+### Political Health-System Strategist
+No new stakeholder claim encoded; the UI only points users to the existing political support/blocking explanation after simulation.
+
+### Evidence / Domain
+Keine neue externe Recherche in diesem Lauf. No model parameters or factual assumptions changed.
+
+### Integrator Decision
+Accepted now: small test-backed learning-page next-action helper in `app.py`. Deferred: richer Strategy Mode or new political rubric scoring.
+
+### Question to Alex
+Keine wichtige Frage.
+
+### Verification / Git
+Pending at time of log append: tests, zip refresh, mirror, commit, push.
