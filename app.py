@@ -37,6 +37,7 @@ from data_ingestion import (
     build_data_readiness_backlog,
     build_data_readiness_gate_plan,
     build_data_readiness_summary,
+    build_parameter_data_workflow_card,
     build_transformation_review_template,
 )
 from parameter_registry import PARAMETER_REGISTRY, list_parameters
@@ -4086,7 +4087,8 @@ def build_learning_connector_execution_status(limit: int = 4) -> dict[str, Any]:
     for request in requests[:limit]:
         parameter_key = request["output_parameter_keys"][0]
         passport = passport_by_key.get(parameter_key, {})
-        cache_status = passport.get("raw_snapshot", {}).get("label", "Rohsnapshot nicht geprüft")
+        cache = passport.get("cache", passport.get("raw_snapshot", {}))
+        cache_status = cache.get("label", "Rohsnapshot nicht geprüft")
         transformation_status = passport.get("transformation_review", {}).get("label", "Transformation nicht geprüft")
         rows.append(
             {
@@ -4114,8 +4116,48 @@ def build_learning_connector_execution_status(limit: int = 4) -> dict[str, Any]:
 
 
 
+def build_learning_parameter_data_workflow_cards(limit: int = 3) -> dict[str, Any]:
+    """Build focused parameter-level workflow cards for the Learning Page.
+
+    These cards answer the newcomer question: "why is this sourced parameter not
+    automatically in the model yet?" by reusing the same read-only workflow card
+    that the API exposes for agents.
+    """
+
+    parameters = list_parameters()
+    backlog = build_data_readiness_backlog(parameters)
+    priority_keys = [item["parameter_key"] for item in backlog[:limit]]
+    cards = []
+    for parameter_key in priority_keys:
+        card = build_parameter_data_workflow_card(parameter_key, parameters)
+        passport = card["passport"]
+        cache = passport.get("cache", passport.get("raw_snapshot", {}))
+        template = card["transformation_review_template"]
+        cards.append(
+            {
+                "Parameter": card["parameter_label"],
+                "Register": passport["registry_label"],
+                "Nächstes Gate": card["backlog_item"]["next_gate"],
+                "Nächster sicherer Schritt": card["next_safe_gate"]["label"],
+                "Rohdaten-Cache": cache.get("label", "Rohsnapshot nicht geprüft"),
+                "Transformation": passport["transformation_review"]["label"],
+                "Review-Start": " · ".join(template["checklist"][:2]),
+                "API": f"GET /data-readiness/{parameter_key}",
+                "Guardrail": card["guardrail"],
+            }
+        )
+    return {
+        "title": "Warum ist ein Datenpunkt noch nicht im Modell?",
+        "plain_language_note": (
+            "Diese Parameterkarten verbinden Datenpass, Backlog, Connector-Plan und Review-Checkliste. "
+            "Sie zeigen pro Parameter den nächsten sicheren Schritt, ohne Netzwerkabruf, Cache-Schreibvorgang, Registry-Änderung oder Modelleffekt."
+        ),
+        "rows": cards,
+    }
+
+
+
 def render_learning_data_readiness_backlog():
-    """Render the data-readiness backlog as a mobile-safe table."""
 
     backlog = build_learning_data_readiness_backlog()
     summary = backlog["summary"]
@@ -4161,6 +4203,16 @@ def render_learning_data_readiness_backlog():
             st.dataframe(pd.DataFrame(connector_status["rows"]), use_container_width=True, hide_index=True)
         else:
             st.caption("Aktuell gibt es keinen unterstützten geplanten Connector-Request für einen Dry-run-Status.")
+    workflow_cards = build_learning_parameter_data_workflow_cards()
+    with st.expander("Warum ist dieser Datenpunkt noch nicht im Modell?", expanded=False):
+        st.markdown(
+            f"<div class=\"learn-callout\"><b>Parameter-Workflow:</b> {workflow_cards['plain_language_note']}</div>",
+            unsafe_allow_html=True,
+        )
+        if workflow_cards["rows"]:
+            st.dataframe(pd.DataFrame(workflow_cards["rows"]), use_container_width=True, hide_index=True)
+        else:
+            st.caption("Aktuell keine offenen Parameter-Workflows im Daten-Backlog.")
     st.dataframe(pd.DataFrame(backlog["rows"]), use_container_width=True, hide_index=True)
     st.caption("Guardrail: Eine Backlog-Zeile ist Arbeitsplanung für Provenienz — kein Live-Import, keine Modellmutation, kein Wirkungsbeweis.")
 

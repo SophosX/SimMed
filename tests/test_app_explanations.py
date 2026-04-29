@@ -15,6 +15,7 @@ from app import (
     build_learning_connector_execution_status,
     build_learning_data_passport_overview,
     build_learning_data_readiness_backlog,
+    build_learning_parameter_data_workflow_cards,
     build_kpi_assumption_trace,
     build_kpi_drilldown_items,
     build_kpi_drilldown_navigation,
@@ -146,6 +147,36 @@ def test_learning_connector_execution_status_keeps_dry_run_and_cache_gates_separ
     assert "Transformation" in combined
     assert "Nenner" in combined
     assert "SHA256" in combined
+
+
+
+def test_learning_parameter_data_workflow_cards_explain_why_data_is_not_model_ready():
+    cards = build_learning_parameter_data_workflow_cards(limit=3)
+
+    assert cards["title"].startswith("Warum ist ein Datenpunkt")
+    assert "Datenpass" in cards["plain_language_note"]
+    assert "Connector-Plan" in cards["plain_language_note"]
+    assert "ohne Netzwerkabruf" in cards["plain_language_note"]
+    assert cards["rows"]
+    assert 1 <= len(cards["rows"]) <= 3
+    first = cards["rows"][0]
+    assert {
+        "Parameter",
+        "Register",
+        "Nächstes Gate",
+        "Nächster sicherer Schritt",
+        "Rohdaten-Cache",
+        "Transformation",
+        "Review-Start",
+        "API",
+        "Guardrail",
+    } <= set(first)
+    combined = " ".join(str(value) for row in cards["rows"] for value in row.values())
+    assert "GET /data-readiness/" in combined
+    assert "SHA256" in combined or "Rohdaten" in combined
+    assert "keine Registry- oder Modellmutation" in combined
+    assert "kein Policy-Wirkungsbeweis" in combined
+
 
 
 def test_landing_hero_content_sets_first_contact_expectations():

@@ -1559,3 +1559,32 @@ Keine.
 
 ### Verification / Git
 Lokal verifiziert: `98 passed`, `py_compile` für Kernmodule, Simulation-Smoke `20 runs × 2 years` OK `(60, 30)/(320, 6)`. Git-Commit/Push und Zip-Artefakt folgen in diesem Heartbeat.
+
+## 2026-04-30 00:44 Europe/Berlin — Heartbeat: Parameter-Datenworkflow auf Lernseite
+
+### Context
+Alex will klare Core-Plattform-Fortschritte. Vorher gab es den parameterbezogenen Workflow bereits als Helper/API; dieser Lauf bringt ihn in die Lernseite und korrigiert einen Cache-Status-Lesefehler in der UI.
+
+### Project Manager
+Priorität bleibt Dateningestion/Provenienz. Diese kleine Slice macht den bestehenden API-Workflow direkt sichtbar: Datenpass → Backlog → Connector-Plan → Review-Checkliste → nächstes sicheres Gate. Nächste Plattform-Aufgabe: Karten noch mobiler/kompakter machen oder erste echte Review-Erfassung als explizite, getestete Aktion planen.
+
+### Designer / UX
+Die neue Lernseiten-Frage „Warum ist dieser Datenpunkt noch nicht im Modell?“ passt zur Erstnutzer-Logik: Nutzer sehen nicht nur Statuslisten, sondern den Grund, warum `aus Daten` noch kein automatischer Modelleffekt ist.
+
+### Creative Agent
+Idee: später pro Datenpass-Zeile ein kleines „Laborzettel“-Popover mit derselben Workflow-Karte. Fit: erhöht Vertrauen; sollte aber dieselben zentralen Helper wiederverwenden.
+
+### Political Health-System Strategist
+Keine neuen politischen Fakten. Die Darstellung verhindert Überclaiming: Cache/Review bleiben keine amtliche Prognose, kein Wirkungsbeweis und keine stille Parameteränderung.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Keine neuen Quellen/Parameterannahmen; nur vorhandene Provenienz- und Workflowfelder wurden in UI/Test nutzbar gemacht.
+
+### Integrator Decision
+Akzeptiert: `build_learning_parameter_data_workflow_cards(...)`, Lernseiten-Expander und Regressionstest. Zusätzlich UI-Cache-Status auf Data-Passport-Schlüssel `cache` umgestellt, mit Fallback auf altes `raw_snapshot`.
+
+### Question to Alex
+Keine.
+
+### Verification / Git
+Verifiziert: fokussierte App-Tests `2 passed`; Full suite `99 passed`; `py_compile` Kernmodule OK; Simulation-Smoke `20 runs × 2 years` OK `(60, 30)/(320, 6)`. Commit/Push und Zip folgen nach diesem Log-Eintrag.
