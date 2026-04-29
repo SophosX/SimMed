@@ -2050,6 +2050,100 @@ def render_result_decision_checkpoints(agg: pd.DataFrame, params: dict):
             st.caption(f"Nächster Schritt: {row['next_step']}")
 
 
+
+def build_result_storyboard(agg: pd.DataFrame, params: dict) -> List[Dict[str, str]]:
+    """Build an ordered result-reading storyboard from existing explanation helpers.
+
+    The storyboard is navigation only: it reassembles already-tested result
+    explanations so users know which section to open first and which guardrail
+    belongs to that step. It must not add new model effects or external claims.
+    """
+    checkpoints = build_result_decision_checkpoints(agg, params)
+    topics = build_result_explorer_topics(agg, params)
+    lever_cards = build_changed_lever_question_cards(agg, params)
+    kpi_items = build_kpi_drilldown_items(agg, params)
+    timing_rows = build_trend_changed_lever_timing(agg, params)
+    political_rows = build_changed_lever_result_audit_trail(agg, params)
+
+    strongest = kpi_items[0] if kpi_items else {}
+    first_topic = topics[0] if topics else {}
+    first_lever = lever_cards[0] if lever_cards else {}
+    first_timing = timing_rows[0] if timing_rows else {}
+    first_political = political_rows[0] if political_rows else {}
+
+    kpi_target = strongest.get("next_step") or first_topic.get("next_click") or "KPI-Detailkarte mit stärkster Bewegung öffnen."
+    lever_target = first_lever.get("label", "geänderte Hebel prüfen")
+    assumption_target = "Annahmen-Check der geänderten Hebel öffnen."
+    if first_lever.get("question_rows"):
+        for row in first_lever["question_rows"]:
+            if row.get("question") == "Welche Annahme prüfen?":
+                assumption_target = row.get("answer", assumption_target)
+                break
+
+    return [
+        {
+            "stage": "1 · Orientierung",
+            "user_question": "Was ist in dieser Simulation zuerst auffällig?",
+            "open_section": "Darf ich daraus schon eine Entscheidung ableiten?",
+            "answer_signal": checkpoints[0]["answer"] if checkpoints else "Stärkste KPI-Bewegung als Startpunkt lesen.",
+            "target": checkpoints[0]["next_step"] if checkpoints else kpi_target,
+            "guardrail": "Noch keine Entscheidung ableiten: erst Ergebnis → Wirkpfad → Annahme → Zeitverlauf lesen.",
+        },
+        {
+            "stage": "2 · KPI-Detail",
+            "user_question": "Welche Kennzahl erklärt die stärkste Bewegung konkret?",
+            "open_section": "KPI-Details / Schnellantworten",
+            "answer_signal": strongest.get("observation", "Start-/Endwert und Effektstärke in der stärksten KPI prüfen."),
+            "target": kpi_target,
+            "guardrail": strongest.get("scope_caveat", "KPI-Bewegung ist ein Modellpfad, keine amtliche Prognose."),
+        },
+        {
+            "stage": "3 · Geänderte Hebel",
+            "user_question": "Welche Eingabe hängt mit diesem Ergebnis zusammen?",
+            "open_section": "Geänderte Hebel als Fragen lesen",
+            "answer_signal": f"Zuerst prüfen: {lever_target}.",
+            "target": "Antwortkarte: Was wurde geändert? Warum bewegt das Ergebnisse? Wie stark/wo sichtbar?",
+            "guardrail": "Nur vorhandene Modellpfade lesen; keine zusätzliche Kausalbehauptung ableiten.",
+        },
+        {
+            "stage": "4 · Annahmen/Evidenz",
+            "user_question": "Welche Annahme entscheidet, ob ich dem Signal traue?",
+            "open_section": "Annahmen-Check zu deinen geänderten Hebeln",
+            "answer_signal": assumption_target,
+            "target": "Evidenzgrad, Quellen/Registry-Rolle, Caveat und Unsicherheit prüfen.",
+            "guardrail": "Kein Wirksamkeitsbeweis: registrierte Quellen und Caveats begrenzen die Interpretation.",
+        },
+        {
+            "stage": "5 · Timing im Trend",
+            "user_question": "Wann sollte der Effekt sichtbar werden?",
+            "open_section": "Trendverlauf / Leseguide",
+            "answer_signal": first_timing.get("inspection_window", "Zeitverlauf prüfen; gemischte Einheiten nicht direkt vergleichen."),
+            "target": first_timing.get("next_step", "Trend-Leseguide und passende KPI-Detailkarte öffnen."),
+            "guardrail": "Trendlinien zeigen Monte-Carlo-Mittelwerte im Modell, keine offizielle Vorhersage.",
+        },
+        {
+            "stage": "6 · Politische Einordnung",
+            "user_question": "Wer könnte warum unterstützen oder bremsen?",
+            "open_section": "Politische Lesespur nach geändertem Hebel",
+            "answer_signal": first_political.get("political_caveat", "Politik nur als qualitative Rubrik lesen."),
+            "target": first_political.get("next_step", "Unterstützer/Bremser je geänderten Hebel prüfen."),
+            "guardrail": "Kein Vote-Forecast, kein Lobby-Ranking und keine Lobbying-Empfehlung.",
+        },
+    ]
+
+
+def render_result_storyboard(agg: pd.DataFrame, params: dict):
+    """Render the ordered result-reading storyboard."""
+    rows = build_result_storyboard(agg, params)
+    with st.expander("Ergebnis-Storyboard: was öffne ich in welcher Reihenfolge?", expanded=True):
+        st.caption("Eine Lesereihenfolge über vorhandene Ergebnis-Sektionen: erst Signal, dann KPI, Hebel, Annahme, Timing und politische Rubrik.")
+        for row in rows:
+            st.markdown(f"**{row['stage']} — {row['user_question']}**")
+            st.markdown(f"- **Öffnen:** {row['open_section']}")
+            st.markdown(f"- **Signal:** {row['answer_signal']}")
+            st.markdown(f"- **Konkretes Ziel:** {row['target']}")
+            st.caption(f"Guardrail: {row['guardrail']}")
+
 def render_changed_lever_result_audit_trail(agg: pd.DataFrame, params: dict):
     """Render an input-to-result audit trail for changed levers."""
     rows = build_changed_lever_result_audit_trail(agg, params)
@@ -3034,6 +3128,7 @@ def render_dashboard(agg: pd.DataFrame, params: dict):
 
     render_result_narrative_summary(agg, params)
     render_result_decision_checkpoints(agg, params)
+    render_result_storyboard(agg, params)
 
     st.markdown(f"### Kernkennzahlen {endjahr} (Mittelwerte über alle Runs)")
     st.caption("Desktop: ⓘ/Hover erklärt jede Karte. Mobil/Tablet: dieselben Erklärungen stehen direkt darunter in den aufklappbaren KPI-Details.")

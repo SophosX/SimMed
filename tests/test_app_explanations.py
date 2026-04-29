@@ -24,6 +24,7 @@ from app import (
     build_result_explorer_topics,
     build_result_narrative_summary,
     build_result_reading_path,
+    build_result_storyboard,
     build_report_navigation_index,
     build_report_question_shortcuts,
     build_simulation_report,
@@ -1231,3 +1232,47 @@ def test_result_decision_checkpoints_prevent_overclaiming_before_kpi_grid():
     assert "keinen Wirksamkeitsbeweis" in combined
     assert "Ergebnis → Wirkpfad → Annahme → Zeitverlauf" in combined
 
+
+
+def test_result_storyboard_orders_sections_from_signal_to_politics():
+    agg = pd.DataFrame([
+        {
+            "jahr": 2026,
+            "aerzte_pro_100k_mean": 430.0,
+            "wartezeit_fa_mean": 35.0,
+            "versorgungsindex_rural_mean": 0.72,
+            "gkv_saldo_mean": 1.0,
+        },
+        {
+            "jahr": 2040,
+            "aerzte_pro_100k_mean": 410.0,
+            "wartezeit_fa_mean": 44.0,
+            "versorgungsindex_rural_mean": 0.64,
+            "gkv_saldo_mean": -2.0,
+        },
+    ])
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] - 1500
+
+    storyboard = build_result_storyboard(agg, params)
+
+    assert [row["stage"] for row in storyboard] == [
+        "1 · Orientierung",
+        "2 · KPI-Detail",
+        "3 · Geänderte Hebel",
+        "4 · Annahmen/Evidenz",
+        "5 · Timing im Trend",
+        "6 · Politische Einordnung",
+    ]
+    combined = " ".join(
+        " ".join([row["user_question"], row["open_section"], row["answer_signal"], row["target"], row["guardrail"]])
+        for row in storyboard
+    )
+    assert "KPI" in combined and "Detail" in combined
+    assert "Medizinstudienplätze" in combined
+    assert "Evidenzgrad" in combined
+    assert "Trend" in combined
+    assert "keine offizielle Vorhersage" in combined or "keine amtliche Prognose" in combined
+    assert "Vote-Forecast" in combined
+    assert "Lobbying-Empfehlung" in combined
+    assert "Ergebnis → Wirkpfad → Annahme → Zeitverlauf" in combined

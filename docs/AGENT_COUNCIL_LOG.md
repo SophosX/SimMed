@@ -1065,3 +1065,16 @@ Targeted test passed (`tests/test_app_explanations.py::test_changed_lever_questi
 **Question to Alex if needed:** Keine wichtige Entscheidung offen; nächster sicherer Schritt ist die gleiche Entscheidungslogik in den Policy-Briefing-Navigationsindex zu spiegeln.
 
 **Verification/Git:** Lokale Tests bestanden (`72 passed`), py_compile bestanden, Simulation-Smoke `30 runs × 3 Jahre` bestanden. Synced und nach GitHub gepusht: `253bad6` (`app.py`, Plan, Test, Council Log).
+
+
+## 2026-04-29 19:40 UTC — Ergebnis-Storyboard Lesereihenfolge
+
+- **Context:** Cron-Heartbeat für tiefere, logischere Result-Experience; keine neue Modell-/Datenlogik.
+- **Project Manager:** Nächster sinnvoller kleiner Slice: vorhandene Ergebnisbausteine als prüfbare Lesereihenfolge verbinden, statt weitere Einzeltexte zu ergänzen.
+- **Designer/UX:** Ergebnis-Storyboard erklärt, welche Sektion ein Nutzer nacheinander öffnen soll: Orientierung → KPI-Detail → geänderter Hebel → Annahme/Evidenz → Trend-Timing → politische Rubrik.
+- **Creative Agent:** Nutzt ein Storyboard-/Journey-Muster, damit die vielen vorhandenen Erklärungen wie ein geführter Rundgang wirken.
+- **Political Health-System Strategist:** Politische Einordnung bleibt am Ende der Lesereihenfolge und wird ausdrücklich als qualitative Rubrik ohne Vote-Forecast/Lobbying-Empfehlung markiert.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; keine neuen Sachclaims kodiert, nur vorhandene Modellpfade, Evidenzgrade und Caveats neu angeordnet.
+- **Integrator Decision:** Plan erweitert und `build_result_storyboard(...)`/Renderer mit fokussiertem Test ergänzt.
+- **Question to Alex if needed:** Keine wichtige Entscheidung offen; sicherer, reversibler UX-Orchestrierungs-Slice.
+- **Verification/Git:** Lokal: `pytest -q` 73 passed; `py_compile` OK; 20-run Smoke `df=(60,30)`, `reg=(320,6)`. Git-Sync/Push folgt.

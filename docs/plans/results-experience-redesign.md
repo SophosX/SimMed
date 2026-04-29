@@ -445,3 +445,18 @@ Small implementation slice:
 5. Add a focused test that verifies the checkpoints include effect strength, exact next KPI/detail target, evidence/assumption caveat, timing, political not-vote-forecast guardrail, and no-official-forecast language.
 
 Guardrail: this is a decision-hygiene/navigation layer only. It must not add new empirical claims, new model effects, or a hidden policy recommendation. It should tell users what to inspect before treating a simulated KPI movement as policy evidence.
+
+
+## 2026-04-29 next slice: Ergebnis-Storyboard mit prüfbarer Lesereihenfolge
+
+Problem: Die Ergebnisseite enthält inzwischen viele gute Erklärungselemente. Damit sie nicht wie zusätzliche Snippets wirkt, braucht der obere Bereich eine knappe Storyboard-Struktur: Welche Sektion beantwortet welche Nutzerfrage, welches vorhandene Detail soll zuerst geöffnet werden, und welche Aussage darf erst nach Annahmen-/Timing-/Politikprüfung getroffen werden?
+
+Small implementation slice:
+
+1. Add a pure `build_result_storyboard(agg, params)` helper in `app.py`.
+2. Reuse existing structures only: result decision checkpoints, question-first result explorer topics, changed-lever question cards, KPI drilldowns, trend timing, and political checkpoints.
+3. Return ordered stages with: stage, user question, section to open, answer signal, concrete target, guardrail.
+4. Render it directly after the decision checkpoints as an expanded guide called “Ergebnis-Storyboard: was öffne ich in welcher Reihenfolge?”.
+5. Add a focused test that verifies the storyboard links changed levers to KPI detail targets, assumptions/evidence, trend timing, political qualitative guardrails, and keeps the no-official-forecast/no-vote-forecast/no-lobbying wording.
+
+Guardrail: This is a navigation/orchestration slice only. It must not add new empirical claims, model effects, or stakeholder claims; it makes the existing evidence/assumption/timing/political audit path explicit.
