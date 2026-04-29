@@ -985,3 +985,33 @@ Local verification before sync: `python3 -m pytest -q` → 59 passed; py_compile
 - Integrator Decision: Implemented a pure helper and renderer rows in `render_main_trend_chart(agg, params)`; no simulation outputs changed.
 - Question to Alex if needed: No major decision open; next safe step can continue polishing report/result navigation.
 - Verification/Git: `pytest -q` passed (65 tests), py_compile passed, 20-run smoke test passed (`df=(60, 30)`, `reg=(320, 6)`); pushed main commit `ab062e0`.
+
+
+## 2026-04-29 20:23 Europe/Berlin — Heartbeat: Changed-lever audit trail
+
+### Context
+Alex wants deeper, coherent result explanations rather than more scattered snippets. Existing result helpers already cover narrative, question-first topics, changed-parameter bridge, KPI details, trend timing, assumption checks, and political lever sections.
+
+### Project Manager
+Priority: connect those helpers into a single per-lever audit path. Risk: duplicating new causal text would drift from the model; keep this as orchestration only. Next tasks: verify helper, run full tests/smoke, sync/push.
+
+### Designer / UX
+A user who changes one parameter should be able to stay with that one lever and see: what I changed, why the model moved, which KPI cards to open, when to inspect the trend, which assumption limits interpretation, and what political friction means.
+
+### Creative Agent
+Idea: treat each changed lever as a small “case file.” Fit is high because it supports curiosity and auditability without making SimMed look like a prediction machine.
+
+### Political Health-System Strategist
+The political part remains explicitly qualitative: supporters/blockers are shown as rubric context tied to a changed lever, not as a vote forecast, lobbying advice, or insider claim.
+
+### Evidence / Domain
+No new research in this run; no new factual claims were introduced. The slice reuses registry evidence grades/caveats and existing model caveats.
+
+### Integrator Decision
+Accepted: implement a changed-lever result audit trail helper and render it near the top result narrative. Defer: richer visual workflow/graph until Alex approves broader UX framing.
+
+### Question to Alex
+No important decision needed in this slice; it is reversible navigation over existing explanations.
+
+### Verification / Git
+Pending at log-write time: pytest, py_compile, runtime smoke, sync, commit, push.

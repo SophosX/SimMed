@@ -401,3 +401,18 @@ Small implementation slice:
 4. Add a focused test that verifies delayed medical study places name the pipeline, show the 6+ year inspection window, link to KPI details, and preserve the Kopfzahl≠Kapazität caveat.
 
 Guardrail: this is navigation/timing guidance only. Do not introduce new empirical claims or change the simulation model; label it as model-path interpretation, not real-world proof.
+
+
+## 2026-04-29 next slice: Changed-lever result audit trail
+
+Problem: SimMed now has many good explanation components, but a user who changed one parameter can still lose the thread across top narrative, question explorer, changed-parameter bridge, KPI details, trend timing, assumption checks, and political feasibility. The result page should let a user audit one changed lever in one coherent path before jumping between sections.
+
+Small implementation slice:
+
+1. Add a pure `build_changed_lever_result_audit_trail(agg, params)` helper in `app.py`.
+2. Reuse existing structured outputs only: `build_changed_parameter_impact_bridge`, `build_changed_parameter_assumption_checks`, `build_trend_changed_lever_timing`, and `build_political_lever_detail_sections`.
+3. Return one row per changed lever with: input change, model path, observed KPI traces, exact KPI detail targets, timing window, evidence/assumption caveat, qualitative political supporters/blockers, and next inspection order.
+4. Render it near the top narrative as an expander, between question-first explorer and the existing changed-parameter bridge, so it acts as a compact map rather than another isolated snippet.
+5. Add a focused regression test that verifies Medizinstudienplätze links to KPI detail targets, delayed timing, evidence grade, political caveat/not-vote-forecast wording, and the ordered input → result → assumption → implementation path.
+
+Guardrail: this is navigation/orchestration only. It must not add new model effects, real-world claims, stakeholder claims, scores, forecasts, or political advice.

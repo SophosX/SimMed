@@ -1854,6 +1854,83 @@ def render_result_explorer_topics(agg: pd.DataFrame, params: dict):
             st.success(f"Nächster Klick: {topic['next_click']}")
 
 
+def build_changed_lever_result_audit_trail(agg: pd.DataFrame, params: dict) -> List[Dict[str, Any]]:
+    """Create a compact audit trail for every changed lever across result sections.
+
+    This is navigation/orchestration only: it joins existing bridge, assumption,
+    trend-timing and political-section outputs so users can audit one changed
+    parameter from input to KPI trace to caveat to politics without adding new
+    model effects, source claims or stakeholder forecasts.
+    """
+    bridge_items = build_changed_parameter_impact_bridge(agg, params)
+    if not bridge_items:
+        return []
+
+    assumption_by_label = {item["label"]: item for item in build_changed_parameter_assumption_checks(agg, params)}
+    timing_by_label = {item["label"]: item for item in build_trend_changed_lever_timing(agg, params)}
+
+    defaults = get_default_params()
+    parameter_changes = {key: value for key, value in params.items() if key in defaults and value != defaults[key]}
+    political_sections = build_political_lever_detail_sections(assess_political_feasibility(parameter_changes))
+
+    def political_for(label: str) -> Dict[str, Any] | None:
+        normalized = label.lower()
+        for section in political_sections:
+            section_label = section.get("label", "")
+            section_norm = section_label.lower()
+            if normalized in section_norm or section_norm in normalized:
+                return section
+        return None
+
+    rows: List[Dict[str, Any]] = []
+    for bridge in bridge_items:
+        label = bridge["label"]
+        assumption = assumption_by_label.get(label, {})
+        timing = timing_by_label.get(label, {})
+        political = political_for(label) or {}
+        supporter_names = ", ".join(row.get("stakeholder", "") for row in political.get("supporters", [])[:2]) or "keine Unterstützergruppe direkt ausgewiesen"
+        blocker_names = ", ".join(row.get("stakeholder", "") for row in political.get("blockers", [])[:2]) or "keine Bremsergruppe direkt ausgewiesen"
+        rows.append({
+            "label": label,
+            "changed": bridge["change"],
+            "model_path": bridge["model_path"],
+            "observed_kpis": bridge.get("observed_kpis", []),
+            "drilldown_targets": bridge.get("drilldown_targets", []),
+            "assumption_check": assumption.get("evidence", "Kein Register-Check verfügbar"),
+            "assumption_caveat": assumption.get("registry_caveat", bridge.get("caveat", "Caveat prüfen")),
+            "timing": timing.get("inspection_window", "Zeitverlauf prüfen"),
+            "timing_guidance": timing.get("how_to_read_timing", "nicht aus einem Einzeljahr schließen"),
+            "political_supporters": supporter_names,
+            "political_blockers": blocker_names,
+            "political_caveat": f"{political.get('caveat', 'Qualitative Rubrik.')} Kein Vote-Forecast und keine Lobbying-Empfehlung.",
+            "next_step": (
+                "Öffne zuerst die genannten KPI-Detailkarten, dann den Annahmen-Check und erst danach die politische Lesespur; "
+                "so bleibt Eingabe → Ergebnis → Annahme → Umsetzbarkeit getrennt prüfbar."
+            ),
+        })
+    return rows
+
+
+def render_changed_lever_result_audit_trail(agg: pd.DataFrame, params: dict):
+    """Render an input-to-result audit trail for changed levers."""
+    rows = build_changed_lever_result_audit_trail(agg, params)
+    if not rows:
+        return
+    with st.expander("Geänderte Hebel: Ergebnis-Audit in einem Pfad", expanded=False):
+        st.caption("Diese Übersicht verknüpft vorhandene Erklärungen je Hebel. Sie ist keine neue Wirkungsberechnung und kein politischer Forecast.")
+        for row in rows:
+            st.markdown(f"**{row['label']}**")
+            st.markdown(f"- **Eingabe:** {row['changed']}")
+            st.markdown(f"- **Warum im Modell:** {row['model_path']}")
+            st.markdown("- **KPI-Spuren prüfen:** " + ("; ".join(row["observed_kpis"]) or "keine direkte KPI-Spur ausgewiesen"))
+            if row.get("drilldown_targets"):
+                st.markdown("- **Detailkarten:** " + "; ".join(target["next_step"] for target in row["drilldown_targets"]))
+            st.markdown(f"- **Timing:** {row['timing_guidance']} ({row['timing']})")
+            st.markdown(f"- **Annahme/Evidenz:** {row['assumption_check']}; Caveat: {row['assumption_caveat']}")
+            st.markdown(f"- **Politische Lesespur:** Unterstützer: {row['political_supporters']}; Bremser: {row['political_blockers']}; {row['political_caveat']}")
+            st.success(row["next_step"])
+
+
 def build_simulation_report(agg: pd.DataFrame, params: dict) -> List[Dict[str, Any]]:
     """Build structured Policy-Briefing sections from existing result helpers.
 
@@ -2120,6 +2197,7 @@ def render_result_narrative_summary(agg: pd.DataFrame, params: dict):
     st.caption(summary["next_step"])
     render_result_reading_path(agg, params)
     render_result_explorer_topics(agg, params)
+    render_changed_lever_result_audit_trail(agg, params)
     render_changed_parameter_impact_bridge(agg, params)
 
 
