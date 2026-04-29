@@ -17,6 +17,7 @@ from data_ingestion import (
     build_parameter_snapshot_status,
     list_cached_snapshots,
     list_reviewed_transformations,
+    seed_reference_fixture_snapshots,
 )
 from data_sources import list_sources
 from parameter_registry import list_parameters
@@ -68,6 +69,25 @@ def get_data_passport() -> dict:
         "status": "registry_and_raw_cache_passport_not_model_integration",
         "guardrail": "'aus Daten' beschreibt den Registry-/Quellenstatus; Rohdaten-Cache und geprüfte Transformation bleiben getrennt sichtbar.",
         "parameters": build_data_passport_rows(parameters),
+    }
+
+
+@api.post("/data-fixtures/seed-reference-snapshots")
+def seed_data_fixture_snapshots() -> dict:
+    """Seed local reference fixtures for data-passport demos without mutating model parameters.
+
+    This is a deliberate development/onboarding action: it makes the raw-cache
+    passport path visible through the API while preserving the guardrail that
+    fixtures, raw snapshots and transformation reviews are not model imports.
+    """
+
+    snapshots = seed_reference_fixture_snapshots()
+    parameters = list_parameters()
+    return {
+        "status": "reference_fixtures_seeded_not_model_integration",
+        "guardrail": "Fixture-Snapshots dienen nur Cache/Provenienz- und UI-Tests; sie ändern keine SimMed-Modellparameter und sind kein Live-Destatis-Import.",
+        "seeded_snapshots": [snapshot.to_dict() for snapshot in snapshots],
+        "data_passport": build_data_passport_rows(parameters),
     }
 
 

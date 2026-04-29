@@ -1200,3 +1200,16 @@ Keine wichtige Entscheidung offen.
 - **Integrator Decision:** `ReviewedTransformation` plus Read/Write/List-Helper in `data_ingestion.py`; Datenpass/API/Lernseite lesen die separate Review-Schicht, ohne Parameter zu ändern.
 - **Question to Alex if needed:** Keine.
 - **Verification/Git:** Tests/Smoke/Git werden im Heartbeat nach Implementierung dokumentiert.
+
+
+## 2026-04-29T21:30:00+00:00 — Data Passport: API-Seed-Aktion für Referenz-Fixtures
+
+- **Context:** Plattform-Heartbeat priorisiert Data-Ingestion/Provenienz. Es gab bereits Fixture-Seeding im Modul, aber noch keinen sicheren API-Einstieg, damit Agenten/UI-Workflows den Datenpass-Cache initialisieren können.
+- **Project Manager:** Kleiner Kernplattform-Slice: POST-Endpunkt für Fixture-Seeding, keine Live-Daten, keine Modellmutation; nächster Schritt kann Live-Destatis-Connector oder UI-Aktion sein.
+- **Designer/UX:** Hilft Onboarding: Erstnutzer:innen/Agenten können den Unterschied zwischen Registry, Rohdaten-Cache und Transformationsreview praktisch sehen, statt nur Tabellen ohne Cache-Artefakt.
+- **Creative Agent:** Passt später zur Scenario-Gallery als „Datenpass vorbereiten“-Schritt; heute bewusst als nüchterner API-Guardrail statt gamifiziert.
+- **Political Health-System Strategist:** Guardrail nennt explizit: kein Live-Destatis-Import, keine Modellparameter-Änderung; verhindert, dass Fixture-Daten politisch als amtlicher Prognosebeweis gelesen werden.
+- **Evidence/Domain:** Keine neue externe Recherche in diesem Lauf; Änderung ist Infrastruktur. Fixture bleibt source-referenced Testmaterial und kein neuer Fachclaim.
+- **Integrator Decision:** `POST /data-fixtures/seed-reference-snapshots` akzeptiert, weil es die Data-Passport-Pipeline bedienbarer macht und bestehende Schutzlogik wiederverwendet.
+- **Question to Alex if needed:** Keine.
+- **Verification/Git:** Wird nach Tests, Smoke, Commit/Push und Zip-Refresh im Heartbeat berichtet.

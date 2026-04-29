@@ -42,6 +42,23 @@ def test_api_exposes_data_passport_for_registry_and_cache_status():
     assert "Registry" in population["passport_note"]
 
 
+def test_api_can_seed_reference_fixture_snapshots_without_model_import():
+    client = TestClient(api)
+    response = client.post("/data-fixtures/seed-reference-snapshots")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "reference_fixtures_seeded_not_model_integration"
+    assert "kein Live-Destatis-Import" in body["guardrail"]
+    assert body["seeded_snapshots"]
+    seeded = body["seeded_snapshots"][0]
+    assert seeded["source_id"] == "destatis_genesis"
+    assert seeded["output_parameter_keys"] == ["bevoelkerung_mio"]
+    population = next(row for row in body["data_passport"] if row["parameter_key"] == "bevoelkerung_mio")
+    assert population["cache"]["has_cached_snapshot"] is True
+    assert "geprüfte Transformation" in population["passport_note"]
+
+
 def test_api_exposes_political_feasibility_endpoint():
     client = TestClient(api)
     response = client.post(
