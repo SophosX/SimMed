@@ -146,3 +146,16 @@ Small implementation slice:
 4. Add a focused test that verifies the grouped details include supporters, blockers, changed lever, implementation lag, friction, caveat, and a concrete next inspection prompt.
 
 Guardrail: stakeholder text remains a qualitative rubric/proposal, not a sourced vote forecast, hidden score, or lobbying recommendation. Do not add new stakeholder claims beyond existing `political_feasibility.py` rules in this slice.
+
+## 2026-04-29 next slice: Changed-parameter impact bridge
+
+Problem: the result page now has a narrative, KPI drill-downs and political lever detail, but users still have to mentally connect their concrete parameter changes to observed KPI movement. The page should explicitly bridge “Du hast X geändert” → “im Modell wirkt das über diesen Pfad” → “diese KPI-Bewegungen solltest du prüfen”.
+
+Small implementation slice:
+
+1. Add a pure `build_changed_parameter_impact_bridge(agg, params)` helper in `app.py`.
+2. For the already explained main levers (Telemedizin, ePA/Digitalisierung, Prävention, Medizinstudienplätze, Pflegepersonalschlüssel), return: lever label, concrete change direction, model path, timing/assumption caveat, observed KPI pointers, and next inspection.
+3. Render the bridge near the top result narrative as expandable “Was bedeuten deine geänderten Hebel?”.
+4. Add a focused test that verifies it names the changed lever, shows start/end KPI pointers, flags delayed/ambiguous effects for prevention/study places, and gives a concrete next click.
+
+Guardrail: this is an explanation bridge only. It must not add new model logic, new stakeholder claims or authoritative real-world claims; use existing simulation outputs and existing caveats.

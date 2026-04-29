@@ -655,3 +655,15 @@ Local verification passed: `python3 -m pytest -q` (32 passed), py_compile, and 5
 **Question to Alex if needed:** Keine wichtige Entscheidung offen. Nächste sichere Arbeit: weitere Ergebnis-Lesespur für Parameterwirkung oder API-Proposal-Status.
 
 **Verification/Git:** `tests/test_app_explanations.py` 19 passed; full pytest 38 passed; py_compile OK; Simulation-Smoke 30 Runs × 3 Jahre OK. Git-Sync/Push folgt in diesem Lauf.
+
+## 2026-04-29 17:32 UTC — Heartbeat: Ergebnis-Hebelbrücke
+
+- **Context:** Alex fordert tiefere, logischere Ergebnisführung. Bestehende Lesespur hatte Narrative, KPI-Details, Trend-Hinweise und politische Hebel; fehlend war die direkte Brücke von geänderten Parametern zu beobachteten KPI-Spuren.
+- **Project Manager:** Kleiner risikoarmer UX-Slice statt großer Umbau: Plan ergänzen, pure Helper-Funktion, ein Renderpunkt, fokussierter Test.
+- **Designer/UX:** Nutzer:innen sehen jetzt direkt nach der Ergebnis-Narrative „Was bedeuten deine geänderten Hebel?“ mit Reihenfolge: geändert → Wirkpfad im Modell → KPI-Spuren → Annahme → nächster Klick.
+- **Creative Agent:** Die neue Brücke funktioniert wie eine Leselandkarte; keine Gamification, keine zusätzlichen Snippets ohne Pfad.
+- **Political Health-System Strategist:** Keine neuen Stakeholder-/Machtclaims; politische Bewertung bleibt in der bestehenden Rubrik. Parameterbrücke verweist nur auf Umsetzbarkeit, wenn passend.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf. Keine neuen Realwelt-Fakten kodiert; Texte markieren Modelllogik und Annahmen, inkl. verzögerter Prävention und Studienplatz-Pipeline.
+- **Integrator Decision:** `build_changed_parameter_impact_bridge()` und `render_changed_parameter_impact_bridge()` in `app.py` ergänzt; Plan in `docs/plans/results-experience-redesign.md` aktualisiert; Test ergänzt.
+- **Question to Alex if needed:** Keine wichtige Entscheidung offen; nächster sicherer Schritt ist bessere visuelle/inhaltliche Priorisierung innerhalb der Ergebnislesespur.
+- **Verification/Git:** pytest vollständig, py_compile und 50×3-Smoke-Test bestanden. Git-Sync/Push folgt in diesem Lauf.

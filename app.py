@@ -1363,6 +1363,118 @@ def build_political_lever_detail_sections(political_assessment: Dict[str, Any]) 
     return sections
 
 
+def build_changed_parameter_impact_bridge(agg: pd.DataFrame, params: dict) -> List[Dict[str, Any]]:
+    """Connect changed scenario levers to observed KPI movements.
+
+    This is explanation-only: it reads existing simulated outputs and existing
+    caveats so users can follow their own parameter changes through the result
+    page. It does not change model behavior or introduce new empirical claims.
+    """
+    defaults = get_default_params()
+    first, last = agg.iloc[0], agg.iloc[-1]
+
+    def changed(key: str, tolerance: float = 1e-9) -> bool:
+        if key not in params or key not in defaults:
+            return False
+        try:
+            return abs(float(params[key]) - float(defaults[key])) > tolerance
+        except (TypeError, ValueError):
+            return params[key] != defaults[key]
+
+    def direction(key: str, more_word: str = "erhöht", less_word: str = "gesenkt") -> str:
+        return more_word if float(params[key]) > float(defaults[key]) else less_word
+
+    def kpi_pointer(key: str, higher_is_better: bool) -> str:
+        if f"{key}_mean" not in agg.columns:
+            return f"{KPI_LABELS.get(key, key)}: in dieser Aggregation nicht verfügbar."
+        summary = _metric_delta_summary(agg, key, higher_is_better)
+        return (
+            f"{summary['label']}: Start {summary['start']:.2f} → Ende {summary['end']:.2f}; "
+            f"{summary['strength']} {summary['direction']}."
+        )
+
+    specs = [
+        {
+            "key": "telemedizin_rate",
+            "label": "Telemedizin",
+            "change": lambda: f"Telemedizin wurde {direction('telemedizin_rate', 'ausgebaut', 'zurückgenommen')} ({defaults['telemedizin_rate']:.2f} → {float(params['telemedizin_rate']):.2f}).",
+            "model_path": "Wirkt im Modell vor allem über einfachere Kontakte, Wege, Praxisentlastung und Zugang — nicht als Ersatz für jede fachärztliche Leistung.",
+            "caveat": "Annahme prüfen: Adoption und tatsächliche Entlastung sind vereinfacht; digitale Kontakte sind nicht automatisch bessere Versorgung.",
+            "kpis": [("wartezeit_fa", False), ("telemedizin_rate", True), ("zufriedenheit_patienten", True)],
+            "next": "Nächster Klick: Öffne Facharzt-Wartezeit und Telemedizin in den KPI-Details, danach den Zeitverlauf.",
+        },
+        {
+            "key": "digitalisierung_epa",
+            "label": "ePA/Digitalisierung",
+            "change": lambda: f"ePA/Digitalisierung wurde {direction('digitalisierung_epa', 'stärker', 'schwächer')} gesetzt ({defaults['digitalisierung_epa']:.2f} → {float(params['digitalisierung_epa']):.2f}).",
+            "model_path": "Wirkt im Modell über Koordination, weniger Doppelarbeit und mögliche Produktivität — aber nur, wenn Daten wirklich genutzt werden.",
+            "caveat": "Annahme prüfen: Digitalisierung hat Anlaufkosten und unsichere sektorale Produktivität; nicht als pauschale Kostenbremse lesen.",
+            "kpis": [("gesundheitsausgaben_mrd", False), ("wartezeit_fa", False), ("telemedizin_rate", True)],
+            "next": "Nächster Klick: Vergleiche Ausgaben, Wartezeit und Telemedizin; politische Reibung bei Umsetzung separat prüfen.",
+        },
+        {
+            "key": "praeventionsbudget",
+            "label": "Präventionsbudget",
+            "change": lambda: f"Präventionsbudget wurde {direction('praeventionsbudget')} ({defaults['praeventionsbudget']:.2f} → {float(params['praeventionsbudget']):.2f}).",
+            "model_path": "Wirkt im Modell über verzögerte Krankheitslast und Outcomes, kann aber kurzfristig Ausgaben erhöhen.",
+            "caveat": "Annahme prüfen: Wirkung ist verzögert und krankheitsübergreifend vereinfacht; Einsparungen sind kurzfristig nicht garantiert.",
+            "kpis": [("gesundheitsausgaben_mrd", False), ("chroniker_rate", False), ("lebenserwartung", True)],
+            "next": "Nächster Klick: Lies Chroniker-Rate, Lebenserwartung und Ausgaben zusammen statt nur den kurzfristigen Saldo.",
+        },
+        {
+            "key": "medizinstudienplaetze",
+            "label": "Medizinstudienplätze",
+            "change": lambda: f"Medizinstudienplätze wurden {direction('medizinstudienplaetze', 'erhöht', 'reduziert')} ({defaults['medizinstudienplaetze']:.0f} → {float(params['medizinstudienplaetze']):.0f}).",
+            "model_path": "Wirkt im Modell über die Ausbildungs-Pipeline: kaum sofort, Absolvent:innen nach etwa 6 Jahren, Facharztkapazität oft erst nach 11–13 Jahren.",
+            "caveat": "Annahme prüfen: Kopfzahl ist nicht Kapazität; Fachrichtung, Region, Arbeitszeit und Abwanderung bleiben entscheidend.",
+            "kpis": [("aerzte_pro_100k", True), ("wartezeit_fa", False), ("versorgungsindex_rural", True)],
+            "next": "Nächster Klick: Prüfe Ärzte pro 100k, Wartezeit und ländliche Versorgung im Zeitverlauf — frühe Jahre nicht überinterpretieren.",
+        },
+        {
+            "key": "pflegepersonal_schluessel",
+            "label": "Pflegepersonalschlüssel",
+            "change": lambda: f"Pflegepersonalschlüssel wurde {direction('pflegepersonal_schluessel', 'verbessert', 'verschlechtert')} ({defaults['pflegepersonal_schluessel']:.2f} → {float(params['pflegepersonal_schluessel']):.2f}).",
+            "model_path": "Wirkt im Modell über stationäre Belastung, Qualität und Personalengpässe; Betten helfen nur, wenn Personal verfügbar ist.",
+            "caveat": "Annahme prüfen: bessere Schlüssel brauchen reale Fachkräfte und können kurzfristig Kosten/Umsetzungsdruck erhöhen.",
+            "kpis": [("burnout_rate", False), ("vermeidbare_mortalitaet", False), ("gesundheitsausgaben_mrd", False)],
+            "next": "Nächster Klick: Lies Burnout, vermeidbare Mortalität und Ausgaben zusammen, danach politische Umsetzbarkeit.",
+        },
+    ]
+
+    items: List[Dict[str, Any]] = []
+    for spec in specs:
+        if not changed(spec["key"]):
+            continue
+        items.append({
+            "key": spec["key"],
+            "label": spec["label"],
+            "change": spec["change"](),
+            "model_path": spec["model_path"],
+            "observed_kpis": [kpi_pointer(key, better) for key, better in spec["kpis"]],
+            "caveat": spec["caveat"],
+            "next_step": spec["next"],
+        })
+    return items
+
+
+def render_changed_parameter_impact_bridge(agg: pd.DataFrame, params: dict):
+    """Render the user-change → model-path → observed-KPI bridge."""
+    bridge_items = build_changed_parameter_impact_bridge(agg, params)
+    if not bridge_items:
+        return
+    st.markdown("#### Was bedeuten deine geänderten Hebel?")
+    st.caption("Diese Brücke verbindet deine Eingaben mit den simulierten Kennzahlen. Sie erklärt Modelllogik, keine gesicherte Realwelt-Kausalität.")
+    for item in bridge_items:
+        with st.expander(item["label"], expanded=False):
+            st.markdown(f"**1 · Geändert:** {item['change']}")
+            st.markdown(f"**2 · Wirkpfad im Modell:** {item['model_path']}")
+            st.markdown("**3 · Beobachtete KPI-Spuren:**")
+            for pointer in item["observed_kpis"]:
+                st.markdown(f"- {pointer}")
+            st.info(f"**4 · Annahme prüfen:** {item['caveat']}")
+            st.success(f"**5 · Nächster Klick:** {item['next_step']}")
+
+
 def render_result_narrative_summary(agg: pd.DataFrame, params: dict):
     """Render a compact orientation block before KPI cards."""
     summary = build_result_narrative_summary(agg, params)
@@ -1372,6 +1484,7 @@ def render_result_narrative_summary(agg: pd.DataFrame, params: dict):
         st.markdown(f"- **{item['meaning']}** — {item['sentence']}")
     st.info(summary["scenario_text"])
     st.caption(summary["next_step"])
+    render_changed_parameter_impact_bridge(agg, params)
 
 
 def _changed_policy_lever_notes(params: dict) -> List[str]:

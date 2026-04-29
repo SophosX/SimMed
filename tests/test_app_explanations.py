@@ -7,6 +7,7 @@ from app import (
     _parameter_effect_hint,
     _parameter_evidence_badge,
     _parameter_provenance_help,
+    build_changed_parameter_impact_bridge,
     build_kpi_drilldown_items,
     build_kpi_explanations,
     build_political_lever_detail_sections,
@@ -343,6 +344,48 @@ def test_trend_view_guidance_warns_about_mixed_units_and_next_step():
     assert "GKV-Beitragssatz" in combined
     assert "KPI-Detailkarte" in combined
     assert "keine amtliche Prognose" in combined
+
+
+
+def test_changed_parameter_impact_bridge_connects_inputs_to_kpi_pointers():
+    agg = pd.DataFrame([
+        {
+            "jahr": 2026,
+            "gesundheitsausgaben_mrd_mean": 500.0,
+            "chroniker_rate_mean": 42.0,
+            "lebenserwartung_mean": 81.0,
+            "aerzte_pro_100k_mean": 420.0,
+            "wartezeit_fa_mean": 20.0,
+            "versorgungsindex_rural_mean": 70.0,
+        },
+        {
+            "jahr": 2040,
+            "gesundheitsausgaben_mrd_mean": 560.0,
+            "chroniker_rate_mean": 39.0,
+            "lebenserwartung_mean": 81.8,
+            "aerzte_pro_100k_mean": 405.0,
+            "wartezeit_fa_mean": 31.0,
+            "versorgungsindex_rural_mean": 66.0,
+        },
+    ])
+    params = get_default_params()
+    params["praeventionsbudget"] = params["praeventionsbudget"] + 0.6
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] - 1000
+
+    items = build_changed_parameter_impact_bridge(agg, params)
+    combined = " ".join(
+        f"{item['label']} {item['change']} {item['model_path']} {' '.join(item['observed_kpis'])} {item['caveat']} {item['next_step']}"
+        for item in items
+    )
+
+    assert len(items) == 2
+    assert "Präventionsbudget" in combined
+    assert "Medizinstudienplätze" in combined
+    assert "Start" in combined and "Ende" in combined
+    assert "verzögert" in combined
+    assert "6 Jahren" in combined and "11–13 Jahren" in combined
+    assert "Nächster Klick" in combined
+    assert "Zeitverlauf" in combined
 
 
 
