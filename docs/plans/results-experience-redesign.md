@@ -105,4 +105,17 @@ Alex's quality bar: the results page must become a coherent reading path, not an
 4. **Connect politics to levers:** supporters/blockers must be explained per changed lever, including why the group appears, what uncertainty remains, and how it relates to implementation lag/friction.
 5. **Stay honest:** all political/stakeholder text remains a transparent hypothesis/rubric, not a sourced vote forecast.
 
-Next implementation slice: add test-covered helper functions for a top result narrative and lever-level political stakeholder rows, then render them in the dashboard.
+Implemented slice: top result narrative plus lever-level political stakeholder rows are live and test-covered.
+
+## 2026-04-29 next slice: KPI drill-down reading path
+
+Problem: the KPI section still explains many cards as separate snippets. The next small slice should make every drill-down follow the same reading order so a newcomer knows exactly what to do:
+
+1. **Bedeutung:** what this KPI measures in plain language.
+2. **Beobachtung:** start value, end value, absolute change and effect strength.
+3. **Warum im Modell:** model drivers already encoded in the simulation; do not add new causal facts.
+4. **Geänderte Hebel:** scenario levers that may matter, clearly labelled as model interpretation.
+5. **Annahme prüfen:** main caveat/assumption.
+6. **Nächster Klick:** concrete next chart/KPI/political section to inspect.
+
+Implementation guardrail: add a pure helper that returns structured drill-down items, test that it includes observation/strength/next-step fields, then render from that helper. Keep the UI expandable; no extra isolated text blocks.

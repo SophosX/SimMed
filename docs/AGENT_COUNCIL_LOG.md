@@ -601,3 +601,24 @@ Local verification passed: `python3 -m pytest -q` (32 passed), py_compile, and 5
 - **Integrator Decision:** `build_result_narrative_summary()` und `build_political_stakeholder_rows()` in `app.py` hinzugefügt und testgedeckt; Plan in `docs/plans/results-experience-redesign.md` aktualisiert.
 - **Question to Alex if needed:** Keine Blockerfrage; nächste Entscheidung später: ob KPI-Drilldowns eher als kompakte Karten oder geführter „Warum?“-Dialog gestaltet werden sollen.
 - **Verification/Git:** Tests/Smoke/Git nachfolgend im Heartbeat-Status.
+
+
+## 2026-04-29 17:18 UTC — Results drill-down reading path
+
+**Context:** Heartbeat continued the deeper results-experience redesign. Alex's current priority is coherent result explanations, not isolated snippets.
+
+**Project Manager:** Keep scope small: update the existing results-experience plan, then implement one test-covered helper/render slice for KPI drill-down cards.
+
+**Designer/UX:** KPI expanders should all use the same reading order so first-time users learn one pattern: meaning, observation, model drivers, changed levers, assumption, next click.
+
+**Creative Agent:** Avoid novelty UI for now; the useful creative move is a guided "reading path" inside each expander.
+
+**Political Health-System Strategist:** Political claims were not expanded in this run; existing political supporter/blocker text remains labelled as qualitative rubric, not forecast.
+
+**Evidence/Domain:** No new external factual claims encoded. Text explains existing simulation outputs and already documented assumptions (capacity vs headcount, delayed effects) rather than adding source-dependent facts.
+
+**Integrator Decision:** Implemented `build_kpi_drilldown_items()` as a pure helper and rendered `render_kpi_deep_dive(agg, params)` from it. This preserves model outputs and improves explanation structure.
+
+**Question to Alex if needed:** No major decision open; next safe step is trend-chart reading guidance and/or richer per-lever political drill-down.
+
+**Verification/Git:** Local verification passed: `python3 -m pytest -q` (35 passed), py_compile, and 30-run/3-year simulation smoke test. Git commit/push follows from the mirrored clone.

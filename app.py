@@ -1448,25 +1448,77 @@ def kpi_detail_texts() -> Dict[str, Dict[str, str]]:
     }
 
 
-def render_kpi_deep_dive(agg: pd.DataFrame):
-    """Explains KPI cards in plain language below the dashboard."""
-    st.markdown("---")
-    st.markdown("### Kernkennzahlen verstehen")
-    st.caption("Klicke die Kennzahlen auf: Was bedeutet sie, warum bewegt sie sich, wie liest man sie?")
+def build_kpi_drilldown_items(agg: pd.DataFrame, params: dict) -> List[Dict[str, str]]:
+    """Return a coherent reading path for KPI detail expanders.
+
+    This helper only explains simulated values and existing model caveats; it does
+    not introduce new assumptions or change outputs.
+    """
     first, last = agg.iloc[0], agg.iloc[-1]
     texts = kpi_detail_texts()
-    cols = st.columns(2)
-    for i, (key, info) in enumerate(texts.items()):
+    lever_notes = _changed_policy_lever_notes(params)
+    scenario_focus = "\n".join(f"- {note}" for note in lever_notes) if lever_notes else "Kein zentral erklärter Szenario-Hebel wurde gegenüber dem Standardwert verändert."
+    next_steps = {
+        "gesundheitsausgaben_mrd": "Öffne danach GKV-Saldo und BIP-Anteil, um zu sehen, ob höhere Ausgaben finanzierbar wirken.",
+        "bip_anteil": "Vergleiche danach Gesundheitsausgaben und GKV-Beitragssatz im Zeitverlauf.",
+        "gkv_beitragssatz": "Prüfe als Nächstes GKV-Saldo und politische Umsetzbarkeit: Beitragserhöhungen sind oft konfliktträchtig.",
+        "gkv_saldo": "Öffne danach Beitragssatz, Bundeszuschuss-/Finanzierungshebel und die politische Karte.",
+        "lebenserwartung": "Vergleiche danach vermeidbare Mortalität, Prävention und Zugang — kleine Änderungen nicht isoliert lesen.",
+        "wartezeit_fa": "Prüfe danach Ärztedichte, ländliche Versorgung, Telemedizin und den Zeitverlauf der Wartezeit.",
+        "aerzte_pro_100k": "Prüfe danach Wartezeit und ländliche Versorgung; Kopfzahl allein ist noch keine reale Kapazität.",
+        "kollaps_wahrscheinlichkeit": "Öffne die stärksten Einzel-KPIs: Wartezeit, GKV-Saldo und Mortalität, bevor du das Warnsignal bewertest.",
+    }
+    higher_is_better = {
+        "gesundheitsausgaben_mrd": False,
+        "bip_anteil": False,
+        "gkv_beitragssatz": False,
+        "gkv_saldo": True,
+        "lebenserwartung": True,
+        "wartezeit_fa": False,
+        "aerzte_pro_100k": True,
+        "kollaps_wahrscheinlichkeit": False,
+    }
+    items: List[Dict[str, str]] = []
+    for key, info in texts.items():
         mean_col = f"{key}_mean"
         if mean_col not in agg.columns:
             continue
-        start = float(first[mean_col]); end = float(last[mean_col]); diff = end - start
+        summary = _metric_delta_summary(agg, key, higher_is_better.get(key, True))
+        observation = (
+            f"Start {summary['start']:.2f} → Ende {summary['end']:.2f}; "
+            f"Veränderung {summary['abs_delta']:+.2f} ({summary['pct_delta']:+.1f}%). "
+            f"Das ist im Modell {summary['strength']} {summary['direction']}."
+        )
+        items.append({
+            "key": key,
+            "label": info["label"],
+            "title": f"{info['label']}: {summary['start']:.2f} → {summary['end']:.2f} · {summary['strength']}",
+            "meaning": info["meaning"],
+            "observation": observation,
+            "drivers": info["why"],
+            "scenario_focus": scenario_focus,
+            "assumption": info["read"],
+            "next_step": next_steps.get(key, "Prüfe danach den Zeitverlauf und die politische Umsetzbarkeit."),
+        })
+    return items
+
+
+def render_kpi_deep_dive(agg: pd.DataFrame, params: dict):
+    """Explains KPI cards as a coherent reading path below the dashboard."""
+    st.markdown("---")
+    st.markdown("### Kernkennzahlen verstehen")
+    st.caption("Jede Karte folgt derselben Logik: Bedeutung → Beobachtung → Modelltreiber → Annahme → nächster Klick.")
+    cols = st.columns(2)
+    for i, item in enumerate(build_kpi_drilldown_items(agg, params)):
         with cols[i % 2]:
-            with st.expander(f"{info['label']}: {start:.2f} → {end:.2f}", expanded=False):
-                st.markdown(f"**Was ist das?** {info['meaning']}")
-                st.markdown(f"**Warum kann sich das verändern?** {info['why']}")
-                st.markdown(f"**Wie lese ich das?** {info['read']}")
-                st.markdown(f"**In dieser Simulation:** Veränderung um `{diff:+.2f}` Modellpunkte/Einheiten vom Start- bis Endjahr.")
+            with st.expander(item["title"], expanded=False):
+                st.markdown(f"**1 · Bedeutung:** {item['meaning']}")
+                st.markdown(f"**2 · Beobachtung in dieser Simulation:** {item['observation']}")
+                st.markdown(f"**3 · Warum im Modell?** {item['drivers']}")
+                st.markdown("**4 · Geänderte Hebel, die dazu passen könnten:**")
+                st.markdown(item["scenario_focus"])
+                st.info(f"**5 · Annahme prüfen:** {item['assumption']}")
+                st.success(f"**6 · Nächster Klick:** {item['next_step']}")
 
 
 def render_main_trend_chart(agg: pd.DataFrame):
@@ -1593,7 +1645,7 @@ def render_dashboard(agg: pd.DataFrame, params: dict):
         st.markdown(metric_card("Patientenzufr.", f"{v:.0f} / 100",
             d, True, cls), unsafe_allow_html=True)
 
-    render_kpi_deep_dive(agg)
+    render_kpi_deep_dive(agg, params)
     render_main_trend_chart(agg)
 
     defaults = get_default_params()

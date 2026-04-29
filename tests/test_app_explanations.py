@@ -7,6 +7,7 @@ from app import (
     _parameter_effect_hint,
     _parameter_evidence_badge,
     _parameter_provenance_help,
+    build_kpi_drilldown_items,
     build_kpi_explanations,
     build_political_stakeholder_rows,
     build_result_narrative_summary,
@@ -255,3 +256,47 @@ def test_political_stakeholder_rows_explain_why_group_appears():
     assert "politische Reibung" in combined
     assert "6+ Jahre" in combined or "11–13+ Jahre" in combined
     assert "keine validierte" in combined or "Modellkern" in combined
+
+def test_kpi_drilldown_items_follow_coherent_reading_path():
+    agg = pd.DataFrame([
+        {
+            "jahr": 2026,
+            "gesundheitsausgaben_mrd_mean": 500.0,
+            "bip_anteil_mean": 12.0,
+            "gkv_beitragssatz_mean": 16.0,
+            "gkv_saldo_mean": 2.0,
+            "lebenserwartung_mean": 81.0,
+            "wartezeit_fa_mean": 20.0,
+            "aerzte_pro_100k_mean": 420.0,
+            "kollaps_wahrscheinlichkeit_mean": 5.0,
+        },
+        {
+            "jahr": 2040,
+            "gesundheitsausgaben_mrd_mean": 575.0,
+            "bip_anteil_mean": 13.5,
+            "gkv_beitragssatz_mean": 17.2,
+            "gkv_saldo_mean": -3.0,
+            "lebenserwartung_mean": 81.4,
+            "wartezeit_fa_mean": 31.0,
+            "aerzte_pro_100k_mean": 405.0,
+            "kollaps_wahrscheinlichkeit_mean": 9.0,
+        },
+    ])
+    params = get_default_params()
+    params["telemedizin_rate"] = params["telemedizin_rate"] + 0.1
+
+    items = build_kpi_drilldown_items(agg, params)
+    combined = " ".join(
+        f"{item['title']} {item['meaning']} {item['observation']} {item['drivers']} {item['scenario_focus']} {item['assumption']} {item['next_step']}"
+        for item in items
+    )
+
+    assert len(items) == 8
+    assert all("Start" in item["observation"] and "Ende" in item["observation"] for item in items)
+    assert all("Veränderung" in item["observation"] for item in items)
+    assert all(item["next_step"] for item in items)
+    assert "Telemedizin wurde auf" in combined
+    assert "Zeitverlauf" in combined
+    assert "politische" in combined
+    assert "Kopfzahl allein" in combined
+
