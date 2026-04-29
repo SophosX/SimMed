@@ -112,6 +112,21 @@ def test_ambient_scribes_include_primary_care_note_quality_counterweight():
     assert record.model_use_status == "catalog_only"
 
 
+def test_ambient_scribes_include_narrative_review_as_safety_implementation_context():
+    source = EVIDENCE_SOURCES["cardiovasc_diagn_ther_ambient_scribes_narrative_review_2026"]
+    record = AI_HEALTHCARE_EVIDENCE["ambient_ai_scribes_documentation_burden"]
+
+    assert source.kind == "paper"
+    assert source.retrieved_via == "PubMed E-utilities search + abstract metadata"
+    assert "Narrative review" in source.quality_note
+    assert "documentation omissions" in source.quality_note
+    assert "clinically significant hallucinations" in source.quality_note
+    assert "not a pooled effect size" in source.quality_note
+    assert source.id in record.source_ids
+    assert "narrative_review" in record.study_designs
+    assert record.model_use_status == "catalog_only"
+
+
 def test_youtube_context_pipeline_is_explicitly_grade_e_and_not_model_fact():
     record = AI_HEALTHCARE_EVIDENCE["ai_healthcare_youtube_context_pipeline"]
     summary = evidence_quality_summary(record.id)
