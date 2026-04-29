@@ -12,6 +12,9 @@ def test_feasibility_rubric_explains_known_levers_plainly():
     assert "Telemedizin" in notes["telemedizin_rate"]["label"]
     assert "11–13+" in notes["medizinstudienplaetze"]["implementation_lag"]
     assert notes["medizinstudienplaetze"]["likely_blockers"]
+    assert "Strategie" in notes["medizinstudienplaetze"]["strategy_foundation"]
+    assert "Patient:innen mit langen Wegen" in result["stakeholder_overview"]["likely_supporters"]
+    assert "keine Wahlprognose" in result["stakeholder_overview"]["interpretation_warning"]
     assert "Strategie-Modus" in result["next_strategy_mode_step"]
 
 
@@ -20,4 +23,6 @@ def test_feasibility_rubric_handles_unknown_parameters_safely():
 
     assert result["category"] == "noch nicht bewertet"
     assert result["lever_notes"] == []
+    assert result["stakeholder_overview"]["likely_supporters"] == []
+    assert "keine Stakeholder-Einschätzung" in result["stakeholder_overview"]["plain_summary"]
     assert "keine politische Umsetzbarkeitsregel" in result["summary"]

@@ -197,3 +197,33 @@ No blocking decision: Alex already selected decision-support now and Strategy Mo
 
 ### Verification / Git
 Local verification passed before sync: `python3 -m pytest -q` = 13 passed; `py_compile` passed for app/core/API/registry/provenance/new feasibility module/tests. Zip refreshed at `/opt/data/cache/documents/health_simulation_app_updated.zip`. Git commit/push status is completed in the heartbeat report.
+
+
+## 2026-04-29 14:44 UTC — Heartbeat: stakeholder overview foundation
+
+### Context
+Option 2 (transparent political feasibility rubric) is active; Option 3 (Strategy Mode) remains later. This heartbeat extended the existing feasibility layer without changing numeric simulation behavior.
+
+### Project Manager
+Priority: make feasibility explanations useful for humans and agents before adding strategy automation. Risk: stakeholder notes could be mistaken for forecasts or advocacy if not clearly labeled. Next tasks: surface stakeholder overview in Streamlit, add clearer API examples, then expand rules only with provenance notes.
+
+### Designer / UX
+The API now has a stakeholder overview that can become a simple UI card: “Wer unterstützt? Wer bremst? Warum?” This should help newcomers understand political realism without reading raw JSON.
+
+### Creative Agent
+Idea: a “Reform-Landkarte” that visually separates medical effect, money flow, and stakeholder friction. Fit: engaging and explainable, but should start as a simple text/card view before a complex graphic.
+
+### Political Health-System Strategist
+Stakeholder aggregation is useful because German reforms often fail less on abstract evidence than on budgets, self-governance, Länder/federal responsibilities, and professional capacity. The wording remains non-partisan and explicitly not a vote forecast.
+
+### Evidence / Domain
+No new numeric parameter or source claim was added. The new fields are qualitative assumptions and are labeled as orientation, not validated forecast.
+
+### Integrator Decision
+Accepted a small, reversible API/model-adjacent improvement: aggregate supporters/blockers and add per-lever Strategy-Mode foundation sentences. Deferred scoring and strategy recommendations until Alex approves direction.
+
+### Question to Alex if needed
+No important decision is required in this heartbeat; continue with low-risk UI surfacing of the existing explanation layer.
+
+### Verification / Git
+Tests and py_compile passed locally. Git sync/commit/push handled by Integrator after zip refresh.
