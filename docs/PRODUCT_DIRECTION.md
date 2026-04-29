@@ -62,3 +62,17 @@ Bad:
 Better:
 
 > More doctors improve access only after a delay, because students need years of training before they become practicing physicians. In the short term, this policy barely changes waiting times.
+
+## Expertenrat governance
+
+External AI systems, internal agents, and human experts may eventually submit claims, source suggestions, parameter updates, or model-change proposals. These submissions are not trusted facts by default.
+
+Required workflow:
+
+1. `submitted`: contribution is only a proposal.
+2. `triaged`: Integrator or project lead checks whether it is relevant and verifiable.
+3. `expert_reviewed`: a reviewer with a named role records source/assumption rationale.
+4. `accepted` or `rejected`: the Integrator records the decision.
+5. `integrated`: only accepted contributions may enter code/model/docs, with provenance, tests, and Git history.
+
+Plain-language rule: no external AI output should silently change SimMed's assumptions. It must be attributable, reviewable, and reversible.

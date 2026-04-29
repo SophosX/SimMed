@@ -376,3 +376,16 @@ Keine wichtige Entscheidung offen.
 
 ### Verification / Git
 `python3 -m pytest -q` → 18 passed; `py_compile` passed; zip refreshed at `/opt/data/cache/documents/health_simulation_app_updated.zip`; commit `a851301` pushed to `main`.
+
+
+## 2026-04-29T16:13:40+00:00 — Expertenrat workflow primitive
+
+- Context: Heartbeat continued low-risk governance work for external AI/human contributions.
+- Project Manager: Prioritized a small testable foundation before API/UI ingestion.
+- Designer/UX: Kept public workflow explainable in plain language for later Lernen/API docs.
+- Creative Agent: Treat external contributions as reversible proposals, not hidden edits.
+- Political Health-System Strategist: Reviewer identity/rationale is needed before policy claims influence model assumptions.
+- Evidence/Domain: Added explicit states so source claims require review before acceptance/integration.
+- Integrator Decision: Added `expert_council.py`, tests, and product-direction docs; no model-output changes.
+- Question to Alex: No important decision needed.
+- Verification/Git: Pending in this heartbeat.
