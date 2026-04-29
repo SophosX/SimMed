@@ -3,6 +3,7 @@ import pandas as pd
 from app import (
     _changed_policy_lever_notes,
     _direction_word,
+    _parameter_effect_hint,
     _parameter_evidence_badge,
     _parameter_provenance_help,
     build_kpi_explanations,
@@ -71,6 +72,18 @@ def test_parameter_evidence_badge_is_short_and_registry_based():
 
     assert badge == "🟢 Evidenz A · hrk_medical_education, destatis_genesis"
     assert _parameter_evidence_badge("unregistriert") == "⚪ Evidenz offen · Register fehlt"
+
+
+def test_parameter_effect_hint_explains_action_and_flags_simplifications():
+    aging_hint = _parameter_effect_hint("alterungsfaktor")
+    bed_hint = _parameter_effect_hint("krankenhausbetten")
+    unknown_hint = _parameter_effect_hint("noch_offen")
+
+    assert "Was passiert beim Ändern?" in aging_hint
+    assert "altersbedingte Nachfrage" in aging_hint
+    assert "Vereinfachte Annahme" in aging_hint
+    assert "Personal vorhanden" in bed_hint
+    assert "noch nicht mit einer eigenen Kurz-Erklärung" in unknown_hint
 
 
 def test_changed_policy_lever_notes_names_only_changed_scenario_levers():

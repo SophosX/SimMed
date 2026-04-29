@@ -466,3 +466,16 @@ Keine wichtige Frage.
 
 ### Verification / Git
 Passed: `pytest -q` (26), py_compile, 1000-run smoke test. Zip refreshed. Pushed commit `c2c2d81`.
+
+
+## 2026-04-29 16:35 UTC — Parameter-Wirkhinweise für Seitenleiste
+
+- **Context:** 3-Minuten-Heartbeat; Top-UX-Direktive: Nutzer:innen sollen vor dem Verstellen verstehen, was ein Regler bedeutet und welche Richtung grob wirkt.
+- **Project Manager:** Kleine, reversible Verbesserung gewählt: keine Modelländerung, sondern bessere Klartext-Hilfen an bestehenden Reglern.
+- **Designer/UX:** Seitenleisten-Tooltips sollen nicht nur Quellenfragmente zeigen, sondern die Nutzerfrage „Was passiert, wenn ich das ändere?“ beantworten.
+- **Creative Agent:** Linear-inspirierter UX-Sinncheck: reduzierte, handlungsnahe Microcopy statt zusätzlicher visueller Komplexität; spätere Design-System-Arbeit separat.
+- **Political Health-System Strategist:** Strukturhebel wie Krankenhäuser/MVZ/Betten bleiben politisch sensibel; Texte markieren Tradeoffs und vermeiden simple „mehr ist immer besser“-Botschaften.
+- **Evidence/Domain:** Keine neuen externen Fakten eingeführt; qualitative Wirkhinweise sind als Modelllogik/Vereinfachung/Annahme formuliert.
+- **Integrator Decision:** `_parameter_effect_hint()` ergänzt und für Demografie-/Versorgungsstruktur-Regler eingesetzt; Test sichert Klartext und Annahmen-Hinweis.
+- **Question to Alex if needed:** Keine wichtige Entscheidung offen; nächster sicherer Schritt ist weitere Regler-Provenienz plus sichtbare „Was kann ich hier tun?“-Box.
+- **Verification/Git:** Tests/Compile/Smoke/Git-Sync folgen in diesem Lauf.

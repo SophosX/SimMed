@@ -898,9 +898,34 @@ def _parameter_provenance_help(key: str, plain_hint: str | None = None) -> str:
     return " ".join(parts)
 
 
+def _parameter_effect_hint(key: str) -> str:
+    """Gibt eine kurze, handlungsnahe Erklärung zur Wirkung eines Reglers.
+
+    Die Texte beschreiben die im Modell bereits vorhandene Wirklogik oder markieren
+    qualitative Orientierung ausdrücklich als Annahme. Sie sollen Nutzer:innen vor
+    dem Verstellen eines Reglers sagen: Was ist das? Was passiert grob, wenn ich es
+    erhöhe oder senke?
+    """
+    hints = {
+        "alterungsfaktor": "Was passiert beim Ändern? Höher = mehr altersbedingte Nachfrage und Kostendruck; niedriger = langsamere Nachfragezunahme. Vereinfachte Annahme, weil echte Alterskohorten noch nicht vollständig modelliert sind.",
+        "urban_anteil": "Was passiert beim Ändern? Höher = mehr Bevölkerung in Städten; ländliche Versorgungsprobleme können dadurch sichtbarer werden, werden aber nur grob abgebildet.",
+        "einkommen_durchschnitt": "Was passiert beim Ändern? Höher = mehr beitragspflichtige Einnahmen in der GKV; niedriger = weniger Einnahmespielraum. Das ersetzt keine detaillierte Verteilungsrechnung.",
+        "aerzte_pro_100k_urban": "Was passiert beim Ändern? Höher = mehr rechnerische Versorgungskapazität in Städten; niedriger = mehr Druck auf Termine. Kopfzahl ist aber nicht automatisch echte Arbeitszeit.",
+        "aerzte_pro_100k_rural": "Was passiert beim Ändern? Höher = bessere rechnerische ländliche Erreichbarkeit; niedriger = Risiko längerer Wege und Wartezeiten. Regionale Details bleiben vereinfacht.",
+        "hausarztpraxen": "Was passiert beim Ändern? Mehr Praxen können die Grundversorgung entlasten; weniger Praxen erhöhen Zugangsdruck. Im Modell ist das ein Kapazitätshebel, keine Standortplanung.",
+        "fachpraxen": "Was passiert beim Ändern? Mehr Fachpraxen können Facharzt-Wartezeiten senken; weniger Fachpraxen erhöhen Engpässe. Personal und Auslastung bleiben wichtige Zusatzannahmen.",
+        "mvz_anzahl": "Was passiert beim Ändern? Mehr MVZ können Versorgung bündeln; der Effekt hängt politisch und praktisch von Standorten, Fachrichtungen und Personal ab. Hier als grober Strukturhebel modelliert.",
+        "krankenhaeuser": "Was passiert beim Ändern? Mehr Standorte erhöhen Erreichbarkeit, können aber Fixkosten erhöhen; weniger Standorte können bündeln, aber Wege verlängern. Qualitätseffekte sind noch vereinfacht.",
+        "krankenhausbetten": "Was passiert beim Ändern? Mehr Betten helfen nur, wenn Personal vorhanden ist; weniger Betten können Kapazität verknappen. Betten sind deshalb kein vollständiges Kapazitätsmaß.",
+        "patienten_pro_quartal": "Was passiert beim Ändern? Höher = mehr Durchsatz je Arzt, potenziell kürzere Wartezeiten; niedriger = weniger Durchsatz. Qualität und Belastung sind hier nur indirekt sichtbar.",
+        "arbeitszeit_stunden": "Was passiert beim Ändern? Höher = mehr rechnerische Behandlungskapazität; niedriger = weniger Kapazität. Dauerhafte Mehrarbeit kann aber Belastung und Abwanderung erhöhen.",
+    }
+    return hints.get(key, "Was passiert beim Ändern? Dieser Regler verändert ein Szenario, ist aber noch nicht mit einer eigenen Kurz-Erklärung dokumentiert.")
+
+
 def render_sidebar() -> dict:
     """Rendert das vollständige Parameter-Panel in der Sidebar."""
-    st.sidebar.markdown("## \u2695\ufe0f SimMed 2040")
+    st.sidebar.markdown("## ⚕️ SimMed 2040")
     st.sidebar.caption("Simulationsplattform Gesundheitssystem")
 
     params = get_default_params()
@@ -953,16 +978,16 @@ def render_sidebar() -> dict:
         )
         params["alterungsfaktor"] = st.slider(
             "Alterungsfaktor", 0.5, 2.0, params["alterungsfaktor"], 0.1,
-            help="1.0 = Baseline-Alterung, >1 = beschleunigte Alterung",
+            help=_parameter_effect_hint("alterungsfaktor"),
         )
         params["urban_anteil"] = st.slider(
             "Urbanisierungsgrad", 0.50, 0.95, params["urban_anteil"], 0.01,
-            help="Quelle: Destatis 2025 – 77 %",
+            help=_parameter_effect_hint("urban_anteil"),
         )
         params["einkommen_durchschnitt"] = st.slider(
             "\u00d8 Bruttoeinkommen (\u20ac/Jahr)", 25_000, 80_000,
             params["einkommen_durchschnitt"], 500,
-            help="Quelle: Destatis 2025 – ca. 45.000 \u20ac",
+            help=_parameter_effect_hint("einkommen_durchschnitt"),
         )
         params["einkommens_wachstum"] = st.slider(
             "Einkommenswachstum (%/Jahr)", 0.0, 0.06,
@@ -983,37 +1008,39 @@ def render_sidebar() -> dict:
         )
         params["aerzte_pro_100k_urban"] = st.slider(
             "Ärzte/100k (urban)", 150, 500, params["aerzte_pro_100k_urban"], 5,
-            help="Quelle: KBV 2025 – ca. 280",
+            help=_parameter_effect_hint("aerzte_pro_100k_urban"),
         )
         params["aerzte_pro_100k_rural"] = st.slider(
             "Ärzte/100k (ländlich)", 80, 300, params["aerzte_pro_100k_rural"], 5,
-            help="Quelle: KBV 2025 – ca. 160",
+            help=_parameter_effect_hint("aerzte_pro_100k_rural"),
         )
         params["hausarztpraxen"] = st.slider(
             "Hausarztpraxen", 30_000, 80_000, params["hausarztpraxen"], 500,
-            help="Quelle: KBV 2025 – ca. 54.000",
+            help=_parameter_effect_hint("hausarztpraxen"),
         )
         params["fachpraxen"] = st.slider(
             "Fachpraxen", 20_000, 80_000, params["fachpraxen"], 500,
+            help=_parameter_effect_hint("fachpraxen"),
         )
         params["mvz_anzahl"] = st.slider(
             "MVZ-Anzahl", 1_000, 15_000, params["mvz_anzahl"], 100,
-            help="Quelle: KBV 2025 – ca. 4.800",
+            help=_parameter_effect_hint("mvz_anzahl"),
         )
         params["krankenhaeuser"] = st.slider(
             "Krankenhäuser", 800, 3_000, params["krankenhaeuser"], 10,
-            help="Quelle: Destatis 2025 – ca. 1.900",
+            help=_parameter_effect_hint("krankenhaeuser"),
         )
         params["krankenhausbetten"] = st.slider(
             "Krankenhausbetten", 200_000, 700_000, params["krankenhausbetten"], 5_000,
-            help="Quelle: Destatis 2025 – ca. 480.000",
+            help=_parameter_effect_hint("krankenhausbetten"),
         )
         params["patienten_pro_quartal"] = st.slider(
             "Patienten/Arzt/Quartal", 400, 1_500, params["patienten_pro_quartal"], 10,
+            help=_parameter_effect_hint("patienten_pro_quartal"),
         )
         params["arbeitszeit_stunden"] = st.slider(
             "Arbeitszeit (h/Woche)", 35, 70, params["arbeitszeit_stunden"],
-            help="Quelle: MB-Monitor 2024 – ca. 52 h",
+            help=_parameter_effect_hint("arbeitszeit_stunden"),
         )
 
     # ── Ärzte-Pipeline ──
