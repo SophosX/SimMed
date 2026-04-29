@@ -22,6 +22,7 @@ from data_ingestion import (
     build_data_readiness_gate_plan,
     build_data_readiness_summary,
     build_parameter_snapshot_status,
+    build_transformation_review_template,
     execute_connector_snapshot_request,
     list_cached_snapshots,
     list_reviewed_transformations,
@@ -125,6 +126,43 @@ def seed_data_fixture_snapshots() -> dict:
         "guardrail": "Fixture-Snapshots dienen nur Cache/Provenienz- und UI-Tests; sie ändern keine SimMed-Modellparameter und sind kein Live-Destatis-Import.",
         "seeded_snapshots": [snapshot.to_dict() for snapshot in snapshots],
         "data_passport": build_data_passport_rows(parameters),
+    }
+
+
+@api.get("/data-connectors/transformation-review-template/{parameter_key}")
+def get_transformation_review_template(parameter_key: str) -> dict:
+    """Return the pre-model-integration review checklist for one planned connector.
+
+    This endpoint is intentionally read-only. It lets agents/UI prepare a
+    ReviewedTransformation entry after raw cache exists, but does not fetch,
+    parse, review, or integrate any model value.
+    """
+
+    parameters = list_parameters()
+    items = build_data_readiness_backlog(parameters)
+    requests = build_connector_snapshot_requests(items, per_source_limit=100)
+    planned = next(
+        (item for item in requests if parameter_key in item.get("output_parameter_keys", [])),
+        None,
+    )
+    if planned is None:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "status": "no_planned_transformation_review_template",
+                "parameter_key": parameter_key,
+                "guardrail": "Review-Templates gibt es nur für unterstützte geplante Connector-Snapshot-Requests; keine Modellintegration wird vorbereitet.",
+            },
+        )
+
+    passport_rows = build_data_passport_rows(parameters)
+    passport_by_key = {row["parameter_key"]: row for row in passport_rows}
+    return {
+        "status": "transformation_review_template_not_model_integration",
+        "guardrail": "Dieses Template ist nur eine Prüf-Checkliste: kein Netzwerkabruf, kein Datenwert, keine Registry- oder Modellmutation und kein Policy-Wirkungsbeweis.",
+        "request": planned,
+        "template": build_transformation_review_template(planned, passport_by_key.get(parameter_key)),
+        "data_passport": passport_rows,
     }
 
 

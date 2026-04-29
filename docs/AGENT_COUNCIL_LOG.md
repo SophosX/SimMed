@@ -1500,3 +1500,32 @@ Keine wichtige Entscheidung offen; nächster sicherer Schritt ist weiterhin Date
 
 ### Verification / Git
 Vor Commit: `pytest tests/test_data_ingestion.py tests/test_app_explanations.py::test_learning_connector_execution_status_keeps_dry_run_and_cache_gates_separate -q` → 13 passed; full `pytest -q` → 92 passed; `py_compile` Kernmodule OK; Simulation-Smoke 20 Runs/2 Jahre OK. Commit/Push folgt nach Log-Eintrag.
+
+## 2026-04-30 00:33 Europe/Berlin — Heartbeat: Review-Template API
+
+### Context
+Alex priorisiert wieder klar den Core-Plattform-Track. Der aktuelle Branch `feat/platform-data-status-foundation` hatte bereits Connector-Workbench und Review-Template-Helper; fehlte war ein gezielter API-Zugriff auf genau ein Review-Template für Agenten/UI.
+
+### Project Manager
+Priorität: Data-Ingestion/Provenienz weiter ausführbar machen, ohne Live-Import oder Modellmutation. Nächste sinnvolle Schritte: API-Template in UI verlinken, echte ReviewedTransformation-Erfassung planen, danach explizite Integrationsentscheidung getrennt halten.
+
+### Designer / UX
+Ein einzelnes Template pro Parameter ist verständlicher als nur die große Workbench: Nutzer/Agenten sehen direkt, welche Prüffelder fehlen, bevor sie Rohdaten als Modellwert missverstehen.
+
+### Creative Agent
+Idee: später eine „Prüfzettel“-Ansicht je Parameter wie ein Laborprotokoll darstellen. Passt zur Glaubwürdigkeit, aber erst nach API-Grundlage und ohne neue visuelle Spielerei.
+
+### Political Health-System Strategist
+Keine neue politische Behauptung. Die Änderung schützt gegen vorschnelle Policy-Schlüsse, weil Rohdaten/Review/Modellintegration weiterhin getrennte Gates bleiben.
+
+### Evidence / Domain
+Kein neuer Datenabruf und keine neue Recherche. Der Endpunkt wiederverwendet vorhandene Passport-/Connector-Daten und markiert explizit: kein Netzwerkabruf, kein Datenwert, keine Registry-/Modellmutation, kein Wirkungsbeweis.
+
+### Integrator Decision
+Akzeptiert: read-only API `GET /data-connectors/transformation-review-template/{parameter_key}` plus 200/404-Regressionstests. Keine Modelllogik, keine externen Fakten, kein Live-Import.
+
+### Question to Alex if needed
+Keine.
+
+### Verification / Git
+Vor Commit: `tests/test_api.py` 10 passed; Full suite 94 passed; `py_compile` für Kernmodule OK; 20-run/2-year Simulation-Smoke OK. Git-Commit/Push folgt nach Log-Eintrag.

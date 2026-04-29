@@ -99,6 +99,39 @@ def test_api_can_seed_reference_fixture_snapshots_without_model_import():
     assert "geprüfte Transformation" in population["passport_note"]
 
 
+def test_api_exposes_single_transformation_review_template_without_model_integration():
+    client = TestClient(api)
+    backlog = client.get("/data-readiness-backlog").json()
+    request = backlog["connector_snapshot_requests"][0]
+    parameter_key = request["output_parameter_keys"][0]
+
+    response = client.get(f"/data-connectors/transformation-review-template/{parameter_key}")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "transformation_review_template_not_model_integration"
+    assert "kein Netzwerkabruf" in body["guardrail"]
+    assert "keine Registry- oder Modellmutation" in body["guardrail"]
+    assert body["request"]["output_parameter_keys"] == [parameter_key]
+    template = body["template"]
+    assert template["parameter_key"] == parameter_key
+    assert "source_snapshot_sha256" in template["required_review_fields"]
+    assert "ReviewedTransformation" in template["next_safe_action"]
+    assert "keinen Datenwert im Modell" in template["guardrail"]
+    passport_row = next(row for row in body["data_passport"] if row["parameter_key"] == parameter_key)
+    assert passport_row["parameter_key"] == parameter_key
+
+
+def test_api_rejects_transformation_review_template_without_supported_request():
+    client = TestClient(api)
+    response = client.get("/data-connectors/transformation-review-template/telemedizin_rate")
+
+    assert response.status_code == 404
+    detail = response.json()["detail"]
+    assert detail["status"] == "no_planned_transformation_review_template"
+    assert "keine Modellintegration" in detail["guardrail"]
+
+
 def test_api_plans_connector_snapshot_execution_as_dry_run_by_default():
     client = TestClient(api)
     backlog = client.get("/data-readiness-backlog").json()
