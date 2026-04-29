@@ -13,6 +13,7 @@ from app import (
     build_political_lever_detail_sections,
     build_political_stakeholder_rows,
     build_result_narrative_summary,
+    build_result_reading_path,
     build_trend_view_guidance,
     get_default_params,
     kpi_hover_help,
@@ -509,3 +510,41 @@ def test_mobile_kpi_detail_is_tap_friendly_and_renderer_exists():
     assert "Warum" not in detail["why"]
     assert "Wartezeit" in detail["meaning"] or "fachärztliche" in detail["meaning"]
     assert callable(render_metric_card_with_details)
+
+def test_result_reading_path_guides_full_result_journey():
+    agg = pd.DataFrame([
+        {
+            "jahr": 2025,
+            "wartezeit_fa_mean": 20.0,
+            "gkv_saldo_mean": -5.0,
+            "versorgungsindex_rural_mean": 70.0,
+            "gesundheitsausgaben_mrd_mean": 500.0,
+            "kollaps_wahrscheinlichkeit_mean": 8.0,
+            "telemedizin_rate_mean": 10.0,
+            "zufriedenheit_patienten_mean": 72.0,
+        },
+        {
+            "jahr": 2040,
+            "wartezeit_fa_mean": 38.0,
+            "gkv_saldo_mean": -12.0,
+            "versorgungsindex_rural_mean": 66.0,
+            "gesundheitsausgaben_mrd_mean": 620.0,
+            "kollaps_wahrscheinlichkeit_mean": 14.0,
+            "telemedizin_rate_mean": 18.0,
+            "zufriedenheit_patienten_mean": 68.0,
+        },
+    ])
+    params = get_default_params()
+    params["telemedizin_rate"] = params["telemedizin_rate"] + 0.15
+
+    steps = build_result_reading_path(agg, params)
+    combined = " ".join(f"{step['step']} {step['title']} {step['body']}" for step in steps)
+
+    assert len(steps) == 5
+    assert "Top-Zusammenfassung" in combined
+    assert "Telemedizin" in combined
+    assert "KPI-Detailkarte" in combined and "Effektstärke" in combined
+    assert "Trend" in combined and "verzögert" in combined
+    assert "politische Lesespur" in combined
+    assert "Rubrik" in combined and "Vote-Forecast" in combined
+

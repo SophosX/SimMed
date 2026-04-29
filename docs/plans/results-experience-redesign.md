@@ -200,3 +200,15 @@ Small implementation slice:
 4. Add a focused test that core KPI drill-downs include relevant related checks and do not rely on new external factual claims.
 
 Guardrail: This is explanation/information architecture only. Do not change simulation outputs, political claims, scoring, or empirical assumptions.
+## 2026-04-29 next slice: Guided result reading path
+
+Problem: The page now contains narrative, parameter bridge, KPI drill-downs, trend guidance and political sections, but first-time users may still not know in which order to read them or why that order matters. The next small slice should make the result journey explicit without adding another disconnected snippet.
+
+Small implementation slice:
+
+1. Add a pure `build_result_reading_path(agg, params)` helper in `app.py`.
+2. The helper should reuse existing narrative/top-change and changed-parameter bridge outputs to return ordered steps: orient, connect changed levers, inspect biggest KPI, read trend timing, then check politics/stakeholders.
+3. Render the steps directly inside the top narrative block as an expander labelled “Empfohlene Lesereihenfolge”.
+4. Add a focused test that verifies the helper names changed levers, strongest KPI, assumptions/caveats, trend timing and political feasibility as next checks.
+
+Guardrail: This is information architecture only. Do not introduce new empirical claims, model logic or stakeholder assertions; only organize existing explanation layers into a coherent journey.

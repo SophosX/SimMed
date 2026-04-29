@@ -1475,6 +1475,58 @@ def render_changed_parameter_impact_bridge(agg: pd.DataFrame, params: dict):
             st.success(f"**5 · Nächster Klick:** {item['next_step']}")
 
 
+def build_result_reading_path(agg: pd.DataFrame, params: dict) -> List[Dict[str, str]]:
+    """Return the recommended order for reading the result page.
+
+    This organizes existing explanation helpers into one journey. It does not add
+    model logic, empirical claims or stakeholder assertions.
+    """
+    summary = build_result_narrative_summary(agg, params)
+    bridge_items = build_changed_parameter_impact_bridge(agg, params)
+    top_change = summary["top_changes"][0] if summary["top_changes"] else None
+    lever_labels = ", ".join(item["label"] for item in bridge_items)
+    if not lever_labels:
+        lever_labels = "keine stark erklärten Haupthebel verändert"
+    strongest = top_change["meaning"] if top_change else "die auffälligste verfügbare Kennzahl"
+    strongest_detail = top_change["sentence"] if top_change else "Keine priorisierte Bewegung verfügbar."
+
+    return [
+        {
+            "step": "1 · Orientieren",
+            "title": "Was hat sich am stärksten bewegt?",
+            "body": f"Beginne mit der Top-Zusammenfassung. In diesem Lauf zuerst prüfen: {strongest}. {strongest_detail}",
+        },
+        {
+            "step": "2 · Deine Hebel verbinden",
+            "title": "Welche Eingaben gehören dazu?",
+            "body": f"Lies die Brücke zu deinen geänderten Parametern: {lever_labels}. Dort steht der Modellpfad und welche Annahme/Caveat du prüfen solltest.",
+        },
+        {
+            "step": "3 · KPI im Detail öffnen",
+            "title": "Warum ist die Bewegung stark oder schwach?",
+            "body": "Öffne die passende KPI-Detailkarte. Sie zeigt Bedeutung, Start/Ende, Effektstärke, verwandte Prüfungen, Modelltreiber und die wichtigste Annahme.",
+        },
+        {
+            "step": "4 · Zeitverlauf lesen",
+            "title": "Passiert es sofort oder verzögert?",
+            "body": "Prüfe im Trend, wann die Bewegung entsteht. Vergleiche unterschiedliche Einheiten nicht direkt; lies jede Linie gegen ihren eigenen Verlauf.",
+        },
+        {
+            "step": "5 · Politische Umsetzbarkeit prüfen",
+            "title": "Wer unterstützt oder bremst — und warum?",
+            "body": "Öffne danach die politische Lesespur pro geändertem Hebel. Sie erklärt qualitative Unterstützer/Bremser, Reibung, Umsetzungslag und Unsicherheit als Rubrik, nicht als Vote-Forecast.",
+        },
+    ]
+
+
+def render_result_reading_path(agg: pd.DataFrame, params: dict):
+    """Render the ordered journey through the result page."""
+    with st.expander("Empfohlene Lesereihenfolge", expanded=True):
+        for item in build_result_reading_path(agg, params):
+            st.markdown(f"**{item['step']} — {item['title']}**")
+            st.caption(item["body"])
+
+
 def render_result_narrative_summary(agg: pd.DataFrame, params: dict):
     """Render a compact orientation block before KPI cards."""
     summary = build_result_narrative_summary(agg, params)
@@ -1484,6 +1536,7 @@ def render_result_narrative_summary(agg: pd.DataFrame, params: dict):
         st.markdown(f"- **{item['meaning']}** — {item['sentence']}")
     st.info(summary["scenario_text"])
     st.caption(summary["next_step"])
+    render_result_reading_path(agg, params)
     render_changed_parameter_impact_bridge(agg, params)
 
 

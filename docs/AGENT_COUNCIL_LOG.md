@@ -706,3 +706,15 @@ Local verification passed: `python3 -m pytest -q` (32 passed), py_compile, and 5
 - **Integrator Decision:** Implementiert `kpi_related_inspections(metric_key)`, erweitert `build_kpi_drilldown_items()` um `related_inspections`, rendert diese in `render_kpi_deep_dive()` und ergänzt Testabdeckung.
 - **Question to Alex if needed:** Keine wichtige Entscheidung offen; nächster sicherer Schritt ist weitere Kohärenz im Ergebnisbereich oder API/UI für Expertenrat-Vorschläge.
 - **Verification/Git:** Lokal verifiziert: `tests/test_app_explanations.py` 24 passed, Full suite 43 passed, py_compile OK, Simulation smoke 30 Runs × 3 Jahre OK. Git-Sync folgt im selben Heartbeat.
+
+## 2026-04-29 Heartbeat: Ergebnis-Lesereihenfolge
+
+- **Context:** Alex fordert tiefere, logischere Results Experience statt isolierter Snippets.
+- **Project Manager:** Kleiner risikoarmer Slice: vorhandene Ergebnis-Layer in eine empfohlene Lesereihenfolge bringen, ohne Modelllogik zu ändern.
+- **Designer/UX:** Nutzer:innen sollen oben sofort wissen: erst orientieren, dann eigene Hebel verbinden, stärkste KPI öffnen, Zeitverlauf lesen, Politik prüfen.
+- **Creative Agent:** Eine geführte Ergebnisroute macht die Simulation eher zu einer erklärbaren Analyse als zu einem reinen Dashboard.
+- **Political Health-System Strategist:** Politische Umsetzbarkeit bleibt als qualitative Rubrik gekennzeichnet, nicht als Prognose oder Lobby-Anweisung.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; keine neuen Realweltbehauptungen, nur Reorganisation vorhandener Modell-/Caveat-Texte.
+- **Integrator Decision:** `build_result_reading_path()` + Expander direkt in der Top-Narrative, testgedeckt.
+- **Question to Alex if needed:** Keine wichtige Entscheidung offen.
+- **Verification/Git:** Tests/Smoke/Git werden nach Implementierung in diesem Lauf dokumentiert.
