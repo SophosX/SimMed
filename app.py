@@ -1478,6 +1478,13 @@ def render_dashboard(agg: pd.DataFrame, params: dict):
     render_kpi_deep_dive(agg)
     render_main_trend_chart(agg)
 
+    defaults = get_default_params()
+    parameter_changes = {k: v for k, v in params.items() if k in defaults and v != defaults[k]}
+    political_assessment = assess_political_feasibility(parameter_changes)
+    feasibility = political_assessment.get("category", "noch nicht bewertet")
+    overview = political_assessment.get("stakeholder_overview", {})
+    lever_notes = political_assessment.get("lever_notes", [])
+
     st.markdown("---")
     st.markdown("### Wer unterstützt? Wer bremst? Warum?")
     st.caption(
@@ -1485,7 +1492,7 @@ def render_dashboard(agg: pd.DataFrame, params: dict):
         "keine Wahlprognose, kein Lobby-Ranking und kein validierter Score."
     )
 
-    st.info(feasibility.get("summary", "Noch keine politische Einordnung vorhanden."))
+    st.info(political_assessment.get("summary", "Noch keine politische Einordnung vorhanden."))
 
     col_support, col_block, col_why = st.columns(3)
     with col_support:
@@ -1501,7 +1508,7 @@ def render_dashboard(agg: pd.DataFrame, params: dict):
     with col_why:
         st.markdown("**Warum ist das wichtig?**")
         st.write(overview.get("plain_summary", "SimMed erklärt neben Modellwerten auch Zuständigkeiten, Budgets und Akzeptanz."))
-        st.write(f"**Umsetzbarkeit:** {feasibility.get('category', 'noch nicht bewertet')}")
+        st.write(f"**Umsetzbarkeit:** {feasibility}")
 
     if lever_notes:
         with st.expander("Hebel im Klartext anzeigen", expanded=False):
