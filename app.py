@@ -1580,6 +1580,123 @@ def render_result_reading_path(agg: pd.DataFrame, params: dict):
             st.caption(item["body"])
 
 
+def build_simulation_report(agg: pd.DataFrame, params: dict) -> List[Dict[str, Any]]:
+    """Build structured Policy-Briefing sections from existing result helpers.
+
+    This is a navigation/reporting layer only. It reuses existing explanations,
+    registry caveats and the political rubric so report text stays consistent with
+    the dashboard and does not introduce new model or real-world claims.
+    """
+    summary = build_result_narrative_summary(agg, params)
+    bridge_items = build_changed_parameter_impact_bridge(agg, params)
+    kpi_items = build_kpi_drilldown_items(agg, params)
+    trend_labels = [item["label"] for item in summary.get("top_changes", [])]
+    trend_guidance = build_trend_view_guidance(trend_labels)
+    assumption_checks = build_changed_parameter_assumption_checks(agg, params)
+
+    defaults = get_default_params()
+    parameter_changes = {k: v for k, v in params.items() if k in defaults and v != defaults[k]}
+    political_assessment = assess_political_feasibility(parameter_changes)
+    political_sections = build_political_lever_detail_sections(political_assessment)
+
+    def top_change_points() -> List[str]:
+        points = [item["sentence"] for item in summary.get("top_changes", [])]
+        return points or ["Keine priorisierte KPI-Bewegung verfügbar; Simulation und Eingaben prüfen."]
+
+    def bridge_points() -> List[str]:
+        return [f"{item['label']}: {item['change']} {item['model_path']}" for item in bridge_items] or [
+            "Keine der aktuell erklärten Haupt-Stellschrauben wurde gegenüber dem Standardpfad verändert."
+        ]
+
+    def kpi_points() -> List[str]:
+        points = []
+        for item in kpi_items[:3]:
+            points.append(
+                f"{item['label']}: {item['observation']} Effektstärke: {item['effect_strength']}. Nächster Klick: {item['next_step']}"
+            )
+        return points or ["KPI-Details sind für diese Aggregation nicht verfügbar."]
+
+    def evidence_points() -> List[str]:
+        return [
+            f"{item['label']}: {item['evidence']}; {item['uncertainty']}; Caveat: {item['registry_caveat']}"
+            for item in assumption_checks
+        ] or ["Keine geänderten Haupthebel mit Register-Check in diesem Lauf; Quellenregister bei neuen Annahmen prüfen."]
+
+    def political_points() -> List[str]:
+        points = []
+        for section in political_sections[:3]:
+            points.append(
+                f"{section['label']}: Unterstützer/Bremser werden wegen Umsetzungslag ({section['implementation_lag']}) "
+                f"und Reibung ({section['political_friction']}) qualitativ erklärt."
+            )
+        return points or [political_assessment.get("summary", "Noch keine politische Einordnung für geänderte Hebel vorhanden.")]
+
+    return [
+        {
+            "id": "executive_summary",
+            "title": "Executive Summary — was ist passiert?",
+            "purpose": summary["lead"],
+            "points": top_change_points(),
+            "caveat": "SimMed zeigt einen Modell-/Referenzpfad, keine amtliche Prognose.",
+            "next_action": "Danach geänderte Hebel lesen und die stärkste KPI-Detailkarte öffnen.",
+        },
+        {
+            "id": "changed_levers",
+            "title": "Geänderte Hebel — wodurch könnte es im Modell passieren?",
+            "purpose": "Verbindet konkrete Eingaben mit Modellpfaden und beobachteten KPI-Spuren.",
+            "points": bridge_points(),
+            "caveat": "Modellpfade erklären interne Logik, keine gesicherte Realwelt-Kausalität.",
+            "next_action": "Für jeden Hebel den Annahmen-Check und die genannten KPI-Spuren prüfen.",
+        },
+        {
+            "id": "kpi_deep_dive",
+            "title": "KPI Deep Dive — welche Kennzahlen zuerst öffnen?",
+            "purpose": "Priorisiert die stärksten Bewegungen und nennt den nächsten Prüfschritt.",
+            "points": kpi_points(),
+            "caveat": "Starke relative Bewegung ist ein Lesesignal, noch kein Wirksamkeitsbeweis.",
+            "next_action": "Verwandte Prüfungen in den KPI-Expandern lesen, nicht eine Kennzahl isolieren.",
+        },
+        {
+            "id": "trend_timing",
+            "title": "Zeitverlauf — wann entsteht die Bewegung?",
+            "purpose": trend_guidance["how_to_read"],
+            "points": [trend_guidance["unit_warning"], trend_guidance["selection_meaning"]],
+            "caveat": "Unterschiedliche Einheiten im Trend nicht direkt gegeneinander als gleiche Skala vergleichen.",
+            "next_action": trend_guidance["next_step"],
+        },
+        {
+            "id": "evidence_assumptions",
+            "title": "Evidenz & Annahmen — was begrenzt die Aussage?",
+            "purpose": "Zeigt Evidenzgrad, Quellenregister, Unsicherheit und Caveats für geänderte Haupthebel.",
+            "points": evidence_points(),
+            "caveat": "Vor politischen Schlussfolgerungen Quellen, Registerrolle und Zeitverlauf prüfen.",
+            "next_action": "Wenn ein Hebel wichtig wird, Registereintrag und Datenquelle gezielt vertiefen.",
+        },
+        {
+            "id": "political_feasibility",
+            "title": "Politische Umsetzbarkeit — wer könnte unterstützen oder bremsen?",
+            "purpose": political_assessment.get("summary", "Qualitative politische Orientierung zu geänderten Hebeln."),
+            "points": political_points(),
+            "caveat": "Qualitative Rubrik, kein Vote-Forecast, kein Lobby-Ranking und kein validierter Score.",
+            "next_action": "Politische Lesespur je geändertem Hebel öffnen und Reibung gegen KPI-Nutzen abwägen.",
+        },
+    ]
+
+
+def render_simulation_report(agg: pd.DataFrame, params: dict):
+    """Render the structured Policy-Briefing navigator."""
+    st.markdown("---")
+    st.markdown("### Policy-Briefing: Ergebnisse als Bericht lesen")
+    st.caption("Ein strukturierter Pfad für Entscheidungen: kompakt, aufklappbar und aus denselben geprüften Erklärungshilfen gebaut.")
+    for section in build_simulation_report(agg, params):
+        with st.expander(section["title"], expanded=section["id"] == "executive_summary"):
+            st.markdown(f"**Wozu dieser Abschnitt dient:** {section['purpose']}")
+            for point in section["points"]:
+                st.markdown(f"- {point}")
+            st.info(f"Caveat: {section['caveat']}")
+            st.success(f"Nächster Schritt: {section['next_action']}")
+
+
 def render_result_narrative_summary(agg: pd.DataFrame, params: dict):
     """Render a compact orientation block before KPI cards."""
     summary = build_result_narrative_summary(agg, params)
@@ -2080,6 +2197,7 @@ def render_dashboard(agg: pd.DataFrame, params: dict):
 
     render_kpi_deep_dive(agg, params)
     render_main_trend_chart(agg)
+    render_simulation_report(agg, params)
 
     defaults = get_default_params()
     parameter_changes = {k: v for k, v in params.items() if k in defaults and v != defaults[k]}

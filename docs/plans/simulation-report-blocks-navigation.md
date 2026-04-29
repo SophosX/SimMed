@@ -214,3 +214,79 @@ Recommendation: use “Policy-Briefing” as main label and explain it as “str
 - The report is an explanation of the simulation, not a replacement for evidence review.
 - Keep short summary and deep detail separated.
 - Reuse central helpers for KPI explanations, changed levers, political sections and future baseline/evidence storage.
+
+---
+
+## 2026-04-29 heartbeat slice: Structured Policy-Briefing navigator
+
+**Tech Stack:** Python, Streamlit, pandas, existing SimMed helper functions and pytest.
+
+---
+
+## User journey
+
+A user who changed parameters should be able to read results in two depths:
+
+1. **Quick dashboard:** orientation, KPI cards, trend, politics.
+2. **Policy-Briefing:** a report-like path for later sharing/decision work.
+
+The Policy-Briefing must answer, in order:
+
+1. What happened in this simulation?
+2. Which changed levers matter?
+3. Which KPIs moved most, and what should be inspected next?
+4. What does the trend timing say?
+5. Which assumptions/evidence grades limit interpretation?
+6. What political implementation caveats remain?
+
+## Slice 1: Build report section helper
+
+**Objective:** Create a pure `build_simulation_report(agg, params)` helper returning structured sections.
+
+**Files:**
+- Modify: `app.py`
+- Test: `tests/test_app_explanations.py`
+
+**Steps:**
+1. Write a failing test importing `build_simulation_report`.
+2. Test that it returns ordered section IDs: `executive_summary`, `changed_levers`, `kpi_deep_dive`, `trend_timing`, `evidence_assumptions`, `political_feasibility`.
+3. Test that sections include existing changed lever labels, KPI effect strength/next action, trend mixed-unit/timing caveat, evidence grade/source/caveat text, and political rubric/not-vote-forecast warning.
+4. Implement helper by reusing existing helper outputs only. Do not add new causal, empirical, or stakeholder claims.
+5. Run focused test and full test suite.
+
+## Slice 2: Render report navigator
+
+**Objective:** Show the report below trend/KPI deep dives as a navigable expander group labelled “Policy-Briefing”.
+
+**Files:**
+- Modify: `app.py`
+- Test: helper test only; rendering stays thin.
+
+**Steps:**
+1. Add `render_simulation_report(agg, params)` that calls `build_simulation_report`.
+2. Render each section as an expander with purpose, bullets, caveat, and next action.
+3. Insert after trend view and before political stakeholder card so politics remains a dedicated deep-dive later.
+4. Verify no model outputs change.
+
+## Guardrails
+
+- Report sections are structured reading/navigation objects, not new model logic.
+- No unsupported real-world claims. Use existing registry evidence/caveats or label as model/rubric.
+- Keep concise on mobile: expandable sections, short bullets, clear next action.
+- Reuse central helpers to avoid inconsistent copy.
+
+## Verification
+
+Run:
+
+```bash
+python3 -m pytest tests/test_app_explanations.py -q
+python3 -m pytest -q
+python3 -m py_compile app.py
+python3 - <<'PY'
+from simulation_core import get_default_params, run_simulation
+p=get_default_params(); p['telemedizin_rate'] += 0.1
+df, reg = run_simulation(p, n_runs=30, n_years=3, base_seed=11)
+print(df.shape, reg.shape)
+PY
+```

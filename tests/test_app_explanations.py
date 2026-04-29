@@ -15,6 +15,7 @@ from app import (
     build_political_stakeholder_rows,
     build_result_narrative_summary,
     build_result_reading_path,
+    build_simulation_report,
     build_trend_view_guidance,
     get_default_params,
     kpi_hover_help,
@@ -590,4 +591,59 @@ def test_result_reading_path_guides_full_result_journey():
     assert "Trend" in combined and "verzögert" in combined
     assert "politische Lesespur" in combined
     assert "Rubrik" in combined and "Vote-Forecast" in combined
+
+
+def test_simulation_report_structures_policy_briefing_from_existing_explanations():
+    agg = pd.DataFrame([
+        {
+            "jahr": 2025,
+            "wartezeit_fa_mean": 20.0,
+            "gkv_saldo_mean": -5.0,
+            "versorgungsindex_rural_mean": 70.0,
+            "gesundheitsausgaben_mrd_mean": 500.0,
+            "kollaps_wahrscheinlichkeit_mean": 8.0,
+            "telemedizin_rate_mean": 10.0,
+            "zufriedenheit_patienten_mean": 72.0,
+            "chroniker_rate_mean": 42.0,
+            "lebenserwartung_mean": 81.0,
+            "aerzte_pro_100k_mean": 420.0,
+        },
+        {
+            "jahr": 2040,
+            "wartezeit_fa_mean": 38.0,
+            "gkv_saldo_mean": -12.0,
+            "versorgungsindex_rural_mean": 66.0,
+            "gesundheitsausgaben_mrd_mean": 620.0,
+            "kollaps_wahrscheinlichkeit_mean": 14.0,
+            "telemedizin_rate_mean": 18.0,
+            "zufriedenheit_patienten_mean": 68.0,
+            "chroniker_rate_mean": 39.0,
+            "lebenserwartung_mean": 81.8,
+            "aerzte_pro_100k_mean": 405.0,
+        },
+    ])
+    params = get_default_params()
+    params["telemedizin_rate"] = params["telemedizin_rate"] + 0.15
+    params["praeventionsbudget"] = params["praeventionsbudget"] + 0.5
+
+    report = build_simulation_report(agg, params)
+    combined = " ".join(
+        f"{section['id']} {section['title']} {section['purpose']} {' '.join(section['points'])} {section['caveat']} {section['next_action']}"
+        for section in report
+    )
+
+    assert [section["id"] for section in report] == [
+        "executive_summary",
+        "changed_levers",
+        "kpi_deep_dive",
+        "trend_timing",
+        "evidence_assumptions",
+        "political_feasibility",
+    ]
+    assert "Telemedizin" in combined and "Präventionsbudget" in combined
+    assert "Effektstärke" in combined and "Nächster Klick" in combined
+    assert "Einheiten" in combined and "Trend" in combined
+    assert "Evidenzgrad" in combined and "Quellen" in combined and "Caveat" in combined
+    assert "Rubrik" in combined and "Vote-Forecast" in combined
+    assert "keine gesicherte Realwelt-Kausalität" in combined
 

@@ -731,3 +731,24 @@ Local verification passed: `python3 -m pytest -q` (32 passed), py_compile, and 5
 - **Integrator Decision:** Plan `docs/plans/results-experience-redesign.md` erweitert; `build_changed_parameter_assumption_checks()` und Render-Expander in `app.py` ergänzt; Test für Präventionsbudget/Medizinstudienplätze hinzugefügt.
 - **Question to Alex if needed:** Keine wichtige Entscheidung offen. Spätere Produktfrage: Soll dieser Annahmen-Check stärker als „Ampel“ visualisiert werden oder bewusst textlich/auditierbar bleiben?
 - **Verification/Git:** Fokustest bestanden, Full suite 45 passed, py_compile OK, Simulation-Smoke 50 Runs × 3 Jahre OK. Git-Sync/Push folgt.
+
+
+## 2026-04-29 18:00 UTC — Policy-Briefing-Struktur für Ergebnisse
+
+**Context:** Alex will eine tiefere, logischere Ergebnis-Erfahrung statt weiterer isolierter UI-Schnipsel. Vor der Umsetzung wurde `docs/plans/simulation-report-blocks-navigation.md` als Plan für blockbasierte Policy-Briefings erstellt.
+
+**Project Manager:** Kleine reversible Slice gewählt: strukturierte Report-Sections aus vorhandenen Hilfsfunktionen, kein neues Modellverhalten.
+
+**Designer/UX:** Ergebnisreise erweitert um eine zweite Lesetiefe: Quick Dashboard bleibt, danach ein aufklappbares Policy-Briefing mit Executive Summary, geänderten Hebeln, KPI-Deep-Dive, Trend-Timing, Evidenz/Annahmen und politischer Umsetzbarkeit.
+
+**Creative Agent:** Report-Blöcke können später als teilbare Policy-Briefing-Ansicht dienen; jetzt nur Navigation/Struktur, damit die App nicht überladen wirkt.
+
+**Political Health-System Strategist:** Politische Sektion bleibt ausdrücklich qualitative Rubrik; Unterstützer/Bremser werden nicht als Vote-Forecast oder Lobby-Ranking dargestellt.
+
+**Evidence/Domain:** Keine neue Recherche in diesem Lauf; keine neuen empirischen Behauptungen. Evidence-/Caveat-Texte kommen aus bestehenden Registry-/Assumption-Helpers.
+
+**Integrator Decision:** `build_simulation_report()` und `render_simulation_report()` in `app.py` ergänzt; Renderpunkt nach Trend/KPI-Details und vor politischem Deep Dive. Test deckt Reihenfolge und zentrale Caveats ab.
+
+**Question to Alex if needed:** Keine blockierende Entscheidung; nächster sicherer Schritt wäre die Report-Blöcke später mit exportierbaren Section-Objekten/API-Ausgabe zu verbinden.
+
+**Verification/Git:** Lokal verifiziert mit `pytest tests/test_app_explanations.py -q`, voller `pytest -q`, `py_compile` und 30-run Simulation-Smoke. Git-Sync/Push folgt in diesem Lauf.
