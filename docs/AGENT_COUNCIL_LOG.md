@@ -589,3 +589,15 @@ No important decision open.
 
 ### Verification / Git
 Local verification passed: `python3 -m pytest -q` (32 passed), py_compile, and 50-run/3-year simulation smoke test. Zip refresh, sync, commit/push follow in this heartbeat.
+
+## 2026-04-29 – Results Experience Redesign: narrative + political why rows
+
+- **Context:** Alex fordert tiefere, logischere Ergebnis-Erklärungen statt weiterer isolierter Textschnipsel. Schwerpunkt: Orientierung vor KPI-Karten und nachvollziehbare politische Unterstützer/Bremser.
+- **Project Manager:** Kleine reversible Slice gewählt: Plan präzisieren, Helper testen, UI an bestehende Dashboard-Struktur anschließen. Kein Modelloutput verändert.
+- **Designer/UX:** Nutzerreise beginnt jetzt mit „Was ist passiert?“; danach KPI-Karten, Zeitverlauf und politische Detail-Expander. Das reduziert kognitiven Sprung von Zahlen zu Interpretation.
+- **Creative Agent:** Idee „Ergebnis-Lesepfad“ passt besser als weitere Bulletboxen: zuerst größte Bewegung, dann Drill-down, dann Politik.
+- **Political Health-System Strategist:** Unterstützer/Bremser werden pro Hebel mit Warum, Umsetzungsverzug und Reibung erklärt; bleibt ausdrücklich qualitative Orientierung, keine Wahl-/Lobby-Prognose.
+- **Evidence/Domain:** Keine neue externe Tatsachenbehauptung kodiert; Stakeholderregeln bleiben als transparente Rubrik/Annahme markiert. Keine neue Recherche in diesem Lauf.
+- **Integrator Decision:** `build_result_narrative_summary()` und `build_political_stakeholder_rows()` in `app.py` hinzugefügt und testgedeckt; Plan in `docs/plans/results-experience-redesign.md` aktualisiert.
+- **Question to Alex if needed:** Keine Blockerfrage; nächste Entscheidung später: ob KPI-Drilldowns eher als kompakte Karten oder geführter „Warum?“-Dialog gestaltet werden sollen.
+- **Verification/Git:** Tests/Smoke/Git nachfolgend im Heartbeat-Status.

@@ -94,3 +94,15 @@ p=get_default_params(); p['telemedizin_rate']=0.2
 print(run_simulation(p, n_runs=20, n_years=2, base_seed=5)[0].shape)
 PY
 ```
+
+## 2026-04-29 heartbeat refinement
+
+Alex's quality bar: the results page must become a coherent reading path, not another pile of snippets. The intended journey is:
+
+1. **Orient first:** show a short narrative above KPI cards: what changed most, whether the movement is good/bad/ambiguous, and what to open next.
+2. **Drill down:** every important KPI should expose meaning, start/end values, strength of movement, likely model drivers, caveats and next inspection.
+3. **Read trends:** trend charts need explicit reading guidance: lines show model means over time; different units should not be over-compared as if one axis made them equivalent.
+4. **Connect politics to levers:** supporters/blockers must be explained per changed lever, including why the group appears, what uncertainty remains, and how it relates to implementation lag/friction.
+5. **Stay honest:** all political/stakeholder text remains a transparent hypothesis/rubric, not a sourced vote forecast.
+
+Next implementation slice: add test-covered helper functions for a top result narrative and lever-level political stakeholder rows, then render them in the dashboard.

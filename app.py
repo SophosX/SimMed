@@ -1204,6 +1204,110 @@ def _direction_word(delta: float, higher_is_better: bool) -> str:
     return "verschlechtert" if delta > 0 else "verbessert"
 
 
+def _effect_strength(delta_pct: float) -> str:
+    """Classify relative movement so result text distinguishes signal strength."""
+    magnitude = abs(delta_pct)
+    if magnitude < 1:
+        return "kaum sichtbar"
+    if magnitude < 5:
+        return "leicht"
+    if magnitude < 15:
+        return "deutlich"
+    return "stark"
+
+
+def _metric_delta_summary(agg: pd.DataFrame, key: str, higher_is_better: bool) -> Dict[str, Any]:
+    """Return start/end/delta information for one KPI mean column."""
+    mean_col = f"{key}_mean"
+    first, last = agg.iloc[0], agg.iloc[-1]
+    start = float(first[mean_col])
+    end = float(last[mean_col])
+    abs_delta = end - start
+    pct_delta = ((end / start) - 1) * 100 if start else 0.0
+    return {
+        "key": key,
+        "label": KPI_LABELS.get(key, key),
+        "start": start,
+        "end": end,
+        "abs_delta": abs_delta,
+        "pct_delta": pct_delta,
+        "direction": _direction_word(abs_delta, higher_is_better),
+        "strength": _effect_strength(pct_delta),
+    }
+
+
+def build_result_narrative_summary(agg: pd.DataFrame, params: dict) -> Dict[str, Any]:
+    """Build the first reading layer for the results page.
+
+    The narrative does not add new model assumptions. It ranks already simulated
+    KPI movements and tells users what changed, why to care and what to inspect
+    next.
+    """
+    metric_specs = [
+        ("wartezeit_fa", False, "Zugang zur fachärztlichen Versorgung"),
+        ("gkv_saldo", True, "Finanzierungsdruck der GKV"),
+        ("versorgungsindex_rural", True, "ländliche Versorgung"),
+        ("gesundheitsausgaben_mrd", False, "Ausgabenpfad"),
+        ("kollaps_wahrscheinlichkeit", False, "Systemstress"),
+    ]
+    summaries = []
+    for key, higher_is_better, meaning in metric_specs:
+        if f"{key}_mean" not in agg.columns:
+            continue
+        item = _metric_delta_summary(agg, key, higher_is_better)
+        item["meaning"] = meaning
+        item["sentence"] = (
+            f"{item['label']}: {item['start']:.2f} → {item['end']:.2f} "
+            f"({item['abs_delta']:+.2f}; {item['strength']} {item['direction']})."
+        )
+        summaries.append(item)
+
+    summaries.sort(key=lambda item: abs(item["pct_delta"]), reverse=True)
+    changed_notes = _changed_policy_lever_notes(params)
+    if changed_notes:
+        scenario_text = "Geänderte Hebel, die du bei der Interpretation prüfen solltest: " + " ".join(changed_notes[:3])
+    else:
+        scenario_text = "Keine der bereits erklärten Haupt-Stellschrauben wurde gegenüber dem Standardwert verändert; lies die Ergebnisse als Basispfad."
+
+    return {
+        "headline": "Was ist in dieser Simulation passiert?",
+        "lead": "Die wichtigsten Bewegungen werden zuerst gezeigt. Öffne danach die Detailkarten, um Ursache, Stärke, Annahmen und nächste Prüfpunkte zu sehen.",
+        "top_changes": summaries[:3],
+        "scenario_text": scenario_text,
+        "next_step": "Als Nächstes: erst die größte Veränderung öffnen, dann Zeitverlauf prüfen und danach die politische Umsetzbarkeit lesen.",
+    }
+
+
+def build_political_stakeholder_rows(political_assessment: Dict[str, Any]) -> List[Dict[str, str]]:
+    """Explain supporters/blockers per changed policy lever instead of naked bullets."""
+    rows: List[Dict[str, str]] = []
+    for note in political_assessment.get("lever_notes", []):
+        for role, people in (("Unterstützer", note.get("likely_supporters", [])), ("Bremser", note.get("likely_blockers", []))):
+            for stakeholder in people:
+                rows.append({
+                    "stakeholder": stakeholder,
+                    "role": role,
+                    "lever": note.get("label", "geänderter Hebel"),
+                    "why": (
+                        f"Erscheint hier wegen: {note.get('why_it_matters', '')} "
+                        f"Umsetzung: {note.get('implementation_lag', 'unklar')}; politische Reibung: {note.get('political_friction', 'unklar')}."
+                    ),
+                    "caveat": note.get("caveat", "Qualitative Annahme; noch keine validierte Stakeholder-Prognose."),
+                })
+    return rows
+
+
+def render_result_narrative_summary(agg: pd.DataFrame, params: dict):
+    """Render a compact orientation block before KPI cards."""
+    summary = build_result_narrative_summary(agg, params)
+    st.markdown(f"### {summary['headline']}")
+    st.caption(summary["lead"])
+    for item in summary["top_changes"]:
+        st.markdown(f"- **{item['meaning']}** — {item['sentence']}")
+    st.info(summary["scenario_text"])
+    st.caption(summary["next_step"])
+
+
 def _changed_policy_lever_notes(params: dict) -> List[str]:
     """Beschreibt veränderte Szenario-Hebel in Klartext.
 
@@ -1395,6 +1499,8 @@ def render_dashboard(agg: pd.DataFrame, params: dict):
     last = agg.iloc[-1]
     endjahr = int(last["jahr"])
 
+    render_result_narrative_summary(agg, params)
+
     st.markdown(f"### Kernkennzahlen {endjahr} (Mittelwerte über alle Runs)")
 
     def delta_pct(col: str) -> float:
@@ -1522,13 +1628,22 @@ def render_dashboard(agg: pd.DataFrame, params: dict):
         st.write(overview.get("plain_summary", "SimMed erklärt neben Modellwerten auch Zuständigkeiten, Budgets und Akzeptanz."))
         st.write(f"**Umsetzbarkeit:** {feasibility}")
 
+    stakeholder_rows = build_political_stakeholder_rows(political_assessment)
+    if stakeholder_rows:
+        with st.expander("Warum erscheinen diese Unterstützer und Bremser?", expanded=False):
+            for row in stakeholder_rows:
+                st.markdown(f"**{row['role']}: {row['stakeholder']}** — Hebel: {row['lever']}")
+                st.write(row["why"])
+                st.caption(f"Unsicherheit: {row['caveat']}")
+
     if lever_notes:
-        with st.expander("Hebel im Klartext anzeigen", expanded=False):
+        with st.expander("Geänderte Hebel im Klartext anzeigen", expanded=False):
             for note in lever_notes:
                 st.markdown(f"**{note['label']}**")
                 st.write(note["why_it_matters"])
                 st.caption(f"Verzögerung: {note['implementation_lag']} · Reibung: {note['political_friction']}")
                 st.caption(f"Achtung: {note['caveat']}")
+                st.caption(f"Nächster Strategie-Prüfpunkt: {note['strategy_foundation']}")
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

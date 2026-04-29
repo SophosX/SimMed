@@ -8,6 +8,8 @@ from app import (
     _parameter_evidence_badge,
     _parameter_provenance_help,
     build_kpi_explanations,
+    build_political_stakeholder_rows,
+    build_result_narrative_summary,
     get_default_params,
     learning_page_next_actions,
     plain_language_workflow_summary,
@@ -203,3 +205,53 @@ def test_learning_page_reuses_expert_council_plain_language_workflow():
     assert "nicht direkt" in combined
     assert "Quellen" in combined
     assert "Git-Historie" in combined
+
+
+def test_result_narrative_summary_prioritizes_change_and_next_step():
+    agg = pd.DataFrame([
+        {
+            "jahr": 2026,
+            "wartezeit_fa_mean": 20.0,
+            "gkv_saldo_mean": 2.0,
+            "versorgungsindex_rural_mean": 70.0,
+            "gesundheitsausgaben_mrd_mean": 500.0,
+            "kollaps_wahrscheinlichkeit_mean": 5.0,
+        },
+        {
+            "jahr": 2040,
+            "wartezeit_fa_mean": 34.0,
+            "gkv_saldo_mean": -4.0,
+            "versorgungsindex_rural_mean": 67.0,
+            "gesundheitsausgaben_mrd_mean": 560.0,
+            "kollaps_wahrscheinlichkeit_mean": 7.0,
+        },
+    ])
+    params = get_default_params()
+    params["telemedizin_rate"] = params["telemedizin_rate"] + 0.1
+
+    summary = build_result_narrative_summary(agg, params)
+    combined = " ".join([summary["headline"], summary["lead"], summary["scenario_text"], summary["next_step"]] + [item["sentence"] for item in summary["top_changes"]])
+
+    assert summary["headline"] == "Was ist in dieser Simulation passiert?"
+    assert len(summary["top_changes"]) == 3
+    assert "stark" in combined or "deutlich" in combined
+    assert "Telemedizin" in combined
+    assert "größte Veränderung öffnen" in combined
+    assert "Zeitverlauf prüfen" in combined
+
+
+def test_political_stakeholder_rows_explain_why_group_appears():
+    from political_feasibility import assess_political_feasibility
+
+    assessment = assess_political_feasibility({"medizinstudienplaetze": 8000})
+    rows = build_political_stakeholder_rows(assessment)
+    combined = " ".join(f"{row['role']} {row['stakeholder']} {row['lever']} {row['why']} {row['caveat']}" for row in rows)
+
+    assert rows
+    assert "Unterstützer" in combined
+    assert "Bremser" in combined
+    assert "Medizinstudienplätze" in combined
+    assert "Umsetzung" in combined
+    assert "politische Reibung" in combined
+    assert "6+ Jahre" in combined or "11–13+ Jahre" in combined
+    assert "keine validierte" in combined or "Modellkern" in combined
