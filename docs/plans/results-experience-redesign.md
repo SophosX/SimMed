@@ -335,4 +335,15 @@ Small implementation slice:
 4. Add a focused test proving Medizinstudienplätze links to Ärzte pro 100k, Facharzt-Wartezeit, and ländliche Versorgung targets with existing start/end traces and a KPI-detail next step.
 
 Guardrail: This is navigation UX only. Do not add model effects, empirical claims, political claims, or a hidden causal score; every target is derived from existing bridge KPI pointers.
+## 2026-04-29 next slice: Question explorer reading paths
 
+Problem: The question-first explorer gives a practical entry question, answer, caveat and next click, but it still reads as five compact cards. A user who starts from a question should see the same coherent mini-journey inside each card: result signal → changed lever/model path → assumption/evidence check → exact next section.
+
+Small implementation slice:
+
+1. Extend `build_result_explorer_topics(agg, params)` with a `reading_path` list on every topic.
+2. Build each path only from existing structured fields: KPI drill-down observation/effect strength, changed-parameter bridge, assumption checks, trend guidance, and political lever detail sections.
+3. Render the path under each question in the existing expander so it deepens the current result explorer rather than adding a new standalone snippet.
+4. Add a focused test proving every topic has ordered steps covering signal, reason/model path, assumption/caveat, and next inspection, and that political wording remains a qualitative rubric/not a vote forecast.
+
+Guardrail: This is navigation/information architecture only. Do not add new empirical claims, model effects, causal scores, or stakeholder assertions; each step must point back to already existing explanation structures.

@@ -922,3 +922,14 @@ Local verification before sync: `python3 -m pytest -q` → 59 passed; py_compile
 - **Question to Alex if needed:** No major product decision open; next safe slice can continue strengthening result/report navigation.
 - **Verification/Git:** Local source tests passed (`60 passed`), py_compile passed, smoke simulation passed (`df (60, 30)`, regional `(320, 6)`). Git sync/push pending in this heartbeat step.
 
+## 2026-04-29 Heartbeat — Result explorer mini-reading paths
+
+- **Context:** Alex wants the results experience to become a coherent explanation journey, not more isolated snippets.
+- **Project Manager:** Safe slice: deepen existing question-first result explorer rather than adding a new top-level UI block.
+- **Designer/UX:** Each practical question now follows the same mini-path: Ergebnis-Signal → Warum im Modell → Annahme/Caveat → Nächste Prüfung.
+- **Creative Agent:** Use the explorer as a conversational “start from your question” layer while preserving exact drill-down/report sections as the destination.
+- **Political Health-System Strategist:** Political topic keeps the qualitative-rubric caveat and explicitly avoids Vote-Forecast/Lobbying framing.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; all text is assembled from existing KPI, bridge, trend, assumption and political helpers.
+- **Integrator Decision:** Implemented `reading_path` on `build_result_explorer_topics(...)`, rendered it in the existing expander, and documented the slice in `docs/plans/results-experience-redesign.md`.
+- **Question to Alex if needed:** Keine wichtige neue Entscheidung offen; next safe step is further consistency/navigation cleanup in the Policy-Briefing/result journey.
+- **Verification/Git:** Focused explorer test added; full pytest, py_compile and small simulation smoke passed locally before sync.

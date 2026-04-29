@@ -1686,7 +1686,7 @@ def render_result_reading_path(agg: pd.DataFrame, params: dict):
             st.caption(item["body"])
 
 
-def build_result_explorer_topics(agg: pd.DataFrame, params: dict) -> List[Dict[str, str]]:
+def build_result_explorer_topics(agg: pd.DataFrame, params: dict) -> List[Dict[str, Any]]:
     """Build question-first result topics from existing explanation structures.
 
     This is a navigation layer only. It assembles answers from KPI drill-downs,
@@ -1729,27 +1729,52 @@ def build_result_explorer_topics(agg: pd.DataFrame, params: dict) -> List[Dict[s
         blockers = ", ".join(row["stakeholder"] for row in first.get("blockers", [])[:2]) or "keine Bremsergruppe ausgewiesen"
         return f"{first['label']}: Unterstützer {supporters}; Bremser {blockers}. Caveat: {first['caveat']}"
 
+    def reading_path(signal: str, reason: str, caveat: str, next_click: str) -> List[Dict[str, str]]:
+        """Create the same mini-journey for every question-first topic."""
+        return [
+            {"step": "1. Ergebnis-Signal", "text": signal},
+            {"step": "2. Warum im Modell", "text": reason},
+            {"step": "3. Annahme/Caveat", "text": caveat},
+            {"step": "4. Nächste Prüfung", "text": next_click},
+        ]
+
+    first_bridge = first_bridge_summary()
+    first_assumption_text = first_assumption()
+    political_text = political_answer()
+    access_answer = kpi_answer("wartezeit_fa", "Prüfe Wartezeit, Ärztedichte und ländliche Versorgung im KPI-Detail.")
+    finance_answer = kpi_answer("gkv_saldo", kpi_answer("gkv_beitragssatz", "Prüfe GKV-Saldo, Beitragssatz und Gesundheitsausgaben zusammen."))
+    access_assumption = by_key.get("wartezeit_fa", {}).get("assumption", "Kopfzahl ist nicht automatisch reale Kapazität.")
+    finance_assumption = by_key.get("gkv_saldo", {}).get("assumption", "Saldo nie ohne Beitragssatz, Bundeszuschuss und Ausgabenpfad lesen.")
+
+    access_next = "Öffne KPI-Detail Facharzt-Wartezeit und danach den Zeitverlauf."
+    finance_next = "Öffne KPI-Details zu GKV-Saldo/Beitragssatz und die politische Lesespur."
+    lever_next = "Öffne „Was bedeuten deine geänderten Hebel?“ und danach den Annahmen-Check."
+    political_caveat = "Qualitative Rubrik, keine gesicherte Vorhersage, kein Vote-Forecast und keine Lobbying-Empfehlung."
+
     return [
         {
             "topic": "Zugang & Versorgung",
             "question": "Wird der Zugang für Patient:innen besser oder schlechter?",
-            "answer": kpi_answer("wartezeit_fa", "Prüfe Wartezeit, Ärztedichte und ländliche Versorgung im KPI-Detail."),
-            "assumption": by_key.get("wartezeit_fa", {}).get("assumption", "Kopfzahl ist nicht automatisch reale Kapazität."),
-            "next_click": "Öffne KPI-Detail Facharzt-Wartezeit und danach den Zeitverlauf.",
+            "answer": access_answer,
+            "assumption": access_assumption,
+            "next_click": access_next,
+            "reading_path": reading_path(access_answer, by_key.get("wartezeit_fa", {}).get("drivers", "Wartezeit zusammen mit Ärztedichte, ländlicher Versorgung und geänderten Hebeln lesen."), access_assumption, access_next),
         },
         {
             "topic": "Finanzierung",
             "question": "Entsteht Finanzierungsdruck?",
-            "answer": kpi_answer("gkv_saldo", kpi_answer("gkv_beitragssatz", "Prüfe GKV-Saldo, Beitragssatz und Gesundheitsausgaben zusammen.")),
-            "assumption": by_key.get("gkv_saldo", {}).get("assumption", "Saldo nie ohne Beitragssatz, Bundeszuschuss und Ausgabenpfad lesen."),
-            "next_click": "Öffne KPI-Details zu GKV-Saldo/Beitragssatz und die politische Lesespur.",
+            "answer": finance_answer,
+            "assumption": finance_assumption,
+            "next_click": finance_next,
+            "reading_path": reading_path(finance_answer, by_key.get("gkv_saldo", {}).get("drivers", "Finanzierung über Ausgaben, Einnahmen, Beitragssatz und Zuschüsse zusammen lesen."), finance_assumption, finance_next),
         },
         {
             "topic": "Geänderte Hebel",
             "question": "Welche meiner Eingaben passt zu den Ergebnisbewegungen?",
-            "answer": first_bridge_summary(),
-            "assumption": first_assumption(),
-            "next_click": "Öffne „Was bedeuten deine geänderten Hebel?“ und danach den Annahmen-Check.",
+            "answer": first_bridge,
+            "assumption": first_assumption_text,
+            "next_click": lever_next,
+            "reading_path": reading_path(first_bridge, "Nutze den geänderte-Hebel-Block als Modellpfad von Eingabe zu beobachteten KPI-Spuren.", first_assumption_text, lever_next),
         },
         {
             "topic": "Zeit & Stärke",
@@ -1757,13 +1782,15 @@ def build_result_explorer_topics(agg: pd.DataFrame, params: dict) -> List[Dict[s
             "answer": trend_guidance["how_to_read"],
             "assumption": trend_guidance["unit_warning"],
             "next_click": trend_guidance["next_step"],
+            "reading_path": reading_path(trend_guidance["how_to_read"], trend_guidance["selection_meaning"], trend_guidance["unit_warning"], trend_guidance["next_step"]),
         },
         {
             "topic": "Politische Umsetzbarkeit",
             "question": "Wer könnte unterstützen oder bremsen — und warum?",
-            "answer": political_answer(),
-            "assumption": "Qualitative Rubrik, keine gesicherte Vorhersage, kein Vote-Forecast und keine Lobbying-Empfehlung.",
+            "answer": political_text,
+            "assumption": political_caveat,
             "next_click": "Öffne die politische Lesespur nach geändertem Hebel.",
+            "reading_path": reading_path(political_text, "Die politische Lesespur ordnet Unterstützer/Bremser dem geänderten Hebel, Friktion und Umsetzungslogik zu.", political_caveat, "Öffne die politische Lesespur nach geändertem Hebel."),
         },
     ]
 
@@ -1776,6 +1803,8 @@ def render_result_explorer_topics(agg: pd.DataFrame, params: dict):
             st.markdown(f"**{topic['topic']} — {topic['question']}**")
             st.markdown(f"Antwort: {topic['answer']}")
             st.info(f"Annahme/Caveat: {topic['assumption']}")
+            for step in topic.get("reading_path", []):
+                st.markdown(f"- **{step['step']}**: {step['text']}")
             st.success(f"Nächster Klick: {topic['next_click']}")
 
 

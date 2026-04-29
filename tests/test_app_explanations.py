@@ -934,3 +934,30 @@ def test_trend_metric_reading_rows_make_selected_lines_readable_without_hover():
     assert wait_row["direction"] == "verschlechtert"
     assert "Gemischte Einheiten" in wait_row["caveat"]
     assert "KPI-Detailkarte Facharzt-Wartezeit" in wait_row["next_step"]
+
+def test_result_explorer_topics_include_ordered_reading_paths():
+    agg, params = _sample_report_inputs()
+    topics = build_result_explorer_topics(agg, params)
+
+    assert len(topics) == 5
+    for topic in topics:
+        path = topic.get("reading_path")
+        assert path and [step["step"] for step in path] == [
+            "1. Ergebnis-Signal",
+            "2. Warum im Modell",
+            "3. Annahme/Caveat",
+            "4. Nächste Prüfung",
+        ]
+        combined_path = " ".join(step["text"] for step in path)
+        assert topic["answer"] in combined_path
+        assert topic["assumption"] in combined_path
+        assert topic["next_click"] in combined_path
+
+    combined = " ".join(
+        f"{topic['topic']} {' '.join(step['text'] for step in topic['reading_path'])}"
+        for topic in topics
+    )
+    assert "Modellpfad" in combined
+    assert "Einheiten" in combined
+    assert "Vote-Forecast" in combined
+    assert "Lobbying-Empfehlung" in combined
