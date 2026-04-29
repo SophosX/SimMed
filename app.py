@@ -908,9 +908,11 @@ def parameter_data_status_badge(key: str) -> str:
     spec = PARAMETER_REGISTRY.get(key)
     if spec is None:
         return "🔴 Annahme, nicht aus Daten · Register fehlt"
-    icon = "🟢" if spec.data_status == "aus_daten" else "🟠"
-    label = "aus Daten" if spec.data_status == "aus_daten" else "Annahme, nicht aus Daten"
-    freshness = f" · Stand {spec.source_version}" if spec.source_version else ""
+    data_status = getattr(spec, "data_status", "annahme")
+    source_version = getattr(spec, "source_version", "")
+    icon = "🟢" if data_status == "aus_daten" else "🟠"
+    label = "aus Daten" if data_status == "aus_daten" else "Annahme, nicht aus Daten"
+    freshness = f" · Stand {source_version}" if source_version else ""
     return f"{icon} {label} · Evidenz {spec.evidence_grade}{freshness}"
 
 
@@ -930,7 +932,7 @@ def kpi_data_status_badge(kpi_key: str) -> str:
     specs = [s for s in specs if s is not None]
     if not specs:
         return "🟠 Annahme, nicht aus Daten · KPI-Treiber noch nicht im Register verknüpft"
-    if all(s.data_status == "aus_daten" for s in specs):
+    if all(getattr(s, "data_status", "annahme") == "aus_daten" for s in specs):
         return "🟢 aus Daten · KPI basiert auf registrierten Datenparametern"
     return "🟠 Annahme, nicht aus Daten · KPI kombiniert Datenreferenzen mit Modellannahmen"
 

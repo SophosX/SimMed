@@ -22,6 +22,7 @@ from app import (
     build_trend_metric_reading_rows,
     build_trend_view_guidance,
     get_default_params,
+    kpi_data_status_badge,
     kpi_hover_help,
     kpi_matching_changed_levers,
     kpi_mobile_detail,
@@ -33,6 +34,15 @@ from app import (
     plain_language_workflow_summary,
     sidebar_quick_start_steps,
 )
+
+
+def test_data_status_badges_are_backward_compatible_without_registry_field():
+    # Current main ParameterSpec does not yet guarantee data_status/source_version.
+    # UI helpers must not crash while the data-ingestion branch evolves separately.
+    assert _parameter_evidence_badge("bevoelkerung_mio")
+    kpi_badge = kpi_data_status_badge("gesundheitsausgaben_mrd")
+    assert "Daten" in kpi_badge or "Annahme" in kpi_badge
+
 
 
 def test_landing_hero_content_sets_first_contact_expectations():
