@@ -41,6 +41,7 @@ from data_ingestion import (
     build_transformation_review_template,
 )
 from parameter_registry import PARAMETER_REGISTRY, list_parameters
+from simulation_core import build_scenario_manifest
 from simulation_report import build_simulation_report as build_policy_briefing_report
 
 warnings.filterwarnings("ignore")
@@ -1112,13 +1113,52 @@ def build_scenario_gallery_cards() -> List[dict[str, Any]]:
             "id": "prevention_finance_tradeoff",
             "title": "Prävention: spätere Wirkung gegen kurzfristige Kosten abwägen",
             "question": "Wie verändert mehr Präventionsbudget den Zielkonflikt zwischen Gesundheit und GKV-Finanzen?",
-            "parameter_changes": {"praevention_budget": {"suggested_value": 8.0, "direction": "erhöhen"}},
+            "parameter_changes": {"praeventionsbudget": {"suggested_value": 10.0, "direction": "erhöhen"}},
             "why_this_matters": "Prävention kann verzögert wirken und kurzfristig Ausgaben erhöhen; die Karte erzwingt deshalb Ergebnis- und Annahmenprüfung.",
             "workflow": workflow,
             "guardrail": "Starterkarte, keine amtliche Prognose und kein Beweis für sofortige Einsparungen.",
             "next_click": "Nach der Simulation: GKV-Saldo/BIP-Anteil → Trend-Timing → Annahmen-Check.",
         },
     ]
+
+
+def build_scenario_gallery_manifest_previews(
+    *, n_runs: int = 100, n_years: int = 15, seed: int = 42
+) -> List[dict[str, Any]]:
+    """Attach reproducible manifest previews to starter cards without applying them.
+
+    The preview is the safe bridge from demo card to agent/API workflow: it uses
+    ``simulation_core.build_scenario_manifest`` so users and agents see the exact
+    scenario id, registered parameters, evidence grades and caveats before any
+    simulation run or UI state mutation happens.
+    """
+    previews: List[dict[str, Any]] = []
+    for card in build_scenario_gallery_cards():
+        parameter_changes = {
+            key: change["suggested_value"]
+            for key, change in card["parameter_changes"].items()
+        }
+        manifest = build_scenario_manifest(
+            parameter_changes,
+            n_runs=n_runs,
+            n_years=n_years,
+            seed=seed,
+            generated_at="preview-not-executed",
+        )
+        previews.append({
+            "card_id": card["id"],
+            "title": card["title"],
+            "scenario_id": manifest["scenario_id"],
+            "parameter_changes": manifest["parameter_changes"],
+            "changed_parameters": manifest["changed_parameters"],
+            "api_endpoint": manifest["reproducibility"]["manifest_endpoint"],
+            "simulate_endpoint": manifest["reproducibility"]["api_endpoint"],
+            "guardrail": (
+                "Manifest-Vorschau: reproduzierbar und API-fähig, aber noch kein Apply-Button, "
+                "kein Simulationslauf, keine amtliche Prognose und kein Wirksamkeitsnachweis."
+            ),
+        })
+    return previews
 
 
 def sidebar_quick_start_steps() -> List[str]:
@@ -1147,6 +1187,9 @@ def render_landing_hero() -> None:
 
     with st.expander("Beispiel-Szenarien sicher starten", expanded=False):
         st.caption("Demo-Galerie: Die Karten geben eine Lesespur vor, ändern aber noch keine Parameter automatisch.")
+        manifest_previews = {
+            item["card_id"]: item for item in build_scenario_gallery_manifest_previews()
+        }
         for card in build_scenario_gallery_cards():
             st.markdown(f"**{card['title']}**")
             st.write(card["question"])
@@ -1154,6 +1197,13 @@ def render_landing_hero() -> None:
             st.caption("Workflow: " + " → ".join(card["workflow"]))
             st.caption("Nächster Klick: " + card["next_click"])
             st.caption("Guardrail: " + card["guardrail"])
+            preview = manifest_previews[card["id"]]
+            changed = ", ".join(
+                f"{item['key']}={item['value']} (Evidenzgrad {item['evidence_grade']})"
+                for item in preview["changed_parameters"]
+            )
+            st.caption(f"Manifest-Vorschau: {preview['scenario_id']} · {changed}")
+            st.caption("API: " + preview["api_endpoint"] + " · Guardrail: " + preview["guardrail"])
 
 
 def render_sidebar() -> dict:

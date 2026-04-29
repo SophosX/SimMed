@@ -1618,3 +1618,32 @@ Keine.
 
 ### Verification / Git
 Verifiziert: fokussierter Gallery-Test passierte; Full suite `100 passed`; `py_compile` Kernmodule OK; Simulation-Smoke `20 runs × 2 years` OK `(60, 30)/(320, 6)`. Commit/Push und Zip folgen nach diesem Log-Eintrag.
+
+## 2026-04-30 00:55 Europe/Berlin — Scenario Gallery Manifest Preview Bridge
+
+### Context
+Heartbeat priority shifted back to core platform implementation. Existing scenario gallery cards were useful onboarding, but still disconnected from the reproducible `simulation_core` scenario-manifest/API path. While tracing the cards, the Prävention card used the wrong key `praevention_budget` instead of registered/model key `praeventionsbudget`.
+
+### Project Manager
+Priority: make guided starter scenarios executable/reproducible in small safe steps. Risk: adding an Apply button too early could mutate parameters without enough user control. Next tasks: (1) expose the manifest preview more cleanly in UI/API docs, (2) design a deliberate apply flow, (3) later add scenario manifest download/copy affordance.
+
+### Designer / UX
+Newcomers should see that a starter card is not just prose: it now shows a Scenario-ID, registered parameter/evidence grade, API endpoint, and guardrail. This keeps the gallery demo-first but makes the next click concrete.
+
+### Creative Agent
+Idea: turn each starter card into a “scenario ticket” with ID, assumptions, evidence badges, and a future copy/apply button. Fit is good because it improves trust and reproducibility; implementation should remain read-only until Alex approves the apply behavior.
+
+### Political Health-System Strategist
+No new political claims added. Guardrail remains important: a manifest preview is not an official forecast, not proof of reform effectiveness, and not a lobbying recommendation.
+
+### Evidence / Domain
+Fixed the prevention card to use the registered `praeventionsbudget` model key. Manifest previews now reuse `build_scenario_manifest(...)`, so changed parameters inherit registry evidence grade/source/caveat metadata instead of duplicating unsupported prose.
+
+### Integrator Decision
+Accepted a safe platform bridge: `build_scenario_gallery_manifest_previews(...)` plus UI captions and regression tests. Deferred any parameter mutation/apply button until a deliberate UX/control plan exists.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; nächster sicherer Schritt ist weiterhin read-only/reproducible scenario workflow before applying parameters.
+
+### Verification / Git
+Targeted tests passed: `tests/test_app_explanations.py::test_scenario_gallery_cards_offer_safe_guided_starts_without_model_claims` and `::test_scenario_gallery_manifest_previews_are_reproducible_and_read_only`. Full suite passed: `101 passed`. `py_compile` and scenario-gallery preview smoke passed. Commit/push status follows in heartbeat summary.

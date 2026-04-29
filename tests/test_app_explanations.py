@@ -23,6 +23,7 @@ from app import (
     build_kpi_result_story,
     build_landing_hero_content,
     build_scenario_gallery_cards,
+    build_scenario_gallery_manifest_previews,
     build_political_lever_detail_sections,
     build_political_result_checkpoints,
     build_political_stakeholder_rows,
@@ -210,6 +211,30 @@ def test_scenario_gallery_cards_offer_safe_guided_starts_without_model_claims():
     assert "keine amtliche Prognose" in combined
     assert "nicht automatisch" in combined
     assert all(card["parameter_changes"] for card in cards)
+    all_keys = {key for card in cards for key in card["parameter_changes"]}
+    assert "praeventionsbudget" in all_keys
+    assert "praevention_budget" not in all_keys
+
+
+def test_scenario_gallery_manifest_previews_are_reproducible_and_read_only():
+    previews = build_scenario_gallery_manifest_previews(n_runs=100, n_years=15, seed=42)
+
+    assert len(previews) == len(build_scenario_gallery_cards())
+    assert all(preview["scenario_id"] for preview in previews)
+    assert all(preview["api_endpoint"] == "POST /scenario-manifest" for preview in previews)
+    assert all(preview["simulate_endpoint"] == "POST /simulate" for preview in previews)
+    assert all("kein Apply-Button" in preview["guardrail"] for preview in previews)
+    assert all("kein Simulationslauf" in preview["guardrail"] for preview in previews)
+    assert all("keine amtliche Prognose" in preview["guardrail"] for preview in previews)
+
+    prevention_preview = next(
+        preview for preview in previews if preview["card_id"] == "prevention_finance_tradeoff"
+    )
+    prevention_param = prevention_preview["changed_parameters"][0]
+    assert prevention_preview["parameter_changes"] == {"praeventionsbudget": 10.0}
+    assert prevention_param["key"] == "praeventionsbudget"
+    assert prevention_param["registered"] is True
+    assert prevention_param["evidence_grade"] in {"A", "B", "C", "D", "E"}
 
 
 def test_direction_word_uses_plain_language_and_preference_direction():
