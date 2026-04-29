@@ -1,0 +1,13 @@
+{
+  "source_id": "destatis_genesis",
+  "source_url": "https://www-genesis.destatis.de/genesis/online",
+  "retrieved_at": "2026-04-29T21:00:00+00:00",
+  "raw_path": "data/cache/destatis_genesis/raw/destatis_genesis_population_baseline_fixture.csv",
+  "sha256": "fc3f1adadafded61b99dc714ce377a27b3cf3a0ba6d3f0b32ea63500cba02aed",
+  "source_period": "registry-baseline fixture",
+  "license_or_terms_note": "Static SimMed fixture for cache/provenance plumbing; replace with a live reviewed GENESIS snapshot before model integration.",
+  "output_parameter_keys": [
+    "bevoelkerung_mio"
+  ],
+  "transformation_note": "Fixture mirrors the registry default only; no checked transformation and no mutation of simulation parameters."
+}

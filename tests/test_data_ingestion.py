@@ -6,6 +6,7 @@ from data_ingestion import (
     cache_source_payload,
     list_cached_snapshots,
     read_snapshot_manifest,
+    seed_reference_fixture_snapshots,
     snapshot_payload_hash,
 )
 
@@ -132,3 +133,20 @@ def test_data_passport_separates_registry_status_from_raw_cache(tmp_path):
     assert telemedicine["registry_label"] == "Annahme, nicht aus Daten"
     assert telemedicine["cache"]["has_cached_snapshot"] is False
     assert "nicht als gemessenen Datenwert" in telemedicine["passport_note"]
+
+
+def test_reference_fixture_seeds_population_cache_without_model_import(tmp_path):
+    snapshots = seed_reference_fixture_snapshots(cache_root=tmp_path)
+
+    assert len(snapshots) == 1
+    snapshot = snapshots[0]
+    assert snapshot.source_id == "destatis_genesis"
+    assert snapshot.output_parameter_keys == ("bevoelkerung_mio",)
+    assert "Fixture mirrors the registry default only" in snapshot.transformation_note
+    assert "replace with a live reviewed GENESIS snapshot" in snapshot.license_or_terms_note
+
+    rows = build_parameter_snapshot_status(("bevoelkerung_mio", "geburtenrate"), cache_root=tmp_path)
+    assert rows[0]["has_cached_snapshot"] is True
+    assert rows[0]["latest_snapshot"]["source_period"] == "registry-baseline fixture"
+    assert "Modellwert bleibt" in rows[0]["status_note"]
+    assert rows[1]["has_cached_snapshot"] is False

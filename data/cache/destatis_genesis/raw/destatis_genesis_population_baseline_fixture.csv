@@ -1,0 +1,2 @@
+parameter_key,label,source_period,value,unit,source_id,fixture_note
+bevoelkerung_mio,Bevölkerung,registry-baseline,84.4,million people,destatis_genesis,"Static provenance fixture seeded from the current registry default; use only to exercise raw-cache/passport plumbing until a live GENESIS table import is reviewed."

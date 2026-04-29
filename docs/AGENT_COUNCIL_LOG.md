@@ -1158,3 +1158,32 @@ Keine.
 - **Integrator Decision:** `build_learning_data_passport_overview()` und `render_learning_data_passport_overview()` in `app.py`, Test ergänzt.
 - **Question to Alex if needed:** Keine offene Produktentscheidung; nächster Plattformschritt kann erste echte/statische Destatis-Snapshot-Fixture oder Szenario-Gallery sein.
 - **Verification/Git:** `pytest` 77 passed; `py_compile` OK; 20×2 Simulation smoke OK. Commit/Push folgt in diesem Lauf.
+
+## 2026-04-29 23:19 Europe/Berlin — Heartbeat: platform data fixture cache
+
+### Context
+Alex corrected the autonomous priority: core platform work must come before KI/evidence intake. This run stayed on `feat/platform-data-status-foundation` and advanced the data-ingestion/provenance path.
+
+### Project Manager
+Priority: make the data passport show an actual raw-cache artifact path, while keeping model defaults separate from reviewed imports. Next: replace this fixture with a reviewed live GENESIS snapshot connector or fixture-backed UI seed button.
+
+### Designer / UX
+The fixture helps first-time users see the three states separately: registry says `aus Daten`, raw cache exists, but transformation/model integration is still unchecked.
+
+### Creative Agent
+Idea: later show a small “Daten-Reifegrad” ladder in the Data Passport: Registry reference → raw snapshot → checked transformation → model effect. Fit is high for trust; defer until the connector path is stable.
+
+### Political Health-System Strategist
+No new policy claim added. The guardrail matters politically: a cached Destatis-looking file must not be presented as an official forecast or validated reform effect.
+
+### Evidence / Domain
+Added only a static registry-baseline fixture for `bevoelkerung_mio`; it is explicitly not a live GENESIS import, not a checked transformation, and not allowed to mutate simulation parameters.
+
+### Integrator Decision
+Accepted a small platform slice: `seed_reference_fixture_snapshots()` plus committed fixture raw/cache manifest so Data Passport/status code can exercise a real cache artifact without overclaiming.
+
+### Question to Alex
+Keine wichtige Entscheidung offen.
+
+### Verification / Git
+`tests/test_data_ingestion.py` passes; full suite passes (`78 passed`); py_compile passes; runtime smoke `30 runs × 3 years` returns `df (120, 30)`, `reg (480, 6)`. Commit/push pending in this heartbeat.

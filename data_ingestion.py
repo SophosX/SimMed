@@ -16,6 +16,7 @@ from typing import Literal
 
 DataStatus = Literal["aus_daten", "annahme"]
 CACHE_ROOT = Path("data/cache")
+FIXTURE_ROOT = Path("data/fixtures")
 
 
 @dataclass(frozen=True)
@@ -100,6 +101,39 @@ def read_snapshot_manifest(path: Path | str) -> CachedSourceSnapshot:
     data = json.loads(Path(path).read_text(encoding="utf-8"))
     data["output_parameter_keys"] = tuple(data.get("output_parameter_keys", ()))
     return CachedSourceSnapshot(**data)
+
+
+def seed_reference_fixture_snapshots(
+    *,
+    cache_root: Path | str = CACHE_ROOT,
+    fixture_root: Path | str = FIXTURE_ROOT,
+) -> list[CachedSourceSnapshot]:
+    """Seed reviewed raw-cache *fixtures* that exercise the data passport plumbing.
+
+    Fixtures are deliberately not model imports. They make the provenance/cache
+    path visible in API/UI development while keeping the current parameter value
+    separate from any automated GENESIS transformation or policy claim.
+    """
+
+    fixture_dir = Path(fixture_root)
+    population_fixture = fixture_dir / "destatis_genesis_population_baseline_fixture.csv"
+    if not population_fixture.exists():
+        return []
+
+    return [
+        cache_source_payload(
+            source_id="destatis_genesis",
+            source_url="https://www-genesis.destatis.de/genesis/online",
+            payload=population_fixture.read_bytes(),
+            filename=population_fixture.name,
+            cache_root=cache_root,
+            source_period="registry-baseline fixture",
+            license_or_terms_note="Static SimMed fixture for cache/provenance plumbing; replace with a live reviewed GENESIS snapshot before model integration.",
+            output_parameter_keys=("bevoelkerung_mio",),
+            transformation_note="Fixture mirrors the registry default only; no checked transformation and no mutation of simulation parameters.",
+            retrieved_at="2026-04-29T21:00:00+00:00",
+        )
+    ]
 
 
 def list_cached_snapshots(cache_root: Path | str = CACHE_ROOT) -> list[CachedSourceSnapshot]:
