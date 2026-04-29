@@ -1149,3 +1149,33 @@ No important decision required; continue safe evidence-catalogue hardening and p
 
 ### Verification / Git
 Targeted tests passed (`7 passed`), full pytest passed (`77 passed`), and py_compile passed for the touched module/tests. Commit/push status in heartbeat report.
+
+
+## 2026-04-29 21:58 Europe/Berlin — Ambient-Scribe Evidenznuance
+
+### Context
+Fortsetzung auf Branch `feat/ai-healthcare-evidence-validation`: AI-Healthcare-Evidenzkatalog wird klein und reversibel erweitert, ohne Modellparameter zu verändern.
+
+### Project Manager
+Priorität: Ambient-Scribe-Evidenz tiefer machen, besonders gemischte/null Ergebnisse sichtbar halten. Nächste Tasks: weitere Primärquellen nach Outcome-Typen trennen; danach UI/API-Passport-Fläche planen.
+
+### Designer / UX
+Der spätere Evidence-Passport sollte nicht nur “positive Effekte” zeigen, sondern prominent “wo kein Effekt nachweisbar war”, damit Nutzer keine pauschale KI-Wirkung ablesen.
+
+### Creative Agent
+Idee: Evidence-Karten mit Ampel “hilft wahrscheinlich bei Arbeitslast / unklar für Patientenergebnis / Risiko bei Abrechnung”. Fit: gut für Verständlichkeit, aber erst nach strukturierter Evidenzbasis.
+
+### Political Health-System Strategist
+Ambient Scribes berühren Datenschutz, ärztliche Verantwortung, Abrechnung und Praxis-/Klinik-IT. Politisch relevant ist gerade die Differenz: Entlastungserzählung ja, aber keine automatische Versorgungskapazität oder Kostensenkung behaupten.
+
+### Evidence / Domain
+PubMed/NCBI E-utilities ergänzte eine randomisierte QI-Studie bei pädiatrischen Subspezialisten (Shin et al., Applied Clinical Informatics 2025): bessere Erfahrung/Burnout-Signale, aber keine signifikante Änderung bei Pajama-Time, Notizzeit oder wRVUs. Als Primärquelle katalogisiert; keine Patient-Outcome- oder Modelleffekt-Ableitung.
+
+### Integrator Decision
+Akzeptiert: neue strukturierte Source-Metadaten und Testguard für die Null-/Gemischtbefunde. Deferred: Effektgrößenextraktion/Parameterisierung bis Expert Review und Deutschland-Transferprüfung.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; sicherer nächster Schritt ist weitere Evidenzaufnahme ohne Modellwirkung.
+
+### Verification / Git
+Geplant/ausgeführt in diesem Lauf: fokussierte Tests und Full Suite nach Patch; Commit/Push folgt nach erfolgreicher Verifikation.

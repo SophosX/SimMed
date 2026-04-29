@@ -51,8 +51,20 @@ def test_ambient_scribes_record_does_not_overclaim_patient_outcomes():
     assert "patient_outcome" not in record.outcome_types
     assert "patient-outcome improvement not yet established" in " ".join(record.risks_and_failure_modes)
     assert "must not convert this directly into better patient outcomes" in record.caveat
-    assert summary["primary_source_count"] >= 4
+    assert summary["primary_source_count"] >= 5
     assert all(source["kind"] in {"paper", "report"} for source in sources)
+
+
+def test_ambient_scribes_include_pediatric_trial_with_null_time_findings():
+    source = EVIDENCE_SOURCES["appl_clin_inform_shin_pediatric_scribes_2025"]
+    record = AI_HEALTHCARE_EVIDENCE["ambient_ai_scribes_documentation_burden"]
+
+    assert source.kind == "paper"
+    assert source.retrieved_via == "PubMed web search + NCBI E-utilities abstract metadata"
+    assert "pediatric subspecialists" in source.quality_note
+    assert "no significant change in pajama time" in source.quality_note
+    assert "not patient-outcome claims" in source.quality_note
+    assert source.id in record.source_ids
 
 
 def test_youtube_context_pipeline_is_explicitly_grade_e_and_not_model_fact():

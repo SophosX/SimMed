@@ -142,6 +142,20 @@ EVIDENCE_SOURCES: dict[str, EvidenceSource] = {
         quality_note="Editorial/context source highlighting that evidence for patient outcomes and equity remains limited.",
         license_or_terms_note="Publisher page; store citation/metadata only unless reuse terms permit more.",
     ),
+    "appl_clin_inform_shin_pediatric_scribes_2025": EvidenceSource(
+        id="appl_clin_inform_shin_pediatric_scribes_2025",
+        title="The Influence of Artificial Intelligence Scribes on Clinician Experience and Efficiency among Pediatric Subspecialists: A Rapid, Randomized Quality Improvement Trial",
+        url="https://pubmed.ncbi.nlm.nih.gov/40675605/",
+        kind="paper",
+        retrieved_via="PubMed web search + NCBI E-utilities abstract metadata",
+        retrieved_at="2026-04-29",
+        source_date="2025",
+        quality_note=(
+            "Randomized quality-improvement trial in pediatric subspecialists; reported improved clinician experience/burnout, "
+            "but no significant change in pajama time, note time or wRVUs. Useful for workload/process nuance, not patient-outcome claims."
+        ),
+        license_or_terms_note="PubMed metadata/abstract; article copyright belongs to Thieme. Store citation/metadata only unless reuse terms permit more.",
+    ),
     "x_jama_current_ambient_scribes_2026": EvidenceSource(
         id="x_jama_current_ambient_scribes_2026",
         title="JAMA X post: ambient scribes reduce documentation time but patient outcomes/equity evidence limited",
@@ -192,6 +206,7 @@ AI_HEALTHCARE_EVIDENCE: dict[str, AIHealthcareEvidenceRecord] = {
             "jama_open_duggan_clinician_experience_2025",
             "phti_ai_delivery_early_impacts_2025",
             "jama_editorial_effectiveness_ambient_scribes_2026",
+            "appl_clin_inform_shin_pediatric_scribes_2025",
         ),
         transferability_to_germany=(
             "Medium: documentation burden and clinician workflow are relevant in Germany, but effects depend on German documentation rules, "
