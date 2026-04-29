@@ -70,12 +70,13 @@ def test_learning_data_passport_overview_separates_registry_cache_and_transforma
     assert "kein Beweis" in overview["plain_language_note"]
     assert overview["counts"]["total_parameters"] >= overview["counts"]["source_backed_registry"]
     assert overview["counts"]["assumption_registry"] >= 1
+    assert "reviewed_transformations" in overview["counts"]
     assert 1 <= len(overview["rows"]) <= 6
     first_row = overview["rows"][0]
     assert {"Parameter", "Register", "Evidenz", "Rohdaten-Cache", "Geprüfte Transformation", "Hinweis"} <= set(first_row)
     combined = " ".join(str(value) for row in overview["rows"] for value in row.values())
     assert "aus Daten" in combined or "Annahme, nicht aus Daten" in combined
-    assert "nicht automatisch integriert" in combined
+    assert "nicht automatisch integriert" in combined or "Keine geprüfte Transformation" in combined
 
 
 

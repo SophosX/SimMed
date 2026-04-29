@@ -1187,3 +1187,16 @@ Keine wichtige Entscheidung offen.
 
 ### Verification / Git
 `tests/test_data_ingestion.py` passes; full suite passes (`78 passed`); py_compile passes; runtime smoke `30 runs × 3 years` returns `df (120, 30)`, `reg (480, 6)`. Commit/push pending in this heartbeat.
+
+
+## 2026-04-29T21:25:34+00:00 — Data Passport: Transformationsreview als eigene Provenienz-Schicht
+
+- **Context:** Heartbeat-Priorität liegt auf Kernplattform/Data-Ingestion. Bestehender Datenpass trennte Registry und Rohdaten-Cache, aber die geprüfte Transformation war noch nur als Hinweistext sichtbar.
+- **Project Manager:** Kleiner, reversibler Plattform-Slice: keine Live-Daten, keine Modellmutation; stärkt die Pipeline für spätere Destatis/GENESIS-Connectoren.
+- **Designer/UX:** Lernseite zeigt nun zusätzlich Transformationsreviews als eigene Spalte/Metrik, damit Erstnutzer:innen nicht Rohdaten-Cache mit Modellintegration verwechseln.
+- **Creative Agent:** Nützlich als späterer „Daten-Ampel“-Baustein für Szenario-Galerie und Policy-Briefing; heute bewusst nüchtern statt spektakulär.
+- **Political Health-System Strategist:** Verhindert politisches Overclaiming: auch geprüfte Daten werden nicht automatisch zu einer offiziellen Prognose oder Policy-Beweisführung.
+- **Evidence/Domain:** Keine neue externe Recherche in diesem Lauf; Änderung ist Provenienz-/Governance-Infrastruktur. Guardrail bleibt: Rohdaten → Review → explizite Registry-/Code-Integration.
+- **Integrator Decision:** `ReviewedTransformation` plus Read/Write/List-Helper in `data_ingestion.py`; Datenpass/API/Lernseite lesen die separate Review-Schicht, ohne Parameter zu ändern.
+- **Question to Alex if needed:** Keine.
+- **Verification/Git:** Tests/Smoke/Git werden im Heartbeat nach Implementierung dokumentiert.

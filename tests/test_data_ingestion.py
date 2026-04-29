@@ -1,11 +1,15 @@
 import json
 
 from data_ingestion import (
+    ReviewedTransformation,
     build_data_passport_rows,
     build_parameter_snapshot_status,
     cache_source_payload,
     list_cached_snapshots,
+    list_reviewed_transformations,
     read_snapshot_manifest,
+    read_transformation_review,
+    record_reviewed_transformation,
     seed_reference_fixture_snapshots,
     snapshot_payload_hash,
 )
@@ -150,3 +154,80 @@ def test_reference_fixture_seeds_population_cache_without_model_import(tmp_path)
     assert rows[0]["latest_snapshot"]["source_period"] == "registry-baseline fixture"
     assert "Modellwert bleibt" in rows[0]["status_note"]
     assert rows[1]["has_cached_snapshot"] is False
+
+
+def test_reviewed_transformation_is_separate_passport_layer(tmp_path):
+    snapshot = cache_source_payload(
+        source_id="destatis_genesis",
+        source_url="https://www-genesis.destatis.de/genesis/online",
+        payload=b"year,value\n2025,84.5\n",
+        filename="population.csv",
+        cache_root=tmp_path,
+        source_period="2025",
+        output_parameter_keys=("bevoelkerung_mio",),
+        transformation_note="raw fixture only; no model mutation",
+        retrieved_at="2026-04-29T20:00:00+00:00",
+    )
+    review = ReviewedTransformation(
+        parameter_key="bevoelkerung_mio",
+        source_snapshot_sha256=snapshot.sha256,
+        status="reviewed_no_model_import",
+        reviewed_at="2026-04-29T21:00:00+00:00",
+        reviewer="SimMed Integrator",
+        method_note="Compared fixture value to registry default for plumbing only.",
+        caveat="Fixture is not a live GENESIS import and must not mutate the model.",
+        output_value=84.5,
+        output_unit="million people",
+    )
+
+    review_path = record_reviewed_transformation(review, cache_root=tmp_path)
+
+    assert read_transformation_review(review_path) == review
+    assert list_reviewed_transformations(tmp_path) == [review]
+
+    rows = build_data_passport_rows(
+        [
+            {
+                "key": "bevoelkerung_mio",
+                "label": "Bevölkerung",
+                "unit": "million people",
+                "evidence_grade": "A",
+                "source_ids": ["destatis_genesis"],
+                "data_status": "aus_daten",
+                "source_version": "Destatis referenced baseline; automated snapshot pending",
+                "data_lineage": "Registry baseline; reviewed import pending.",
+            }
+        ],
+        cache_root=tmp_path,
+    )
+
+    passport = rows[0]
+    assert passport["cache"]["has_cached_snapshot"] is True
+    assert passport["transformation_review"]["status"] == "reviewed_no_model_import"
+    assert "nicht ins Modell übernommen" in passport["transformation_review"]["label"]
+    assert "bewusst nicht als Modellwert übernommen" in passport["passport_note"]
+    assert "must not mutate" in passport["transformation_review"]["review"]["caveat"]
+
+
+def test_data_passport_shows_missing_transformation_review(tmp_path):
+    rows = build_data_passport_rows(
+        [
+            {
+                "key": "telemedizin_rate",
+                "label": "Telemedizin-Nutzung",
+                "unit": "share",
+                "evidence_grade": "E",
+                "source_ids": ["expert_assumption"],
+                "data_status": "annahme",
+            }
+        ],
+        cache_root=tmp_path,
+    )
+
+    assert rows[0]["transformation_review"] == {
+        "status": "not_reviewed",
+        "label": "Keine geprüfte Transformation",
+        "review": None,
+        "status_note": "Rohdaten wurden noch nicht nachvollziehbar in einen Modellwert übersetzt.",
+    }
+    assert "Annahme ohne verknüpften Rohdaten-Snapshot" in rows[0]["passport_note"]

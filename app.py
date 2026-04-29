@@ -3981,11 +3981,13 @@ def build_learning_data_passport_overview(limit: int = 8) -> dict[str, Any]:
     source_backed = [row for row in passport_rows if row["registry_data_status"] == "aus_daten"]
     assumption_rows = [row for row in passport_rows if row["registry_data_status"] != "aus_daten"]
     cached_rows = [row for row in passport_rows if row["cache"]["has_cached_snapshot"]]
+    reviewed_rows = [row for row in passport_rows if row["transformation_review"]["status"] != "not_reviewed"]
     priority_rows = sorted(
         passport_rows,
         key=lambda row: (
             row["registry_data_status"] != "aus_daten",
             not row["cache"]["has_cached_snapshot"],
+            row["transformation_review"]["status"] == "not_reviewed",
             row["label"],
         ),
     )[:limit]
@@ -4000,6 +4002,7 @@ def build_learning_data_passport_overview(limit: int = 8) -> dict[str, Any]:
             "source_backed_registry": len(source_backed),
             "assumption_registry": len(assumption_rows),
             "cached_raw_snapshots": len(cached_rows),
+            "reviewed_transformations": len(reviewed_rows),
         },
         "rows": [
             {
@@ -4007,7 +4010,7 @@ def build_learning_data_passport_overview(limit: int = 8) -> dict[str, Any]:
                 "Register": row["registry_label"],
                 "Evidenz": row["evidence_grade"],
                 "Rohdaten-Cache": "vorhanden" if row["cache"]["has_cached_snapshot"] else "fehlt noch",
-                "Geprüfte Transformation": "separat prüfen; nicht automatisch integriert",
+                "Geprüfte Transformation": row["transformation_review"]["label"],
                 "Hinweis": row["passport_note"],
             }
             for row in priority_rows
@@ -4022,10 +4025,11 @@ def render_learning_data_passport_overview():
     counts = overview["counts"]
     st.markdown(f"### {overview['title']}")
     st.markdown(f"<div class=\"learn-callout\"><b>Warum wichtig?</b> {overview['plain_language_note']}</div>", unsafe_allow_html=True)
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
     col1.metric("Parameter im Register", counts["total_parameters"])
     col2.metric("Source-backed", counts["source_backed_registry"])
     col3.metric("Rohdaten-Snapshots", counts["cached_raw_snapshots"])
+    col4.metric("Transformationsreviews", counts["reviewed_transformations"])
     st.dataframe(pd.DataFrame(overview["rows"]), use_container_width=True, hide_index=True)
     st.caption("Guardrail: Rohdaten-Snapshot ≠ geprüfter Modelleffekt. Annahmen bleiben sichtbar, bis eine Transformation geprüft und dokumentiert wurde.")
 

@@ -12,7 +12,12 @@ from typing import Any
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
 
-from data_ingestion import build_data_passport_rows, build_parameter_snapshot_status, list_cached_snapshots
+from data_ingestion import (
+    build_data_passport_rows,
+    build_parameter_snapshot_status,
+    list_cached_snapshots,
+    list_reviewed_transformations,
+)
 from data_sources import list_sources
 from parameter_registry import list_parameters
 from political_feasibility import assess_political_feasibility
@@ -48,6 +53,7 @@ def get_data_snapshots() -> dict:
         "status": "raw_snapshot_status_not_model_integration",
         "guardrail": "Rohdaten-Snapshots zeigen Cache/Provenienz; Modellparameter ändern sich erst nach geprüfter Transformation.",
         "snapshots": [snapshot.to_dict() for snapshot in list_cached_snapshots()],
+        "transformation_reviews": [review.to_dict() for review in list_reviewed_transformations()],
         "parameters": build_parameter_snapshot_status(parameter_keys),
         "data_passport": build_data_passport_rows(parameters),
     }

@@ -15,8 +15,33 @@ from pathlib import Path
 from typing import Literal
 
 DataStatus = Literal["aus_daten", "annahme"]
+TransformationStatus = Literal["not_reviewed", "reviewed_no_model_import", "reviewed_model_ready"]
 CACHE_ROOT = Path("data/cache")
 FIXTURE_ROOT = Path("data/fixtures")
+
+
+@dataclass(frozen=True)
+class ReviewedTransformation:
+    """Review metadata for a raw snapshot-to-parameter transformation.
+
+    This is the missing middle layer between a raw cache artifact and a model
+    parameter. A record can document that a transformation was reviewed without
+    silently mutating simulation defaults.
+    """
+
+    parameter_key: str
+    source_snapshot_sha256: str
+    status: TransformationStatus
+    reviewed_at: str
+    reviewer: str
+    method_note: str
+    caveat: str
+    output_value: float | int | str | None = None
+    output_unit: str = ""
+
+    def to_dict(self) -> dict:
+        return asdict(self)
+
 
 
 @dataclass(frozen=True)
@@ -101,6 +126,49 @@ def read_snapshot_manifest(path: Path | str) -> CachedSourceSnapshot:
     data = json.loads(Path(path).read_text(encoding="utf-8"))
     data["output_parameter_keys"] = tuple(data.get("output_parameter_keys", ()))
     return CachedSourceSnapshot(**data)
+
+
+def record_reviewed_transformation(
+    transformation: ReviewedTransformation,
+    *,
+    cache_root: Path | str = CACHE_ROOT,
+) -> Path:
+    """Persist a reviewed transformation record without changing model defaults."""
+
+    if not transformation.parameter_key:
+        raise ValueError("parameter_key is required")
+    if not transformation.source_snapshot_sha256:
+        raise ValueError("source_snapshot_sha256 is required")
+    if not transformation.reviewer or not transformation.method_note or not transformation.caveat:
+        raise ValueError("reviewer, method_note and caveat are required for transformation review")
+
+    review_dir = Path(cache_root) / "transformations" / transformation.parameter_key
+    review_dir.mkdir(parents=True, exist_ok=True)
+    safe_digest = transformation.source_snapshot_sha256[:16]
+    review_path = review_dir / f"{safe_digest}.review.json"
+    review_path.write_text(json.dumps(transformation.to_dict(), ensure_ascii=False, indent=2), encoding="utf-8")
+    return review_path
+
+
+def read_transformation_review(path: Path | str) -> ReviewedTransformation:
+    """Load a reviewed transformation record."""
+
+    data = json.loads(Path(path).read_text(encoding="utf-8"))
+    return ReviewedTransformation(**data)
+
+
+def list_reviewed_transformations(cache_root: Path | str = CACHE_ROOT) -> list[ReviewedTransformation]:
+    """Return reviewed transformation records newest-first.
+
+    These records document review status only. Even `reviewed_model_ready` remains
+    a staging signal until an explicit registry/model change is made in code.
+    """
+
+    root = Path(cache_root) / "transformations"
+    if not root.exists():
+        return []
+    reviews = [read_transformation_review(path) for path in root.glob("*/*.review.json")]
+    return sorted(reviews, key=lambda item: item.reviewed_at, reverse=True)
 
 
 def seed_reference_fixture_snapshots(
@@ -197,25 +265,28 @@ def build_data_passport_rows(
     *,
     cache_root: Path | str = CACHE_ROOT,
 ) -> list[dict]:
-    """Combine registry provenance with raw-cache status for UI/API data passports.
+    """Combine registry provenance with raw-cache and transformation-review status for UI/API data passports.
 
-    A passport row answers two separate questions that users often conflate:
+    A passport row answers three separate questions that users often conflate:
     1. Is the current model default source-referenced or still an assumption?
     2. Is there already a raw cached snapshot connected to that parameter?
+    3. Has a human/agent review documented a transformation from raw source to model-ready value?
 
-    It never marks a parameter as imported just because the registry cites a source.
-    Reviewed transformations remain outside this read-only helper.
+    It never marks a parameter as imported just because the registry cites a source
+    or a raw snapshot exists. Reviewed transformations remain outside this read-only helper.
     """
 
     snapshot_by_key = {
         row["parameter_key"]: row
         for row in build_parameter_snapshot_status([p["key"] for p in parameters], cache_root=cache_root)
     }
+    transformation_by_key = _latest_transformation_by_parameter(cache_root)
     rows: list[dict] = []
     for parameter in parameters:
         key = parameter["key"]
         data_status = parameter.get("data_status", "annahme")
         cache_status = snapshot_by_key[key]
+        transformation = transformation_by_key.get(key)
         rows.append(
             {
                 "parameter_key": key,
@@ -228,13 +299,54 @@ def build_data_passport_rows(
                 "source_version": parameter.get("source_version", ""),
                 "data_lineage": parameter.get("data_lineage", ""),
                 "cache": cache_status,
-                "passport_note": _data_passport_note(data_status, cache_status["has_cached_snapshot"]),
+                "transformation_review": _transformation_review_status(transformation),
+                "passport_note": _data_passport_note(
+                    data_status,
+                    cache_status["has_cached_snapshot"],
+                    transformation.status if transformation else "not_reviewed",
+                ),
             }
         )
     return rows
 
 
-def _data_passport_note(data_status: str, has_cached_snapshot: bool) -> str:
+def _latest_transformation_by_parameter(cache_root: Path | str) -> dict[str, ReviewedTransformation]:
+    latest: dict[str, ReviewedTransformation] = {}
+    for review in list_reviewed_transformations(cache_root):
+        latest.setdefault(review.parameter_key, review)
+    return latest
+
+
+def _transformation_review_status(transformation: ReviewedTransformation | None) -> dict:
+    if transformation is None:
+        return {
+            "status": "not_reviewed",
+            "label": "Keine geprüfte Transformation",
+            "review": None,
+            "status_note": "Rohdaten wurden noch nicht nachvollziehbar in einen Modellwert übersetzt.",
+        }
+    return {
+        "status": transformation.status,
+        "label": _transformation_status_label(transformation.status),
+        "review": transformation.to_dict(),
+        "status_note": "Transformation ist dokumentiert; Modelländerung braucht weiterhin explizite Registry-/Code-Integration.",
+    }
+
+
+def _transformation_status_label(status: str) -> str:
+    labels = {
+        "not_reviewed": "Keine geprüfte Transformation",
+        "reviewed_no_model_import": "Geprüft, aber nicht ins Modell übernommen",
+        "reviewed_model_ready": "Geprüft und bereit für explizite Modellintegration",
+    }
+    return labels.get(status, "Unbekannter Transformationsstatus")
+
+
+def _data_passport_note(data_status: str, has_cached_snapshot: bool, transformation_status: str = "not_reviewed") -> str:
+    if transformation_status == "reviewed_model_ready":
+        return "Registry, Rohdaten und Transformationsreview sind vorhanden; Modellintegration braucht trotzdem einen expliziten Code-/Registry-Schritt."
+    if transformation_status == "reviewed_no_model_import":
+        return "Transformation wurde geprüft, aber bewusst nicht als Modellwert übernommen; Caveat/Review lesen."
     if data_status == "aus_daten" and has_cached_snapshot:
         return "Registry ist source-backed und ein Rohdaten-Snapshot ist vorhanden; geprüfte Transformation separat prüfen."
     if data_status == "aus_daten":
