@@ -465,4 +465,4 @@ Accepted now: small test-backed learning-page next-action helper in `app.py`. De
 Keine wichtige Frage.
 
 ### Verification / Git
-Pending at time of log append: tests, zip refresh, mirror, commit, push.
+Passed: `pytest -q` (26), py_compile, 1000-run smoke test. Zip refreshed. Pushed commit `c2c2d81`.
