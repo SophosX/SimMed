@@ -850,3 +850,16 @@ Post-commit verification update: committed and pushed as `f8d37b3` (`Improve KPI
 - **Integrator Decision:** Implemented `build_trend_metric_reading_rows(...)`, rendered it in `render_main_trend_chart()`, and documented the slice in `docs/plans/results-experience-redesign.md`.
 - **Question to Alex if needed:** No important product decision open for this small slice.
 - **Verification/Git:** Local tests and smoke test passed before sync/commit; push status recorded in final heartbeat.
+
+
+## 2026-04-29 18:33 UTC — KPI-Interpretationscheckpoint
+
+- **Context:** Alex fordert tiefere, logischere Resultaterklärungen. Dieser Lauf hat vor der UX-Änderung den Plan `docs/plans/results-experience-redesign.md` um den Slice „KPI interpretation checkpoint“ erweitert.
+- **Project Manager:** Kleine, reversible UX-Informationsarchitektur statt neuer Modelllogik; Fokus auf Fehlinterpretationen bei KPI-Bewegungen.
+- **Designer/UX:** KPI-Detailkarten bekommen nach der Beobachtung einen expliziten Interpretationsschritt: Warnsignal, Verbesserung, kaum Bewegung oder „einordnen, nicht automatisch werten“.
+- **Creative Agent:** Ambivalente Metriken wie Gesundheitsausgaben werden nicht moralisch gefärbt, sondern als Prüfpunkt erzählt: erst verwandte KPIs öffnen, dann bewerten.
+- **Political Health-System Strategist:** Keine neuen Stakeholder- oder Politikclaims; die Änderung reduziert Überinterpretation von Ausgaben-/Zugangs-KPIs als schnelle politische Beweise.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; keine neuen Realweltfakten kodiert. Texte bleiben SimMed-Lesart und verweisen auf Annahmen/Prüfungen.
+- **Integrator Decision:** Implementiert `kpi_interpretation_checkpoint(...)`, in `build_kpi_drilldown_items(...)` und Renderer integriert, plus Regressionstest für Warnsignal vs. ambivalente Gesundheitsausgaben.
+- **Question to Alex if needed:** Keine wichtige Entscheidung offen; nächster sicherer Slice kann die Policy-Briefing-/KPI-Navigation weiter verdichten.
+- **Verification/Git:** Lokal: `pytest -q` 56 passed, `py_compile` OK, Simulation-Smoke 30 Runs × 3 Jahre OK. Git-Sync/Push folgt im Integrator-Schritt.

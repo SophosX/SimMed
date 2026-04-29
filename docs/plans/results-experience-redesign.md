@@ -291,3 +291,16 @@ Small implementation slice:
 4. Add a focused test that the rows expose start/end/effect strength, include the mixed-unit caution, map Facharzt-Wartezeit to the KPI detail next step, and skip missing columns safely.
 
 Guardrail: This is chart-reading UX only. Do not change simulation outputs, add empirical claims, or infer new causality beyond the selected time series.
+
+## 2026-04-29 next slice: KPI interpretation checkpoint
+
+Problem: KPI drill-down cards now show start/end, effect strength, related checks and matching changed levers, but the reader still has to infer whether a movement should be treated as improvement, deterioration, or a neutral/ambiguous context change. This is especially risky for metrics like Gesundheitsausgaben or Bevölkerung where “more” is not automatically good or bad.
+
+Small implementation slice:
+
+1. Add a pure `kpi_interpretation_checkpoint(metric_key, summary)` helper in `app.py`.
+2. Reuse the existing `_metric_delta_summary(...)` direction and `kpi_detail_texts()[metric_key]["read"]` copy. Return a short status, a plain-language interpretation, and a concrete “what to verify before concluding” prompt.
+3. Add the checkpoint to `build_kpi_drilldown_items(...)` and render it between Beobachtung and Verwandte Prüfungen, so every KPI detail explicitly says how to read the movement before naming drivers.
+4. Add a focused test proving Facharzt-Wartezeit worsening is labelled as a deterioration/access warning, while Gesundheitsausgaben are labelled as ambiguous rather than automatically bad.
+
+Guardrail: This is interpretation hygiene only. Do not change simulation outputs, add empirical claims, or turn ambiguous KPIs into hidden scores; the text must explicitly ask users to verify related KPIs before drawing policy conclusions.

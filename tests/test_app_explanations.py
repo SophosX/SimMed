@@ -22,6 +22,7 @@ from app import (
     build_trend_view_guidance,
     get_default_params,
     kpi_hover_help,
+    kpi_interpretation_checkpoint,
     kpi_matching_changed_levers,
     kpi_mobile_detail,
     kpi_related_inspections,
@@ -588,6 +589,33 @@ def test_kpi_drilldowns_match_changed_levers_to_specific_kpis():
     assert "Telemedizin" in items["wartezeit_fa"]["lever_context"]
     assert "keine direkte Brücke" in items["gkv_saldo"]["lever_context"]
     assert "nicht als direkte Ursache" in items["gkv_saldo"]["lever_context"]
+
+
+def test_kpi_interpretation_checkpoint_separates_warnings_from_ambiguous_metrics():
+    agg = pd.DataFrame([
+        {
+            "jahr": 2025,
+            "wartezeit_fa_mean": 20.0,
+            "gesundheitsausgaben_mrd_mean": 500.0,
+        },
+        {
+            "jahr": 2040,
+            "wartezeit_fa_mean": 32.0,
+            "gesundheitsausgaben_mrd_mean": 560.0,
+        },
+    ])
+    params = get_default_params()
+    items = {item["key"]: item for item in build_kpi_drilldown_items(agg, params)}
+
+    wait_check = items["wartezeit_fa"]["interpretation_checkpoint"]
+    spending_check = items["gesundheitsausgaben_mrd"]["interpretation_checkpoint"]
+
+    assert wait_check["status"] == "Warnsignal"
+    assert "Zugang" in wait_check["interpretation"]
+    assert "verwandte Prüfungen" in wait_check["verify_next"]
+    assert spending_check["status"] == "Einordnen, nicht automatisch werten"
+    assert "nicht automatisch schlecht" in spending_check["interpretation"]
+    assert "GKV-Saldo" in spending_check["verify_next"]
 
 
 def test_result_reading_path_guides_full_result_journey():
