@@ -29,7 +29,7 @@ import warnings
 
 from political_feasibility import assess_political_feasibility
 from expert_council import plain_language_workflow_summary
-from data_ingestion import build_data_passport_rows, build_data_readiness_backlog
+from data_ingestion import build_data_passport_rows, build_data_readiness_backlog, build_data_readiness_summary
 from parameter_registry import PARAMETER_REGISTRY, list_parameters
 from simulation_report import build_simulation_report as build_policy_briefing_report
 
@@ -4039,12 +4039,14 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
     """Summarize the next safe data-foundation gates for the Learning Page."""
 
     backlog = build_data_readiness_backlog(list_parameters(), limit=limit)
+    summary = build_data_readiness_summary(backlog)
     return {
         "title": "Nächste Daten-Schritte: erst Cache, dann Review, dann Integration",
         "plain_language_note": (
             "Diese Liste zeigt, was fehlt, bevor ein Parameter als geprüfter Datenwert im Modell gelten darf. "
             "Sie ist bewusst kein Import-Knopf: Rohdaten, Transformation und Modellintegration bleiben getrennte Gates."
         ),
+        "summary": summary,
         "rows": [
             {
                 "Parameter": item["label"],
@@ -4061,8 +4063,14 @@ def render_learning_data_readiness_backlog():
     """Render the data-readiness backlog as a mobile-safe table."""
 
     backlog = build_learning_data_readiness_backlog()
+    summary = backlog["summary"]
     st.markdown(f"### {backlog['title']}")
     st.markdown(f"<div class=\"learn-callout\"><b>Warum wichtig?</b> {backlog['plain_language_note']}</div>", unsafe_allow_html=True)
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Offene Daten-Gates", summary["total_items"])
+    col2.metric("Snapshot fehlt", summary["counts_by_gate"]["snapshot_needed"])
+    col3.metric("Review fehlt", summary["counts_by_gate"]["transformation_review_needed"])
+    st.info(f"Nächster Fokus: {summary['primary_focus']['parameter']} — {summary['primary_focus']['next_action']}")
     st.dataframe(pd.DataFrame(backlog["rows"]), use_container_width=True, hide_index=True)
     st.caption("Guardrail: Eine Backlog-Zeile ist Arbeitsplanung für Provenienz — kein Live-Import, keine Modellmutation, kein Wirkungsbeweis.")
 

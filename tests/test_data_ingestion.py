@@ -3,6 +3,8 @@ import json
 from data_ingestion import (
     ReviewedTransformation,
     build_data_passport_rows,
+    build_data_readiness_backlog,
+    build_data_readiness_summary,
     build_parameter_snapshot_status,
     cache_source_payload,
     list_cached_snapshots,
@@ -231,3 +233,45 @@ def test_data_passport_shows_missing_transformation_review(tmp_path):
         "status_note": "Rohdaten wurden noch nicht nachvollziehbar in einen Modellwert übersetzt.",
     }
     assert "Annahme ohne verknüpften Rohdaten-Snapshot" in rows[0]["passport_note"]
+
+
+def test_data_readiness_summary_counts_gates_without_model_import(tmp_path):
+    cache_source_payload(
+        source_id="destatis_genesis",
+        source_url="https://www-genesis.destatis.de/genesis/online",
+        payload=b"year,value\n2025,84.5\n",
+        filename="population.csv",
+        cache_root=tmp_path,
+        source_period="2025",
+        output_parameter_keys=("bevoelkerung_mio",),
+        transformation_note="fixture only; no model mutation",
+        retrieved_at="2026-04-29T20:00:00+00:00",
+    )
+    parameters = [
+        {
+            "key": "bevoelkerung_mio",
+            "label": "Bevölkerung",
+            "unit": "million people",
+            "evidence_grade": "A",
+            "source_ids": ["destatis_genesis"],
+            "data_status": "aus_daten",
+        },
+        {
+            "key": "telemedizin_rate",
+            "label": "Telemedizin-Nutzung",
+            "unit": "share",
+            "evidence_grade": "E",
+            "source_ids": ["expert_assumption"],
+            "data_status": "annahme",
+        },
+    ]
+
+    backlog = build_data_readiness_backlog(parameters, cache_root=tmp_path)
+    summary = build_data_readiness_summary(backlog)
+
+    assert summary["total_items"] == 2
+    assert summary["counts_by_gate"]["snapshot_needed"] == 1
+    assert summary["counts_by_gate"]["transformation_review_needed"] == 1
+    assert summary["primary_focus"]["parameter"] == "Telemedizin-Nutzung"
+    assert "kein Live-Import" in summary["plain_language_note"]
+    assert "kein Wirkungsbeweis" in summary["plain_language_note"]

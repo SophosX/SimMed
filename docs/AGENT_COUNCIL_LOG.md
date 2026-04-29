@@ -1243,3 +1243,32 @@ None.
 
 ### Verification / Git
 `python3 -m py_compile data_ingestion.py api.py app.py tests/test_app_explanations.py tests/test_api.py` passed. Full suite passed: `83 passed`. Runtime smoke passed with 20 runs × 2 years: `df (60, 30)`, `reg (320, 6)`. Commit/push pending at log-write time.
+
+## 2026-04-29 23:40 Europe/Berlin — Heartbeat: Data-Readiness Summary
+
+### Context
+Alex corrected the heartbeat priority toward core platform implementation. This slice stayed on the platform-data branch and improved the data-ingestion/provenance foundation rather than adding KI research.
+
+### Project Manager
+Priority: make the data-readiness backlog more actionable for API/UI users. Risk: counts could be mistaken for import progress, so the helper explicitly frames them as provenance gates only. Next: replace fixture-only population cache with a live/reviewed connector path, still without model mutation.
+
+### Designer / UX
+Learning Page now has mobile-safe metric cards for open data gates, missing snapshots, missing reviews, plus one plain-language next-focus line before the table. This helps first-time users understand what to do next instead of reading a raw backlog only.
+
+### Creative Agent
+Idea: later turn the readiness summary into a guided “Daten-Werkbank” checklist per parameter. Fit is good for newcomer orientation, but should wait until the first live connector exists.
+
+### Political Health-System Strategist
+No new policy/stakeholder claim added. The guardrail protects political interpretation: provenance work is not a policy-effect proof and not an official forecast.
+
+### Evidence / Domain
+No new external research in this run. The change only summarizes existing registry/cache/review states and keeps raw snapshots, transformation reviews and model integration as separate gates.
+
+### Integrator Decision
+Accepted a small core-platform slice: `build_data_readiness_summary(...)`, API `summary` field for `/data-readiness-backlog`, and Learning Page summary metrics/next-focus line. Deferred live data connector to next platform heartbeat.
+
+### Question to Alex
+Keine wichtige Entscheidung offen.
+
+### Verification / Git
+Focused tests passed: `14 passed` for data ingestion/API/Learning Page readiness tests. Py-compile passed for touched modules. Smoke check passed for readiness summary guardrail. Commit/push pending in this heartbeat entry until final Git step.

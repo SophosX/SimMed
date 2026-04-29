@@ -311,6 +311,43 @@ def build_data_passport_rows(
 
 
 
+def build_data_readiness_summary(backlog_items: list[dict]) -> dict:
+    """Summarize data-readiness gates for API/UI status cards.
+
+    This turns the operational backlog into a first-time-user readable progress
+    signal without changing any model value. Counts are about provenance gates,
+    not about policy truth or import success.
+    """
+
+    gate_labels = {
+        "snapshot_needed": "Rohdaten-Snapshot fehlt",
+        "transformation_review_needed": "Transformationsreview fehlt",
+        "explicit_model_integration_needed": "explizite Modellintegration offen",
+        "monitor_only": "nur beobachten",
+    }
+    counts = {gate: 0 for gate in gate_labels}
+    for item in backlog_items:
+        gate = item.get("next_gate", "")
+        if gate in counts:
+            counts[gate] += 1
+
+    first_action = backlog_items[0]["next_action"] if backlog_items else "Keine offenen Daten-Gates im aktuellen Register."
+    first_parameter = backlog_items[0]["label"] if backlog_items else "—"
+    return {
+        "total_items": len(backlog_items),
+        "counts_by_gate": counts,
+        "labels_by_gate": gate_labels,
+        "primary_focus": {
+            "parameter": first_parameter,
+            "next_action": first_action,
+        },
+        "plain_language_note": (
+            "Diese Übersicht zählt offene Provenienz-Gates: erst Rohdaten cachen, dann Transformation prüfen, "
+            "danach erst explizit Modell/Registry ändern. Sie ist kein Live-Import und kein Wirkungsbeweis."
+        ),
+    }
+
+
 def build_data_readiness_backlog(
     parameters: list[dict],
     *,
