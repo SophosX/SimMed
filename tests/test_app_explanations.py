@@ -48,9 +48,13 @@ from app import (
 
 
 def test_data_status_badges_are_backward_compatible_without_registry_field():
-    # Current main ParameterSpec does not yet guarantee data_status/source_version.
-    # UI helpers must not crash while the data-ingestion branch evolves separately.
-    assert _parameter_evidence_badge("bevoelkerung_mio")
+    # UI helpers must not crash while source-cache/import coverage evolves.
+    evidence_badge = _parameter_evidence_badge("bevoelkerung_mio")
+    assert "aus Daten" in evidence_badge
+    assert "Evidenz A" in evidence_badge
+    provenance_help = _parameter_provenance_help("bevoelkerung_mio")
+    assert "Datenlinie" in provenance_help
+    assert "Import" in provenance_help or "snapshot" in provenance_help
     kpi_badge = kpi_data_status_badge("gesundheitsausgaben_mrd")
     assert "Daten" in kpi_badge or "Annahme" in kpi_badge
 
@@ -190,7 +194,7 @@ def test_remaining_pipeline_finance_and_policy_controls_have_registry_help():
 def test_parameter_evidence_badge_is_short_and_registry_based():
     badge = _parameter_evidence_badge("medizinstudienplaetze")
 
-    assert badge == "🟢 Evidenz A · hrk_medical_education, destatis_genesis"
+    assert badge == "🟢 Annahme, nicht aus Daten · Evidenz A · hrk_medical_education, destatis_genesis"
     assert _parameter_evidence_badge("unregistriert") == "⚪ Evidenz offen · Register fehlt"
 
 

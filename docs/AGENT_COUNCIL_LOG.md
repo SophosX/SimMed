@@ -1091,3 +1091,32 @@ Targeted test passed (`tests/test_app_explanations.py::test_changed_lever_questi
 - **Integrator Decision:** `build_kpi_drilldown_navigation(...)` und Renderer akzeptiert; vorhandene KPI-Karten bleiben unverändert, nur der Einstieg wird klarer.
 - **Question to Alex if needed:** Keine wichtige Entscheidung offen. Empfehlung: weiter kleine Orchestrierungs-Slices, bis der Ergebnisfluss für Erstnutzer konsistent wirkt.
 - **Verification/Git:** Targeted Test bestanden; full `pytest -q` 74 passed; `py_compile` OK; Smoke `20 runs × 2 Jahre` mit `df=(60, 30)`, `reg=(320, 6)` bestanden. Git-Sync/Commit/Push folgt in diesem Lauf.
+
+## 2026-04-29 20:59 UTC — Heartbeat: Data-status foundation
+
+### Context
+Alex corrected that heartbeat work must prioritize core platform changes. Current checkout was parked from the AI-healthcare branch, so the Integrator moved back to `main` and created `feat/platform-data-status-foundation` for a safe platform slice.
+
+### Project Manager
+Priority: start the real-data/provenance foundation before more evidence-only intake. Risk: users may misread registered evidence sources as already imported live data. Next tasks: connect first real Destatis/GENESIS snapshot, expose cache manifests in API/UI, then expand labels to more parameters.
+
+### Designer / UX
+Parameter help now says visibly whether a value is `aus Daten` or `Annahme, nicht aus Daten`, plus the data lineage, so first-time users can distinguish source-backed defaults from model assumptions without hunting through docs.
+
+### Creative Agent
+Idea: later add a small “Datenpass” popover per scenario showing green/yellow rows for imported snapshots vs assumptions. Fit: strong trust signal; defer until at least one real connector is present.
+
+### Political Health-System Strategist
+For policy debates, the distinction between measured baseline, imported source snapshot, and modeling assumption is politically important; this slice avoids implying that education/workforce levers are already validated forecasts.
+
+### Evidence / Domain
+Added cache primitives only; no new factual claims or source pulls. Data-backed labels are limited to a few source-referenced baseline defaults and explicitly state that automated snapshots are still pending.
+
+### Integrator Decision
+Accepted: `data_ingestion.py` with raw payload + manifest cache schema, `ParameterSpec` data-status/source-version/lineage fields, and UI provenance text using those fields. Deferred: live source connector and import-to-parameter transformation review.
+
+### Question to Alex
+Keine.
+
+### Verification / Git
+`72 passed`; `py_compile` for app/core/API/registry/provenance/data ingestion/tests; simulation smoke `20 runs × 2 years` OK with `(60, 30)` / `(320, 6)`. Branch `feat/platform-data-status-foundation`; commit/push pending at log-write time.

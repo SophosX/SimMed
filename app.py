@@ -947,8 +947,13 @@ def _parameter_provenance_help(key: str, plain_hint: str | None = None) -> str:
     if spec is None:
         return plain_hint or "Noch nicht im Parameter-Register dokumentiert."
 
+    data_status = getattr(spec, "data_status", "annahme")
+    source_version = getattr(spec, "source_version", "")
+    data_label = "aus Daten" if data_status == "aus_daten" else "Annahme, nicht aus Daten"
+    freshness = f" Stand/Version: {source_version}." if source_version else ""
     parts = [
-        f"Register: {spec.label}; Evidenzgrad {spec.evidence_grade}; Quellen: {', '.join(spec.source_ids)}.",
+        f"Register: {spec.label}; {data_label}; Evidenzgrad {spec.evidence_grade}; Quellen: {', '.join(spec.source_ids)}.{freshness}",
+        f"Datenlinie: {getattr(spec, 'data_lineage', 'Manuell gesetzter Modellwert; Importstatus offen.')}",
         f"Rolle im Modell: {spec.model_role}.",
         f"Unsicherheit: {spec.uncertainty}.",
     ]

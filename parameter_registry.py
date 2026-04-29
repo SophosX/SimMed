@@ -9,6 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass, asdict
 from typing import Any, Literal
 
+from data_ingestion import DataStatus
 from data_sources import require_source_ids
 
 EvidenceGrade = Literal["A", "B", "C", "D", "E"]
@@ -27,9 +28,16 @@ class ParameterSpec:
     uncertainty: str
     model_role: str
     caveat: str = ""
+    data_status: DataStatus = "annahme"
+    source_version: str = ""
+    data_lineage: str = "Manuell gesetzter Modellwert; noch kein geprüfter Import-Snapshot verknüpft."
 
     def __post_init__(self) -> None:
         require_source_ids(self.source_ids)
+        if self.data_status not in {"aus_daten", "annahme"}:
+            raise ValueError(f"Invalid data_status for {self.key}")
+        if self.data_status == "aus_daten" and not self.source_version:
+            raise ValueError(f"source_version required for data-backed parameter {self.key}")
         if self.plausible_min is not None and self.plausible_max is not None:
             if self.plausible_min > self.plausible_max:
                 raise ValueError(f"Invalid range for {self.key}")
@@ -52,6 +60,9 @@ PARAMETER_REGISTRY: dict[str, ParameterSpec] = {
         evidence_grade="A",
         uncertainty="scenario band from Destatis population projection; not independent normal noise",
         model_role="demographic stock baseline",
+        data_status="aus_daten",
+        source_version="Destatis/GENESIS referenced baseline; automated snapshot pending",
+        data_lineage="Default is treated as source-backed registry baseline, but raw GENESIS cache/import is not yet attached.",
     ),
     "geburtenrate": ParameterSpec(
         key="geburtenrate",
@@ -64,6 +75,9 @@ PARAMETER_REGISTRY: dict[str, ParameterSpec] = {
         evidence_grade="A",
         uncertainty="scenario band / triangular distribution",
         model_role="birth inflow in demographic cohort model",
+        data_status="aus_daten",
+        source_version="Destatis/GENESIS referenced fertility baseline; automated snapshot pending",
+        data_lineage="Default is source-referenced in registry; raw table cache/import still pending.",
     ),
     "netto_zuwanderung": ParameterSpec(
         key="netto_zuwanderung",
@@ -76,6 +90,9 @@ PARAMETER_REGISTRY: dict[str, ParameterSpec] = {
         evidence_grade="A",
         uncertainty="wide scenario distribution; correlated with age structure and workforce inflow",
         model_role="population inflow and possible workforce inflow proxy",
+        data_status="aus_daten",
+        source_version="Destatis/GENESIS referenced migration baseline; automated snapshot pending",
+        data_lineage="Default is source-referenced in registry; raw table cache/import still pending.",
     ),
     "urban_anteil": ParameterSpec(
         key="urban_anteil",
@@ -141,6 +158,9 @@ PARAMETER_REGISTRY: dict[str, ParameterSpec] = {
         uncertainty="official headcount; capacity requires FTE conversion",
         model_role="physician stock baseline",
         caveat="Do not treat headcount as capacity; use FTE, specialty, age and region where possible.",
+        data_status="aus_daten",
+        source_version="Bundesärztekammer referenced baseline; automated snapshot pending",
+        data_lineage="Default is source-referenced in registry; raw annual statistics cache/import still pending.",
     ),
     "aerzte_pro_100k_urban": ParameterSpec(
         key="aerzte_pro_100k_urban",

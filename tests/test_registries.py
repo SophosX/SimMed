@@ -18,8 +18,23 @@ def test_parameter_registry_sources_exist_and_ranges_valid():
     for spec in PARAMETER_REGISTRY.values():
         assert spec.source_ids
         assert spec.evidence_grade in {"A", "B", "C", "D", "E"}
+        assert spec.data_status in {"aus_daten", "annahme"}
+        assert spec.data_lineage
+        if spec.data_status == "aus_daten":
+            assert spec.source_version
         if spec.plausible_min is not None and spec.plausible_max is not None:
             assert spec.plausible_min <= spec.default <= spec.plausible_max
+
+
+def test_initial_data_backed_parameters_are_labeled_without_claiming_import_complete():
+    data_backed = [spec for spec in PARAMETER_REGISTRY.values() if spec.data_status == "aus_daten"]
+    assert {spec.key for spec in data_backed} >= {
+        "bevoelkerung_mio",
+        "geburtenrate",
+        "netto_zuwanderung",
+        "aerzte_gesamt",
+    }
+    assert all("automated snapshot pending" in spec.source_version for spec in data_backed)
 
 
 def test_medical_study_places_documents_delay_caveat():
