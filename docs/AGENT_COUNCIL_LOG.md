@@ -1383,3 +1383,32 @@ No major decision required now. Later decision: whether live connector execution
 
 ### Verification / Git
 Initial verification: `python3 -m pytest tests/test_api.py -q` passed (8 tests). Full-suite/commit/push status follows in heartbeat summary.
+
+## 2026-04-30 00:13 Europe/Berlin — Heartbeat: Connector-Dry-Run UI Bridge
+
+### Context
+Alex corrected the heartbeat priority toward core platform work. Continued on `feat/platform-data-status-foundation` and added a Learning Page bridge from planned connector requests to safe execution/status handling.
+
+### Project Manager
+Priority: make real-data ingestion operationally understandable before adding more evidence-only work. Risk: users could mistake a connector request or cached payload for a model import. Next tasks: expose explicit Streamlit action controls only after dry-run/status wording is stable; then add transformation-review workflow UI.
+
+### Designer / UX
+The Learning Page now shows a plain-language dry-run path: request planned → no network/cache by default → raw cache only on deliberate execution → transformation review → explicit model integration. This is mobile/tablet safe via dataframe rows and avoids hover-only explanations.
+
+### Creative Agent
+Idea: later turn the four gates into a small progress timeline per parameter. Fit: useful and motivating, but defer until the current table/status path is tested in the app.
+
+### Political Health-System Strategist
+For health-policy credibility, connector actions must not look like official forecasts or policy proof. The new UI copy keeps data operations separate from political/model conclusions.
+
+### Evidence / Domain
+No new external factual claims or data pulls were added. The change reuses existing Data Passport/cache/review statuses and explicitly keeps dry-run, raw cache, transformation review, and model integration separate.
+
+### Integrator Decision
+Accepted a small core-platform UX implementation: `build_learning_connector_execution_status()` plus Learning Page rendering and regression test. Deferred live execution buttons to a later slice so accidental network/cache writes remain impossible from the UI.
+
+### Question to Alex
+Keine.
+
+### Verification / Git
+Initial focused test passed: `python -m pytest tests/test_app_explanations.py::test_learning_connector_execution_status_keeps_dry_run_and_cache_gates_separate -q`. Full verification/commit/push pending in this heartbeat.

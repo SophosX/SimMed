@@ -4070,6 +4070,46 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
     }
 
 
+def build_learning_connector_execution_status(limit: int = 4) -> dict[str, Any]:
+    """Show planned connector execution status without triggering live network fetches."""
+
+    parameters = list_parameters()
+    full_backlog = build_data_readiness_backlog(parameters)
+    requests = build_connector_snapshot_requests(full_backlog, per_source_limit=max(limit, 1))
+    passport_by_key = {
+        row["parameter_key"]: row
+        for row in build_data_passport_rows(parameters)
+    }
+    rows = []
+    for request in requests[:limit]:
+        parameter_key = request["output_parameter_keys"][0]
+        passport = passport_by_key.get(parameter_key, {})
+        cache_status = passport.get("raw_snapshot", {}).get("label", "Rohsnapshot nicht geprüft")
+        transformation_status = passport.get("transformation_review", {}).get("label", "Transformation nicht geprüft")
+        rows.append(
+            {
+                "Parameter": request["parameter_label"],
+                "Status": "Request geplant, nicht ausgeführt",
+                "Request": f"{request['source_label']} Tabelle {request['table_code']}",
+                "Cache": cache_status,
+                "Transformation": transformation_status,
+                "Nächster sicherer Schritt": request["next_safe_action"],
+                "Guardrail": "Dry-run: kein Netzwerkabruf, kein Rohdaten-Cache, nicht Modellintegration und kein Wirkungsbeweis.",
+            }
+        )
+    return {
+        "title": "Connector-Ausführung: sicherer Status vor Live-Abruf",
+        "plain_language_note": (
+            "Diese Ansicht macht aus der Connector-Planung einen klaren Bedienpfad: erst Dry-run/Status prüfen, "
+            "dann bei bewusster Ausführung Rohdaten unverändert cachen, danach Transformation reviewen. "
+            "Der Dry-run macht keinen Netzwerkabruf, schreibt kein Rohdaten-Cache-Artefakt und ändert keine Modellparameter."
+        ),
+        "api_hint": "API: POST /data-connectors/execute-planned-snapshot mit execute=false für Status; execute=true nur für bewusstes Rohdaten-Caching.",
+        "rows": rows,
+    }
+
+
+
 def render_learning_data_readiness_backlog():
     """Render the data-readiness backlog as a mobile-safe table."""
 
@@ -4106,6 +4146,17 @@ def render_learning_data_readiness_backlog():
                 )
         else:
             st.caption("Noch kein unterstützter konkreter Snapshot-Request in der aktuellen Connector-Queue.")
+    connector_status = build_learning_connector_execution_status()
+    with st.expander("Connector-Ausführung sicher starten (Dry-run zuerst)", expanded=False):
+        st.markdown(
+            f"<div class=\"learn-callout\"><b>Bedienpfad:</b> {connector_status['plain_language_note']}</div>",
+            unsafe_allow_html=True,
+        )
+        st.caption(connector_status["api_hint"])
+        if connector_status["rows"]:
+            st.dataframe(pd.DataFrame(connector_status["rows"]), use_container_width=True, hide_index=True)
+        else:
+            st.caption("Aktuell gibt es keinen unterstützten geplanten Connector-Request für einen Dry-run-Status.")
     st.dataframe(pd.DataFrame(backlog["rows"]), use_container_width=True, hide_index=True)
     st.caption("Guardrail: Eine Backlog-Zeile ist Arbeitsplanung für Provenienz — kein Live-Import, keine Modellmutation, kein Wirkungsbeweis.")
 

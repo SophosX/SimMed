@@ -12,6 +12,7 @@ from app import (
     build_changed_lever_question_cards,
     build_changed_lever_result_audit_trail,
     build_kpi_answer_checklist,
+    build_learning_connector_execution_status,
     build_learning_data_passport_overview,
     build_learning_data_readiness_backlog,
     build_kpi_assumption_trace,
@@ -114,6 +115,31 @@ def test_learning_data_readiness_backlog_prioritizes_safe_data_gates():
     combined = " ".join(str(value) for row in backlog["rows"] for value in row.values())
     assert "Rohdaten" in combined or "Transformation" in combined
     assert "kein" in combined.lower() and "Modell" in combined
+
+
+def test_learning_connector_execution_status_keeps_dry_run_and_cache_gates_separate():
+    status = build_learning_connector_execution_status(limit=3)
+
+    assert status["title"].startswith("Connector-Ausführung")
+    assert "Dry-run" in status["plain_language_note"]
+    assert "kein Rohdaten-Cache" in status["plain_language_note"]
+    assert status["rows"]
+    assert 1 <= len(status["rows"]) <= 3
+    first = status["rows"][0]
+    assert {
+        "Parameter",
+        "Status",
+        "Request",
+        "Cache",
+        "Transformation",
+        "Nächster sicherer Schritt",
+        "Guardrail",
+    } <= set(first)
+    combined = " ".join(str(value) for row in status["rows"] for value in row.values())
+    assert "geplant, nicht ausgeführt" in combined
+    assert "kein Netzwerkabruf" in combined
+    assert "nicht Modellintegration" in combined
+    assert "Transformation" in combined
 
 
 def test_landing_hero_content_sets_first_contact_expectations():
