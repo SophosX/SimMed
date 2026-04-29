@@ -292,6 +292,22 @@ EVIDENCE_SOURCES: dict[str, EvidenceSource] = {
         ),
         license_or_terms_note="PubMed abstract metadata only; article copyright/license may apply. Store citation/metadata only unless reuse terms permit more.",
     ),
+    "jmir_med_inform_singapore_time_motion_2026": EvidenceSource(
+        id="jmir_med_inform_singapore_time_motion_2026",
+        title="Impact of an Ambient AI Scribe Among Clinicians and Patients: Real-World Prospective Observational Time-Motion Study",
+        url="https://pubmed.ncbi.nlm.nih.gov/41915701/",
+        kind="paper",
+        retrieved_via="PubMed E-utilities search + abstract metadata",
+        retrieved_at="2026-04-29",
+        source_date="2026",
+        quality_note=(
+            "Prospective within-clinician quality-improvement study at a large academic medical center in Singapore with nine clinicians, "
+            "matched observations with and without an in-house ambient scribe, standardized time-motion measurement, and patient surveys. "
+            "Useful because it uses direct observation rather than only EHR timestamps, but the small single-center design and QI framing mean "
+            "it should remain workflow/patient-engagement nuance, not proof of patient outcomes, German capacity gains or cost savings."
+        ),
+        license_or_terms_note="PubMed abstract metadata only; article copyright/license may apply. Store citation/metadata only unless reuse terms permit more.",
+    ),
     "x_jama_current_ambient_scribes_2026": EvidenceSource(
         id="x_jama_current_ambient_scribes_2026",
         title="JAMA X post: ambient scribes reduce documentation time but patient outcomes/equity evidence limited",
@@ -359,6 +375,7 @@ AI_HEALTHCARE_EVIDENCE: dict[str, AIHealthcareEvidenceRecord] = {
             "appl_clin_inform_patient_experience_ambient_2026",
             "jamia_clinician_editing_rationale_ambient_2026",
             "jmir_ai_ambient_scribes_rapid_review_2025",
+            "jmir_med_inform_singapore_time_motion_2026",
         ),
         transferability_to_germany=(
             "Medium: documentation burden and clinician workflow are relevant in Germany, but effects depend on German documentation rules, "

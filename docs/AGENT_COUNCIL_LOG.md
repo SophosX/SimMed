@@ -1381,3 +1381,16 @@ Keine wichtige Entscheidung offen.
 
 ### Verification / Git
 Focused test: `16 passed`; full suite: `86 passed`. Commit/push follows in this heartbeat.
+
+
+## 2026-04-29 – Heartbeat: AI-Healthcare Evidenz, Ambient Scribes (Singapore Time-Motion)
+
+- **Context:** Kurzer sicherer Lauf auf Branch `feat/ai-healthcare-evidence-validation`; Fokus weiter Ambient-AI-Scribes als strukturierter Evidenzkatalog, kein Modelleffekt.
+- **Project Manager:** Kleine, prüfbare Ergänzung vorgezogen: eine zusätzliche prospektive Beobachtungs-/Time-Motion-Quelle statt neuer UI/Modelllogik.
+- **Designer/UX:** Spätere UI sollte diese Quelle als „direkte Beobachtung, aber klein/single-center“ erklären, damit Nutzer Prozesssignale nicht als Patientennutzen lesen.
+- **Creative Agent:** Evidence-Passport-Idee bleibt passend: Quellen mit Gegenbefunden und Kontext nebeneinander zeigen, nicht nur positive Effizienzstory.
+- **Political Health-System Strategist:** Für Deutschland relevant wegen Datenschutz, PVS/KIS-Integration und Akzeptanz; kein politisches Kapazitätsversprechen ableiten.
+- **Evidence/Domain:** PubMed/NCBI-E-utilities genutzt. Quelle `jmir_med_inform_singapore_time_motion_2026` ergänzt: prospektive Within-Clinician-QI-Studie in Singapur mit direkter Time-Motion-Beobachtung und Patient Surveys; als Workflow/Engagement-Nuance, nicht Patient Outcome/Kosten/German capacity proof.
+- **Integrator Decision:** Strukturierte Quelle + Regressionstest ergänzt; `model_use_status` bleibt `catalog_only`, Record bleibt Evidence Grade B nur für Workload/Prozess/Safety-Kontext.
+- **Question to Alex if needed:** Keine neue Produktentscheidung nötig.
+- **Verification/Git:** Tests/Compile folgen im selben Heartbeat; Commit/Push nach erfolgreicher Prüfung.

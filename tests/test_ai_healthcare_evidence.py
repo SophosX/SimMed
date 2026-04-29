@@ -187,6 +187,22 @@ def test_ambient_scribes_include_rapid_review_as_evidence_gap_map_not_effect_siz
     assert record.model_use_status == "catalog_only"
 
 
+def test_ambient_scribes_include_singapore_time_motion_as_observational_workflow_nuance():
+    source = EVIDENCE_SOURCES["jmir_med_inform_singapore_time_motion_2026"]
+    record = AI_HEALTHCARE_EVIDENCE["ambient_ai_scribes_documentation_burden"]
+
+    assert source.kind == "paper"
+    assert source.retrieved_via == "PubMed E-utilities search + abstract metadata"
+    assert "Prospective within-clinician" in source.quality_note
+    assert "direct observation rather than only EHR timestamps" in source.quality_note
+    assert "small single-center" in source.quality_note
+    assert "not proof of patient outcomes" in source.quality_note
+    assert "German capacity gains" in source.quality_note
+    assert source.id in record.source_ids
+    assert "prospective_observational" in record.study_designs
+    assert record.model_use_status == "catalog_only"
+
+
 def test_youtube_context_pipeline_is_explicitly_grade_e_and_not_model_fact():
     record = AI_HEALTHCARE_EVIDENCE["ai_healthcare_youtube_context_pipeline"]
     summary = evidence_quality_summary(record.id)
