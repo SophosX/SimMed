@@ -1705,3 +1705,33 @@ Keine.
 
 ### Verification / Git
 Lokale Verifikation: `pytest tests/test_api.py ...` gezielt, API-Smoke mit `TestClient`, `py_compile app.py api.py scenario_gallery.py`, danach komplette Suite `104 passed`. Commit/Push folgt im Git-Schritt dieses Heartbeats.
+
+
+## 2026-04-30 01:11 Europe/Berlin — Heartbeat: Data-readiness next actions
+
+### Context
+Alex corrected the heartbeat priority toward core platform implementation. This run stayed on the platform-data branch and added a concrete next-action layer for the data-ingestion/provenance workflow.
+
+### Project Manager
+Priority: make real-data work operational, not only descriptive. Next tasks: expose this next-action list in a focused UI/API surface, then execute one safe dry-run/cached snapshot only when appropriate.
+
+### Designer / UX
+The Learning Page now shows an expanded “Konkrete nächste Plattform-Aktionen” table so first-time users/agents can see the exact API/status route and guardrail before any live data action.
+
+### Creative Agent
+Idea: later turn each next action into a checklist card with copyable dry-run payload and visible gate progress. Fit is high for onboarding, but current slice stays read-only.
+
+### Political Health-System Strategist
+For politically sensitive health data, the workflow still separates evidence/provenance operations from policy claims: no cached snapshot or next-action row is framed as an official forecast or policy-effect proof.
+
+### Evidence / Domain
+No new external evidence claim was added. The change reuses the existing Data Passport/backlog/connector-request provenance gates and preserves aus Daten vs. Annahme separation.
+
+### Integrator Decision
+Accepted: add `build_next_data_readiness_actions(...)`, expose `GET /data-readiness/next-actions`, and surface the same next actions on the Learning Page. Deferred: live execution buttons or automatic model integration.
+
+### Question to Alex
+Keine.
+
+### Verification / Git
+Focused tests passed for the new API/UI helper; full suite passed (`106 passed`), py_compile passed, and simulation smoke passed (`df (60, 30)`, `reg (320, 6)`). Commit/push status updated below after git sync.

@@ -82,6 +82,39 @@ def test_api_exposes_data_readiness_backlog_without_model_integration():
     assert "Modelländerung" in first["guardrail"]
 
 
+def test_api_exposes_next_data_readiness_actions_without_execution():
+    client = TestClient(api)
+    response = client.get("/data-readiness/next-actions?limit=2")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "data_readiness_next_actions_not_executed"
+    assert "kein Netzwerkabruf" in body["guardrail"]
+    assert len(body["actions"]) == 2
+    first = body["actions"][0]
+    assert first["rank"] == 1
+    assert first["workflow_api"].startswith("GET /data-readiness/")
+    assert first["next_gate_label"]
+    assert "keine Registry-/Modellmutation" in first["guardrail"]
+    if first["planned_connector_request"]:
+        assert first["primary_api"] == "POST /data-connectors/execute-planned-snapshot"
+        assert first["dry_run_payload"] == {"parameter_key": first["parameter_key"], "execute": False}
+    else:
+        assert first["primary_api"] == first["workflow_api"]
+        assert first["dry_run_payload"] is None
+
+
+def test_api_rejects_next_data_readiness_actions_out_of_bounds_without_execution():
+    client = TestClient(api)
+    response = client.get("/data-readiness/next-actions?limit=0")
+
+    assert response.status_code == 422
+    detail = response.json()["detail"]
+    assert detail["status"] == "invalid_data_readiness_next_actions_limit"
+    assert "keine Datenaktion" in detail["guardrail"]
+
+
+
 def test_api_exposes_single_parameter_data_readiness_workflow_without_execution():
     client = TestClient(api)
     backlog = client.get("/data-readiness-backlog").json()

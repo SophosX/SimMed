@@ -758,6 +758,52 @@ def build_data_readiness_summary(backlog_items: list[dict]) -> dict:
     }
 
 
+def build_next_data_readiness_actions(backlog_items: list[dict], *, limit: int = 3) -> list[dict]:
+    """Return the next concrete, safe data-foundation actions for agents/UI.
+
+    This is a small orchestration layer over the backlog: it answers "what should
+    the platform team do next?" with exact API/status routes and dry-run guidance.
+    It does not fetch data, write cache files, review transformations, or mutate
+    registry/model values.
+    """
+
+    planned_requests = build_connector_snapshot_requests(backlog_items, per_source_limit=max(limit, 1))
+    request_by_parameter = {
+        key: request
+        for request in planned_requests
+        for key in request.get("output_parameter_keys", [])
+    }
+    actions: list[dict] = []
+    for rank, item in enumerate(backlog_items[:limit], start=1):
+        parameter_key = item["parameter_key"]
+        request = request_by_parameter.get(parameter_key)
+        if request is not None:
+            dry_run_payload = {"parameter_key": parameter_key, "execute": False}
+            primary_api = "POST /data-connectors/execute-planned-snapshot"
+            operator_hint = "Dry-run ausführen, Request/Cache-Status prüfen; erst danach bewusst execute=true für Rohdaten-Cache."
+        else:
+            dry_run_payload = None
+            primary_api = f"GET /data-readiness/{parameter_key}"
+            operator_hint = "Parameter-Workflow öffnen und das nächste Gate manuell vorbereiten; kein Live-Abruf verfügbar."
+
+        actions.append({
+            "rank": rank,
+            "parameter_key": parameter_key,
+            "label": item["label"],
+            "next_gate": item["next_gate"],
+            "next_gate_label": DATA_READINESS_GATE_LABELS.get(item["next_gate"], item["next_gate"]),
+            "next_action": item["next_action"],
+            "primary_api": primary_api,
+            "dry_run_payload": dry_run_payload,
+            "workflow_api": f"GET /data-readiness/{parameter_key}",
+            "planned_connector_request": request,
+            "operator_hint": operator_hint,
+            "guardrail": "Nächste-Aktion-Planung: kein Netzwerkabruf, kein Cache-Schreibvorgang, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+        })
+    return actions
+
+
+
 def build_data_connector_queue(backlog_items: list[dict], *, per_source_limit: int = 4) -> list[dict]:
     """Group snapshot-needed parameters by source so connector work can start safely.
 

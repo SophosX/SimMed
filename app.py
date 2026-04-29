@@ -37,6 +37,7 @@ from data_ingestion import (
     build_data_readiness_backlog,
     build_data_readiness_gate_plan,
     build_data_readiness_summary,
+    build_next_data_readiness_actions,
     build_parameter_data_workflow_card,
     build_transformation_review_template,
 )
@@ -4114,6 +4115,7 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         "gate_plan": build_data_readiness_gate_plan(full_backlog),
         "connector_queue": build_data_connector_queue(full_backlog),
         "connector_snapshot_requests": build_connector_snapshot_requests(full_backlog),
+        "next_actions": build_next_data_readiness_actions(full_backlog, limit=3),
         "rows": [
             {
                 "Parameter": item["label"],
@@ -4221,6 +4223,21 @@ def render_learning_data_readiness_backlog():
     col2.metric("Snapshot fehlt", summary["counts_by_gate"]["snapshot_needed"])
     col3.metric("Review fehlt", summary["counts_by_gate"]["transformation_review_needed"])
     st.info(f"Nächster Fokus: {summary['primary_focus']['parameter']} — {summary['primary_focus']['next_action']}")
+    with st.expander("Konkrete nächste Plattform-Aktionen", expanded=True):
+        action_rows = []
+        for action in backlog["next_actions"]:
+            payload = action["dry_run_payload"] or "—"
+            action_rows.append({
+                "Rang": action["rank"],
+                "Parameter": action["label"],
+                "Gate": action["next_gate_label"],
+                "API/Status": action["primary_api"],
+                "Dry-run Payload": payload,
+                "Hinweis": action["operator_hint"],
+                "Guardrail": action["guardrail"],
+            })
+        st.dataframe(pd.DataFrame(action_rows), use_container_width=True, hide_index=True)
+        st.caption("Diese Liste priorisiert Plattformarbeit: erst Status/Dry-run, dann Rohdaten-Cache nur bewusst, danach Review und explizite Modellintegration.")
     with st.expander("Warum diese Reihenfolge? Daten-Gates als Arbeitsplan", expanded=False):
         for gate in backlog["gate_plan"]:
             examples = ", ".join(gate["example_parameters"]) if gate["example_parameters"] else "aktuell keine Beispiele"

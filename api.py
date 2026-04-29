@@ -21,6 +21,7 @@ from data_ingestion import (
     build_data_readiness_backlog,
     build_data_readiness_gate_plan,
     build_data_readiness_summary,
+    build_next_data_readiness_actions,
     build_parameter_data_workflow_card,
     build_parameter_snapshot_status,
     build_transformation_review_template,
@@ -109,6 +110,34 @@ def get_data_readiness_backlog() -> dict:
             build_data_passport_rows(parameters),
         ),
         "items": items,
+    }
+
+
+@api.get("/data-readiness/next-actions")
+def get_next_data_readiness_actions(limit: int = 3) -> dict:
+    """Return the next concrete platform data-foundation actions.
+
+    This endpoint is operator/agent guidance only: it points to dry-run/status
+    APIs and parameter workflow cards, but does not execute connectors, cache
+    payloads, review transformations, or integrate model values.
+    """
+
+    if limit < 1 or limit > 10:
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "status": "invalid_data_readiness_next_actions_limit",
+                "limit": limit,
+                "guardrail": "Limit muss zwischen 1 und 10 liegen; keine Datenaktion wurde ausgeführt.",
+            },
+        )
+    parameters = list_parameters()
+    items = build_data_readiness_backlog(parameters)
+    return {
+        "status": "data_readiness_next_actions_not_executed",
+        "guardrail": "Nächste Aktionen sind Dry-run-/Workflow-Hinweise: kein Netzwerkabruf, kein Cache-Schreibvorgang, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+        "summary": build_data_readiness_summary(items),
+        "actions": build_next_data_readiness_actions(items, limit=limit),
     }
 
 

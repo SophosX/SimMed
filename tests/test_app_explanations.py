@@ -109,6 +109,12 @@ def test_learning_data_readiness_backlog_prioritizes_safe_data_gates():
     assert "SHA256-Manifest" in connector["connector_next_action"]
     assert "keine automatische" in connector["guardrail"]
     assert backlog["connector_snapshot_requests"]
+    assert backlog["next_actions"]
+    next_action = backlog["next_actions"][0]
+    assert next_action["rank"] == 1
+    assert next_action["workflow_api"].startswith("GET /data-readiness/")
+    assert "kein Netzwerkabruf" in next_action["guardrail"]
+    assert "Modellmutation" in next_action["guardrail"]
     request = backlog["connector_snapshot_requests"][0]
     assert request["table_code"] in {"12411-0001", "23111-0001"}
     assert "endpoint_url" in request
