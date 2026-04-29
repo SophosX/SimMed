@@ -805,4 +805,4 @@ Accepted: update `docs/plans/results-experience-redesign.md`, add `build_report_
 No important decision open for this low-risk navigation slice.
 
 ### Verification / Git
-Local verification passed: targeted shortcut test, full pytest suite, py_compile, and 50-run/3-year simulation smoke test. Commit/push status to be recorded after sync.
+Local verification passed: targeted shortcut test, full pytest suite, py_compile, and 50-run/3-year simulation smoke test. Synced to GitHub as commit `1348bf9` and pushed to `main`.
