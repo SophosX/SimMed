@@ -30,6 +30,7 @@ import warnings
 from political_feasibility import assess_political_feasibility
 from expert_council import plain_language_workflow_summary
 from parameter_registry import PARAMETER_REGISTRY
+from simulation_report import build_simulation_report
 
 warnings.filterwarnings("ignore")
 
@@ -2607,6 +2608,37 @@ def render_regional_map(df_reg: pd.DataFrame):
     st.dataframe(table, use_container_width=True, hide_index=True)
 
 
+def render_policy_briefing(agg: pd.DataFrame, params: dict):
+    """Render the structured report/block view for non-expert readers."""
+    report = build_simulation_report(agg, params)
+    st.markdown("### Policy-Briefing")
+    st.caption("Strukturierte Auswertung deiner Simulation: vom Referenzpfad über deine Änderungen bis zu KPIs, Auslandslösungen und Evidenz.")
+
+    section_titles = [section["title"] for section in report["sections"]]
+    selected_title = st.radio(
+        "Zum Abschnitt springen",
+        section_titles,
+        horizontal=False,
+        key="policy_briefing_section",
+    )
+
+    for section in report["sections"]:
+        expanded = section["title"] == selected_title or section["id"] == "executive_summary"
+        with st.expander(section["title"], expanded=expanded):
+            st.markdown(section["summary"])
+            for item in section.get("detail_items", []):
+                st.markdown(f"- {item}")
+            if section.get("related_kpis"):
+                st.markdown("**Verwandte KPI-Prüfungen:** " + ", ".join(section["related_kpis"]))
+            if section.get("evidence_refs"):
+                st.markdown("**Quellen-/Evidenzhinweise:**")
+                for ref in section["evidence_refs"][:8]:
+                    st.markdown(f"- {ref}")
+            if section.get("caveats"):
+                st.warning(" ".join(section["caveats"]))
+
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # UI: SZENARIEN-VERGLEICH TAB
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -3131,23 +3163,25 @@ def main():
     if "agg" in st.session_state:
         results_first = st.session_state.pop("show_results_first", False)
         if results_first:
-            tab1, tab0, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+            tab1, tab0, tab2, tab3, tab4, tab5, tab7, tab6 = st.tabs([
                 "Ergebnisse",
                 "Lernen",
                 "Statistiken & Verteilungen",
                 "Zeitreihen",
                 "Regionale Karte",
                 "Szenarien-Vergleich",
+                "Policy-Briefing",
                 "Export & Einstellungen",
             ])
         else:
-            tab0, tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+            tab0, tab1, tab2, tab3, tab4, tab5, tab7, tab6 = st.tabs([
                 "Lernen",
                 "Ergebnisse",
                 "Statistiken & Verteilungen",
                 "Zeitreihen",
                 "Regionale Karte",
                 "Szenarien-Vergleich",
+                "Policy-Briefing",
                 "Export & Einstellungen",
             ])
 
@@ -3164,6 +3198,8 @@ def main():
             render_regional_map(st.session_state["df_reg"])
         with tab5:
             render_scenarios()
+        with tab7:
+            render_policy_briefing(st.session_state["agg"], params)
         with tab6:
             render_export(
                 st.session_state["df"], st.session_state["agg"],
