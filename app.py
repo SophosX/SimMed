@@ -36,6 +36,7 @@ from data_ingestion import (
     build_data_passport_rows,
     build_data_readiness_action_packet,
     build_data_readiness_backlog,
+    build_data_readiness_dashboard_cards,
     build_data_readiness_gate_plan,
     build_data_readiness_operator_handoff,
     build_data_readiness_platform_brief,
@@ -4116,6 +4117,7 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
             "Sie ist bewusst kein Import-Knopf: Rohdaten, Transformation und Modellintegration bleiben getrennte Gates."
         ),
         "summary": summary,
+        "dashboard_cards": build_data_readiness_dashboard_cards(summary, next_actions),
         "gate_plan": build_data_readiness_gate_plan(full_backlog),
         "connector_queue": build_data_connector_queue(full_backlog),
         "connector_snapshot_requests": build_connector_snapshot_requests(full_backlog),
@@ -4230,6 +4232,20 @@ def render_learning_data_readiness_backlog():
     col2.metric("Snapshot fehlt", summary["counts_by_gate"]["snapshot_needed"])
     col3.metric("Review fehlt", summary["counts_by_gate"]["transformation_review_needed"])
     st.info(f"Nächster Fokus: {summary['primary_focus']['parameter']} — {summary['primary_focus']['next_action']}")
+    cockpit = backlog["dashboard_cards"]
+    st.markdown(f"**{cockpit['title']}**")
+    st.caption(cockpit["plain_language_note"])
+    card_cols = st.columns(2)
+    for idx, card in enumerate(cockpit["cards"]):
+        with card_cols[idx % 2]:
+            st.metric(card["title"], card["value"], help=f"{card['caption']} {card['guardrail']} Nächster Klick/API: {card['next_click']}")
+    if cockpit["first_safe_action"]:
+        first = cockpit["first_safe_action"]
+        st.info(
+            f"Erster sicherer Plattform-Schritt: {first['label']} → {first['next_gate_label']} · "
+            f"{first['primary_api']} · Workflow: {first['workflow_api']}"
+        )
+    st.caption(cockpit["guardrail"])
     with st.expander("Konkrete nächste Plattform-Aktionen", expanded=True):
         action_rows = []
         for action in backlog["next_actions"]:

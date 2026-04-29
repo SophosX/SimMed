@@ -20,6 +20,7 @@ from data_ingestion import (
     build_data_passport_rows,
     build_data_readiness_action_packet,
     build_data_readiness_backlog,
+    build_data_readiness_dashboard_cards,
     build_data_readiness_operator_handoff,
     build_data_readiness_platform_brief,
     build_data_readiness_gate_plan,
@@ -190,11 +191,38 @@ def get_data_readiness_platform_brief(limit: int = 3) -> dict:
     parameters = list_parameters()
     items = build_data_readiness_backlog(parameters)
     actions = build_next_data_readiness_actions(items, limit=limit)
+    summary = build_data_readiness_summary(items)
     return {
         "status": "data_readiness_platform_brief_not_executed",
         "guardrail": "Plattform-Brief ist read-only: kein Netzwerkabruf, kein Cache-Schreibvorgang, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
-        "summary": build_data_readiness_summary(items),
+        "summary": summary,
+        "dashboard_cards": build_data_readiness_dashboard_cards(summary, actions),
         "platform_brief": build_data_readiness_platform_brief(actions),
+    }
+
+
+@api.get("/data-readiness/dashboard-cards")
+def get_data_readiness_dashboard_cards(limit: int = 3) -> dict:
+    """Return mobile-safe data-readiness cockpit cards without executing work."""
+
+    if limit < 1 or limit > 10:
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "status": "invalid_data_readiness_dashboard_cards_limit",
+                "limit": limit,
+                "guardrail": "Limit muss zwischen 1 und 10 liegen; keine Datenaktion wurde ausgeführt.",
+            },
+        )
+    parameters = list_parameters()
+    items = build_data_readiness_backlog(parameters)
+    actions = build_next_data_readiness_actions(items, limit=limit)
+    summary = build_data_readiness_summary(items)
+    return {
+        "status": "data_readiness_dashboard_cards_not_executed",
+        "guardrail": "Daten-Reife-Cockpit ist Status/Navigation-only: kein execute=true, kein Netzwerkabruf, kein Cache-Schreibvorgang, keine Review-Erzeugung, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+        "summary": summary,
+        "dashboard_cards": build_data_readiness_dashboard_cards(summary, actions),
     }
 
 

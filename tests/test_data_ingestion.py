@@ -7,6 +7,7 @@ from data_ingestion import (
     build_data_connector_queue,
     build_data_passport_rows,
     build_data_readiness_backlog,
+    build_data_readiness_dashboard_cards,
     build_data_readiness_gate_plan,
     build_data_readiness_platform_brief,
     build_data_readiness_summary,
@@ -469,6 +470,37 @@ def test_platform_brief_turns_next_actions_into_verified_read_only_work(tmp_path
     assert "GET /data-connectors/transformation-review-template/krankenhausbetten" in row["verification"]
     assert "Registry-/Modelländerung" in row["definition_of_done"]
     assert "kein execute=true" in row["guardrail"]
+
+
+def test_data_readiness_dashboard_cards_summarize_status_without_execution(tmp_path):
+    parameters = [
+        {
+            "key": "krankenhausbetten",
+            "label": "Krankenhausbetten",
+            "unit": "beds",
+            "evidence_grade": "A",
+            "source_ids": ["destatis_genesis"],
+            "data_status": "aus_daten",
+        }
+    ]
+    backlog = build_data_readiness_backlog(parameters, cache_root=tmp_path)
+    summary = build_data_readiness_summary(backlog)
+    actions = build_next_data_readiness_actions(backlog, limit=1)
+
+    cockpit = build_data_readiness_dashboard_cards(summary, actions)
+
+    assert cockpit["title"].startswith("Daten-Reife Cockpit")
+    assert len(cockpit["cards"]) == 4
+    assert cockpit["cards"][0]["id"] == "overall_progress"
+    assert cockpit["cards"][0]["value"] == "1"
+    snapshot_card = next(card for card in cockpit["cards"] if card["id"] == "snapshot_needed")
+    assert snapshot_card["value"] == "1"
+    assert snapshot_card["next_click"] == "GET /data-readiness/next-actions"
+    assert "kein Netzwerkabruf" in snapshot_card["guardrail"]
+    assert cockpit["first_safe_action"]["parameter_key"] == "krankenhausbetten"
+    assert cockpit["first_safe_action"]["primary_api"] == "POST /data-connectors/execute-planned-snapshot"
+    assert "kein execute=true" in cockpit["guardrail"]
+    assert "keine Modellintegration" in cockpit["guardrail"]
 
 
 

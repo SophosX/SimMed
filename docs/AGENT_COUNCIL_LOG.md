@@ -1791,3 +1791,16 @@ Focused tests passed for API and Learning Page helpers; full suite passed (`106 
 - **Integrator Decision:** Added `build_data_readiness_platform_brief(...)`, exposed it via `/data-readiness/next-actions`, `/data-readiness/operator-handoff`, new `/data-readiness/platform-brief`, and Learning Page backlog output.
 - **Question to Alex if needed:** Keine — safe/reversible platform workflow improvement.
 - **Verification/Git:** 109 pytest tests passed; `py_compile` passed for touched modules/tests; simulation smoke passed (`df=(60, 30)`, `reg=(320, 6)`). Commit/push pending in this heartbeat.
+
+
+## 2026-04-29 23:34 UTC – Daten-Reife Cockpit für Plattform-Track
+
+- **Context:** Alex will stärkere Core-Plattform-Änderungen; Fokus weiter auf Dateningestion/Provenienz statt KI-Recherche.
+- **Project Manager:** Nächster kleinster Plattform-Slice: vorhandene Data-Readiness-Backlog/Brief-Strukturen in eine erstlesbare Cockpit-Schicht für UI/API übersetzen.
+- **Designer/UX:** Mobile-sichere Statuskarten eingeführt: Gesamt-Gates, Snapshot fehlt, Review fehlt, Modellintegration offen; mit erstem sicheren API/Workflow-Schritt.
+- **Creative Agent:** Cockpit als „erst verstehen, dann bewusst ausführen“ statt weiterer Tabellen; passt zur MiroFish-inspirierten guided workflow Idee ohne Apply/Mutation.
+- **Political Health-System Strategist:** Keine neuen politischen Behauptungen; Guardrails verhindern Verwechslung von Datenstatus mit Policy-Wirkungsbeweis.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; Änderung nutzt bestehende Registry/Passport/Backlog-Daten und trennt Rohdaten, Review und Modellintegration weiter strikt.
+- **Integrator Decision:** `build_data_readiness_dashboard_cards(...)` in `data_ingestion.py`, API `GET /data-readiness/dashboard-cards`, Einbettung in Learning-Page Daten-Backlog; Tests ergänzt.
+- **Question to Alex if needed:** Keine wichtige Entscheidung offen.
+- **Verification/Git:** 111 Tests, py_compile und 20x2 Simulation-Smoke erfolgreich; Commit/Push folgt.

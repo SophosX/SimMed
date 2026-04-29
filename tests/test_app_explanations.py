@@ -95,6 +95,10 @@ def test_learning_data_readiness_backlog_prioritizes_safe_data_gates():
     assert "snapshot_needed" in backlog["summary"]["counts_by_gate"]
     assert "kein Wirkungsbeweis" in backlog["summary"]["plain_language_note"]
     assert backlog["summary"]["primary_focus"]["next_action"]
+    assert backlog["dashboard_cards"]["cards"]
+    assert backlog["dashboard_cards"]["first_safe_action"]
+    assert "kein execute=true" in backlog["dashboard_cards"]["guardrail"]
+    assert any(card["id"] == "snapshot_needed" for card in backlog["dashboard_cards"]["cards"])
     assert [gate["gate"] for gate in backlog["gate_plan"]] == [
         "snapshot_needed",
         "transformation_review_needed",

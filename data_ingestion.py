@@ -936,6 +936,68 @@ def build_data_readiness_platform_brief(actions: list[dict]) -> dict:
 
 
 
+def build_data_readiness_dashboard_cards(summary: dict, actions: list[dict]) -> dict:
+    """Return mobile-safe status cards for the data-readiness platform dashboard.
+
+    The cards translate the backlog summary into an opening UI/API view: what is
+    still missing, what should be opened first, and what must not be inferred.
+    They intentionally reuse existing summary/action structures and perform no
+    connector execution, cache write, review creation, or model integration.
+    """
+
+    counts = summary.get("counts_by_gate", {})
+    labels = summary.get("labels_by_gate", DATA_READINESS_GATE_LABELS)
+    cards = [
+        {
+            "id": "overall_progress",
+            "title": "Daten-Reife insgesamt",
+            "value": str(summary.get("total_items", 0)),
+            "caption": "offene Registry-/Provenienz-Gates",
+            "next_click": "GET /data-readiness-backlog",
+            "guardrail": "Zählt Arbeitsgates, nicht importierte Modellwerte oder Policy-Wirkungsbeweise.",
+        }
+    ]
+    for gate in ("snapshot_needed", "transformation_review_needed", "explicit_model_integration_needed"):
+        cards.append({
+            "id": gate,
+            "title": labels.get(gate, gate),
+            "value": str(counts.get(gate, 0)),
+            "caption": _dashboard_gate_caption(gate),
+            "next_click": "GET /data-readiness/next-actions" if counts.get(gate, 0) else "GET /data-passport",
+            "guardrail": "Statuskarte ist read-only: kein Netzwerkabruf, kein Cache-Schreiben und keine Registry-/Modellmutation.",
+        })
+
+    first_action = actions[0] if actions else None
+    return {
+        "title": "Daten-Reife Cockpit: erst verstehen, dann bewusst ausführen",
+        "plain_language_note": (
+            "Diese Karten sind der erste Blick auf die Datenbasis: Registry-Status, Rohdaten-Cache, Review und spätere Modellintegration bleiben getrennt."
+        ),
+        "cards": cards,
+        "first_safe_action": {
+            "parameter_key": first_action["parameter_key"],
+            "label": first_action["label"],
+            "next_gate_label": first_action["next_gate_label"],
+            "primary_api": first_action["primary_api"],
+            "workflow_api": first_action["workflow_api"],
+            "operator_hint": first_action["operator_hint"],
+            "guardrail": first_action["guardrail"],
+        } if first_action else None,
+        "guardrail": "Cockpit ist Status/Navigation-only: kein execute=true, kein Live-Fetch, kein Cache-Schreiben, keine Review-Erzeugung, keine Modellintegration und kein Wirkungsbeweis.",
+    }
+
+
+
+def _dashboard_gate_caption(gate: str) -> str:
+    captions = {
+        "snapshot_needed": "Rohdaten fehlen noch im Cache/Manifest.",
+        "transformation_review_needed": "Rohdaten existieren, aber die Transformation ist noch nicht geprüft.",
+        "explicit_model_integration_needed": "Review liegt vor; eine getestete Registry-/Modelländerung ist separat zu entscheiden.",
+    }
+    return captions.get(gate, "Daten-Gate prüfen.")
+
+
+
 def build_data_connector_queue(backlog_items: list[dict], *, per_source_limit: int = 4) -> list[dict]:
     """Group snapshot-needed parameters by source so connector work can start safely.
 

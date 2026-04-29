@@ -144,6 +144,28 @@ def test_api_exposes_platform_brief_as_core_platform_status_endpoint():
     assert "Review-Template" in first["verification"]
     assert "Registry-/Modelländerung" in first["definition_of_done"]
     assert "kein execute=true" in first["guardrail"]
+    cockpit = body["dashboard_cards"]
+    assert cockpit["cards"]
+    assert cockpit["first_safe_action"]
+    assert "kein execute=true" in cockpit["guardrail"]
+
+
+def test_api_exposes_data_readiness_dashboard_cards_without_execution():
+    client = TestClient(api)
+    response = client.get("/data-readiness/dashboard-cards?limit=2")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "data_readiness_dashboard_cards_not_executed"
+    assert "kein execute=true" in body["guardrail"]
+    cockpit = body["dashboard_cards"]
+    assert cockpit["title"].startswith("Daten-Reife Cockpit")
+    assert len(cockpit["cards"]) == 4
+    assert {"overall_progress", "snapshot_needed", "transformation_review_needed", "explicit_model_integration_needed"} == {
+        card["id"] for card in cockpit["cards"]
+    }
+    assert cockpit["first_safe_action"]["workflow_api"].startswith("GET /data-readiness/")
+    assert "keine Modellintegration" in cockpit["guardrail"]
 
 
 def test_api_exposes_operator_handoff_as_focused_data_platform_work_order():
