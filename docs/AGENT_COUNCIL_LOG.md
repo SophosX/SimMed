@@ -1091,3 +1091,32 @@ Targeted test passed (`tests/test_app_explanations.py::test_changed_lever_questi
 - **Integrator Decision:** `build_kpi_drilldown_navigation(...)` und Renderer akzeptiert; vorhandene KPI-Karten bleiben unverändert, nur der Einstieg wird klarer.
 - **Question to Alex if needed:** Keine wichtige Entscheidung offen. Empfehlung: weiter kleine Orchestrierungs-Slices, bis der Ergebnisfluss für Erstnutzer konsistent wirkt.
 - **Verification/Git:** Targeted Test bestanden; full `pytest -q` 74 passed; `py_compile` OK; Smoke `20 runs × 2 Jahre` mit `df=(60, 30)`, `reg=(320, 6)` bestanden. Git-Sync/Commit/Push folgt in diesem Lauf.
+
+## 2026-04-29 21:48 Europe/Berlin — AI Healthcare Evidence Guardrail Heartbeat
+
+### Context
+The repository was on `main` with untracked AI-healthcare evidence files from the ambient-scribe slice. I created `feat/ai-healthcare-evidence-validation` and kept this run to a safe validation/integration step.
+
+### Project Manager
+Priority: prevent evidence catalogue drift before adding more AI-in-healthcare records. Next tasks: add more ambient-scribe source records from the ranked scan; expose catalogue summaries safely in API/UI; continue keeping signal/context sources separate from model effects.
+
+### Designer / UX
+Evidence users need a clear trust signal before seeing AI claims. A validation helper is invisible UI groundwork: later cards can say “catalog only / not model effect” without duplicating guardrail logic.
+
+### Creative Agent
+Idea: later show each AI-healthcare use case as an “evidence passport” card: source strength, what improved, what did not improve, Germany transfer caveat, and model-use status. Fit is good for onboarding and avoids hype.
+
+### Political Health-System Strategist
+Ambient scribes can become politically sensitive if presented as a productivity fix for workforce shortages. Keep them framed as documentation/workload evidence only until German implementation, privacy, reimbursement, and workforce effects are reviewed.
+
+### Evidence / Domain
+Accepted only a catalogue-level validator: X/YouTube/news signal-only records must remain grade E and catalog_only, low-grade records cannot become model_effect, and source ids must resolve. No new real-world efficacy claim was added.
+
+### Integrator Decision
+Accepted: add `validate_ai_healthcare_evidence()` plus a regression test so future heartbeat evidence intake cannot silently overclaim signal/context material. Deferred: adding new sources this run, because first the untracked prior slice needed guardrails and verification.
+
+### Question to Alex
+No important decision required; continue safe evidence-catalogue hardening and source intake.
+
+### Verification / Git
+Ran `tests/test_ai_healthcare_evidence.py` (5 passed), full pytest (75 passed), and py_compile for touched/core modules using the source venv. Commit/push status recorded in the heartbeat report.
