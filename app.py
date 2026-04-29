@@ -1738,6 +1738,145 @@ def render_export(df: pd.DataFrame, agg: pd.DataFrame, df_reg: pd.DataFrame, par
     st.dataframe(pd.DataFrame(param_rows), use_container_width=True, hide_index=True)
 
 
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# UI: LEARNING PAGE
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def render_learning_page():
+    """Erklärt SimMed als übersichtliche, schön strukturierte Lernseite."""
+    st.markdown("""
+<style>
+.learn-hero {
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 28px;
+  padding: 34px 36px;
+  margin: 8px 0 24px 0;
+  background: radial-gradient(circle at 15% 10%, rgba(24,226,153,0.22), transparent 28%),
+              linear-gradient(135deg, #ffffff 0%, #f7fffb 55%, #ffffff 100%);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.045);
+}
+.learn-kicker {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: #d4fae8;
+  color: #0f7d55;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.learn-hero h2 { font-size: 42px; line-height: 1.08; letter-spacing: -0.9px; margin: 0 0 12px 0; color: #0d0d0d; }
+.learn-hero p { font-size: 18px; line-height: 1.55; color: #3f3f46; max-width: 920px; margin: 0; }
+.learn-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 18px 0 26px 0; }
+.learn-card { border: 1px solid rgba(0,0,0,0.06); border-radius: 20px; background: #fff; padding: 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); min-height: 172px; }
+.learn-card h3 { font-size: 20px; letter-spacing: -0.2px; margin: 0 0 8px 0; color: #0d0d0d; }
+.learn-card p, .learn-card li { color: #52525b; line-height: 1.5; font-size: 15px; }
+.learn-card ul { margin: 8px 0 0 18px; padding: 0; }
+.learn-step { display: flex; gap: 14px; padding: 16px 0; border-bottom: 1px solid rgba(0,0,0,0.06); }
+.learn-step:last-child { border-bottom: 0; }
+.learn-num { flex: 0 0 auto; width: 34px; height: 34px; border-radius: 999px; display: grid; place-items: center; background: #0d0d0d; color: white; font-weight: 700; }
+.learn-step h4 { margin: 0 0 4px 0; font-size: 17px; color: #0d0d0d; }
+.learn-step p { margin: 0; color: #52525b; line-height: 1.48; }
+.learn-pill { display: inline-block; border: 1px solid rgba(0,0,0,0.08); border-radius: 999px; padding: 6px 11px; margin: 4px 5px 4px 0; background: #fafafa; font-size: 13px; color: #333; }
+.learn-callout { border-left: 5px solid #18E299; background: #f4fffa; border-radius: 16px; padding: 18px 20px; margin: 18px 0; color: #2f3a35; }
+@media (max-width: 900px) { .learn-grid { grid-template-columns: 1fr; } .learn-hero h2 { font-size: 32px; } }
+</style>
+""", unsafe_allow_html=True)
+
+    st.markdown("""
+<div class="learn-hero">
+  <div class="learn-kicker">Lernseite</div>
+  <h2>SimMed verständlich erklärt</h2>
+  <p>
+    SimMed ist ein Simulator für das deutsche Gesundheitssystem. Die Plattform soll nicht nur Zahlen ausgeben,
+    sondern erklären, warum ein Ergebnis entsteht, welche Annahmen dahinterliegen und ob eine Reform politisch
+    realistisch umsetzbar wäre.
+  </p>
+</div>
+""", unsafe_allow_html=True)
+
+    st.markdown("### 1. Wofür ist SimMed gedacht?")
+    st.markdown("""
+<div class="learn-grid">
+  <div class="learn-card">
+    <h3>Politik besser verstehen</h3>
+    <p>SimMed zeigt, was passieren könnte, wenn man Stellschrauben wie Studienplätze, Prävention, Digitalisierung oder GKV-Beiträge verändert.</p>
+  </div>
+  <div class="learn-card">
+    <h3>Nicht nur Zahlen</h3>
+    <p>Die App soll erklären: Warum steigt eine Wartezeit? Warum wirkt eine Maßnahme erst später? Wer könnte politisch blockieren?</p>
+  </div>
+  <div class="learn-card">
+    <h3>Kein Orakel</h3>
+    <p>SimMed ist kein fertiges Prognosemodell. Es ist ein transparenter Denk- und Lernraum mit sichtbaren Annahmen und Unsicherheiten.</p>
+  </div>
+</div>
+""", unsafe_allow_html=True)
+
+    st.markdown("### 2. Wie funktioniert die Simulation?")
+    st.markdown("""
+<div class="learn-card">
+  <div class="learn-step"><div class="learn-num">1</div><div><h4>Du veränderst eine Stellschraube</h4><p>Zum Beispiel: weniger Medizinstudienplätze, mehr Telemedizin oder höheres Präventionsbudget.</p></div></div>
+  <div class="learn-step"><div class="learn-num">2</div><div><h4>Das Modell berechnet viele mögliche Zukünfte</h4><p>Monte-Carlo bedeutet: Die App simuliert nicht nur eine Zukunft, sondern viele Varianten mit Zufallsschwankungen.</p></div></div>
+  <div class="learn-step"><div class="learn-num">3</div><div><h4>Die Effekte laufen über Wirkungsketten</h4><p>Beispiel: weniger Studienplätze → nach Jahren weniger Absolventen → später weniger Fachärzte → mehr Wartezeit.</p></div></div>
+  <div class="learn-step"><div class="learn-num">4</div><div><h4>SimMed erklärt Ergebnis und Unsicherheit</h4><p>Wichtig ist nicht nur der Wert, sondern warum er entsteht und welche Annahmen unsicher sind.</p></div></div>
+</div>
+""", unsafe_allow_html=True)
+
+    st.markdown("### 3. Die wichtigsten Bereiche")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown("""
+<div class="learn-card">
+  <h3>Versorgung</h3>
+  <p>Ärzte, Praxen, Krankenhäuser, ländliche Versorgung, Wartezeiten.</p>
+  <span class="learn-pill">Ärzte pro 100k</span><span class="learn-pill">Wartezeit</span><span class="learn-pill">Landversorgung</span>
+</div>
+""", unsafe_allow_html=True)
+        st.markdown("""
+<div class="learn-card">
+  <h3>Finanzierung</h3>
+  <p>GKV-Einnahmen, Ausgaben, Beitragssatz, Bundeszuschuss und Kostenentwicklung.</p>
+  <span class="learn-pill">GKV-Saldo</span><span class="learn-pill">BIP-Anteil</span><span class="learn-pill">Ausgaben</span>
+</div>
+""", unsafe_allow_html=True)
+    with col2:
+        st.markdown("""
+<div class="learn-card">
+  <h3>Gesundheit</h3>
+  <p>Chronische Erkrankungen, vermeidbare Mortalität, QALY-Index und Lebenserwartung als Modellindikatoren.</p>
+  <span class="learn-pill">Chroniker</span><span class="learn-pill">Mortalität</span><span class="learn-pill">QALY</span>
+</div>
+""", unsafe_allow_html=True)
+        st.markdown("""
+<div class="learn-card">
+  <h3>Politische Umsetzbarkeit</h3>
+  <p>SimMed soll zeigen, ob eine Reform nicht nur rechnerisch wirkt, sondern politisch realistisch durchsetzbar ist.</p>
+  <span class="learn-pill">Gewinner</span><span class="learn-pill">Blockierer</span><span class="learn-pill">Machbarkeit</span>
+</div>
+""", unsafe_allow_html=True)
+
+    st.markdown("### 4. Beispiel: weniger Medizinstudienplätze")
+    st.markdown("""
+<div class="learn-callout">
+  <b>Einfach erklärt:</b> Wenn heute weniger Menschen Medizin studieren, gibt es nicht sofort weniger Ärztinnen und Ärzte.
+  Der Effekt kommt verzögert, weil Studium und Weiterbildung viele Jahre dauern. Kurzfristig ändern sich Wartezeiten kaum.
+  Nach einigen Jahren kann aber der Nachwuchs fehlen – besonders bei Fachärzten und in Regionen, die ohnehin unterversorgt sind.
+</div>
+""", unsafe_allow_html=True)
+
+    st.markdown("### 5. Was kommt als Nächstes?")
+    st.markdown("""
+<div class="learn-grid">
+  <div class="learn-card"><h3>Entscheidungsrubrik</h3><p>Zu jedem Szenario: Was passiert, warum passiert es, wer gewinnt/verliert, wer blockiert?</p></div>
+  <div class="learn-card"><h3>Expertenrat</h3><p>Externe KI- oder Menschenbeiträge sollen nicht ungeprüft ins Modell fließen, sondern durch Experten/Integrator bestätigt werden.</p></div>
+  <div class="learn-card"><h3>Strategie-Modus</h3><p>Später: Wie könnte man eine Reform politisch wirklich durchsetzen – mit Reihenfolge, Bündnissen und Kompromissen?</p></div>
+</div>
+""", unsafe_allow_html=True)
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # MAIN
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1828,7 +1967,8 @@ def main():
 
     # ── Tabs ──
     if "agg" in st.session_state:
-        tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+        tab0, tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+            "Lernen",
             "Dashboard",
             "Statistiken & Verteilungen",
             "Zeitreihen",
@@ -1837,6 +1977,8 @@ def main():
             "Export & Einstellungen",
         ])
 
+        with tab0:
+            render_learning_page()
         with tab1:
             render_dashboard(st.session_state["agg"], params)
         with tab2:
@@ -1854,9 +1996,10 @@ def main():
             )
     else:
         # Startseite
+        render_learning_page()
         st.info("Konfigurieren Sie Parameter in der Seitenleiste und klicken Sie auf **'Simulation starten'**.")
 
-        with st.expander("Über SimMed Deutschland 2040", expanded=True):
+        with st.expander("Über SimMed Deutschland 2040", expanded=False):
             st.markdown("""
 **SimMed Deutschland 2040** simuliert das gesamte deutsche Gesundheitssystem
 (GKV + PKV) über 5–30 Jahre mittels Monte-Carlo-Verfahren.

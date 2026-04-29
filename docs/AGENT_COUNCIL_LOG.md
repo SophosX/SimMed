@@ -139,3 +139,32 @@ No open question: Alex decided Option 2 now and Option 3 later.
 
 ### Verification / Git
 Pending: tests, zip refresh, commit, push.
+
+## 2026-04-29 15:05 Europe/Berlin — Learning Page Added
+
+### Context
+Alex asked for a very clear, well-designed Learning Page inside the platform that explains SimMed and its logic in a structured way.
+
+### Project Manager
+Priority: make the product understandable before adding more complex expert/agent workflows. A learning page reduces onboarding friction and supports Alex's requirement that effects and reasoning are clearly explained.
+
+### Designer / UX
+Implemented a first Streamlit-native “Lernen” page with a clean documentation-style card layout, soft green accent, hero section, process steps, domain cards, and a concrete example. It appears before simulation as the start explanation and as a tab after simulation.
+
+### Creative Agent
+Idea accepted: use effect-chain storytelling, e.g. “policy change → delayed workforce effect → access change.” This is now represented in the learning page and can later become interactive effect cards.
+
+### Political Health-System Strategist
+The page introduces political feasibility as a core area: not only what a reform does mathematically, but who benefits, who is burdened, who might block, and whether implementation is realistic.
+
+### Evidence / Domain
+The page explicitly states that SimMed is not an oracle or validated forecasting model yet, but a transparent learning and reasoning space with visible assumptions and uncertainty.
+
+### Integrator Decision
+Accepted and implemented the first learning page in `app.py`; updated README to mention it. Future work should connect this page to live scenario explanations and the expert council workflow.
+
+### Question to Alex
+No blocking question. Later decision needed: whether the learning page should become a separate full navigation page with multiple chapters or remain a compact tab.
+
+### Verification / Git
+Pending: tests, zip refresh, commit, push.

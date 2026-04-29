@@ -31,7 +31,7 @@ The repository currently contains a working Python prototype with tests.
 
 Main capabilities:
 
-- Streamlit UI for interactive scenarios
+- Streamlit UI for interactive scenarios, including a newcomer-friendly “Lernen” page that explains the platform, model logic, political feasibility layer, and roadmap in plain language
 - Monte-Carlo simulation over 5-30 years
 - German health-system KPIs such as physician density, waiting times, GKV balance, health expenditure, life expectancy proxy, rural access index, and collapse-risk proxy
 - parameter registry with evidence grades and caveats
