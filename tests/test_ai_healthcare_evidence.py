@@ -74,3 +74,33 @@ def test_ai_healthcare_catalogue_validation_blocks_signal_overclaiming():
     assert signal_record.evidence_grade == "E"
     assert signal_record.model_use_status == "catalog_only"
     assert evidence_quality_summary(signal_record.id)["primary_source_count"] == 0
+
+
+def test_ai_evidence_passport_summarizes_use_case_without_model_claims():
+    from ai_healthcare_evidence import build_ai_evidence_passport
+
+    passport = build_ai_evidence_passport("ambient_ai_scribes_documentation_burden")
+
+    assert passport["id"] == "ambient_ai_scribes_documentation_burden"
+    assert passport["headline"] == "Ambient AI scribes for clinical documentation burden"
+    assert passport["trust_status"] == "catalog_only"
+    assert passport["model_guardrail"] == "Noch kein SimMed-Modelleffekt"
+    assert "B" in passport["evidence_label"]
+    assert "workload" in passport["what_it_can_support"].lower()
+    assert "patient outcomes" in passport["what_it_cannot_support_yet"].lower()
+    assert passport["primary_source_count"] >= 4
+    assert passport["signal_source_count"] == 0
+    assert passport["next_review_step"].startswith("Expert review")
+
+
+def test_ai_evidence_passport_keeps_youtube_context_as_signal_only():
+    from ai_healthcare_evidence import build_ai_evidence_passport
+
+    passport = build_ai_evidence_passport("ai_healthcare_youtube_context_pipeline")
+
+    assert passport["evidence_label"] == "Evidence Grade E — context/signal only"
+    assert passport["trust_status"] == "catalog_only"
+    assert passport["model_guardrail"] == "Noch kein SimMed-Modelleffekt"
+    assert passport["primary_source_count"] == 0
+    assert passport["signal_source_count"] == 1
+    assert "primary evidence" in passport["next_review_step"]

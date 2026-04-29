@@ -1120,3 +1120,32 @@ No important decision required; continue safe evidence-catalogue hardening and s
 
 ### Verification / Git
 Ran `tests/test_ai_healthcare_evidence.py` (5 passed), full pytest (75 passed), and py_compile for touched/core modules using the source venv. Commit/push status recorded in the heartbeat report.
+
+## 2026-04-29 21:53 Europe/Berlin — AI Healthcare Evidence Passport Groundwork
+
+### Context
+The active branch was `feat/ai-healthcare-evidence-validation`, which is relevant to Alex's AI-in-healthcare evidence priority. This heartbeat kept the slice small: no new model effects and no new empirical claims, only safer catalogue summarization for later UI/API exposure.
+
+### Project Manager
+Priority: make the AI-healthcare catalogue usable without letting evidence records become hidden simulation assumptions. Next tasks: add more ranked ambient-scribe primary-source metadata, then expose evidence passports in API/UI after review.
+
+### Designer / UX
+The new passport helper prepares an "evidence passport" view: what the use case can support, what it cannot support yet, Germany transfer caveat, source counts, and model-use guardrail. This should help newcomers distinguish evidence catalogue from model effect.
+
+### Creative Agent
+Idea retained: AI use cases can later appear as cards with a trust label and next-review step. Fit is high because it makes AI impact evaluation tangible while resisting hype.
+
+### Political Health-System Strategist
+Ambient scribes remain framed as workload/documentation evidence, not as a political solution for physician shortages or patient outcomes. This matters for privacy, reimbursement, and workforce debates in Germany.
+
+### Evidence / Domain
+No new research in this run. The helper reuses existing structured sources/records and explicitly reports primary vs signal source counts plus "Noch kein SimMed-Modelleffekt" for catalog-only records.
+
+### Integrator Decision
+Accepted: add `build_ai_evidence_passport(record_id)` and tests for ambient-scribe and YouTube-context records. Deferred: any conversion to model parameters, any UI copy, and any use of YouTube/X material as factual evidence.
+
+### Question to Alex
+No important decision required; continue safe evidence-catalogue hardening and primary-source intake.
+
+### Verification / Git
+Targeted tests passed (`7 passed`), full pytest passed (`77 passed`), and py_compile passed for the touched module/tests. Commit/push status in heartbeat report.

@@ -284,6 +284,44 @@ def evidence_quality_summary(record_id: str) -> dict:
     }
 
 
+def build_ai_evidence_passport(record_id: str) -> dict:
+    """Return a compact UI/API-safe summary for one AI-healthcare evidence record.
+
+    The passport is deliberately conservative: it summarizes what the catalogue
+    can support, what it cannot support yet, and the model-use guardrail without
+    creating new causal claims or parameter effects.
+    """
+    record = AI_HEALTHCARE_EVIDENCE[record_id]
+    quality = evidence_quality_summary(record_id)
+    can_support = ", ".join((*record.outcome_types, *record.measured_outcomes[:3]))
+    cannot_support = record.caveat
+    if record.evidence_grade == "E" or quality["primary_source_count"] == 0:
+        evidence_label = f"Evidence Grade {record.evidence_grade} — context/signal only"
+        next_step = "Trace claims to primary evidence before expert review or model use."
+    else:
+        evidence_label = f"Evidence Grade {record.evidence_grade} — primary sources available"
+        next_step = "Expert review should confirm transferability, caveats and whether an exploratory parameter is justified."
+
+    return {
+        "id": record.id,
+        "headline": record.name,
+        "category": record.category,
+        "clinical_setting": record.clinical_setting,
+        "target_problem": record.target_problem,
+        "evidence_label": evidence_label,
+        "trust_status": record.model_use_status,
+        "model_guardrail": "Noch kein SimMed-Modelleffekt" if record.model_use_status == "catalog_only" else record.model_use_status,
+        "what_it_can_support": can_support,
+        "what_it_cannot_support_yet": cannot_support,
+        "germany_transferability": record.transferability_to_germany,
+        "primary_source_count": quality["primary_source_count"],
+        "signal_source_count": quality["signal_source_count"],
+        "key_risks": list(record.risks_and_failure_modes[:3]),
+        "next_review_step": next_step,
+    }
+
+
+
 def validate_ai_healthcare_evidence() -> list[str]:
     """Return provenance/model-use guardrail violations for the AI evidence catalogue.
 
