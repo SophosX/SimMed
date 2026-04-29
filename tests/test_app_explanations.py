@@ -3,6 +3,7 @@ import pandas as pd
 from app import (
     _changed_policy_lever_notes,
     _direction_word,
+    _parameter_control_help,
     _parameter_effect_hint,
     _parameter_evidence_badge,
     _parameter_provenance_help,
@@ -65,6 +66,16 @@ def test_parameter_provenance_help_uses_registry_plain_language():
     assert "delayed physician inflow" in help_text
     assert "Never apply study-place changes instantly" in help_text
     assert "UI-Hinweis" in help_text
+
+
+def test_parameter_control_help_combines_evidence_and_action_guidance():
+    help_text = _parameter_control_help("medizinstudienplaetze", "UI-Hinweis")
+
+    assert "Evidenzgrad A" in help_text
+    assert "hrk_medical_education" in help_text
+    assert "UI-Hinweis" in help_text
+    assert "Was passiert beim Ändern?" in help_text
+    assert "Facharztkapazität" in help_text
 
 
 def test_parameter_evidence_badge_is_short_and_registry_based():

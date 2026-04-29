@@ -492,3 +492,16 @@ Passed: `pytest -q` (26), py_compile, 1000-run smoke test. Zip refreshed. Pushed
 - **Integrator Decision:** Safe UI-copy improvement umgesetzt; bestehende `_parameter_effect_hint`-Struktur wiederverwendet.
 - **Question to Alex if needed:** Keine wichtige Entscheidung offen.
 - **Verification/Git:** `pytest tests/test_app_explanations.py`, `py_compile`, 100-run Smoke-Test erfolgreich; Sync/Commit/Push folgt.
+
+
+## 2026-04-29 16:45 UTC — Sidebar-Hilfen zusammenführen
+
+- **Context:** 3-Minuten-Heartbeat; Top-UX-Ziel bleibt, dass Regler sofort Quelle, Bedeutung und Wirkung erklären.
+- **Project Manager:** Kleiner, reversibler Schritt: bestehende Provenienz- und Effekttexte nicht duplizieren, sondern in einem Tooltip-Muster zusammenführen.
+- **Designer/UX:** Tooltip-Hilfe beantwortet jetzt bei zentral registrierten Reglern gleichzeitig „woher kommt die Annahme?“ und „was passiert beim Ändern?“.
+- **Creative Agent:** Idee verworfen: neue visuelle Badge-Leiste neben jedem Slider wäre auffälliger, aber riskanter und lauter; zuerst Textklarheit in vorhandener UI.
+- **Political Health-System Strategist:** Beitragssatz/Zusatzbeitrag werden als Einnahmehebel mit Belastungs-Tradeoff erklärt, nicht als automatische Empfehlung.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; keine neuen externen Fakten kodiert, nur vorhandene Registry-Provenienz plus als Annahmen markierte Wirkhinweise.
+- **Integrator Decision:** `_parameter_control_help()` eingeführt und zentrale registrierte Sidebar-Regler darauf umgestellt; Test ergänzt.
+- **Question to Alex if needed:** Keine wichtige Entscheidung offen.
+- **Verification/Git:** Tests/Compile/Smoke und Git-Sync folgen in diesem Lauf.

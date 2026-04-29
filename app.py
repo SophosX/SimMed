@@ -898,6 +898,18 @@ def _parameter_provenance_help(key: str, plain_hint: str | None = None) -> str:
     return " ".join(parts)
 
 
+def _parameter_control_help(key: str, plain_hint: str | None = None) -> str:
+    """One tooltip that answers source, meaning and effect for a sidebar control.
+
+    Newcomers should not have to choose between provenance and action guidance:
+    every important registered lever should say where the assumption comes from
+    and what changing it does. Registry metadata remains the source of truth.
+    """
+    provenance = _parameter_provenance_help(key, plain_hint)
+    effect = _parameter_effect_hint(key)
+    return f"{provenance} {effect}"
+
+
 def _parameter_effect_hint(key: str) -> str:
     """Gibt eine kurze, handlungsnahe Erklärung zur Wirkung eines Reglers.
 
@@ -907,6 +919,13 @@ def _parameter_effect_hint(key: str) -> str:
     erhöhe oder senke?
     """
     hints = {
+        "bevoelkerung_mio": "Was passiert beim Ändern? Höher = mehr Menschen erzeugen mehr Nachfrage, mehr Beitragszahler:innen und mehr Versorgungsbedarf; niedriger = kleineres System. Altersstruktur wird dadurch noch nicht automatisch sauberer modelliert.",
+        "geburtenrate": "Was passiert beim Ändern? Höher = langfristig mehr junge Bevölkerung; niedriger = stärkerer Alterungsdruck. Für den Zeitraum bis 2040 wirkt das nur begrenzt auf Ärzt:innen- und Pflegekapazität.",
+        "netto_zuwanderung": "Was passiert beim Ändern? Höher = mehr Bevölkerung und potenziell mehr Arbeitskräfte; niedriger = weniger Zuwachs. Qualifikation, Alter und regionale Verteilung sind hier nur grob abgebildet.",
+        "aerzte_gesamt": "Was passiert beim Ändern? Höher = mehr rechnerische Arztbasis; niedriger = weniger Versorgungspuffer. Wichtig: Kopfzahl ist nicht automatisch verfügbare Sprechstundenkapazität.",
+        "medizinstudienplaetze": "Was passiert beim Ändern? Mehr Studienplätze helfen nicht sofort: Absolvent:innen kommen grob nach 6 Jahren, Facharztkapazität oft erst nach 11–13 Jahren. Weniger Plätze verschärfen Engpässe deshalb verzögert.",
+        "gkv_beitragssatz": "Was passiert beim Ändern? Höher = mehr GKV-Einnahmen, aber stärkere Belastung für Beitragszahlende; niedriger = weniger Einnahmen und mehr Finanzierungsdruck. Politische Akzeptanz wird nur qualitativ eingeordnet.",
+        "gkv_zusatzbeitrag": "Was passiert beim Ändern? Höher = mehr GKV-Einnahmen pro Versicherten, aber sichtbarer Druck auf Haushalte; niedriger = weniger direkte Entlastung der Kassen. Verteilungseffekte bleiben vereinfacht.",
         "alterungsfaktor": "Was passiert beim Ändern? Höher = mehr altersbedingte Nachfrage und Kostendruck; niedriger = langsamere Nachfragezunahme. Vereinfachte Annahme, weil echte Alterskohorten noch nicht vollständig modelliert sind.",
         "urban_anteil": "Was passiert beim Ändern? Höher = mehr Bevölkerung in Städten; ländliche Versorgungsprobleme können dadurch sichtbarer werden, werden aber nur grob abgebildet.",
         "einkommen_durchschnitt": "Was passiert beim Ändern? Höher = mehr beitragspflichtige Einnahmen in der GKV; niedriger = weniger Einnahmespielraum. Das ersetzt keine detaillierte Verteilungsrechnung.",
@@ -983,15 +1002,15 @@ def render_sidebar() -> dict:
         st.caption(_parameter_evidence_badge("bevoelkerung_mio"))
         params["bevoelkerung_mio"] = st.slider(
             "Bevölkerung (Mio.)", 70.0, 95.0, params["bevoelkerung_mio"], 0.1,
-            help=_parameter_provenance_help("bevoelkerung_mio", "Standardwert im Prototyp: 84,4 Mio."),
+            help=_parameter_control_help("bevoelkerung_mio", "Standardwert im Prototyp: 84,4 Mio."),
         )
         params["geburtenrate"] = st.slider(
             "Geburtenrate (TFR)", 0.80, 2.50, params["geburtenrate"], 0.05,
-            help=_parameter_provenance_help("geburtenrate", "TFR = durchschnittliche Kinderzahl je Frau."),
+            help=_parameter_control_help("geburtenrate", "TFR = durchschnittliche Kinderzahl je Frau."),
         )
         params["netto_zuwanderung"] = st.slider(
             "Netto-Zuwanderung/Jahr", 0, 800_000, params["netto_zuwanderung"], 10_000,
-            help=_parameter_provenance_help("netto_zuwanderung", "Wirkt im Modell als Bevölkerungszufluss und grober Arbeitskräfte-Proxy."),
+            help=_parameter_control_help("netto_zuwanderung", "Wirkt im Modell als Bevölkerungszufluss und grober Arbeitskräfte-Proxy."),
         )
         params["alterungsfaktor"] = st.slider(
             "Alterungsfaktor", 0.5, 2.0, params["alterungsfaktor"], 0.1,
@@ -1021,7 +1040,7 @@ def render_sidebar() -> dict:
     with st.sidebar.expander("\U0001f3e5 Versorgungsstruktur"):
         params["aerzte_gesamt"] = st.slider(
             "Ärzte gesamt", 200_000, 600_000, params["aerzte_gesamt"], 1_000,
-            help=_parameter_provenance_help("aerzte_gesamt", "Kopfzahl erklärt noch nicht, wie viele Sprechstunden tatsächlich verfügbar sind."),
+            help=_parameter_control_help("aerzte_gesamt", "Kopfzahl erklärt noch nicht, wie viele Sprechstunden tatsächlich verfügbar sind."),
         )
         params["aerzte_pro_100k_urban"] = st.slider(
             "Ärzte/100k (urban)", 150, 500, params["aerzte_pro_100k_urban"], 5,
@@ -1065,7 +1084,7 @@ def render_sidebar() -> dict:
         st.caption(_parameter_evidence_badge("medizinstudienplaetze"))
         params["medizinstudienplaetze"] = st.slider(
             "Studienplätze/Jahr", 5_000, 25_000, params["medizinstudienplaetze"], 100,
-            help=_parameter_provenance_help("medizinstudienplaetze", "Wichtig für Szenarien: Effekte kommen erst nach Studium und Weiterbildung an."),
+            help=_parameter_control_help("medizinstudienplaetze", "Wichtig für Szenarien: Effekte kommen erst nach Studium und Weiterbildung an."),
         )
         params["ausbildungsdauer_jahre"] = st.slider(
             "Studiumsdauer (Jahre)", 5.0, 8.0, params["ausbildungsdauer_jahre"], 0.5,
@@ -1089,11 +1108,11 @@ def render_sidebar() -> dict:
         st.caption(_parameter_evidence_badge("gkv_beitragssatz"))
         params["gkv_beitragssatz"] = st.slider(
             "GKV-Beitragssatz (%)", 12.0, 18.0, params["gkv_beitragssatz"], 0.1,
-            help=_parameter_provenance_help("gkv_beitragssatz", "Das ist ein politisch gesetzter Einnahmehebel, keine automatische Modellprognose."),
+            help=_parameter_control_help("gkv_beitragssatz", "Das ist ein politisch gesetzter Einnahmehebel, keine automatische Modellprognose."),
         )
         params["gkv_zusatzbeitrag"] = st.slider(
             "GKV-Zusatzbeitrag (%)", 0.0, 4.0, params["gkv_zusatzbeitrag"], 0.1,
-            help=_parameter_provenance_help("gkv_zusatzbeitrag", "Zusatzbeitrag steht für Finanzierungsdruck und politische Reaktion."),
+            help=_parameter_control_help("gkv_zusatzbeitrag", "Zusatzbeitrag steht für Finanzierungsdruck und politische Reaktion."),
         )
         params["gkv_anteil"] = st.slider(
             "GKV-Versichertenanteil", 0.70, 0.95, params["gkv_anteil"], 0.01,
@@ -1115,14 +1134,14 @@ def render_sidebar() -> dict:
         params["praeventionsbudget"] = st.slider(
             "Präventionsbudget (Mrd. \u20ac)", 0.0, 30.0,
             params["praeventionsbudget"], 0.5,
-            help=_parameter_provenance_help("praeventionsbudget", "Prävention kostet kurzfristig Geld; Nutzen entsteht meist verzögert."),
+            help=_parameter_control_help("praeventionsbudget", "Prävention kostet kurzfristig Geld; Nutzen entsteht meist verzögert."),
         )
 
     # ── Politische Hebel ──
     with st.sidebar.expander("\u2696\ufe0f Politische Hebel"):
         params["telemedizin_rate"] = st.slider(
             "Telemedizin-Startrate", 0.0, 0.60, params["telemedizin_rate"], 0.01,
-            help=_parameter_provenance_help("telemedizin_rate", "Telemedizin kann Wege sparen, ersetzt aber nicht jede Untersuchung."),
+            help=_parameter_control_help("telemedizin_rate", "Telemedizin kann Wege sparen, ersetzt aber nicht jede Untersuchung."),
         )
         params["digitalisierung_epa"] = st.slider(
             "ePA-Nutzungsrate (Start)", 0.0, 1.0, params["digitalisierung_epa"], 0.05,
