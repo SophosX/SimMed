@@ -30,6 +30,7 @@ import warnings
 from political_feasibility import assess_political_feasibility
 from expert_council import plain_language_workflow_summary
 from data_ingestion import (
+    build_connector_execution_plan,
     build_connector_snapshot_requests,
     build_data_connector_queue,
     build_data_passport_rows,
@@ -4093,6 +4094,7 @@ def build_learning_connector_execution_status(limit: int = 4) -> dict[str, Any]:
                 "Request": f"{request['source_label']} Tabelle {request['table_code']}",
                 "Cache": cache_status,
                 "Transformation": transformation_status,
+                "Sichere Reihenfolge": " → ".join(step["label"] for step in build_connector_execution_plan(request, passport)),
                 "Nächster sicherer Schritt": request["next_safe_action"],
                 "Guardrail": "Dry-run: kein Netzwerkabruf, kein Rohdaten-Cache, nicht Modellintegration und kein Wirkungsbeweis.",
             }

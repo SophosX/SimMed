@@ -132,11 +132,14 @@ def test_learning_connector_execution_status_keeps_dry_run_and_cache_gates_separ
         "Request",
         "Cache",
         "Transformation",
+        "Sichere Reihenfolge",
         "Nächster sicherer Schritt",
         "Guardrail",
     } <= set(first)
     combined = " ".join(str(value) for row in status["rows"] for value in row.values())
     assert "geplant, nicht ausgeführt" in combined
+    assert "Dry-run prüfen" in combined
+    assert "Explizite Modellintegration" in combined
     assert "kein Netzwerkabruf" in combined
     assert "nicht Modellintegration" in combined
     assert "Transformation" in combined

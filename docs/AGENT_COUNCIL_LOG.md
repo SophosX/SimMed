@@ -1412,3 +1412,32 @@ Keine.
 
 ### Verification / Git
 Initial focused test passed: `python -m pytest tests/test_app_explanations.py::test_learning_connector_execution_status_keeps_dry_run_and_cache_gates_separate -q`. Full verification/commit/push pending in this heartbeat.
+
+## 2026-04-30 00:18 Europe/Berlin — Heartbeat: Connector-Ausführungsleiter für API und UI
+
+### Context
+Fortsetzung der core-platform-priorisierten Dateningestion auf `feat/platform-data-status-foundation`. Der vorherige Dry-run-Status wurde um eine wiederverwendbare vierstufige Ausführungsleiter ergänzt.
+
+### Project Manager
+Priorität: reale Datenarbeit bedienbar machen, ohne Modellmutation zu verstecken. Risiko: API-/UI-Nutzer könnten Cache, Review und Integration vermischen. Nächste Tasks: diese Leiter als Grundlage für eine Daten-Werkbank/Parameterkarte nutzen und danach den ReviewedTransformation-Status besser führbar machen.
+
+### Designer / UX
+Die UI-Zeile zeigt jetzt eine konkrete Reihenfolge statt nur Einzelstatus: Dry-run prüfen → Rohdaten cachen → Transformation reviewen → Modellintegration entscheiden. Das ist für mobile/tablet sicherer als Hover- oder JSON-Erklärungen.
+
+### Creative Agent
+Idee: später pro Parameter eine kleine Fortschritts-Timeline mit denselben vier Gates. Fit: hoch für Vertrauen und Motivation; jetzt bewusst nur als strukturierte Zeile/API-Feld umgesetzt.
+
+### Political Health-System Strategist
+Die Trennung schützt vor politischer Überinterpretation: selbst offizielle Rohdaten werden erst nach Review und expliziter Integration zu Modellgrundlagen; sie bleiben keine Prognose und kein Wirkungsbeweis.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Keine neuen faktischen Datenwerte oder externen Claims wurden eingeführt; die Änderung strukturiert vorhandene Connector-/Passport-Informationen.
+
+### Integrator Decision
+Accepted: `build_connector_execution_plan(...)` als zentrale Plattform-Hilfe in `data_ingestion.py`, API-Dry-run liefert `execution_plan`, Learning Page zeigt die sichere Reihenfolge. Deferred: Live-Button und echte Netzwerkabrufe im UI.
+
+### Question to Alex
+Keine.
+
+### Verification / Git
+Focused tests passed: `pytest tests/test_api.py::test_api_plans_connector_snapshot_execution_as_dry_run_by_default tests/test_app_explanations.py::test_learning_connector_execution_status_keeps_dry_run_and_cache_gates_separate -q` (2 passed). Full verification/commit/push follows in heartbeat summary.

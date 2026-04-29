@@ -193,6 +193,58 @@ def fetch_url_payload(url: str, *, timeout_seconds: int = 30) -> bytes:
         return response.read()
 
 
+def build_connector_execution_plan(request: ConnectorSnapshotRequest | dict, passport_row: dict | None = None) -> list[dict]:
+    """Return the safe human/agent execution ladder for one connector request.
+
+    The plan is deliberately operational, not evidentiary: it tells users and
+    agents which gate to perform next while keeping raw cache, transformation
+    review and explicit model integration separate.
+    """
+
+    data = request.to_dict() if isinstance(request, ConnectorSnapshotRequest) else dict(request)
+    passport = passport_row or {}
+    raw_snapshot = passport.get("raw_snapshot", {}) if isinstance(passport, dict) else {}
+    transformation_review = passport.get("transformation_review", {}) if isinstance(passport, dict) else {}
+    cache_label = raw_snapshot.get("label", "Rohsnapshot noch nicht im Cache")
+    review_label = transformation_review.get("label", "Transformation noch nicht geprüft")
+    parameter_label = data.get("parameter_label") or ", ".join(data.get("output_parameter_keys", []))
+    return [
+        {
+            "order": 1,
+            "gate": "dry_run",
+            "label": "Dry-run prüfen",
+            "status": "geplant, nicht ausgeführt",
+            "instruction": f"Request für {parameter_label} lesen: Quelle {data.get('source_label')} Tabelle {data.get('table_code')}.",
+            "guardrail": "Kein Netzwerkabruf, kein Rohdaten-Cache, keine Registry- oder Modelländerung.",
+        },
+        {
+            "order": 2,
+            "gate": "raw_snapshot_cache",
+            "label": "Rohdaten unverändert cachen",
+            "status": cache_label,
+            "instruction": "Nur bei bewusster Ausführung endpoint_url laden und exakt als Rohpayload mit SHA256-Manifest speichern.",
+            "guardrail": "Ein Cache-Artefakt ist noch kein Datenwert im Modell und kein Wirkungsbeweis.",
+        },
+        {
+            "order": 3,
+            "gate": "transformation_review",
+            "label": "Transformation reviewen",
+            "status": review_label,
+            "instruction": "Tabellenform, Nenner, Einheit, Berichtsjahr und Ableitung in ReviewedTransformation dokumentieren.",
+            "guardrail": "Auch ein Review mutiert den Registry-Default nicht automatisch.",
+        },
+        {
+            "order": 4,
+            "gate": "explicit_model_integration",
+            "label": "Explizite Modellintegration entscheiden",
+            "status": "wartet auf geprüften Review und bewussten Code/Registry-Change",
+            "instruction": "Erst nach Review ParameterSpec/Modelllogik gezielt ändern, Tests ergänzen und Caveats sichtbar halten.",
+            "guardrail": "Keine offizielle Prognose, keine automatische Policy-Wirkung und keine stille Parameteränderung.",
+        },
+    ]
+
+
+
 def execute_connector_snapshot_request(
     request: ConnectorSnapshotRequest | dict,
     *,

@@ -109,6 +109,16 @@ def test_api_plans_connector_snapshot_execution_as_dry_run_by_default():
     assert body["request"]["source_id"] == "destatis_genesis"
     assert body["request"]["output_parameter_keys"] == [parameter_key]
     assert "cache_source_payload" in body["next_safe_action"]
+    assert [step["gate"] for step in body["execution_plan"]] == [
+        "dry_run",
+        "raw_snapshot_cache",
+        "transformation_review",
+        "explicit_model_integration",
+    ]
+    assert "kein netzwerkabruf" in body["execution_plan"][0]["guardrail"].lower()
+    assert "kein Wirkungsbeweis" in body["execution_plan"][1]["guardrail"]
+    assert "nicht automatisch" in body["execution_plan"][2]["guardrail"]
+    assert "Keine offizielle Prognose" in body["execution_plan"][3]["guardrail"]
     assert body["data_passport"]
     passport_row = next(row for row in body["data_passport"] if row["parameter_key"] == parameter_key)
     assert passport_row["parameter_key"] == parameter_key

@@ -13,6 +13,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
 from data_ingestion import (
+    build_connector_execution_plan,
     build_connector_snapshot_requests,
     build_data_connector_queue,
     build_data_passport_rows,
@@ -151,12 +152,16 @@ def execute_planned_connector_snapshot(req: ConnectorExecutionRequest) -> dict:
         )
 
     if not req.execute:
+        passport_rows = build_data_passport_rows(parameters)
+        passport_by_key = {row["parameter_key"]: row for row in passport_rows}
+        parameter_key = planned["output_parameter_keys"][0]
         return {
             "status": "planned_snapshot_request_not_executed",
             "guardrail": "Dry-run: kein Netzwerkabruf, kein Rohdaten-Cache, keine Registry- oder Modellmutation.",
             "request": planned,
+            "execution_plan": build_connector_execution_plan(planned, passport_by_key.get(parameter_key)),
             "next_safe_action": planned["next_safe_action"],
-            "data_passport": build_data_passport_rows(parameters),
+            "data_passport": passport_rows,
         }
 
     result = execute_connector_snapshot_request(planned)
