@@ -109,4 +109,4 @@ Accepted safe documentation changes: `docs/plans/2026-04-29-guided-scenario-buil
 How should SimMed handle political feasibility long-term? Options: (1) neutral explainer notes only, (2) transparent decision-support rubric separated from health/economic outputs, (3) competition scoring dimension with anti-gaming controls.
 
 ### Verification / Git
-Pending: pytest, py_compile, zip refresh, source sync, commit, push.
+`python3 -m pytest -q` passed (9 tests). `py_compile` passed for app/core/API/registry/provenance/tests. Zip refreshed at `/opt/data/cache/documents/health_simulation_app_updated.zip`. Synced to GitHub clone, committed as `300f92a`, and pushed to `main`.
