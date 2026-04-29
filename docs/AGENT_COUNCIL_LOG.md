@@ -1352,3 +1352,32 @@ Keine wichtige Entscheidung offen; sichere Evidenzgrundlage weiter ausbauen.
 
 ### Verification / Git
 Geplant/ausgeführt in diesem Heartbeat: gezielte PubMed/E-utilities-Recherche, Test für neue Quelle, vollständige Tests/Compile/Smoke vor Push, Zip-Refresh.
+
+## 2026-04-29 22:35 Europe/Berlin — AI Healthcare Evidence Heartbeat
+
+### Context
+Continued the active `feat/ai-healthcare-evidence-validation` branch. Added one PubMed/E-utilities sourced ambient-scribe rapid review to the structured AI-healthcare evidence catalogue.
+
+### Project Manager
+Priority: deepen ambient-scribe evidence while keeping it catalog-only and safe for later expert review. Next: continue primary-source intake, then expose the evidence passport in UI/API only after the catalogue stays stable.
+
+### Designer / UX
+The evidence passport remains suitable for future UI because the new review is framed as an evidence-gap map, not as another isolated “positive AI” claim.
+
+### Creative Agent
+Idea: later add an “evidence maturity ladder” for AI-healthcare use cases so users can see discovery signal → evidence map → primary study → expert-reviewed parameter. Fit: useful, but deferred until UI/API surface work.
+
+### Political Health-System Strategist
+AI documentation tools should be framed cautiously in German policy debate: privacy, liability, billing/coding incentives, and unequal adoption by small practices remain politically salient blockers. No new stakeholder claim was encoded.
+
+### Evidence / Domain
+New source: JMIR AI/PubMed rapid review, 6 of 1,450 screened studies included. Stored as paper metadata with caveat that it is an evidence-gap map for workflow/satisfaction/quality/barriers, not a pooled effect size or proof of German capacity, cost, equity, or patient-outcome benefit.
+
+### Integrator Decision
+Accepted the source into `ai_healthcare_evidence.py` and linked it to the ambient-scribe record. Kept `model_use_status='catalog_only'` and Evidence Grade B for workload/process evidence only.
+
+### Question to Alex
+Keine wichtige Entscheidung offen.
+
+### Verification / Git
+Focused test: `16 passed`; full suite: `86 passed`. Commit/push follows in this heartbeat.

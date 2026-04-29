@@ -276,6 +276,22 @@ EVIDENCE_SOURCES: dict[str, EvidenceSource] = {
         ),
         license_or_terms_note="PubMed metadata/abstract only; article copyright belongs to the publisher. Store citation/metadata only unless reuse terms permit more.",
     ),
+    "jmir_ai_ambient_scribes_rapid_review_2025": EvidenceSource(
+        id="jmir_ai_ambient_scribes_rapid_review_2025",
+        title="Real-World Evidence Synthesis of Digital Scribes Using Ambient Listening and Generative Artificial Intelligence for Clinician Documentation Workflows: Rapid Review",
+        url="https://pubmed.ncbi.nlm.nih.gov/41071988/",
+        kind="paper",
+        retrieved_via="PubMed E-utilities search + abstract metadata",
+        retrieved_at="2026-04-29",
+        source_date="2025",
+        quality_note=(
+            "Rapid review across Ovid MEDLINE, Embase, Web of Science, Cochrane and PubMed Central covering real-world ambient/digital scribe "
+            "implementation evidence from 2014 to 2024. Only 6 of 1,450 screened studies met inclusion criteria, with mixed designs including "
+            "observational, case-report, peer-matched cohort and survey-based assessments. Use as an evidence-gap map for workflow, satisfaction, "
+            "quality and implementation barriers, not as a pooled effect size or proof of German capacity, cost, equity or patient-outcome benefit."
+        ),
+        license_or_terms_note="PubMed abstract metadata only; article copyright/license may apply. Store citation/metadata only unless reuse terms permit more.",
+    ),
     "x_jama_current_ambient_scribes_2026": EvidenceSource(
         id="x_jama_current_ambient_scribes_2026",
         title="JAMA X post: ambient scribes reduce documentation time but patient outcomes/equity evidence limited",
@@ -317,7 +333,14 @@ AI_HEALTHCARE_EVIDENCE: dict[str, AIHealthcareEvidenceRecord] = {
             "billing/revenue effects remain under evaluation",
         ),
         outcome_types=("clinician_workload", "process_outcome", "cost_billing", "safety_quality"),
-        study_designs=("randomized_trial", "pragmatic_trial", "prospective_observational", "institutional_report", "narrative_review"),
+        study_designs=(
+            "randomized_trial",
+            "pragmatic_trial",
+            "prospective_observational",
+            "institutional_report",
+            "systematic_review",
+            "narrative_review",
+        ),
         evidence_grade="B",
         source_ids=(
             "jama_open_olson_ambient_scribes_2025",
@@ -335,6 +358,7 @@ AI_HEALTHCARE_EVIDENCE: dict[str, AIHealthcareEvidenceRecord] = {
             "jama_open_multisite_time_visit_quantity_2026",
             "appl_clin_inform_patient_experience_ambient_2026",
             "jamia_clinician_editing_rationale_ambient_2026",
+            "jmir_ai_ambient_scribes_rapid_review_2025",
         ),
         transferability_to_germany=(
             "Medium: documentation burden and clinician workflow are relevant in Germany, but effects depend on German documentation rules, "

@@ -171,6 +171,22 @@ def test_ambient_scribes_include_clinician_editing_rationale_as_safety_workflow_
     assert record.model_use_status == "catalog_only"
 
 
+def test_ambient_scribes_include_rapid_review_as_evidence_gap_map_not_effect_size():
+    source = EVIDENCE_SOURCES["jmir_ai_ambient_scribes_rapid_review_2025"]
+    record = AI_HEALTHCARE_EVIDENCE["ambient_ai_scribes_documentation_burden"]
+
+    assert source.kind == "paper"
+    assert source.retrieved_via == "PubMed E-utilities search + abstract metadata"
+    assert "Rapid Review" in source.title
+    assert "Only 6 of 1,450 screened studies" in source.quality_note
+    assert "evidence-gap map" in source.quality_note
+    assert "not as a pooled effect size" in source.quality_note
+    assert "patient-outcome benefit" in source.quality_note
+    assert source.id in record.source_ids
+    assert "systematic_review" in record.study_designs
+    assert record.model_use_status == "catalog_only"
+
+
 def test_youtube_context_pipeline_is_explicitly_grade_e_and_not_model_fact():
     record = AI_HEALTHCARE_EVIDENCE["ai_healthcare_youtube_context_pipeline"]
     summary = evidence_quality_summary(record.id)
