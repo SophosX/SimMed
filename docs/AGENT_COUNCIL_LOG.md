@@ -1765,3 +1765,16 @@ Keine.
 
 ### Verification / Git
 Focused tests passed for API and Learning Page helpers; full suite passed (`106 passed`), py_compile passed, and a small simulation smoke passed (`df (60, 30)`, `reg (320, 6)`). Commit/push follows in the Git step of this heartbeat.
+
+
+## 2026-04-29T23:22Z — Data-readiness Operator-Handoff
+
+- **Context:** Heartbeat primary track moved to core platform implementation. Continued the data ingestion/provenance foundation rather than adding AI evidence.
+- **Project Manager:** Next bottleneck was that data-readiness actions were present but still required future operators to infer a safe execution order and definition of done.
+- **Designer/UX:** Added an answer-first handoff for the Learning Page: first safe step, status/dry-run route, review route, and definition-of-done fields are visible in a mobile-safe table.
+- **Creative Agent:** Treated the handoff as a lightweight platform work order, not another dashboard snippet; it turns passive backlog rows into a safe operational workflow.
+- **Political Health-System Strategist:** Kept wording away from policy proof or official forecasts; data gates are infrastructure readiness only before any political interpretation.
+- **Evidence/Domain:** No new external evidence claims. Guardrails preserve raw cache, transformation review, and explicit model integration as separate stages.
+- **Integrator Decision:** Added `build_data_readiness_operator_handoff(...)`, exposed it through `/data-readiness/next-actions`, new `/data-readiness/operator-handoff`, and the Learning Page backlog expander.
+- **Question to Alex if needed:** Keine — this is a safe/reversible platform workflow improvement.
+- **Verification/Git:** 107 pytest tests passed; py_compile passed for core modules; simulation smoke passed (`df=(60, 30)`, `reg=(320, 6)`). Commit/push pending in this heartbeat.

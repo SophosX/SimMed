@@ -20,6 +20,7 @@ from data_ingestion import (
     build_data_passport_rows,
     build_data_readiness_action_packet,
     build_data_readiness_backlog,
+    build_data_readiness_operator_handoff,
     build_data_readiness_gate_plan,
     build_data_readiness_summary,
     build_next_data_readiness_actions,
@@ -141,6 +142,32 @@ def get_next_data_readiness_actions(limit: int = 3) -> dict:
         "summary": build_data_readiness_summary(items),
         "actions": actions,
         "action_packet": build_data_readiness_action_packet(actions),
+        "operator_handoff": build_data_readiness_operator_handoff(actions),
+    }
+
+
+@api.get("/data-readiness/operator-handoff")
+def get_data_readiness_operator_handoff(limit: int = 3) -> dict:
+    """Return a focused safe handoff for the next platform data cycle."""
+
+    if limit < 1 or limit > 10:
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "status": "invalid_data_readiness_operator_handoff_limit",
+                "limit": limit,
+                "guardrail": "Limit muss zwischen 1 und 10 liegen; keine Datenaktion wurde ausgeführt.",
+            },
+        )
+    parameters = list_parameters()
+    items = build_data_readiness_backlog(parameters)
+    actions = build_next_data_readiness_actions(items, limit=limit)
+    return {
+        "status": "data_readiness_operator_handoff_not_executed",
+        "guardrail": "Operator-Handoff ist Status/Dry-run-only: kein Netzwerkabruf, kein Cache-Schreibvorgang, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+        "summary": build_data_readiness_summary(items),
+        "actions": actions,
+        "operator_handoff": build_data_readiness_operator_handoff(actions),
     }
 
 

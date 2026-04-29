@@ -848,6 +848,56 @@ def build_data_readiness_action_packet(actions: list[dict]) -> dict:
     }
 
 
+def build_data_readiness_operator_handoff(actions: list[dict]) -> dict:
+    """Return a focused, safe handoff for the next human/agent platform cycle.
+
+    Unlike the raw action packet, this adds a plain-language execution order and
+    per-action verification route so a future operator can move from status to
+    reviewed transformation without guessing. It still performs no data action.
+    """
+
+    packet = build_data_readiness_action_packet(actions)
+    rows: list[dict] = []
+    for action, packet_row in zip(actions, packet["rows"]):
+        if action.get("planned_connector_request"):
+            first_step = "Dry-run-Status prüfen; erst ein späterer bewusster Schritt darf Rohdaten cachen."
+            verification_route = action["primary_api"]
+        else:
+            first_step = "Parameter-Workflow öffnen und fehlendes Gate manuell vorbereiten."
+            verification_route = action["workflow_api"]
+        rows.append({
+            "rank": action["rank"],
+            "parameter_key": action["parameter_key"],
+            "label": action["label"],
+            "first_safe_step": first_step,
+            "status_or_dry_run_route": verification_route,
+            "workflow_route": action["workflow_api"],
+            "review_template_route": packet_row["next_review_route"],
+            "copyable_status_command": packet_row["copyable_api_command"],
+            "definition_of_done_before_model_integration": [
+                "Rohdaten-Snapshot mit Manifest/SHA256 ist sichtbar",
+                "Transformation ist separat reviewed und caveat-dokumentiert",
+                "Registry-/Modelländerung ist als eigener, getesteter Integrationsschritt entschieden",
+            ],
+            "guardrail": "Operator-Handoff ist nur Arbeitsreihenfolge und Status/Dry-run: kein execute=true, kein Live-Fetch, kein Cache-Schreiben, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+        })
+    return {
+        "title": "Operator-Handoff: nächste Daten-Gates sicher abarbeiten",
+        "plain_language_note": (
+            "Diese Übergabe sagt nicht nur, welche API aufgerufen wird, sondern wann ein Datenpunkt wirklich bereit für eine spätere Modellintegration wäre. "
+            "Sie bleibt Status/Dry-run-only und trennt Rohdaten, Review und explizite Integration."
+        ),
+        "sequence": [
+            "1. Status/Dry-run lesen",
+            "2. Rohdaten-Cache nur bewusst und getrennt ausführen",
+            "3. Transformation mit Review-Template prüfen",
+            "4. Modellintegration separat planen, testen und dokumentieren",
+        ],
+        "rows": rows,
+        "guardrail": "Handoff führt nichts aus: kein Netzwerkabruf, kein Cache-Schreibvorgang, keine Modellintegration, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    }
+
+
 
 def build_data_connector_queue(backlog_items: list[dict], *, per_source_limit: int = 4) -> list[dict]:
     """Group snapshot-needed parameters by source so connector work can start safely.

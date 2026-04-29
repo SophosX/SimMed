@@ -112,6 +112,11 @@ def test_learning_data_readiness_backlog_prioritizes_safe_data_gates():
     assert backlog["next_actions"]
     assert backlog["action_packet"]["rows"]
     assert "Status/Dry-run-only" in backlog["action_packet"]["plain_language_note"]
+    assert backlog["operator_handoff"]["rows"]
+    assert "Status/Dry-run-only" in backlog["operator_handoff"]["plain_language_note"]
+    handoff_row = backlog["operator_handoff"]["rows"][0]
+    assert handoff_row["review_template_route"].startswith("GET /data-connectors/transformation-review-template/")
+    assert "Transformation ist separat reviewed" in " ".join(handoff_row["definition_of_done_before_model_integration"])
     packet_row = backlog["action_packet"]["rows"][0]
     assert packet_row["copyable_api_command"].startswith("curl")
     assert packet_row["next_review_route"].startswith("GET /data-connectors/transformation-review-template/")

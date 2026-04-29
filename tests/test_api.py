@@ -95,6 +95,14 @@ def test_api_exposes_next_data_readiness_actions_without_execution():
     assert "Status/Dry-run-only" in packet["plain_language_note"]
     assert len(packet["rows"]) == 2
     assert "execute=true" in packet["guardrail"] or "kein Live-Fetch" in packet["guardrail"]
+    handoff = body["operator_handoff"]
+    assert "Status/Dry-run-only" in handoff["plain_language_note"]
+    assert "Transformation mit Review-Template" in " ".join(handoff["sequence"])
+    assert len(handoff["rows"]) == 2
+    first_handoff_row = handoff["rows"][0]
+    assert first_handoff_row["review_template_route"].startswith("GET /data-connectors/transformation-review-template/")
+    assert "kein execute=true" in first_handoff_row["guardrail"]
+    assert "Registry-/Modelländerung" in " ".join(first_handoff_row["definition_of_done_before_model_integration"])
     first_packet_row = packet["rows"][0]
     assert first_packet_row["copyable_api_command"].startswith("curl")
     assert first_packet_row["next_review_route"].startswith("GET /data-connectors/transformation-review-template/")
@@ -111,6 +119,28 @@ def test_api_exposes_next_data_readiness_actions_without_execution():
     else:
         assert first["primary_api"] == first["workflow_api"]
         assert first["dry_run_payload"] is None
+
+
+
+def test_api_exposes_operator_handoff_as_focused_data_platform_work_order():
+    client = TestClient(api)
+    response = client.get("/data-readiness/operator-handoff?limit=2")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "data_readiness_operator_handoff_not_executed"
+    assert "kein Netzwerkabruf" in body["guardrail"]
+    handoff = body["operator_handoff"]
+    assert handoff["title"].startswith("Operator-Handoff")
+    assert handoff["rows"]
+    assert len(handoff["rows"]) == 2
+    row = handoff["rows"][0]
+    assert row["workflow_route"].startswith("GET /data-readiness/")
+    assert row["review_template_route"].startswith("GET /data-connectors/transformation-review-template/")
+    assert row["copyable_status_command"].startswith("curl")
+    assert "Transformation ist separat reviewed" in " ".join(row["definition_of_done_before_model_integration"])
+    assert "keine Registry-/Modellmutation" in row["guardrail"]
+    assert "kein Policy-Wirkungsbeweis" in handoff["guardrail"]
 
 
 def test_api_rejects_next_data_readiness_actions_out_of_bounds_without_execution():

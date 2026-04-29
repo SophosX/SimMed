@@ -37,6 +37,7 @@ from data_ingestion import (
     build_data_readiness_action_packet,
     build_data_readiness_backlog,
     build_data_readiness_gate_plan,
+    build_data_readiness_operator_handoff,
     build_data_readiness_summary,
     build_next_data_readiness_actions,
     build_parameter_data_workflow_card,
@@ -4119,6 +4120,7 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         "connector_snapshot_requests": build_connector_snapshot_requests(full_backlog),
         "next_actions": next_actions,
         "action_packet": build_data_readiness_action_packet(next_actions),
+        "operator_handoff": build_data_readiness_operator_handoff(next_actions),
         "rows": [
             {
                 "Parameter": item["label"],
@@ -4254,6 +4256,23 @@ def render_learning_data_readiness_backlog():
         st.markdown(f"**{backlog['action_packet']['title']}**")
         st.caption(backlog["action_packet"]["plain_language_note"])
         st.dataframe(pd.DataFrame(packet_rows), use_container_width=True, hide_index=True)
+        handoff = backlog["operator_handoff"]
+        st.markdown(f"**{handoff['title']}**")
+        st.caption(handoff["plain_language_note"])
+        st.markdown(" → ".join(handoff["sequence"]))
+        handoff_rows = [
+            {
+                "Rang": row["rank"],
+                "Parameter": row["label"],
+                "Erster sicherer Schritt": row["first_safe_step"],
+                "Status/Dry-run Route": row["status_or_dry_run_route"],
+                "Review-Template": row["review_template_route"],
+                "Definition of done": " · ".join(row["definition_of_done_before_model_integration"]),
+                "Guardrail": row["guardrail"],
+            }
+            for row in handoff["rows"]
+        ]
+        st.dataframe(pd.DataFrame(handoff_rows), use_container_width=True, hide_index=True)
         st.caption("Diese Liste priorisiert Plattformarbeit: erst Status/Dry-run, dann Rohdaten-Cache nur bewusst, danach Review und explizite Modellintegration.")
     with st.expander("Warum diese Reihenfolge? Daten-Gates als Arbeitsplan", expanded=False):
         for gate in backlog["gate_plan"]:
