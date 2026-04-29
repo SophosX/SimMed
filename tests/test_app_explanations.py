@@ -12,6 +12,7 @@ from app import (
     build_changed_lever_question_cards,
     build_changed_lever_result_audit_trail,
     build_kpi_answer_checklist,
+    build_learning_data_passport_overview,
     build_kpi_assumption_trace,
     build_kpi_drilldown_items,
     build_kpi_drilldown_navigation,
@@ -57,6 +58,24 @@ def test_data_status_badges_are_backward_compatible_without_registry_field():
     assert "Import" in provenance_help or "snapshot" in provenance_help
     kpi_badge = kpi_data_status_badge("gesundheitsausgaben_mrd")
     assert "Daten" in kpi_badge or "Annahme" in kpi_badge
+
+
+
+def test_learning_data_passport_overview_separates_registry_cache_and_transformation():
+    overview = build_learning_data_passport_overview(limit=6)
+
+    assert overview["title"].startswith("Datenpass")
+    assert "Registry-Status" in overview["plain_language_note"]
+    assert "Rohdaten-Cache" in overview["plain_language_note"]
+    assert "kein Beweis" in overview["plain_language_note"]
+    assert overview["counts"]["total_parameters"] >= overview["counts"]["source_backed_registry"]
+    assert overview["counts"]["assumption_registry"] >= 1
+    assert 1 <= len(overview["rows"]) <= 6
+    first_row = overview["rows"][0]
+    assert {"Parameter", "Register", "Evidenz", "Rohdaten-Cache", "Geprüfte Transformation", "Hinweis"} <= set(first_row)
+    combined = " ".join(str(value) for row in overview["rows"] for value in row.values())
+    assert "aus Daten" in combined or "Annahme, nicht aus Daten" in combined
+    assert "nicht automatisch integriert" in combined
 
 
 

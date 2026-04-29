@@ -1145,3 +1145,16 @@ Keine.
 - **Integrator Decision:** `build_data_passport_rows(...)` in `data_ingestion.py` ergänzt und API `/data-passport` plus eingebettetes `data_passport` in `/data-snapshots` hinzugefügt; Tests decken Registry/Cache-Trennung ab.
 - **Question to Alex if needed:** Keine neue Produktentscheidung offen; nächster sicherer Schritt ist UI-Datenpass/Sidebar- oder Learning-Page-Surface.
 - **Verification/Git:** `pytest tests/test_data_ingestion.py tests/test_api.py -q`, `py_compile`, Full Suite `76 passed`, FastAPI Smoke `/data-passport` OK. Commit/Push folgt in diesem Lauf.
+
+
+## 2026-04-29 21:14 UTC – Learning-Page-Datenpass sichtbar gemacht
+
+- **Context:** Heartbeat-Priorität auf Kernplattform/Data-Provenance; bestehender API-Datenpass war vorhanden, aber für Erstnutzer in der App noch nicht sichtbar.
+- **Project Manager:** Kleine, sichere Plattform-Scheibe: Datenpass in Learning Page integrieren statt neue Evidenzrecherche.
+- **Designer/UX:** Mobile-sichere Tabelle + drei Metriken, damit Nutzer sofort sehen: Registerstatus, Rohdaten-Cache, geprüfte Transformation sind getrennt.
+- **Creative Agent:** Datenpass als „Lesebrille“ für Annahmen vor der Simulation; keine neue Spielmechanik nötig.
+- **Political Health-System Strategist:** Guardrail wichtig: source-backed Registry darf nicht als amtlicher Import oder politischer Wirkungsbeweis gelesen werden.
+- **Evidence/Domain:** Keine neue Recherche; vorhandene Registry/Cache-Provenienz wiederverwendet. Rohdaten-Snapshot bleibt getrennt von Modellintegration.
+- **Integrator Decision:** `build_learning_data_passport_overview()` und `render_learning_data_passport_overview()` in `app.py`, Test ergänzt.
+- **Question to Alex if needed:** Keine offene Produktentscheidung; nächster Plattformschritt kann erste echte/statische Destatis-Snapshot-Fixture oder Szenario-Gallery sein.
+- **Verification/Git:** `pytest` 77 passed; `py_compile` OK; 20×2 Simulation smoke OK. Commit/Push folgt in diesem Lauf.

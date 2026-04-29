@@ -29,7 +29,8 @@ import warnings
 
 from political_feasibility import assess_political_feasibility
 from expert_council import plain_language_workflow_summary
-from parameter_registry import PARAMETER_REGISTRY
+from data_ingestion import build_data_passport_rows
+from parameter_registry import PARAMETER_REGISTRY, list_parameters
 from simulation_report import build_simulation_report as build_policy_briefing_report
 
 warnings.filterwarnings("ignore")
@@ -3969,6 +3970,67 @@ def learning_page_next_actions() -> list[dict[str, str]]:
 
 
 
+def build_learning_data_passport_overview(limit: int = 8) -> dict[str, Any]:
+    """Summarize registry-vs-cache status for the Learning Page.
+
+    This makes the data-ingestion foundation visible to first-time users without
+    implying that raw snapshots have already become model facts.
+    """
+    passport_rows = build_data_passport_rows(list_parameters())
+    total = len(passport_rows)
+    source_backed = [row for row in passport_rows if row["registry_data_status"] == "aus_daten"]
+    assumption_rows = [row for row in passport_rows if row["registry_data_status"] != "aus_daten"]
+    cached_rows = [row for row in passport_rows if row["cache"]["has_cached_snapshot"]]
+    priority_rows = sorted(
+        passport_rows,
+        key=lambda row: (
+            row["registry_data_status"] != "aus_daten",
+            not row["cache"]["has_cached_snapshot"],
+            row["label"],
+        ),
+    )[:limit]
+    return {
+        "title": "Datenpass: Was ist gemessen, was ist Annahme?",
+        "plain_language_note": (
+            "Der Datenpass trennt drei Dinge: Registry-Status, Rohdaten-Cache und geprüfte Transformation. "
+            "Ein Eintrag „aus Daten“ bedeutet source-backed im Register; er ist noch kein Beweis, dass ein Live-Import den Modellwert automatisch gesetzt hat."
+        ),
+        "counts": {
+            "total_parameters": total,
+            "source_backed_registry": len(source_backed),
+            "assumption_registry": len(assumption_rows),
+            "cached_raw_snapshots": len(cached_rows),
+        },
+        "rows": [
+            {
+                "Parameter": row["label"],
+                "Register": row["registry_label"],
+                "Evidenz": row["evidence_grade"],
+                "Rohdaten-Cache": "vorhanden" if row["cache"]["has_cached_snapshot"] else "fehlt noch",
+                "Geprüfte Transformation": "separat prüfen; nicht automatisch integriert",
+                "Hinweis": row["passport_note"],
+            }
+            for row in priority_rows
+        ],
+    }
+
+
+
+def render_learning_data_passport_overview():
+    """Render a compact, mobile-safe data-passport card/table on the Learning Page."""
+    overview = build_learning_data_passport_overview()
+    counts = overview["counts"]
+    st.markdown(f"### {overview['title']}")
+    st.markdown(f"<div class=\"learn-callout\"><b>Warum wichtig?</b> {overview['plain_language_note']}</div>", unsafe_allow_html=True)
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Parameter im Register", counts["total_parameters"])
+    col2.metric("Source-backed", counts["source_backed_registry"])
+    col3.metric("Rohdaten-Snapshots", counts["cached_raw_snapshots"])
+    st.dataframe(pd.DataFrame(overview["rows"]), use_container_width=True, hide_index=True)
+    st.caption("Guardrail: Rohdaten-Snapshot ≠ geprüfter Modelleffekt. Annahmen bleiben sichtbar, bis eine Transformation geprüft und dokumentiert wurde.")
+
+
+
 def render_parameter_guide():
     """Kurzer, nutzerfreundlicher Guide: welche Parameter bewirken was?"""
     st.markdown("### Parameter verstehen")
@@ -4126,7 +4188,10 @@ def render_learning_page():
 </div>
 """, unsafe_allow_html=True)
 
-    st.markdown("### 5. Wie kommen neue Beiträge ins Modell?")
+    st.markdown("### 5. Datenpass: Daten vs. Annahmen prüfen")
+    render_learning_data_passport_overview()
+
+    st.markdown("### 6. Wie kommen neue Beiträge ins Modell?")
     workflow_steps = plain_language_workflow_summary()
     st.markdown("""
 <div class="learn-callout">
@@ -4146,7 +4211,7 @@ def render_learning_page():
             unsafe_allow_html=True,
         )
 
-    st.markdown("### 6. Was kommt als Nächstes?")
+    st.markdown("### 7. Was kommt als Nächstes?")
     st.markdown("""
 <div class="learn-grid">
   <div class="learn-card"><h3>Entscheidungsrubrik</h3><p>Zu jedem Szenario: Was passiert, warum passiert es, wer gewinnt/verliert, wer blockiert?</p></div>
