@@ -388,4 +388,4 @@ Keine wichtige Entscheidung offen.
 - Evidence/Domain: Added explicit states so source claims require review before acceptance/integration.
 - Integrator Decision: Added `expert_council.py`, tests, and product-direction docs; no model-output changes.
 - Question to Alex: No important decision needed.
-- Verification/Git: Pending in this heartbeat.
+- Verification/Git: Tests passed (`22 passed`); pushed commit `1d84202`.
