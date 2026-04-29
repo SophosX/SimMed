@@ -2002,6 +2002,27 @@ def learning_page_next_actions() -> list[dict[str, str]]:
     ]
 
 
+
+def render_parameter_guide():
+    """Kurzer, nutzerfreundlicher Guide: welche Parameter bewirken was?"""
+    st.markdown("### Parameter verstehen")
+    st.caption("Was kann ich verstellen – und warum ist das spannend?")
+    rows = [
+        ("Medizinstudienplätze", "Wie viele neue Studienplätze es pro Jahr gibt.", "Wirkt erst verzögert: nach Studium und Weiterbildung fehlen oder entstehen später Ärzt:innen."),
+        ("Telemedizin", "Anteil der Kontakte, die digital stattfinden.", "Kann Wege und Wartezeiten senken, ersetzt aber nicht jede Behandlung."),
+        ("Präventionsbudget", "Geld für Vorbeugung, Früherkennung und Gesundheitsförderung.", "Kann Krankheiten langfristig senken, kostet aber kurzfristig zusätzlich Geld."),
+        ("GKV-Beitragssatz", "Wie viel beitragspflichtiges Einkommen in die GKV fließt.", "Verbessert Einnahmen, belastet aber Versicherte und Arbeitgeber."),
+        ("Bundeszuschuss", "Steuergeld, das die gesetzliche Krankenversicherung stützt.", "Entlastet die GKV, konkurriert aber politisch mit anderen Haushaltsausgaben."),
+        ("Pflegepersonal-Schlüssel", "Wie viel Personal pro Versorgungsbedarf verfügbar ist.", "Mehr Personal kann Qualität verbessern, erhöht aber Kosten und braucht Fachkräfte."),
+        ("DRG-Niveau", "Wie stark Krankenhausleistungen vergütet werden.", "Höhere Vergütung kann Kliniken stützen, treibt aber Ausgaben."),
+        ("Wartezeit-Grenze", "Politisch gesetztes Ziel für maximal akzeptable Wartezeit.", "Strengere Ziele erhöhen Druck auf Versorgung und Ausweichmechanismen."),
+    ]
+    for name, meaning, effect in rows:
+        with st.expander(f"{name}: was bedeutet das?", expanded=False):
+            st.markdown(f"**Was ist das?** {meaning}")
+            st.markdown(f"**Wie beeinflusst es die Simulation?** {effect}")
+            st.markdown("**Tipp:** Ändere immer nur 1–2 Parameter gleichzeitig. Dann erkennst du besser, welcher Hebel welchen Effekt hat.")
+
 def render_learning_page():
     """Erklärt SimMed als übersichtliche, schön strukturierte Lernseite."""
     st.markdown("""
