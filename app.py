@@ -26,6 +26,7 @@ from typing import Dict, List, Optional, Tuple, Any
 import warnings
 
 from political_feasibility import assess_political_feasibility
+from parameter_registry import PARAMETER_REGISTRY
 
 warnings.filterwarnings("ignore")
 
@@ -841,6 +842,28 @@ def aggregate_kpis(df: pd.DataFrame) -> pd.DataFrame:
 # UI: SIDEBAR – PARAMETER-PANEL
 # ═══════════════════════════════════════════════════════════════════════════════
 
+def _parameter_provenance_help(key: str, plain_hint: str | None = None) -> str:
+    """Builds plain-language sidebar help from the parameter registry.
+
+    The UI may add a short, concrete hint, but source grade, uncertainty and
+    caveat come from `parameter_registry.py` so provenance stays auditable.
+    """
+    spec = PARAMETER_REGISTRY.get(key)
+    if spec is None:
+        return plain_hint or "Noch nicht im Parameter-Register dokumentiert."
+
+    parts = [
+        f"Register: {spec.label}; Evidenzgrad {spec.evidence_grade}; Quellen: {', '.join(spec.source_ids)}.",
+        f"Rolle im Modell: {spec.model_role}.",
+        f"Unsicherheit: {spec.uncertainty}.",
+    ]
+    if spec.caveat:
+        parts.append(f"Wichtig: {spec.caveat}")
+    if plain_hint:
+        parts.append(plain_hint)
+    return " ".join(parts)
+
+
 def render_sidebar() -> dict:
     """Rendert das vollständige Parameter-Panel in der Sidebar."""
     st.sidebar.markdown("## \u2695\ufe0f SimMed 2040")
@@ -883,15 +906,15 @@ def render_sidebar() -> dict:
     with st.sidebar.expander("\U0001f465 Demografie & Bevölkerung"):
         params["bevoelkerung_mio"] = st.slider(
             "Bevölkerung (Mio.)", 70.0, 95.0, params["bevoelkerung_mio"], 0.1,
-            help="Quelle: Destatis 2025 – 84,4 Mio.",
+            help=_parameter_provenance_help("bevoelkerung_mio", "Standardwert im Prototyp: 84,4 Mio."),
         )
         params["geburtenrate"] = st.slider(
             "Geburtenrate (TFR)", 0.80, 2.50, params["geburtenrate"], 0.05,
-            help="Zusammengefasste Geburtenziffer. Quelle: Destatis 2024 – 1,35",
+            help=_parameter_provenance_help("geburtenrate", "TFR = durchschnittliche Kinderzahl je Frau."),
         )
         params["netto_zuwanderung"] = st.slider(
             "Netto-Zuwanderung/Jahr", 0, 800_000, params["netto_zuwanderung"], 10_000,
-            help="Quelle: BAMF 2024 – ca. 300.000",
+            help=_parameter_provenance_help("netto_zuwanderung", "Wirkt im Modell als Bevölkerungszufluss und grober Arbeitskräfte-Proxy."),
         )
         params["alterungsfaktor"] = st.slider(
             "Alterungsfaktor", 0.5, 2.0, params["alterungsfaktor"], 0.1,
@@ -921,7 +944,7 @@ def render_sidebar() -> dict:
     with st.sidebar.expander("\U0001f3e5 Versorgungsstruktur"):
         params["aerzte_gesamt"] = st.slider(
             "Ärzte gesamt", 200_000, 600_000, params["aerzte_gesamt"], 1_000,
-            help="Quelle: BÄK 2025 – ca. 421.000 berufstätige Ärzt:innen",
+            help=_parameter_provenance_help("aerzte_gesamt", "Kopfzahl erklärt noch nicht, wie viele Sprechstunden tatsächlich verfügbar sind."),
         )
         params["aerzte_pro_100k_urban"] = st.slider(
             "Ärzte/100k (urban)", 150, 500, params["aerzte_pro_100k_urban"], 5,
@@ -962,7 +985,7 @@ def render_sidebar() -> dict:
     with st.sidebar.expander("\U0001f393 Ärzte-Pipeline"):
         params["medizinstudienplaetze"] = st.slider(
             "Studienplätze/Jahr", 5_000, 25_000, params["medizinstudienplaetze"], 100,
-            help="Quelle: HRK 2025 – ca. 11.000",
+            help=_parameter_provenance_help("medizinstudienplaetze", "Wichtig für Szenarien: Effekte kommen erst nach Studium und Weiterbildung an."),
         )
         params["ausbildungsdauer_jahre"] = st.slider(
             "Studiumsdauer (Jahre)", 5.0, 8.0, params["ausbildungsdauer_jahre"], 0.5,
@@ -983,11 +1006,11 @@ def render_sidebar() -> dict:
     with st.sidebar.expander("\U0001f4b0 Versicherung & Finanzierung"):
         params["gkv_beitragssatz"] = st.slider(
             "GKV-Beitragssatz (%)", 12.0, 18.0, params["gkv_beitragssatz"], 0.1,
-            help="Quelle: BMG 2025 – 14,6 %",
+            help=_parameter_provenance_help("gkv_beitragssatz", "Das ist ein politisch gesetzter Einnahmehebel, keine automatische Modellprognose."),
         )
         params["gkv_zusatzbeitrag"] = st.slider(
             "GKV-Zusatzbeitrag (%)", 0.0, 4.0, params["gkv_zusatzbeitrag"], 0.1,
-            help="Quelle: BMG 2025 – \u00d8 1,7 %",
+            help=_parameter_provenance_help("gkv_zusatzbeitrag", "Zusatzbeitrag steht für Finanzierungsdruck und politische Reaktion."),
         )
         params["gkv_anteil"] = st.slider(
             "GKV-Versichertenanteil", 0.70, 0.95, params["gkv_anteil"], 0.01,
@@ -1008,13 +1031,14 @@ def render_sidebar() -> dict:
         params["praeventionsbudget"] = st.slider(
             "Präventionsbudget (Mrd. \u20ac)", 0.0, 30.0,
             params["praeventionsbudget"], 0.5,
+            help=_parameter_provenance_help("praeventionsbudget", "Prävention kostet kurzfristig Geld; Nutzen entsteht meist verzögert."),
         )
 
     # ── Politische Hebel ──
     with st.sidebar.expander("\u2696\ufe0f Politische Hebel"):
         params["telemedizin_rate"] = st.slider(
             "Telemedizin-Startrate", 0.0, 0.60, params["telemedizin_rate"], 0.01,
-            help="Quelle: BMG 2025 – ca. 5 %",
+            help=_parameter_provenance_help("telemedizin_rate", "Telemedizin kann Wege sparen, ersetzt aber nicht jede Untersuchung."),
         )
         params["digitalisierung_epa"] = st.slider(
             "ePA-Nutzungsrate (Start)", 0.0, 1.0, params["digitalisierung_epa"], 0.05,

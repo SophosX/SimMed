@@ -1,6 +1,12 @@
 import pandas as pd
 
-from app import _changed_policy_lever_notes, _direction_word, build_kpi_explanations, get_default_params
+from app import (
+    _changed_policy_lever_notes,
+    _direction_word,
+    _parameter_provenance_help,
+    build_kpi_explanations,
+    get_default_params,
+)
 
 
 def test_direction_word_uses_plain_language_and_preference_direction():
@@ -45,6 +51,16 @@ def test_build_kpi_explanations_mentions_core_causal_assumptions():
     assert "11–13 Jahren" in combined_text
     assert "keine zusätzliche Prognose" not in combined_text
     assert "Telemedizin wurde auf" in explanations[0]["scenario_focus"]
+
+
+def test_parameter_provenance_help_uses_registry_plain_language():
+    help_text = _parameter_provenance_help("medizinstudienplaetze", "UI-Hinweis")
+
+    assert "Evidenzgrad A" in help_text
+    assert "hrk_medical_education" in help_text
+    assert "delayed physician inflow" in help_text
+    assert "Never apply study-place changes instantly" in help_text
+    assert "UI-Hinweis" in help_text
 
 
 def test_changed_policy_lever_notes_names_only_changed_scenario_levers():

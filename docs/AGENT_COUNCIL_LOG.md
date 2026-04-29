@@ -317,3 +317,33 @@ Keine wichtige Entscheidung offen; dies ist eine reversible UX-Erklärungsschich
 
 ### Verification / Git
 Pending: vollständige Tests, Zip-Refresh, Sync, Commit und Push.
+
+
+## 2026-04-29 18:06 Europe/Berlin — Heartbeat: Registry-Provenance in Sidebar
+
+### Context
+Small UI/provenance slice after the live-result explanations: several important sidebar controls now pull their source/evidence/caveat help text from `parameter_registry.py` instead of relying only on hard-coded UI source snippets.
+
+### Project Manager
+Priority: bring provenance closer to the actual decision levers while keeping the sprint small and reversible. Risk: many unregistered UI sliders still exist; users may infer more certainty than the model currently has. Next tasks: (1) expand registry coverage for more UI levers, (2) add a compact source badge/card in the Learning page, (3) later connect Strategy Mode only after explanation/provenance foundations are clearer.
+
+### Designer / UX
+Good step: users now see evidence grade, source IDs, uncertainty, and caveats exactly where they change key levers. Next UX improvement should make this less dense, e.g. a short label plus expandable “Warum diese Annahme?” detail.
+
+### Creative Agent
+Idea: a “Beipackzettel für Reformen” panel for each scenario lever: Wirkung, Nebenwirkung, Verzögerung, wer profitiert, wer bremst. Fit: memorable and understandable for German users; credible if it stays explanation/provenance-based and not a fake score.
+
+### Political Health-System Strategist
+Putting caveats at lever level helps avoid politically misleading simplifications, especially for study places, prevention, and digitalization. It signals that SimMed distinguishes political promises from delayed implementation and institutional capacity.
+
+### Evidence / Domain
+No numeric assumptions changed. The new helper reuses existing registered metadata. Evidence gap remains: several active sliders still need registry entries before they should be presented as evidence-backed levers.
+
+### Integrator Decision
+Accepted: low-risk helper `_parameter_provenance_help()` and registry-backed help text for key registered controls. Deferred: full source UI card and Strategy Mode sequencing until more registry coverage exists.
+
+### Question to Alex
+No important blocking decision this run. A later UX decision will be whether provenance is shown as dense tooltip text, badges, or a dedicated source drawer.
+
+### Verification / Git
+Initial verification before log append: `python3 -m pytest -q` passed with 17 tests; `py_compile` passed for app/core/API/registry/provenance/political/tests. Final zip, sync, commit, push pending in this heartbeat.
