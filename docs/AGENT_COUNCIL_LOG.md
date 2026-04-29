@@ -257,3 +257,33 @@ Keine wichtige Entscheidung offen. Eine spätere Entscheidung wird sein, ob dies
 
 ### Verification / Git
 `python3 -m pytest -q` passed (13 tests). `py_compile` passed for app/core/API/registry/provenance/feasibility/tests. Zip refreshed at `/opt/data/cache/documents/health_simulation_app_updated.zip`. Synced to GitHub clone, committed as `b1fb824`, and pushed to `main`.
+
+
+## 2026-04-29 15:48 UTC — Heartbeat: Live-KPI-Erklärungen
+
+### Context
+Option 2 bleibt Fokus: Nutzer sollen nicht nur Kennzahlen sehen, sondern in Klartext verstehen, warum Wartezeit, GKV-Saldo und ländliche Versorgung sich bewegen. Diese Runde ergänzt eine kleine Dashboard-Erklärungsebene in `app.py` plus Tests; kein Zahlenmodell und keine Parameterwerte wurden geändert.
+
+### Project Manager
+Priorität: die Erklärungsebene direkt neben den Ergebnis-KPIs ausbauen, bevor ein größerer Strategie-Modus entsteht. Risiko: Live-Erklärungen dürfen nicht wie zusätzliche Prognosen wirken; deshalb übersetzen sie nur vorhandene Trends und nennen Annahmen. Nächste Schritte: (1) Erklärungen später mit konkreten Szenario-Hebeln verbinden, (2) Quellen-/Expertenreview für politische Regeln, (3) Strategy Mode als separaten Entwurf planen.
+
+### Designer / UX
+Das Dashboard bekommt nach der Trendübersicht eine neue Frage-Antwort-Struktur: „Warum verändern sich die Ergebnisse?“ mit aufklappbaren, kurzen Klartext-Erklärungen. Das reduziert die Lücke zwischen Diagramm und Verständnis, ohne die Oberfläche sofort zu überladen.
+
+### Creative Agent
+Idee: später einen „Erklärfilm in drei Sätzen“ pro Szenario generieren: Was passiert, warum, wer bremst/unterstützt. Fit: sehr gut für Teilen und Lernen; jetzt nur als statische Textlogik umgesetzt, damit Glaubwürdigkeit vor Showeffekt bleibt.
+
+### Political Health-System Strategist
+Die neuen Erklärungen helfen politisch, weil Reformdebatten oft an falschen Kurzfrist-Erwartungen scheitern: Studienplätze wirken spät, Digitalisierung ist kein Sofort-Sparprogramm, und ländliche Versorgung hängt an realer Kapazität. Das ist Analyse, keine Reformwerbung.
+
+### Evidence / Domain
+Keine neuen Quellen- oder Zahlenannahmen. Die Texte benennen bereits dokumentierte Modellcaveats: Kopfzahl ≠ Kapazität, Studienplatz-Lag 6+/11–13 Jahre, Prävention/Digitalisierung mit verzögerten und unsicheren Effekten.
+
+### Integrator Decision
+Akzeptiert: kleine reversible UI-/Helper-Erweiterung `build_kpi_explanations()` und `render_kpi_explanation_card()` mit Unit-Test. Zurückgestellt: dynamische Treiberzerlegung, kausale Attribution in Prozent und Strategieempfehlungen.
+
+### Question to Alex if needed
+Keine wichtige Entscheidung offen. Weiter mit sicheren Erklärungshilfen; größere Strategy-Mode-Positionierung später separat entscheiden.
+
+### Verification / Git
+`python3 -m pytest -q` passed (15 tests). `py_compile` passed for app/core/API/registry/provenance/feasibility/tests. Zip refreshed at `/opt/data/cache/documents/health_simulation_app_updated.zip`. Git sync/commit/push handled by Integrator after this entry.

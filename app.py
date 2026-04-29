@@ -1054,6 +1054,87 @@ def render_sidebar() -> dict:
 # UI: DASHBOARD TAB
 # ═══════════════════════════════════════════════════════════════════════════════
 
+def _direction_word(delta: float, higher_is_better: bool) -> str:
+    """Beschreibt eine KPI-Bewegung in einfacher Sprache."""
+    if abs(delta) < 0.05:
+        return "kaum verändert"
+    if higher_is_better:
+        return "verbessert" if delta > 0 else "verschlechtert"
+    return "verschlechtert" if delta > 0 else "verbessert"
+
+
+def build_kpi_explanations(agg: pd.DataFrame, params: dict) -> List[Dict[str, str]]:
+    """Erzeugt kurze Klartext-Erklärungen für zentrale Live-Ergebnisse.
+
+    Die Texte sind bewusst keine zusätzliche Modelllogik. Sie übersetzen die
+    bereits simulierten KPI-Trends in eine nachvollziehbare Ursache-Wirkungs-
+    Lesart und nennen die wichtigsten Annahmen, die Nutzer prüfen sollten.
+    """
+    first = agg.iloc[0]
+    last = agg.iloc[-1]
+
+    def delta(col: str) -> float:
+        return float(last[f"{col}_mean"] - first[f"{col}_mean"])
+
+    explanations = [
+        {
+            "title": "Warum verändert sich die Facharzt-Wartezeit?",
+            "status": _direction_word(delta("wartezeit_fa"), higher_is_better=False),
+            "body": (
+                "SimMed vergleicht die erwartete Nachfrage mit der verfügbaren Behandlungskapazität. "
+                "Steigen Alterung, chronische Erkrankungen oder Nachfrage schneller als Ärzt:innen, Arbeitszeit "
+                "und digitale Entlastung, werden Wartezeiten länger. Mehr Telemedizin kann einfache Kontakte "
+                "abfedern, ersetzt aber nicht jede fachärztliche Behandlung."
+            ),
+            "assumption": (
+                "Wichtige Annahmen: Ärzt:innen-Kopfzahl ist nicht automatisch Kapazität; Arbeitszeit, regionale "
+                "Verteilung und digitale Nutzung bestimmen, wie viel Versorgung wirklich ankommt."
+            ),
+        },
+        {
+            "title": "Warum verändert sich der GKV-Saldo?",
+            "status": _direction_word(delta("gkv_saldo"), higher_is_better=True),
+            "body": (
+                "Der Saldo wird besser, wenn Einnahmen, Zusatzbeiträge oder Bundeszuschuss stärker wachsen als "
+                "Ausgaben. Er wird schlechter, wenn Alterung, Morbidität, Preise oder zusätzliche Programme die "
+                "Kosten schneller erhöhen. Prävention und Digitalisierung können später helfen, kosten aber oft zuerst Geld."
+            ),
+            "assumption": (
+                "Wichtige Annahmen: Beitragssatz, Einkommen, GKV-Anteil, Bundeszuschuss und Ausgabenwachstum wirken zusammen; "
+                "kurzfristige Einsparungen sind nicht garantiert."
+            ),
+        },
+        {
+            "title": "Warum verändert sich die ländliche Versorgung?",
+            "status": _direction_word(delta("versorgungsindex_rural"), higher_is_better=True),
+            "body": (
+                "Der Index reagiert darauf, ob genug Versorgungskapazität außerhalb großer Städte verfügbar bleibt. "
+                "Mehr Studienplätze helfen erst verzögert: nach etwa sechs Jahren bei Absolvent:innen und oft erst "
+                "nach 11–13 Jahren bei Fachärzt:innen. Telemedizin kann Wege reduzieren, löst aber keine Personalengpässe allein."
+            ),
+            "assumption": (
+                "Wichtige Annahmen: regionale Verteilung, Ruhestand, Einwanderung von Ärzt:innen und Studienplatz-Pipeline "
+                "sind entscheidend für den langfristigen Zugang."
+            ),
+        },
+    ]
+    return explanations
+
+
+def render_kpi_explanation_card(agg: pd.DataFrame, params: dict):
+    """Zeigt eine Live-Erklärung: Warum haben sich zentrale Ergebnisse bewegt?"""
+    st.markdown("---")
+    st.markdown("### Warum verändern sich die Ergebnisse?")
+    st.caption(
+        "Diese Erklärungen übersetzen die simulierten Trends in Klartext. Sie sind keine zusätzliche Prognose, "
+        "sondern zeigen, welche Modellannahmen die Richtung treiben."
+    )
+    for explanation in build_kpi_explanations(agg, params):
+        with st.expander(f"{explanation['title']} — {explanation['status']}", expanded=False):
+            st.write(explanation["body"])
+            st.info(explanation["assumption"])
+
+
 def render_dashboard(agg: pd.DataFrame, params: dict):
     """Zeigt Dashboard-Karten mit Trend-Pfeilen."""
     st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
@@ -1181,6 +1262,8 @@ def render_dashboard(agg: pd.DataFrame, params: dict):
                     showlegend=False,
                 )
                 st.plotly_chart(fig, use_container_width=True)
+
+    render_kpi_explanation_card(agg, params)
 
     render_political_stakeholder_card(params)
 
