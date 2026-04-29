@@ -1293,3 +1293,32 @@ Spezifisch: `tests/test_ai_healthcare_evidence.py` 12 passed. Vollsuite: 82 pass
 - **Integrator Decision:** Keep `ambient_ai_scribes_documentation_burden` at Evidence Grade B and `catalog_only`; add source to the existing record and test the caveat text.
 - **Question to Alex if needed:** Keine wichtige Entscheidung; continue building the structured evidence base before any model parameter proposal.
 - **Verification/Git:** Targeted AI evidence tests and full verification run next in this heartbeat before commit/push.
+
+## 2026-04-29 22:26 Europe/Berlin — AI-healthcare heartbeat: patient-experience nuance
+
+### Context
+Continued `feat/ai-healthcare-evidence-validation` with a small ambient-scribe evidence slice focused on patient experience/acceptability, not model effects.
+
+### Project Manager
+Priority: deepen the ambient-scribe catalogue with balanced findings while keeping the feature branch safe. Next: add more primary-study metadata, then expose passports in UI/API only after the catalogue remains validated.
+
+### Designer / UX
+Patient-facing claims need especially plain wording: “small survey signal in one experience domain” should not appear as “patients benefit” in future UI.
+
+### Creative Agent
+Idea: future AI-evidence cards could show a traffic-light split: clinician workload, patient experience, safety/quality, cost. Fit is good for explainability, but only after source-backed passports are stable.
+
+### Political Health-System Strategist
+For Germany, ambient recording is politically sensitive because Datenschutz, consent, liability and practice affordability can block adoption even when clinicians like the workflow.
+
+### Evidence / Domain
+Added PubMed/E-utilities metadata for an observational outpatient survey (8,120 patient responses). It showed only a small association in one patient-experience domain and no detectable differences across other domains; kept as process/acceptability nuance, not clinical patient-outcome evidence.
+
+### Integrator Decision
+Accepted: structured source entry and regression test. Deferred: any SimMed parameter/model effect or German capacity assumption.
+
+### Question to Alex
+Keine wichtige Entscheidung offen.
+
+### Verification / Git
+`pytest tests/test_ai_healthcare_evidence.py -q` passed (14 tests). `py_compile` passed for `ai_healthcare_evidence.py` and the test file. Commit/push follows from this heartbeat.

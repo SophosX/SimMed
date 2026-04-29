@@ -244,6 +244,22 @@ EVIDENCE_SOURCES: dict[str, EvidenceSource] = {
         ),
         license_or_terms_note="PubMed metadata/abstract and DOI metadata only; do not store full article text unless reuse terms permit more.",
     ),
+    "appl_clin_inform_patient_experience_ambient_2026": EvidenceSource(
+        id="appl_clin_inform_patient_experience_ambient_2026",
+        title="The Effect of Ambient Listening Technology on the Patient Experience",
+        url="https://pubmed.ncbi.nlm.nih.gov/41760358/",
+        kind="paper",
+        retrieved_via="PubMed E-utilities search + abstract metadata",
+        retrieved_at="2026-04-29",
+        source_date="2026",
+        quality_note=(
+            "Observational outpatient survey across departments at a large academic institution with 8,120 patient responses. "
+            "Ambient scribe use was associated with a small improvement in one patient-experience domain (perceived time/attention) "
+            "and no detectable differences across other surveyed experience domains. Useful as patient-acceptability/process nuance, "
+            "not proof of clinical patient outcomes or German-system benefit."
+        ),
+        license_or_terms_note="PubMed metadata/abstract only; do not store full article text unless publisher reuse terms permit more.",
+    ),
     "x_jama_current_ambient_scribes_2026": EvidenceSource(
         id="x_jama_current_ambient_scribes_2026",
         title="JAMA X post: ambient scribes reduce documentation time but patient outcomes/equity evidence limited",
@@ -301,6 +317,7 @@ AI_HEALTHCARE_EVIDENCE: dict[str, AIHealthcareEvidenceRecord] = {
             "ann_intern_med_vha_primary_care_note_quality_2026",
             "cardiovasc_diagn_ther_ambient_scribes_narrative_review_2026",
             "jama_open_multisite_time_visit_quantity_2026",
+            "appl_clin_inform_patient_experience_ambient_2026",
         ),
         transferability_to_germany=(
             "Medium: documentation burden and clinician workflow are relevant in Germany, but effects depend on German documentation rules, "

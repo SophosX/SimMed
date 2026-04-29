@@ -141,6 +141,21 @@ def test_ambient_scribes_include_multisite_longitudinal_adoption_nuance():
     assert record.model_use_status == "catalog_only"
 
 
+def test_ambient_scribes_include_patient_experience_observational_nuance():
+    source = EVIDENCE_SOURCES["appl_clin_inform_patient_experience_ambient_2026"]
+    record = AI_HEALTHCARE_EVIDENCE["ambient_ai_scribes_documentation_burden"]
+
+    assert source.kind == "paper"
+    assert source.retrieved_via == "PubMed E-utilities search + abstract metadata"
+    assert "8,120 patient responses" in source.quality_note
+    assert "small improvement in one patient-experience domain" in source.quality_note
+    assert "no detectable differences across other surveyed experience domains" in source.quality_note
+    assert "not proof of clinical patient outcomes" in source.quality_note
+    assert source.id in record.source_ids
+    assert "patient_outcome" not in record.outcome_types
+    assert record.model_use_status == "catalog_only"
+
+
 def test_youtube_context_pipeline_is_explicitly_grade_e_and_not_model_fact():
     record = AI_HEALTHCARE_EVIDENCE["ai_healthcare_youtube_context_pipeline"]
     summary = evidence_quality_summary(record.id)
