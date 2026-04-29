@@ -1322,3 +1322,33 @@ Keine wichtige Entscheidung offen.
 
 ### Verification / Git
 `pytest tests/test_ai_healthcare_evidence.py -q` passed (14 tests). `py_compile` passed for `ai_healthcare_evidence.py` and the test file. Commit/push follows from this heartbeat.
+
+
+## 2026-04-29 22:30 Europe/Berlin — Heartbeat AI-Scribe Editing Rationale
+
+### Context
+Aktiver Branch `feat/ai-healthcare-evidence-validation` war sauber und thematisch passend. Fortsetzung der Ambient-AI-Scribe-Evidenzaufnahme mit PubMed/E-utilities statt YouTube/X-Claims.
+
+### Project Manager
+Priorität: Evidenzkatalog vertiefen, ohne Modellwirkungen zu aktivieren. Nächste Aufgaben: weitere Primär-/Implementierungsstudien prüfen, Evidence-Passport später in UI/API sichtbar machen, danach nächsten AI-Healthcare-Use-Case planen.
+
+### Designer / UX
+Die neue Quelle stärkt später die UX-Erklärung „Warum muss ein Mensch den AI-Entwurf prüfen?“: nicht nur Datenschutz, sondern konkrete Editiergründe wie Genauigkeit, Haftung, Coding und fehlender Patientenkontext.
+
+### Creative Agent
+Idee: Für AI-Tools eine kleine „Was muss vor Einsatz geprüft werden?“-Karte pro Evidenzpass entwickeln. Fit: gut für Entscheider, aber erst nach stabiler Quellenbasis und ohne neue Modellannahmen.
+
+### Political Health-System Strategist
+Medico-legale Haftung, Abrechnung/Coding und institutionelle Review-Guidance sind in Deutschland politisch/regulatorisch relevant; noch keine Aussage zu Kapazitätsgewinnen oder GKV-Einsparungen ableiten.
+
+### Evidence / Domain
+Neu aufgenommen: JAMIA/PubMed 42044151 zu Clinician-Editing-Rationale bei ambient AI drafts. Als Implementierungs-/Sicherheits- und Workflow-Evidenz katalogisiert; keine Zeitersparnis-, Patientenoutcome- oder deutsche Kapazitätsbehauptung.
+
+### Integrator Decision
+Akzeptiert: Quelle in `ai_healthcare_evidence.py` plus Regressionstest. Modellstatus bleibt `catalog_only`; `patient_outcome` bleibt ausgeschlossen.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; sichere Evidenzgrundlage weiter ausbauen.
+
+### Verification / Git
+Geplant/ausgeführt in diesem Heartbeat: gezielte PubMed/E-utilities-Recherche, Test für neue Quelle, vollständige Tests/Compile/Smoke vor Push, Zip-Refresh.

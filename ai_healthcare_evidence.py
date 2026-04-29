@@ -260,6 +260,22 @@ EVIDENCE_SOURCES: dict[str, EvidenceSource] = {
         ),
         license_or_terms_note="PubMed metadata/abstract only; do not store full article text unless publisher reuse terms permit more.",
     ),
+    "jamia_clinician_editing_rationale_ambient_2026": EvidenceSource(
+        id="jamia_clinician_editing_rationale_ambient_2026",
+        title="Clinicians' rationale for editing ambient AI-drafted clinical notes: persistent challenges and implications for improvement",
+        url="https://pubmed.ncbi.nlm.nih.gov/42044151/",
+        kind="paper",
+        retrieved_via="PubMed E-utilities search + abstract metadata",
+        retrieved_at="2026-04-29",
+        source_date="2026",
+        quality_note=(
+            "Semistructured interview study with 30 outpatient clinicians using a commercial ambient AI tool in routine care. "
+            "Clinicians edited drafts for clinical accuracy, specialty precision, medico-legal/liability risk, billing/coding standards, "
+            "transcription errors, speaker-attribution mistakes, unsupported confident statements, missing clinical details and missing patient context. "
+            "Use as implementation/safety and workflow-design evidence, not as proof of time savings, patient outcomes or German capacity gains."
+        ),
+        license_or_terms_note="PubMed metadata/abstract only; article copyright belongs to the publisher. Store citation/metadata only unless reuse terms permit more.",
+    ),
     "x_jama_current_ambient_scribes_2026": EvidenceSource(
         id="x_jama_current_ambient_scribes_2026",
         title="JAMA X post: ambient scribes reduce documentation time but patient outcomes/equity evidence limited",
@@ -318,6 +334,7 @@ AI_HEALTHCARE_EVIDENCE: dict[str, AIHealthcareEvidenceRecord] = {
             "cardiovasc_diagn_ther_ambient_scribes_narrative_review_2026",
             "jama_open_multisite_time_visit_quantity_2026",
             "appl_clin_inform_patient_experience_ambient_2026",
+            "jamia_clinician_editing_rationale_ambient_2026",
         ),
         transferability_to_germany=(
             "Medium: documentation burden and clinician workflow are relevant in Germany, but effects depend on German documentation rules, "

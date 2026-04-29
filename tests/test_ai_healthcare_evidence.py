@@ -156,6 +156,21 @@ def test_ambient_scribes_include_patient_experience_observational_nuance():
     assert record.model_use_status == "catalog_only"
 
 
+def test_ambient_scribes_include_clinician_editing_rationale_as_safety_workflow_evidence():
+    source = EVIDENCE_SOURCES["jamia_clinician_editing_rationale_ambient_2026"]
+    record = AI_HEALTHCARE_EVIDENCE["ambient_ai_scribes_documentation_burden"]
+
+    assert source.kind == "paper"
+    assert source.retrieved_via == "PubMed E-utilities search + abstract metadata"
+    assert "30 outpatient clinicians" in source.quality_note
+    assert "medico-legal/liability risk" in source.quality_note
+    assert "speaker-attribution mistakes" in source.quality_note
+    assert "not as proof of time savings" in source.quality_note
+    assert source.id in record.source_ids
+    assert "patient_outcome" not in record.outcome_types
+    assert record.model_use_status == "catalog_only"
+
+
 def test_youtube_context_pipeline_is_explicitly_grade_e_and_not_model_fact():
     record = AI_HEALTHCARE_EVIDENCE["ai_healthcare_youtube_context_pipeline"]
     summary = evidence_quality_summary(record.id)
