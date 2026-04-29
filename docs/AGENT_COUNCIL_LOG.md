@@ -667,3 +667,29 @@ Local verification passed: `python3 -m pytest -q` (32 passed), py_compile, and 5
 - **Integrator Decision:** `build_changed_parameter_impact_bridge()` und `render_changed_parameter_impact_bridge()` in `app.py` ergänzt; Plan in `docs/plans/results-experience-redesign.md` aktualisiert; Test ergänzt.
 - **Question to Alex if needed:** Keine wichtige Entscheidung offen; nächster sicherer Schritt ist bessere visuelle/inhaltliche Priorisierung innerhalb der Ergebnislesespur.
 - **Verification/Git:** pytest vollständig, py_compile und 50×3-Smoke-Test bestanden. Git-Sync/Push folgt in diesem Lauf.
+
+
+## 2026-04-29 17:37 UTC — Tap-friendly KPI detail access
+
+- **Context:** Ergebnis-UX soll kohärent bleiben; KPI-Hover allein ist auf Mobil/Tablet schwach auffindbar.
+- **Project Manager:** Kleine, reversible UX-Scheibe: zentrale KPI-Erklärungen wiederverwenden und sichtbar an die vorhandenen Karten hängen; keine Modelländerung.
+- **Designer/UX:** Jede Kernkennzahl bekommt jetzt zusätzlich zur Desktop-Hover-Erklärung einen antippbaren Detailzugang mit Bedeutung, Warum und Lesart.
+- **Creative Agent:** Popover statt neuer Textbox hält die erste Ergebnisfläche ruhig und vermeidet weitere isolierte Snippets.
+- **Political Health-System Strategist:** Keine neuen politischen Behauptungen; Stakeholder-/Feasibility-Lesepfad bleibt unverändert.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; alle Texte stammen aus bestehenden, als Modell-/Lesart markierten KPI-Erklärungen.
+- **Integrator Decision:** `render_metric_card_with_details()` für alle Dashboard-KPI-Karten genutzt und `kpi_mobile_detail()` testgedeckt; Plan `docs/plans/results-experience-redesign.md` aktualisiert.
+- **Question to Alex if needed:** Keine wichtige Blockerfrage; nächste mögliche Entscheidung später: Popover kompakt lassen oder zu einem geführten Ergebnis-Assistenten ausbauen.
+- **Verification/Git:** Lokale Tests/Smoke bestanden; Git-Sync/Commit/Push folgt in dieser Runde.
+
+
+## 2026-04-29 17:38 UTC — KPI drill-downs nach stärkster Bewegung sortiert
+
+- **Context:** Ergebnis-Lesepfad soll nicht nur vollständig sein, sondern die auffälligsten Bewegungen zuerst erklären.
+- **Project Manager:** Kleine Informationsarchitektur-Änderung: vorhandene KPI-Details werden nach Effektstärke sortiert; keine Modelllogik.
+- **Designer/UX:** Nach der Top-Zusammenfassung führt die Detailsektion nun natürlicher zur größten Veränderung statt zur festen Dashboard-Reihenfolge.
+- **Creative Agent:** Das macht die Ergebnisfläche eher zu einer geführten Story: „größte Bewegung öffnen“ hat jetzt ein sichtbares Ziel.
+- **Political Health-System Strategist:** Keine neuen Stakeholder- oder Strategieaussagen; politische Lesespur bleibt qualitativ und getrennt.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; Änderung nutzt nur simulierte Start-/Endwerte und bestehende Caveats.
+- **Integrator Decision:** `build_kpi_drilldown_items()` gibt `abs_delta`, `pct_delta`, `effect_strength` aus und sortiert nach absoluter Prozentbewegung; Test ergänzt.
+- **Question to Alex if needed:** Keine wichtige Entscheidung offen. Später klären: Soll die Ergebnisreise als geführter Wizard oder als Dashboard mit Expandern weitergehen?
+- **Verification/Git:** `pytest -q` 42 passed, py_compile und 50×3-Smoke-Test bestanden. Git-Sync/Push folgt.

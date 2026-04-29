@@ -1725,7 +1725,11 @@ def build_kpi_drilldown_items(agg: pd.DataFrame, params: dict) -> List[Dict[str,
             "scenario_focus": scenario_focus,
             "assumption": info["read"],
             "next_step": next_steps.get(key, "Prüfe danach den Zeitverlauf und die politische Umsetzbarkeit."),
+            "abs_delta": summary["abs_delta"],
+            "pct_delta": summary["pct_delta"],
+            "effect_strength": summary["strength"],
         })
+    items.sort(key=lambda item: abs(float(item["pct_delta"])), reverse=True)
     return items
 
 

@@ -173,3 +173,17 @@ Small implementation slice:
 4. Add a focused unit test that guards the mobile detail helper reuses central meaning/why/read copy and includes a fallback for unknown KPIs.
 
 Guardrail: this is accessibility/UX plumbing only. Do not add new claims, model logic or isolated tooltip strings; central KPI explanations remain the single source of truth.
+
+
+## 2026-04-29 next slice: Prioritize KPI drill-downs by strongest movement
+
+Problem: The result page has complete KPI detail expanders, but their order still follows dashboard categories. After the top narrative names the biggest movements, the drill-down list should continue that reading path by showing the most changed KPIs first.
+
+Small implementation slice:
+
+1. Extend `build_kpi_drilldown_items(agg, params)` with structured numeric `abs_delta`, `pct_delta`, and `effect_strength` fields derived from `_metric_delta_summary(...)`.
+2. Sort returned KPI drill-down items by absolute percentage movement descending, so the first expander usually matches what the narrative told the user to inspect.
+3. Keep labels, caveats and next-click text unchanged; this is information architecture only.
+4. Add a focused test that a sample scenario with a large GKV-Saldo swing places that KPI before lower-movement items and exposes the effect-strength metadata.
+
+Guardrail: Do not change model outputs or invent causality; only reorder and expose already computed movement summaries.

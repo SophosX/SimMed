@@ -334,6 +334,39 @@ def test_kpi_drilldown_items_follow_coherent_reading_path():
     assert "Kopfzahl allein" in combined
 
 
+def test_kpi_drilldown_items_prioritize_strongest_movement():
+    agg = pd.DataFrame([
+        {
+            "jahr": 2026,
+            "gesundheitsausgaben_mrd_mean": 500.0,
+            "bip_anteil_mean": 12.0,
+            "gkv_beitragssatz_mean": 16.0,
+            "gkv_saldo_mean": 2.0,
+            "lebenserwartung_mean": 81.0,
+            "wartezeit_fa_mean": 20.0,
+            "aerzte_pro_100k_mean": 420.0,
+            "kollaps_wahrscheinlichkeit_mean": 5.0,
+        },
+        {
+            "jahr": 2040,
+            "gesundheitsausgaben_mrd_mean": 525.0,
+            "bip_anteil_mean": 12.2,
+            "gkv_beitragssatz_mean": 16.3,
+            "gkv_saldo_mean": -4.0,
+            "lebenserwartung_mean": 81.1,
+            "wartezeit_fa_mean": 24.0,
+            "aerzte_pro_100k_mean": 410.0,
+            "kollaps_wahrscheinlichkeit_mean": 6.0,
+        },
+    ])
+
+    items = build_kpi_drilldown_items(agg, get_default_params())
+
+    assert items[0]["key"] == "gkv_saldo"
+    assert items[0]["effect_strength"] in {"deutlich", "stark"}
+    assert abs(items[0]["pct_delta"]) >= abs(items[1]["pct_delta"])
+
+
 def test_trend_view_guidance_warns_about_mixed_units_and_next_step():
     guidance = build_trend_view_guidance(["Gesundheitsausgaben", "Facharzt-Wartezeit", "GKV-Beitragssatz"])
     combined = " ".join(guidance.values())
