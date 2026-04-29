@@ -132,3 +132,16 @@ Small implementation slice:
 4. Add a focused test in `tests/test_app_explanations.py` that guards the mixed-unit warning, mean-over-time explanation, and next inspection step.
 
 Guardrail: this is UI explanation only. Do not change model outputs, add new causal claims, or imply that the chart is a validated real-world forecast.
+
+## 2026-04-29 next slice: Political feasibility as lever-by-lever explanation
+
+Problem: the political card now lists supporters and blockers and gives one generic explanation row per stakeholder. A newcomer still has to infer the reading path: which changed lever caused the political friction, why each group appears, what exactly could make implementation hard, and what to inspect next.
+
+Small implementation slice:
+
+1. Add a pure `build_political_lever_detail_sections(political_assessment)` helper in `app.py`.
+2. The helper should group information by changed lever and return: lever label, model/policy effect, implementation lag, friction, supporter rows, blocker rows, uncertainty/caveat, strategy checkpoint, and next inspection prompt.
+3. Render those sections in the political card as expanders after the high-level overview. Keep the old flat row helper for tests/backward compatibility, but use the new grouped helper for the main reading path.
+4. Add a focused test that verifies the grouped details include supporters, blockers, changed lever, implementation lag, friction, caveat, and a concrete next inspection prompt.
+
+Guardrail: stakeholder text remains a qualitative rubric/proposal, not a sourced vote forecast, hidden score, or lobbying recommendation. Do not add new stakeholder claims beyond existing `political_feasibility.py` rules in this slice.

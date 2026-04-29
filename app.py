@@ -1302,6 +1302,50 @@ def build_political_stakeholder_rows(political_assessment: Dict[str, Any]) -> Li
     return rows
 
 
+def build_political_lever_detail_sections(political_assessment: Dict[str, Any]) -> List[Dict[str, Any]]:
+    """Group political feasibility explanations by changed lever.
+
+    This is a UI reading-path helper only. It reorganizes the qualitative rubric
+    from political_feasibility.py; it does not add new stakeholder claims or
+    change model outputs.
+    """
+    sections: List[Dict[str, Any]] = []
+    for note in political_assessment.get("lever_notes", []):
+        label = note.get("label", "geänderter Hebel")
+        lag = note.get("implementation_lag", "unklar")
+        friction = note.get("political_friction", "unklar")
+        effect = note.get("why_it_matters", "Für diesen Hebel ist noch keine Klartextwirkung hinterlegt.")
+
+        def stakeholder_rows(role: str, people: List[str]) -> List[Dict[str, str]]:
+            return [
+                {
+                    "stakeholder": stakeholder,
+                    "role": role,
+                    "why": (
+                        f"Diese Gruppe erscheint beim Hebel '{label}', weil der Hebel ihre Zuständigkeit, "
+                        f"Finanzierung, Arbeitsweise oder den direkten Nutzen berühren kann. Modell-/Rubrikgrund: {effect}"
+                    ),
+                }
+                for stakeholder in people
+            ]
+
+        sections.append({
+            "label": label,
+            "effect": effect,
+            "implementation_lag": lag,
+            "political_friction": friction,
+            "supporters": stakeholder_rows("Unterstützer", note.get("likely_supporters", [])),
+            "blockers": stakeholder_rows("Bremser", note.get("likely_blockers", [])),
+            "caveat": note.get("caveat", "Qualitative Annahme; noch keine validierte Stakeholder-Prognose."),
+            "strategy_checkpoint": note.get("strategy_foundation", "Später im Strategie-Modus Reihenfolge, Zuständigkeit und Kompromisse prüfen."),
+            "next_inspection": (
+                f"Prüfe als Nächstes, ob die KPI-Detailkarten eine passende Wirkung zeigen und ob die Verzögerung ({lag}) "
+                f"zur Simulation passt. Danach politische Reibung ({friction}) gegen Finanzierung, Akzeptanz und Zuständigkeit lesen."
+            ),
+        })
+    return sections
+
+
 def render_result_narrative_summary(agg: pd.DataFrame, params: dict):
     """Render a compact orientation block before KPI cards."""
     summary = build_result_narrative_summary(agg, params)
@@ -1731,9 +1775,30 @@ def render_dashboard(agg: pd.DataFrame, params: dict):
         st.write(overview.get("plain_summary", "SimMed erklärt neben Modellwerten auch Zuständigkeiten, Budgets und Akzeptanz."))
         st.write(f"**Umsetzbarkeit:** {feasibility}")
 
+    lever_detail_sections = build_political_lever_detail_sections(political_assessment)
+    if lever_detail_sections:
+        st.markdown("#### Politische Lesespur nach geändertem Hebel")
+        st.caption("Öffne pro Hebel: Wirkung → mögliche Unterstützer/Bremser → Verzögerung/Reibung → nächster Prüfpunkt.")
+        for section in lever_detail_sections:
+            with st.expander(f"{section['label']} — warum politisch relevant?", expanded=False):
+                st.markdown(f"**1 · Was ändert dieser Hebel?** {section['effect']}")
+                st.markdown(
+                    f"**2 · Umsetzung lesen:** Verzögerung: {section['implementation_lag']} · "
+                    f"politische Reibung: {section['political_friction']}"
+                )
+                st.markdown("**3 · Mögliche Unterstützer — warum erscheinen sie?**")
+                for row in section["supporters"]:
+                    st.markdown(f"- **{row['stakeholder']}**: {row['why']}")
+                st.markdown("**4 · Mögliche Bremser — warum erscheinen sie?**")
+                for row in section["blockers"]:
+                    st.markdown(f"- **{row['stakeholder']}**: {row['why']}")
+                st.info(f"**5 · Unsicherheit:** {section['caveat']}")
+                st.success(f"**6 · Nächster Prüfpunkt:** {section['next_inspection']}")
+                st.caption(f"Strategie-Modus später: {section['strategy_checkpoint']}")
+
     stakeholder_rows = build_political_stakeholder_rows(political_assessment)
     if stakeholder_rows:
-        with st.expander("Warum erscheinen diese Unterstützer und Bremser?", expanded=False):
+        with st.expander("Alle Stakeholder-Zeilen kompakt anzeigen", expanded=False):
             for row in stakeholder_rows:
                 st.markdown(f"**{row['role']}: {row['stakeholder']}** — Hebel: {row['lever']}")
                 st.write(row["why"])

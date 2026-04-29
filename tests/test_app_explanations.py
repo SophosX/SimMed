@@ -9,6 +9,7 @@ from app import (
     _parameter_provenance_help,
     build_kpi_drilldown_items,
     build_kpi_explanations,
+    build_political_lever_detail_sections,
     build_political_stakeholder_rows,
     build_result_narrative_summary,
     build_trend_view_guidance,
@@ -258,6 +259,31 @@ def test_political_stakeholder_rows_explain_why_group_appears():
     assert "Umsetzung" in combined
     assert "politische Reibung" in combined
     assert "6+ Jahre" in combined or "11–13+ Jahre" in combined
+    assert "keine validierte" in combined or "Modellkern" in combined
+
+
+def test_political_lever_detail_sections_create_coherent_reading_path():
+    from political_feasibility import assess_political_feasibility
+
+    assessment = assess_political_feasibility({"medizinstudienplaetze": 8000})
+    sections = build_political_lever_detail_sections(assessment)
+    combined = " ".join(
+        f"{section['label']} {section['effect']} {section['implementation_lag']} {section['political_friction']} "
+        f"{section['caveat']} {section['strategy_checkpoint']} {section['next_inspection']} "
+        + " ".join(f"{row['role']} {row['stakeholder']} {row['why']}" for row in section['supporters'] + section['blockers'])
+        for section in sections
+    )
+
+    assert len(sections) == 1
+    assert sections[0]["supporters"]
+    assert sections[0]["blockers"]
+    assert "Medizinstudienplätze" in combined
+    assert "Verzögerung" in combined or "6+ Jahre" in combined
+    assert "politische Reibung" in combined
+    assert "Zuständigkeit" in combined or "Finanzierung" in combined
+    assert "Unsicherheit" not in sections[0]["next_inspection"]
+    assert "Prüfe als Nächstes" in combined
+    assert "KPI-Detailkarten" in combined
     assert "keine validierte" in combined or "Modellkern" in combined
 
 def test_kpi_drilldown_items_follow_coherent_reading_path():

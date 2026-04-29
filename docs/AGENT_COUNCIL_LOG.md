@@ -634,3 +634,24 @@ Local verification passed: `python3 -m pytest -q` (32 passed), py_compile, and 5
 - **Integrator Decision:** Plan um Slice „Trend view reading guide“ erweitert; `build_trend_view_guidance()` mit Test ergänzt; Renderpfad in `render_main_trend_chart()` verbunden.
 - **Question to Alex if needed:** Keine wichtige Entscheidung offen; nächster sicherer Schritt ist Parameter-Auswirkungs-Mapping für geänderte Hebel.
 - **Verification/Git:** Tests und Smoke-Test werden vor Commit/Push ausgeführt.
+
+
+## 2026-04-29 17:27 UTC — Heartbeat: politische Ergebnis-Lesespur
+
+**Context:** Alex priorisiert eine tiefere, logischere Ergebnis-Erfahrung. Dieser Lauf setzt eine kleine reversible UX-Scheibe um: politische Umsetzbarkeit wird nicht nur als Bullet-Liste, sondern pro geändertem Hebel erklärt. Keine neue Recherche; keine neuen Realwelt-Claims, nur Reorganisation der bestehenden qualitativen Rubrik.
+
+**Project Manager:** Sinnvoller Low-Risk-Slice nach Trend/KPI-Drilldowns. Risiko bleibt: Stakeholder-Regeln sind qualitativ und müssen später evidenz-/expertengestützt validiert werden.
+
+**Designer/UX:** Neue Lesespur folgt Wirkung → Umsetzung → Unterstützer → Bremser → Unsicherheit → nächster Prüfpunkt. Das passt besser zum Ergebnis-Pfad und vermeidet isolierte Bullet-Wörter.
+
+**Creative Agent:** Die politische Karte wird zu einem kleinen „Konflikt-Atlas“ pro Hebel. Gute Produktpassung, weil Nutzer konkrete Reformhebel besser mit Akzeptanz/Reibung verbinden können.
+
+**Political Health-System Strategist:** Hebelbezogene Darstellung ist strategisch nützlicher als aggregierte Listen: sie zeigt, ob Reibung aus Finanzierung, Zuständigkeit, Arbeitsweise, Nutzen oder Verzögerung entsteht. Weiterhin keine Wahlprognose oder Lobby-Empfehlung.
+
+**Evidence/Domain:** Keine neue externe Evidenz in diesem Lauf. Die Texte bleiben explizit Rubrik-/Modellinterpretation; keine zusätzlichen Stakeholder-Behauptungen wurden eingeführt.
+
+**Integrator Decision:** Plan in `docs/plans/results-experience-redesign.md` erweitert; `build_political_lever_detail_sections()` in `app.py` ergänzt; Streamlit-Renderpfad nutzt nun gruppierte Hebel-Expander; fokussierter Test ergänzt.
+
+**Question to Alex if needed:** Keine wichtige Entscheidung offen. Nächste sichere Arbeit: weitere Ergebnis-Lesespur für Parameterwirkung oder API-Proposal-Status.
+
+**Verification/Git:** `tests/test_app_explanations.py` 19 passed; full pytest 38 passed; py_compile OK; Simulation-Smoke 30 Runs × 3 Jahre OK. Git-Sync/Push folgt in diesem Lauf.
