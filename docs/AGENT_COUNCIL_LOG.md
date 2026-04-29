@@ -984,4 +984,4 @@ Local verification before sync: `python3 -m pytest -q` → 59 passed; py_compile
 - Evidence/Domain: No new research in this slice; text reuses existing model caveats and registry-backed explanations.
 - Integrator Decision: Implemented a pure helper and renderer rows in `render_main_trend_chart(agg, params)`; no simulation outputs changed.
 - Question to Alex if needed: No major decision open; next safe step can continue polishing report/result navigation.
-- Verification/Git: Pending tests and push in this heartbeat.
+- Verification/Git: `pytest -q` passed (65 tests), py_compile passed, 20-run smoke test passed (`df=(60, 30)`, `reg=(320, 6)`); pushed main commit `ab062e0`.
