@@ -718,3 +718,16 @@ Local verification passed: `python3 -m pytest -q` (32 passed), py_compile, and 5
 - **Integrator Decision:** `build_result_reading_path()` + Expander direkt in der Top-Narrative, testgedeckt.
 - **Question to Alex if needed:** Keine wichtige Entscheidung offen.
 - **Verification/Git:** Tests/Smoke/Git werden nach Implementierung in diesem Lauf dokumentiert.
+
+
+## 2026-04-29 17:54 UTC — Annahmen-Check für geänderte Ergebnishebel
+
+- **Context:** Alex fordert eine tiefere Ergebnisreise: Nutzer:innen sollen nicht nur sehen, was sich bewegt, sondern vor politischen Schlussfolgerungen Annahmen, Evidenz und Unsicherheit prüfen.
+- **Project Manager:** Kleiner reversibler UX-/Provenance-Slice: bestehende Parameter-Hebelbrücke um einen Annahmen-Check ergänzen; keine Modelllogik, keine neuen Datenquellen.
+- **Designer/UX:** Der Check sitzt direkt nach „Was bedeuten deine geänderten Hebel?“ und stärkt die Lesereihenfolge: Eingabe → Wirkpfad → KPI-Spuren → Evidenz/Caveat → Zeitverlauf prüfen.
+- **Creative Agent:** Die Ergebniserklärung bekommt einen eingebauten „Stopp, prüfe die Annahme“-Moment, ohne die Seite mit einem neuen Top-Level-Kasten zu überladen.
+- **Political Health-System Strategist:** Sinnvoll, weil Reformdebatten sonst KPI-Bewegungen zu schnell als politische Gewissheit lesen. Text bleibt Warn-/Prüfrubrik, kein Vote-Forecast und keine Lobbyempfehlung.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; keine neuen Realweltbehauptungen. Der neue Helper verwendet vorhandene `PARAMETER_REGISTRY`-Evidenzgrade, Quellen, Caveats und Unsicherheiten.
+- **Integrator Decision:** Plan `docs/plans/results-experience-redesign.md` erweitert; `build_changed_parameter_assumption_checks()` und Render-Expander in `app.py` ergänzt; Test für Präventionsbudget/Medizinstudienplätze hinzugefügt.
+- **Question to Alex if needed:** Keine wichtige Entscheidung offen. Spätere Produktfrage: Soll dieser Annahmen-Check stärker als „Ampel“ visualisiert werden oder bewusst textlich/auditierbar bleiben?
+- **Verification/Git:** Fokustest bestanden, Full suite 45 passed, py_compile OK, Simulation-Smoke 50 Runs × 3 Jahre OK. Git-Sync/Push folgt.

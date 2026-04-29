@@ -1457,6 +1457,58 @@ def build_changed_parameter_impact_bridge(agg: pd.DataFrame, params: dict) -> Li
     return items
 
 
+def build_changed_parameter_assumption_checks(agg: pd.DataFrame, params: dict) -> List[Dict[str, str]]:
+    """Return an audit checklist for assumptions behind changed levers.
+
+    This keeps the result page honest: for each explained changed lever, users see
+    the registry evidence grade, model caveat, uncertainty treatment and the next
+    sanity check before treating a KPI movement as a policy conclusion.
+    """
+    checks: List[Dict[str, str]] = []
+    for item in build_changed_parameter_impact_bridge(agg, params):
+        spec = PARAMETER_REGISTRY.get(item["key"])
+        if spec is None:
+            evidence = "Evidenz offen · Parameter noch nicht im Register"
+            uncertainty = "Unsicherheit noch nicht dokumentiert."
+            source_hint = "Quellen im Parameter-Register ergänzen, bevor dieser Hebel als belastbar gilt."
+            registry_caveat = "Registereintrag fehlt."
+        else:
+            evidence = f"Evidenzgrad {spec.evidence_grade} · Quellen: {', '.join(spec.source_ids)}"
+            uncertainty = f"Unsicherheit: {spec.uncertainty}"
+            source_hint = f"Registerrolle: {spec.model_role}"
+            registry_caveat = spec.caveat
+
+        checks.append({
+            "key": item["key"],
+            "label": item["label"],
+            "evidence": evidence,
+            "model_caveat": item["caveat"],
+            "registry_caveat": registry_caveat,
+            "uncertainty": uncertainty,
+            "source_hint": source_hint,
+            "sanity_check": (
+                "Prüfe die beobachteten KPI-Spuren und den Zeitverlauf, bevor du aus diesem Hebel eine politische "
+                "Schlussfolgerung ableitest; diese Liste erklärt Modellannahmen, keine gesicherte Realwelt-Wirkung."
+            ),
+        })
+    return checks
+
+
+def render_changed_parameter_assumption_checks(agg: pd.DataFrame, params: dict):
+    """Render compact assumption/evidence checks for changed parameters."""
+    checks = build_changed_parameter_assumption_checks(agg, params)
+    if not checks:
+        return
+    with st.expander("Annahmen-Check zu deinen geänderten Hebeln", expanded=False):
+        st.caption("Nutze diesen Check, bevor du Ergebnisbewegungen als Reformwirkung liest. Er kommt aus Parameter-Register und Modell-Caveats.")
+        for check in checks:
+            st.markdown(f"**{check['label']}** — {check['evidence']}")
+            st.markdown(f"- Modell-Caveat: {check['model_caveat']}")
+            st.markdown(f"- Register-Caveat: {check['registry_caveat']}")
+            st.markdown(f"- Unsicherheit: {check['uncertainty']}")
+            st.markdown(f"- Nächster Plausibilitätscheck: {check['sanity_check']}")
+
+
 def render_changed_parameter_impact_bridge(agg: pd.DataFrame, params: dict):
     """Render the user-change → model-path → observed-KPI bridge."""
     bridge_items = build_changed_parameter_impact_bridge(agg, params)
@@ -1473,6 +1525,7 @@ def render_changed_parameter_impact_bridge(agg: pd.DataFrame, params: dict):
                 st.markdown(f"- {pointer}")
             st.info(f"**4 · Annahme prüfen:** {item['caveat']}")
             st.success(f"**5 · Nächster Klick:** {item['next_step']}")
+    render_changed_parameter_assumption_checks(agg, params)
 
 
 def build_result_reading_path(agg: pd.DataFrame, params: dict) -> List[Dict[str, str]]:

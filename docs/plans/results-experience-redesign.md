@@ -212,3 +212,16 @@ Small implementation slice:
 4. Add a focused test that verifies the helper names changed levers, strongest KPI, assumptions/caveats, trend timing and political feasibility as next checks.
 
 Guardrail: This is information architecture only. Do not introduce new empirical claims, model logic or stakeholder assertions; only organize existing explanation layers into a coherent journey.
+
+## 2026-04-29 next slice: Assumption/evidence check for changed levers
+
+Problem: The result journey now shows what moved and which changed levers may matter, but a user can still jump too quickly from “KPI changed” to “policy works”. The result page needs a small explicit checkpoint that says: before drawing a policy conclusion, inspect the evidence grade, source register, uncertainty and caveat for each changed lever.
+
+Small implementation slice:
+
+1. Add a pure `build_changed_parameter_assumption_checks(agg, params)` helper in `app.py` that reuses `build_changed_parameter_impact_bridge(...)` and `parameter_registry.PARAMETER_REGISTRY`.
+2. For each changed explained lever, return label, evidence/source summary, model caveat, registry caveat, uncertainty, source/register role and a concrete sanity-check instruction.
+3. Render these checks as one expander after “Was bedeuten deine geänderten Hebel?” so it strengthens the existing reading path instead of becoming another top-level snippet.
+4. Add a focused test proving prevention/study-place changes show evidence grade, sources, register role, caveat/uncertainty, KPI/time-trend sanity check, and the “not proven real-world effect” warning.
+
+Guardrail: This is evidence/provenance UX only. Do not add new empirical claims, model logic, political stakeholder assertions or scores.

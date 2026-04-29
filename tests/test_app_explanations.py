@@ -3,6 +3,7 @@ import pandas as pd
 from app import (
     _changed_policy_lever_notes,
     _direction_word,
+    build_changed_parameter_assumption_checks,
     _parameter_control_help,
     _parameter_effect_hint,
     _parameter_evidence_badge,
@@ -510,6 +511,48 @@ def test_mobile_kpi_detail_is_tap_friendly_and_renderer_exists():
     assert "Warum" not in detail["why"]
     assert "Wartezeit" in detail["meaning"] or "fachärztliche" in detail["meaning"]
     assert callable(render_metric_card_with_details)
+
+def test_changed_parameter_assumption_checks_expose_evidence_and_caveats():
+    agg = pd.DataFrame([
+        {
+            "jahr": 2026,
+            "gesundheitsausgaben_mrd_mean": 500.0,
+            "chroniker_rate_mean": 42.0,
+            "lebenserwartung_mean": 81.0,
+            "aerzte_pro_100k_mean": 420.0,
+            "wartezeit_fa_mean": 20.0,
+            "versorgungsindex_rural_mean": 70.0,
+        },
+        {
+            "jahr": 2040,
+            "gesundheitsausgaben_mrd_mean": 560.0,
+            "chroniker_rate_mean": 39.0,
+            "lebenserwartung_mean": 81.8,
+            "aerzte_pro_100k_mean": 405.0,
+            "wartezeit_fa_mean": 31.0,
+            "versorgungsindex_rural_mean": 66.0,
+        },
+    ])
+    params = get_default_params()
+    params["praeventionsbudget"] = params["praeventionsbudget"] + 0.5
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] - 1000
+
+    checks = build_changed_parameter_assumption_checks(agg, params)
+    combined = " ".join(
+        f"{check['label']} {check['evidence']} {check['model_caveat']} {check['registry_caveat']} {check['uncertainty']} {check['source_hint']} {check['sanity_check']}"
+        for check in checks
+    )
+
+    assert len(checks) == 2
+    assert "Präventionsbudget" in combined
+    assert "Medizinstudienplätze" in combined
+    assert "Evidenzgrad" in combined
+    assert "Quellen" in combined
+    assert "Registerrolle" in combined
+    assert "Unsicherheit" in combined or "uncertainty" in combined.lower()
+    assert "KPI-Spuren" in combined and "Zeitverlauf" in combined
+    assert "keine gesicherte Realwelt-Wirkung" in combined
+
 
 def test_result_reading_path_guides_full_result_journey():
     agg = pd.DataFrame([
