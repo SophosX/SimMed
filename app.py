@@ -25,6 +25,8 @@ import json
 from typing import Dict, List, Optional, Tuple, Any
 import warnings
 
+from political_feasibility import assess_political_feasibility
+
 warnings.filterwarnings("ignore")
 
 try:
@@ -1179,6 +1181,48 @@ def render_dashboard(agg: pd.DataFrame, params: dict):
                     showlegend=False,
                 )
                 st.plotly_chart(fig, use_container_width=True)
+
+    render_political_stakeholder_card(params)
+
+
+def render_political_stakeholder_card(params: dict):
+    """Zeigt die qualitative Stakeholder-Orientierung direkt im Dashboard."""
+    feasibility = assess_political_feasibility(params)
+    overview = feasibility.get("stakeholder_overview", {})
+    lever_notes = feasibility.get("lever_notes", [])
+
+    st.markdown("---")
+    st.markdown("### Wer unterstützt? Wer bremst? Warum?")
+    st.caption(
+        "Diese Karte ist eine qualitative Orientierung zur politischen Umsetzbarkeit — "
+        "keine Wahlprognose, kein Lobby-Ranking und kein validierter Score."
+    )
+
+    st.info(feasibility.get("summary", "Noch keine politische Einordnung vorhanden."))
+
+    col_support, col_block, col_why = st.columns(3)
+    with col_support:
+        st.markdown("**Mögliche Unterstützer**")
+        supporters = overview.get("likely_supporters") or ["Noch keine Unterstützer-Regel hinterlegt."]
+        for item in supporters[:6]:
+            st.markdown(f"- {item}")
+    with col_block:
+        st.markdown("**Mögliche Bremser**")
+        blockers = overview.get("likely_blockers") or ["Noch keine Bremser-Regel hinterlegt."]
+        for item in blockers[:6]:
+            st.markdown(f"- {item}")
+    with col_why:
+        st.markdown("**Warum ist das wichtig?**")
+        st.write(overview.get("plain_summary", "SimMed erklärt neben Modellwerten auch Zuständigkeiten, Budgets und Akzeptanz."))
+        st.write(f"**Umsetzbarkeit:** {feasibility.get('category', 'noch nicht bewertet')}")
+
+    if lever_notes:
+        with st.expander("Hebel im Klartext anzeigen", expanded=False):
+            for note in lever_notes:
+                st.markdown(f"**{note['label']}**")
+                st.write(note["why_it_matters"])
+                st.caption(f"Verzögerung: {note['implementation_lag']} · Reibung: {note['political_friction']}")
+                st.caption(f"Achtung: {note['caveat']}")
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

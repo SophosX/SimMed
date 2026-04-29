@@ -227,3 +227,33 @@ No important decision is required in this heartbeat; continue with low-risk UI s
 
 ### Verification / Git
 Tests and py_compile passed locally. Git sync/commit/push handled by Integrator after zip refresh.
+
+
+## 2026-04-29 15:16 UTC — Heartbeat: Streamlit-Stakeholderkarte
+
+### Context
+Option 2 ist aktiv: SimMed soll politische Umsetzbarkeit transparent und in Klartext erklären. Diese Runde hat die bereits vorhandene `stakeholder_overview`-Logik im Streamlit-Dashboard sichtbar gemacht, ohne Zahlenmodell oder Parameterannahmen zu ändern.
+
+### Project Manager
+Priorität: die Entscheidungshilfe in der UI erlebbar machen, nicht nur in API/Docs. Risiko: politische Einordnungen können als Prognose oder Parteinahme missverstanden werden; deshalb bleibt die Karte ausdrücklich qualitativ und nicht als Score formuliert. Nächste Schritte: (1) bessere Live-Erklärungen pro Ergebnis-KPI, (2) Quell-/Expertenreview für Stakeholderregeln, (3) Strategie-Modus erst nach stabiler Erklärungsebene.
+
+### Designer / UX
+Das Dashboard hatte Kennzahlen und Trends, aber noch keine direkte Antwort auf „Wer unterstützt? Wer bremst? Warum?“. Die neue Karte sitzt nach der Trendübersicht und trennt Unterstützer, Bremser und Begründung in drei einfache Spalten.
+
+### Creative Agent
+Idee: später eine „Reform-Landkarte“ als teilbare Ansicht bauen: medizinischer Effekt, Finanzwirkung und politische Reibung nebeneinander. Fit: gut für Verständnis und Sharing; aktuell genügt die Textkarte als glaubwürdige Vorstufe.
+
+### Political Health-System Strategist
+Die Karte passt zu deutschen Reformrealitäten: Akzeptanz hängt oft an Zuständigkeiten, Berufsgruppen, Budgets, Datenschutz und Länder-/Selbstverwaltungslogik. Die Darstellung bleibt analytisch und öffentlich-institutionell, nicht parteipolitisch.
+
+### Evidence / Domain
+Keine neuen numerischen Annahmen. Die Stakeholderregeln bleiben qualitative Orientierung und müssen vor stärkerer Nutzung mit Quellen/Expertenrat hinterlegt werden.
+
+### Integrator Decision
+Akzeptiert: kleine UI-Erweiterung in `app.py`, die vorhandene Feasibility-Rubrik sichtbar macht. Zurückgestellt: Badges, Wettbewerbs-Score, Strategieempfehlungen und neue politische Gewichtungen.
+
+### Question to Alex if needed
+Keine wichtige Entscheidung offen. Eine spätere Entscheidung wird sein, ob diese Einordnung als Textkarte, Ampel/Badge oder eigener Strategie-Tab erscheinen soll.
+
+### Verification / Git
+Pending at log time: pytest, py_compile, zip refresh, source-to-GitHub sync, commit and push.
