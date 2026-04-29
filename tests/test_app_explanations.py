@@ -11,6 +11,7 @@ from app import (
     get_default_params,
     learning_page_next_actions,
     plain_language_workflow_summary,
+    sidebar_quick_start_steps,
 )
 
 
@@ -168,6 +169,18 @@ def test_changed_policy_lever_notes_names_only_changed_scenario_levers():
     assert "Präventionsbudget wurde erhöht" in combined
     assert "Telemedizin" not in combined
     assert "kaum sofort" in combined
+
+
+def test_sidebar_quick_start_steps_make_first_action_clear():
+    steps = sidebar_quick_start_steps()
+    combined = " ".join(steps)
+
+    assert len(steps) == 3
+    assert "Szenario" in combined
+    assert "Simulation" in combined
+    assert "Was hat sich verändert" in combined
+    assert "Wer unterstützt? Wer bremst?" in combined
+    assert "Klartext-Erklärung" in combined
 
 
 def test_learning_page_next_actions_are_concrete_for_newcomers():

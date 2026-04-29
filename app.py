@@ -959,10 +959,22 @@ def _parameter_effect_hint(key: str) -> str:
     return hints.get(key, "Was passiert beim Ändern? Dieser Regler verändert ein Szenario, ist aber noch nicht mit einer eigenen Kurz-Erklärung dokumentiert.")
 
 
+def sidebar_quick_start_steps() -> List[str]:
+    """Kurze Orientierung, damit neue Nutzer:innen sofort wissen, was zu tun ist."""
+    return [
+        "1. Stell links ein konkretes Szenario ein, zum Beispiel mehr Telemedizin oder weniger Studienplätze.",
+        "2. Starte die Simulation und lies zuerst: Was hat sich verändert? Dort steht die Klartext-Erklärung.",
+        "3. Öffne danach Wer unterstützt? Wer bremst?, um politische Machbarkeit und Konflikte einzuordnen.",
+    ]
+
+
 def render_sidebar() -> dict:
     """Rendert das vollständige Parameter-Panel in der Sidebar."""
     st.sidebar.markdown("## ⚕️ SimMed 2040")
     st.sidebar.caption("Simulationsplattform Gesundheitssystem")
+    with st.sidebar.expander("🧭 Was kann ich hier tun?", expanded=True):
+        st.markdown("\n".join(f"- {step}" for step in sidebar_quick_start_steps()))
+        st.caption("Tipp: Bei jedem wichtigen Regler steht im Hilfe-Text, was die Quelle ist und was beim Ändern grob passiert.")
 
     params = get_default_params()
     if "user_params" in st.session_state:

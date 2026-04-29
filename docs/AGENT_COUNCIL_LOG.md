@@ -560,3 +560,32 @@ Local verification before sync: targeted app/registry tests, py_compile, and 100
 - Integrator Decision: Ship this UX/provenance coverage improvement now; postpone deeper evidence ingestion and Strategy Mode UI.
 - Question to Alex if needed: Keine wichtige Entscheidung offen.
 - Verification/Git: Targeted tests and compile passed; 100-run simulation smoke test passed. Sync/commit/push follows in this heartbeat.
+
+## 2026-04-29 19:05 Europe/Berlin — Sidebar Quick-Start Heartbeat
+
+### Context
+Top-UX directive: first-time users should immediately understand what to do in the sidebar before touching many parameters.
+
+### Project Manager
+Priority: reduce first-screen confusion with a tiny reversible onboarding affordance. Next: keep expanding guidance from parameter help into guided scenario flows.
+
+### Designer / UX
+Added a short expanded sidebar quick-start card: choose a scenario, run simulation, then read causal and political feasibility explanations.
+
+### Creative Agent
+Idea: later turn the quick-start into a 3-step “mission” mode with scenario presets. Fit: useful for newcomer motivation, but deferred until current controls remain stable.
+
+### Political Health-System Strategist
+The card points users to “Wer unterstützt? Wer bremst?” so political feasibility is not hidden behind KPI charts.
+
+### Evidence / Domain
+No new factual model claim was added; this is UI orientation only. Existing parameter provenance remains the evidence layer.
+
+### Integrator Decision
+Accepted: add `sidebar_quick_start_steps()` and render it above parameter expanders; add a regression test for the wording.
+
+### Question to Alex
+No important decision open.
+
+### Verification / Git
+Local verification passed: `python3 -m pytest -q` (32 passed), py_compile, and 50-run/3-year simulation smoke test. Zip refresh, sync, commit/push follow in this heartbeat.
