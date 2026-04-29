@@ -693,3 +693,16 @@ Local verification passed: `python3 -m pytest -q` (32 passed), py_compile, and 5
 - **Integrator Decision:** `build_kpi_drilldown_items()` gibt `abs_delta`, `pct_delta`, `effect_strength` aus und sortiert nach absoluter Prozentbewegung; Test ergänzt.
 - **Question to Alex if needed:** Keine wichtige Entscheidung offen. Später klären: Soll die Ergebnisreise als geführter Wizard oder als Dashboard mit Expandern weitergehen?
 - **Verification/Git:** `pytest -q` 42 passed, py_compile und 50×3-Smoke-Test bestanden. Git-Sync/Push folgt.
+
+
+## 2026-04-29 17:44 UTC — Ergebnis-KPI-Beziehungspfad
+
+- **Context:** Alex fordert tiefere, zusammenhängende Ergebnis-Erklärungen statt weiterer isolierter Snippets. Vor der UX-Änderung wurde `docs/plans/results-experience-redesign.md` um den Slice „KPI relationship trail“ erweitert.
+- **Project Manager:** Kleine, reversible UX-Erklärungsschicht gewählt; kein Modell- oder Datenpfad verändert.
+- **Designer/UX:** KPI-Detailkarten lesen sich nun nicht mehr isoliert: Nach Bedeutung und Beobachtung zeigen sie verwandte Prüfungen („lies diese Kennzahl zusammen mit …“).
+- **Creative Agent:** Die Detailkarte wird zu einer geführten Lesespur: Nutzer:innen springen von Ausgaben zu Saldo/BIP, von Wartezeit zu Ärztedichte/Land, von Kollaps-Warnlampe zu ihren Treibern.
+- **Political Health-System Strategist:** Finanz- und Akzeptanzpfade werden nur als Modell-/Rubrik-Lesepunkte genannt; keine neue Stakeholder-Prognose.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; Änderung nutzt nur vorhandene Modell-KPIs und kennzeichnet keine neuen Realweltbehauptungen.
+- **Integrator Decision:** Implementiert `kpi_related_inspections(metric_key)`, erweitert `build_kpi_drilldown_items()` um `related_inspections`, rendert diese in `render_kpi_deep_dive()` und ergänzt Testabdeckung.
+- **Question to Alex if needed:** Keine wichtige Entscheidung offen; nächster sicherer Schritt ist weitere Kohärenz im Ergebnisbereich oder API/UI für Expertenrat-Vorschläge.
+- **Verification/Git:** Lokal verifiziert: `tests/test_app_explanations.py` 24 passed, Full suite 43 passed, py_compile OK, Simulation smoke 30 Runs × 3 Jahre OK. Git-Sync folgt im selben Heartbeat.

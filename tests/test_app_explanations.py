@@ -17,6 +17,7 @@ from app import (
     get_default_params,
     kpi_hover_help,
     kpi_mobile_detail,
+    kpi_related_inspections,
     learning_page_next_actions,
     metric_card,
     kpi_mobile_detail,
@@ -366,6 +367,37 @@ def test_kpi_drilldown_items_prioritize_strongest_movement():
     assert items[0]["effect_strength"] in {"deutlich", "stark"}
     assert abs(items[0]["pct_delta"]) >= abs(items[1]["pct_delta"])
 
+
+def test_kpi_drilldowns_include_related_inspection_trails():
+    agg = pd.DataFrame([
+        {
+            "jahr": 2026,
+            "gesundheitsausgaben_mrd_mean": 500.0,
+            "gkv_saldo_mean": 2.0,
+            "wartezeit_fa_mean": 20.0,
+            "aerzte_pro_100k_mean": 420.0,
+            "versorgungsindex_rural_mean": 70.0,
+            "kollaps_wahrscheinlichkeit_mean": 5.0,
+        },
+        {
+            "jahr": 2040,
+            "gesundheitsausgaben_mrd_mean": 560.0,
+            "gkv_saldo_mean": -3.0,
+            "wartezeit_fa_mean": 31.0,
+            "aerzte_pro_100k_mean": 405.0,
+            "versorgungsindex_rural_mean": 66.0,
+            "kollaps_wahrscheinlichkeit_mean": 8.0,
+        },
+    ])
+
+    items = build_kpi_drilldown_items(agg, get_default_params())
+    by_key = {item["key"]: item for item in items}
+
+    assert "GKV-Saldo" in " ".join(kpi_related_inspections("gesundheitsausgaben_mrd"))
+    assert "Ärzte pro 100.000" in " ".join(by_key["wartezeit_fa"]["related_inspections"])
+    assert "Ländliche Versorgung" in " ".join(by_key["aerzte_pro_100k"]["related_inspections"])
+    assert "Wartezeit" in " ".join(by_key["kollaps_wahrscheinlichkeit"]["related_inspections"])
+    assert all(item["related_inspections"] for item in items)
 
 def test_trend_view_guidance_warns_about_mixed_units_and_next_step():
     guidance = build_trend_view_guidance(["Gesundheitsausgaben", "Facharzt-Wartezeit", "GKV-Beitragssatz"])

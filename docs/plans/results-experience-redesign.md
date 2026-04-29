@@ -187,3 +187,16 @@ Small implementation slice:
 4. Add a focused test that a sample scenario with a large GKV-Saldo swing places that KPI before lower-movement items and exposes the effect-strength metadata.
 
 Guardrail: Do not change model outputs or invent causality; only reorder and expose already computed movement summaries.
+
+## 2026-04-29 next slice: KPI relationship trail inside drill-downs
+
+Problem: Even with sorted drill-downs, a user can still read one KPI in isolation. The result journey should explicitly say which neighboring indicators make the interpretation safer: finances with contribution/saldo, access with physician density/rural supply, outcomes with mortality/chronicity, and system stress with the underlying drivers.
+
+Small implementation slice:
+
+1. Add a pure `kpi_related_inspections(metric_key)` helper in `app.py` returning short, model-internal related-KPI prompts.
+2. Extend `build_kpi_drilldown_items(agg, params)` with a `related_inspections` list for each KPI.
+3. Render those prompts inside each KPI expander after the observation, before model drivers, so the reading path becomes: meaning → observation → related checks → drivers → changed levers → assumption → next click.
+4. Add a focused test that core KPI drill-downs include relevant related checks and do not rely on new external factual claims.
+
+Guardrail: This is explanation/information architecture only. Do not change simulation outputs, political claims, scoring, or empirical assumptions.

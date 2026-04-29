@@ -1653,6 +1653,84 @@ def kpi_mobile_detail(metric_key: str) -> Dict[str, str]:
     }
 
 
+def kpi_related_inspections(metric_key: str) -> List[str]:
+    """Neighboring KPI checks that prevent isolated result interpretation.
+
+    These prompts only point to other simulated indicators already present on the
+    dashboard. They add reading structure, not new empirical claims.
+    """
+    related = {
+        "gesundheitsausgaben_mrd": [
+            "GKV-Saldo öffnen: Sind höhere Ausgaben durch Einnahmen/Zuschüsse gedeckt oder entsteht Finanzierungsdruck?",
+            "BIP-Anteil Gesundheit prüfen: Wächst der Gesundheitspfad schneller als die modellierte Wirtschaftsleistung?",
+        ],
+        "bip_anteil": [
+            "Gesundheitsausgaben daneben lesen: Kommt der höhere Anteil aus Ausgabenwachstum?",
+            "GKV-Beitragssatz prüfen: Wird daraus im Modell Beitragsdruck sichtbar?",
+        ],
+        "gkv_beitragssatz": [
+            "GKV-Saldo daneben öffnen: Reagiert der Beitragssatz auf ein Defizit oder bleibt es ein politischer Hebel?",
+            "Politische Umsetzbarkeit prüfen: Beitragserhöhungen sind im Modell ein Akzeptanz- und Verteilungsthema.",
+        ],
+        "gkv_saldo": [
+            "Gesundheitsausgaben und Beitragssatz zusammen lesen: Ist das Problem eher Ausgabenpfad, Einnahmenseite oder beides?",
+            "Politische Karte öffnen: Finanzierungshebel erzeugen oft andere Unterstützer/Bremser als Versorgungshebel.",
+        ],
+        "lebenserwartung": [
+            "Vermeidbare Mortalität daneben prüfen: Bewegen sich beide Ergebnisindikatoren plausibel in dieselbe Richtung?",
+            "Chroniker-Rate öffnen: Langsame Gesundheitsgewinne sollten nicht isoliert aus einem Jahr gelesen werden.",
+        ],
+        "wartezeit_fa": [
+            "Ärzte pro 100.000 prüfen: Ist der Zugangspfad eher Kapazität, Nachfrage oder Verzögerung?",
+            "Ländliche Versorgung öffnen: Durchschnittliche Wartezeit kann regionale Zugangsprobleme verdecken.",
+        ],
+        "aerzte_pro_100k": [
+            "Facharzt-Wartezeit daneben lesen: Mehr Kopfzahl hilft nur, wenn sie in Kapazität und Zugang ankommt.",
+            "Ländliche Versorgung prüfen: Verteilung und Region sind wichtiger als die Bundeszahl allein.",
+        ],
+        "versorgungsindex_rural": [
+            "Gini Versorgung öffnen: Verbessert sich der ländliche Wert oder verschiebt sich nur Ungleichheit?",
+            "Facharzt-Wartezeit prüfen: Regionale Versorgung sollte mit Zugangsdruck zusammen gelesen werden.",
+        ],
+        "gini_versorgung": [
+            "Versorgung Land daneben lesen: Ein niedrigerer Gini ist nur hilfreich, wenn unterversorgte Regionen wirklich besser werden.",
+            "Ärzte pro 100.000 prüfen: Bundesweite Kopfzahl erklärt regionale Gleichheit nicht allein.",
+        ],
+        "burnout_rate": [
+            "Wartezeit und Ärztedichte prüfen: Belastung steigt oft dort, wo Nachfrage und Kapazität auseinanderlaufen.",
+            "Pflege-/Krankenhauspfad lesen: Personalengpässe können stationäre Entlastung begrenzen.",
+        ],
+        "telemedizin_rate": [
+            "Facharzt-Wartezeit daneben öffnen: Digitale Kontakte sollten als Zugangsentlastung, nicht als Vollersatz gelesen werden.",
+            "Patientenzufriedenheit prüfen: Nützt der digitale Pfad auch aus Nutzersicht im Modell?",
+        ],
+        "zufriedenheit_patienten": [
+            "Wartezeit, GKV-Druck und Outcome-Indikatoren zusammen lesen: Zufriedenheit bündelt mehrere Belastungen.",
+            "Politische Karte prüfen: Akzeptanz kann anders aussehen als reine Kosten- oder Zugangswerte.",
+        ],
+        "vermeidbare_mortalitaet": [
+            "Lebenserwartung daneben prüfen: Ergebnisindikatoren sollten gemeinsam und langsam gelesen werden.",
+            "Wartezeit und Prävention prüfen: Zugang und Präventionsannahmen treiben diesen Pfad im Modell mit.",
+        ],
+        "chroniker_rate": [
+            "Präventionshebel und Ausgaben zusammen lesen: Weniger Krankheitslast kann verzögert wirken und kurzfristige Kosten nicht sofort senken.",
+            "Lebenserwartung prüfen: Chronische Last und langfristige Gesundheit gehören zusammen.",
+        ],
+        "bevoelkerung_mio": [
+            "Ausgaben und Ärztedichte pro 100.000 daneben prüfen: absolute Bevölkerung verändert Nachfrage, pro-Kopf-Werte ordnen sie ein.",
+            "Ländliche Versorgung prüfen: Bevölkerungsveränderung kann regional unterschiedliche Zugangsfolgen haben.",
+        ],
+        "kollaps_wahrscheinlichkeit": [
+            "Zuerst Wartezeit, GKV-Saldo und vermeidbare Mortalität öffnen: Das Warnsignal ist nur so verständlich wie seine Treiber.",
+            "Trendansicht prüfen: Achte auf gleichzeitige Verschlechterungen statt auf einen einzelnen Punktwert.",
+        ],
+    }
+    return related.get(metric_key, [
+        "Zeitverlauf prüfen: Lies die Kennzahl über mehrere Jahre statt nur als Endwert.",
+        "Verwandte KPI-Details öffnen: Einzelwerte sind im Modell nur ein Teil der Ergebnisgeschichte.",
+    ])
+
+
 def render_metric_card_with_details(
     label: str,
     value: str,
@@ -1721,6 +1799,7 @@ def build_kpi_drilldown_items(agg: pd.DataFrame, params: dict) -> List[Dict[str,
             "title": f"{info['label']}: {summary['start']:.2f} → {summary['end']:.2f} · {summary['strength']}",
             "meaning": info["meaning"],
             "observation": observation,
+            "related_inspections": kpi_related_inspections(key),
             "drivers": info["why"],
             "scenario_focus": scenario_focus,
             "assumption": info["read"],
@@ -1737,18 +1816,21 @@ def render_kpi_deep_dive(agg: pd.DataFrame, params: dict):
     """Explains KPI cards as a coherent reading path below the dashboard."""
     st.markdown("---")
     st.markdown("### Kernkennzahlen verstehen")
-    st.caption("Jede Karte folgt derselben Logik: Bedeutung → Beobachtung → Modelltreiber → Annahme → nächster Klick.")
+    st.caption("Jede Karte folgt derselben Logik: Bedeutung → Beobachtung → verwandte Prüfungen → Modelltreiber → Annahme → nächster Klick.")
     cols = st.columns(2)
     for i, item in enumerate(build_kpi_drilldown_items(agg, params)):
         with cols[i % 2]:
             with st.expander(item["title"], expanded=False):
                 st.markdown(f"**1 · Bedeutung:** {item['meaning']}")
                 st.markdown(f"**2 · Beobachtung in dieser Simulation:** {item['observation']}")
-                st.markdown(f"**3 · Warum im Modell?** {item['drivers']}")
-                st.markdown("**4 · Geänderte Hebel, die dazu passen könnten:**")
+                st.markdown("**3 · Verwandte Prüfungen, damit du die Kennzahl nicht isoliert liest:**")
+                for prompt in item["related_inspections"]:
+                    st.markdown(f"- {prompt}")
+                st.markdown(f"**4 · Warum im Modell?** {item['drivers']}")
+                st.markdown("**5 · Geänderte Hebel, die dazu passen könnten:**")
                 st.markdown(item["scenario_focus"])
-                st.info(f"**5 · Annahme prüfen:** {item['assumption']}")
-                st.success(f"**6 · Nächster Klick:** {item['next_step']}")
+                st.info(f"**6 · Annahme prüfen:** {item['assumption']}")
+                st.success(f"**7 · Nächster Klick:** {item['next_step']}")
 
 
 def build_trend_view_guidance(selected_labels: List[str]) -> Dict[str, str]:
