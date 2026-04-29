@@ -3,6 +3,7 @@ import pandas as pd
 from baseline_projection import build_baseline_projection
 from international_reforms import list_international_reforms, transfer_reform_to_germany
 from simulation_report import build_simulation_report
+import app
 from app import get_default_params
 
 
@@ -66,3 +67,25 @@ def test_simulation_report_builds_structured_policy_briefing_blocks():
     assert "Deutschland-Baseline" in combined
     assert "Telemedizin" in combined
     assert "keine amtliche Prognose" in combined
+
+
+def test_app_policy_briefing_renderer_uses_dict_report_not_legacy_list(monkeypatch):
+    calls = []
+    class DummyExpander:
+        def __enter__(self):
+            return self
+        def __exit__(self, *args):
+            return False
+
+    monkeypatch.setattr(app.st, "markdown", lambda *args, **kwargs: calls.append(("markdown", args)))
+    monkeypatch.setattr(app.st, "caption", lambda *args, **kwargs: calls.append(("caption", args)))
+    monkeypatch.setattr(app.st, "radio", lambda *args, **kwargs: args[1][0])
+    monkeypatch.setattr(app.st, "expander", lambda *args, **kwargs: DummyExpander())
+    monkeypatch.setattr(app.st, "warning", lambda *args, **kwargs: calls.append(("warning", args)))
+
+    params = get_default_params()
+    params["telemedizin_rate"] = params["telemedizin_rate"] + 0.1
+    app.render_policy_briefing(_agg(), params)
+    rendered_text = " ".join(str(args) for _, args in calls)
+    assert "Policy-Briefing" in rendered_text
+    assert "Deutschland-Baseline" in rendered_text

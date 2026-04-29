@@ -30,7 +30,7 @@ import warnings
 from political_feasibility import assess_political_feasibility
 from expert_council import plain_language_workflow_summary
 from parameter_registry import PARAMETER_REGISTRY
-from simulation_report import build_simulation_report
+from simulation_report import build_simulation_report as build_policy_briefing_report
 
 warnings.filterwarnings("ignore")
 
@@ -1720,12 +1720,48 @@ def build_simulation_report(agg: pd.DataFrame, params: dict) -> List[Dict[str, A
     return sections
 
 
+def build_report_navigation_index(report_sections: List[Dict[str, Any]]) -> Dict[str, Any]:
+    """Build a tap-friendly table of contents for the Policy-Briefing.
+
+    The index only reorganizes existing section metadata. It helps readers decide
+    which expander to open next without adding new empirical or political claims.
+    """
+    items: List[Dict[str, str]] = []
+    for idx, section in enumerate(report_sections, start=1):
+        title = section.get("title", "Abschnitt")
+        first_question = (section.get("guide_questions") or [section.get("purpose", "Abschnitt prüfen.")])[0]
+        purpose = section.get("purpose", "")
+        open_when = purpose if len(purpose) <= 150 else f"{purpose[:147].rstrip()}…"
+        items.append(
+            {
+                "order": str(idx),
+                "section_id": section.get("id", f"section_{idx}"),
+                "title": title,
+                "open_when": f"Öffnen, wenn deine Frage ist: {first_question}",
+                "first_question": first_question,
+                "target": f"#policy-briefing-{section.get('id', f'section-{idx}').replace('_', '-')}",
+                "why": open_when,
+            }
+        )
+    return {
+        "instruction": "Executive Summary zuerst kurz überfliegen; öffne danach den Abschnitt, der zu deiner konkreten Frage passt. Du musst nicht alles linear lesen.",
+        "items": items,
+    }
+
+
 def render_simulation_report(agg: pd.DataFrame, params: dict):
     """Render the structured Policy-Briefing navigator."""
     st.markdown("---")
     st.markdown("### Policy-Briefing: Ergebnisse als Bericht lesen")
     st.caption("Ein strukturierter Pfad für Entscheidungen: kompakt, aufklappbar und aus denselben geprüften Erklärungshilfen gebaut.")
-    for section in build_simulation_report(agg, params):
+    report_sections = build_simulation_report(agg, params)
+    navigation = build_report_navigation_index(report_sections)
+    with st.expander("Wie lese ich dieses Briefing?", expanded=True):
+        st.caption(navigation["instruction"])
+        for item in navigation["items"]:
+            st.markdown(f"**{item['order']}. {item['title']}**")
+            st.caption(f"{item['open_when']} — {item['why']}")
+    for section in report_sections:
         with st.expander(section["title"], expanded=section["id"] == "executive_summary"):
             st.markdown(f"**Wozu dieser Abschnitt dient:** {section['purpose']}")
             st.markdown("**Leitfragen beim Lesen:**")
@@ -2650,7 +2686,7 @@ def render_regional_map(df_reg: pd.DataFrame):
 
 def render_policy_briefing(agg: pd.DataFrame, params: dict):
     """Render the structured report/block view for non-expert readers."""
-    report = build_simulation_report(agg, params)
+    report = build_policy_briefing_report(agg, params)
     st.markdown("### Policy-Briefing")
     st.caption("Strukturierte Auswertung deiner Simulation: vom Referenzpfad über deine Änderungen bis zu KPIs, Auslandslösungen und Evidenz.")
 
