@@ -842,6 +842,23 @@ def aggregate_kpis(df: pd.DataFrame) -> pd.DataFrame:
 # UI: SIDEBAR – PARAMETER-PANEL
 # ═══════════════════════════════════════════════════════════════════════════════
 
+def _parameter_evidence_badge(key: str) -> str:
+    """Short evidence badge for visual, low-friction provenance cues."""
+    spec = PARAMETER_REGISTRY.get(key)
+    if spec is None:
+        return "⚪ Evidenz offen · Register fehlt"
+
+    grade_icon = {
+        "A": "🟢",
+        "B": "🟢",
+        "C": "🟡",
+        "D": "🟠",
+        "E": "🔴",
+    }.get(spec.evidence_grade, "⚪")
+    sources = ", ".join(spec.source_ids)
+    return f"{grade_icon} Evidenz {spec.evidence_grade} · {sources}"
+
+
 def _parameter_provenance_help(key: str, plain_hint: str | None = None) -> str:
     """Builds plain-language sidebar help from the parameter registry.
 
@@ -903,7 +920,8 @@ def render_sidebar() -> dict:
         )
 
     # ── Demografie ──
-    with st.sidebar.expander("\U0001f465 Demografie & Bevölkerung"):
+    with st.sidebar.expander("👥 Demografie & Bevölkerung"):
+        st.caption(_parameter_evidence_badge("bevoelkerung_mio"))
         params["bevoelkerung_mio"] = st.slider(
             "Bevölkerung (Mio.)", 70.0, 95.0, params["bevoelkerung_mio"], 0.1,
             help=_parameter_provenance_help("bevoelkerung_mio", "Standardwert im Prototyp: 84,4 Mio."),
@@ -982,7 +1000,8 @@ def render_sidebar() -> dict:
         )
 
     # ── Ärzte-Pipeline ──
-    with st.sidebar.expander("\U0001f393 Ärzte-Pipeline"):
+    with st.sidebar.expander("🎓 Ärzte-Pipeline"):
+        st.caption(_parameter_evidence_badge("medizinstudienplaetze"))
         params["medizinstudienplaetze"] = st.slider(
             "Studienplätze/Jahr", 5_000, 25_000, params["medizinstudienplaetze"], 100,
             help=_parameter_provenance_help("medizinstudienplaetze", "Wichtig für Szenarien: Effekte kommen erst nach Studium und Weiterbildung an."),
@@ -1003,7 +1022,8 @@ def render_sidebar() -> dict:
         )
 
     # ── Versicherung & Finanzierung ──
-    with st.sidebar.expander("\U0001f4b0 Versicherung & Finanzierung"):
+    with st.sidebar.expander("💰 Versicherung & Finanzierung"):
+        st.caption(_parameter_evidence_badge("gkv_beitragssatz"))
         params["gkv_beitragssatz"] = st.slider(
             "GKV-Beitragssatz (%)", 12.0, 18.0, params["gkv_beitragssatz"], 0.1,
             help=_parameter_provenance_help("gkv_beitragssatz", "Das ist ein politisch gesetzter Einnahmehebel, keine automatische Modellprognose."),

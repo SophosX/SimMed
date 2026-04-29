@@ -3,6 +3,7 @@ import pandas as pd
 from app import (
     _changed_policy_lever_notes,
     _direction_word,
+    _parameter_evidence_badge,
     _parameter_provenance_help,
     build_kpi_explanations,
     get_default_params,
@@ -61,6 +62,13 @@ def test_parameter_provenance_help_uses_registry_plain_language():
     assert "delayed physician inflow" in help_text
     assert "Never apply study-place changes instantly" in help_text
     assert "UI-Hinweis" in help_text
+
+
+def test_parameter_evidence_badge_is_short_and_registry_based():
+    badge = _parameter_evidence_badge("medizinstudienplaetze")
+
+    assert badge == "🟢 Evidenz A · hrk_medical_education, destatis_genesis"
+    assert _parameter_evidence_badge("unregistriert") == "⚪ Evidenz offen · Register fehlt"
 
 
 def test_changed_policy_lever_notes_names_only_changed_scenario_levers():

@@ -347,3 +347,32 @@ No important blocking decision this run. A later UX decision will be whether pro
 
 ### Verification / Git
 Initial verification before log append: `python3 -m pytest -q` passed with 17 tests; `py_compile` passed for app/core/API/registry/provenance/political/tests. Final zip, sync, commit, push pending in this heartbeat.
+
+## 2026-04-29 18:09 Europe/Berlin — Heartbeat: Evidenz-Badges
+
+### Context
+Kleine UI-Klarheit im Sidebar-Parameterpanel: Provenienz soll sichtbar sein, ohne lange Hilfetexte aufzublähen.
+
+### Project Manager
+Priorität: leichte Vertrauenssignale vor größerem Strategy-Mode-Ausbau. Nächstes: weitere Registerabdeckung und Expertenrat-Workflow.
+
+### Designer / UX
+Kurze Evidenz-Badges an Abschnittsanfängen helfen Neueinsteigern, Quellenqualität schneller zu erkennen.
+
+### Creative Agent
+Idee: später ein Ampel-/Badge-System auch in Szenario-Manifeste übernehmen; fit, aber heute nur Sidebar.
+
+### Political Health-System Strategist
+Evidenzgrad sichtbar zu machen reduziert das Risiko, politisch sensible Annahmen als scheinbar sichere Prognosen zu lesen.
+
+### Evidence / Domain
+Badges kommen aus `parameter_registry.py`; keine neuen externen Behauptungen oder Magic Numbers.
+
+### Integrator Decision
+Akzeptiert: `_parameter_evidence_badge()` plus Sidebar-Captions für Demografie, Ärzte-Pipeline und GKV-Finanzierung.
+
+### Question to Alex
+Keine wichtige Entscheidung offen.
+
+### Verification / Git
+Lokal: `python3 -m pytest -q` → 18 passed. Commit/Push folgt nach Sync.
