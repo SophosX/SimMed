@@ -1271,4 +1271,4 @@ Accepted a small core-platform slice: `build_data_readiness_summary(...)`, API `
 Keine wichtige Entscheidung offen.
 
 ### Verification / Git
-Focused tests passed: `14 passed` for data ingestion/API/Learning Page readiness tests. Py-compile passed for touched modules. Smoke check passed for readiness summary guardrail. Commit/push pending in this heartbeat entry until final Git step.
+Focused tests passed: `14 passed` for data ingestion/API/Learning Page readiness tests. Full suite passed: `84 passed`. Py-compile passed for touched modules. Runtime smoke passed with 20 runs × 2 years: `df (60, 30)`, `reg (320, 6)`. Commit `05ee026` pushed to `feat/platform-data-status-foundation`; updated zip at `/opt/data/cache/documents/health_simulation_app_updated.zip`.
