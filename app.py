@@ -2331,6 +2331,8 @@ def main():
         st.session_state["df_reg"] = df_reg
         st.session_state["agg"] = agg
         st.session_state["last_params_hash"] = _params_hash(params)
+        st.session_state["show_results_first"] = True
+        st.success("Simulation fertig. Die Ergebnisse stehen unten zuerst im Dashboard.")
 
         # Szenario speichern
         if save_scenario and szenario_name:
@@ -2347,19 +2349,32 @@ def main():
 
     # ── Tabs ──
     if "agg" in st.session_state:
-        tab0, tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
-            "Lernen",
-            "Dashboard",
-            "Statistiken & Verteilungen",
-            "Zeitreihen",
-            "Regionale Karte",
-            "Szenarien-Vergleich",
-            "Export & Einstellungen",
-        ])
+        results_first = st.session_state.pop("show_results_first", False)
+        if results_first:
+            tab1, tab0, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+                "Ergebnisse",
+                "Lernen",
+                "Statistiken & Verteilungen",
+                "Zeitreihen",
+                "Regionale Karte",
+                "Szenarien-Vergleich",
+                "Export & Einstellungen",
+            ])
+        else:
+            tab0, tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+                "Lernen",
+                "Ergebnisse",
+                "Statistiken & Verteilungen",
+                "Zeitreihen",
+                "Regionale Karte",
+                "Szenarien-Vergleich",
+                "Export & Einstellungen",
+            ])
 
         with tab0:
             render_learning_page()
         with tab1:
+            st.info("Hier sind die wichtigsten Ergebnisse deiner letzten Simulation. Ändere links Parameter und starte erneut, um neue Ergebnisse zu sehen.")
             render_dashboard(st.session_state["agg"], params)
         with tab2:
             render_statistics(st.session_state["df"], st.session_state["agg"])
