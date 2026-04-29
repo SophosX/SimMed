@@ -103,6 +103,11 @@ def test_learning_data_readiness_backlog_prioritizes_safe_data_gates():
     assert {"source_label", "open_parameter_count", "connector_next_action", "guardrail"} <= set(connector)
     assert "SHA256-Manifest" in connector["connector_next_action"]
     assert "keine automatische" in connector["guardrail"]
+    assert backlog["connector_snapshot_requests"]
+    request = backlog["connector_snapshot_requests"][0]
+    assert request["table_code"] in {"12411-0001", "23111-0001"}
+    assert "endpoint_url" in request
+    assert "not a model import" in request["guardrail"]
     assert 1 <= len(backlog["rows"]) <= 5
     first = backlog["rows"][0]
     assert {"Parameter", "Nächstes Gate", "Aktion", "Guardrail"} <= set(first)

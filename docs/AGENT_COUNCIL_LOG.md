@@ -1314,3 +1314,14 @@ Targeted tests: `62 passed`. Full suite: `84 passed`. Py compile passed for core
 - **Integrator Decision:** `build_data_connector_queue(...)` in `data_ingestion.py`, API-Feld `connector_queue` in `/data-readiness-backlog`, Learning-Page-Expander und Tests ergänzt.
 - **Question to Alex if needed:** Keine wichtige Produktentscheidung offen; nächster sicherer Schritt ist der erste echte Destatis/GENESIS-Connector-Slice.
 - **Verification/Git:** 85 Tests grün, py_compile grün, 20-run/2-year Simulation-Smoke grün. Push folgt nach Commit.
+
+## 2026-04-29T21:57Z — Connector-Snapshot-Requests für Daten-Gates
+- Context: Alex priorisiert Core-Plattform; Data-Readiness-Backlog hatte Queue, aber noch keine konkrete sichere Snapshot-Request-Struktur.
+- Project Manager: Kleinster nutzbarer Plattform-Slice: aus Queue konkrete Endpoint/Table/Filename/Guardrail-Requests ableiten, ohne Live-Import.
+- Designer/UX: Learning Page zeigt jetzt neben Connector-Priorität auch konkrete Snapshot-Requests als nächsten klick-/prüfbaren Schritt.
+- Creative Agent: Keine neue Produktmetapher; Fokus auf klaren Daten-Werkbank-Pfad statt weiterer Ergebnis-Snippets.
+- Political/System: Krankenhaus-/Bevölkerungsdaten bleiben Provenienz-Inputs; keine politische Wirkungsbehauptung, keine Modellmutation.
+- Evidence/Domain: GENESIS-Requests sind als Cache-/Connector-Vertrag markiert; Transformationsreview und Quellen-/Dimensionsprüfung bleiben Pflicht. Keine neue Recherche in diesem Lauf.
+- Integrator Decision: data_ingestion.py um ConnectorSnapshotRequest, Destatis/GENESIS-Mappings und build_connector_snapshot_requests erweitert; API und Learning Page exponieren die Requests.
+- Question to Alex if needed: Keine.
+- Verification/Git: 64 fokussierte Tests, py_compile und 20x2 Simulation-Smoke bestanden; Commit/Push folgt.

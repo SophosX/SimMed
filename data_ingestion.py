@@ -13,11 +13,39 @@ from hashlib import sha256
 import json
 from pathlib import Path
 from typing import Literal
+from urllib.parse import urlencode
 
 DataStatus = Literal["aus_daten", "annahme"]
 TransformationStatus = Literal["not_reviewed", "reviewed_no_model_import", "reviewed_model_ready"]
 CACHE_ROOT = Path("data/cache")
 FIXTURE_ROOT = Path("data/fixtures")
+
+
+@dataclass(frozen=True)
+class ConnectorSnapshotRequest:
+    """Read-only connector plan for fetching/caching one authoritative source payload.
+
+    The request describes the exact endpoint/table/output parameters a connector
+    should use before calling `cache_source_payload`. It is intentionally not a
+    model-import object: executing it may create a raw cache artifact, but registry
+    defaults still require transformation review and explicit integration.
+    """
+
+    source_id: str
+    source_label: str
+    endpoint_url: str
+    table_code: str
+    output_parameter_keys: tuple[str, ...]
+    source_period: str
+    suggested_filename: str
+    license_or_terms_note: str
+    transformation_note: str
+    guardrail: str
+
+    def to_dict(self) -> dict:
+        data = asdict(self)
+        data["output_parameter_keys"] = list(self.output_parameter_keys)
+        return data
 
 
 @dataclass(frozen=True)
@@ -72,6 +100,84 @@ def snapshot_payload_hash(payload: bytes) -> str:
     """Return the SHA256 hash used for raw cached source files."""
 
     return sha256(payload).hexdigest()
+
+
+DESTATIS_GENESIS_TABLES = {
+    "bevoelkerung_mio": {
+        "table_code": "12411-0001",
+        "source_period": "latest available year",
+        "suggested_filename": "destatis_genesis_12411_0001_population.csv",
+        "content": "population baseline by age/sex/status dimensions; transformation must document denominator and aggregation before model use",
+    },
+    "krankenhaeuser": {
+        "table_code": "23111-0001",
+        "source_period": "latest available year",
+        "suggested_filename": "destatis_genesis_23111_0001_hospitals.csv",
+        "content": "hospital statistics table candidate; connector execution must verify dimensions and whether the row represents facilities, beds or other hospital-care measures",
+    },
+    "krankenhausbetten": {
+        "table_code": "23111-0001",
+        "source_period": "latest available year",
+        "suggested_filename": "destatis_genesis_23111_0001_hospital_beds.csv",
+        "content": "hospital statistics table candidate; transformation must verify bed denominator, staffing caveat and reporting-year alignment before model use",
+    },
+}
+
+
+def build_destatis_genesis_snapshot_request(parameter_key: str) -> ConnectorSnapshotRequest:
+    """Return the first safe GENESIS download/cache request for a registry parameter.
+
+    This builds the connector contract for live/download work without performing a
+    network call. The endpoint is the Destatis GENESIS table download route; callers
+    still need credentials/terms handling and must cache the raw payload unchanged.
+    """
+
+    if parameter_key not in DESTATIS_GENESIS_TABLES:
+        raise ValueError(f"No Destatis/GENESIS connector mapping for parameter '{parameter_key}'")
+    table = DESTATIS_GENESIS_TABLES[parameter_key]
+    table_code = table["table_code"]
+    endpoint = "https://www-genesis.destatis.de/genesisWS/rest/2020/data/tablefile"
+    query = urlencode({"name": table_code, "area": "all", "format": "csv"})
+    return ConnectorSnapshotRequest(
+        source_id="destatis_genesis",
+        source_label="Destatis/GENESIS",
+        endpoint_url=f"{endpoint}?{query}",
+        table_code=table_code,
+        output_parameter_keys=(parameter_key,),
+        source_period=table["source_period"],
+        suggested_filename=table["suggested_filename"],
+        license_or_terms_note="Destatis/GENESIS live/download source; verify API credentials, terms and redistribution before publishing raw data.",
+        transformation_note=(
+            f"Raw GENESIS table {table_code} is cache/provenance input for {parameter_key}; "
+            f"{table['content']}. No automatic registry or model mutation."
+        ),
+        guardrail="Connector request is not a model import, official forecast, or policy-effect proof; transformation review and explicit integration remain required.",
+    )
+
+
+def build_connector_snapshot_requests(backlog_items: list[dict], *, per_source_limit: int = 2) -> list[dict]:
+    """Create concrete read-only connector requests for supported snapshot-needed backlog items."""
+
+    requests: list[dict] = []
+    per_source_counts: dict[str, int] = {}
+    for item in backlog_items:
+        if item.get("next_gate") != "snapshot_needed":
+            continue
+        source_ids = item.get("source_ids", [])
+        if "destatis_genesis" not in source_ids:
+            continue
+        if per_source_counts.get("destatis_genesis", 0) >= per_source_limit:
+            continue
+        try:
+            request = build_destatis_genesis_snapshot_request(item["parameter_key"])
+        except ValueError:
+            continue
+        data = request.to_dict()
+        data["parameter_label"] = item.get("label", item["parameter_key"])
+        data["next_safe_action"] = "Payload über endpoint_url holen, unverändert mit cache_source_payload cachen, danach Transformationsreview schreiben."
+        requests.append(data)
+        per_source_counts["destatis_genesis"] = per_source_counts.get("destatis_genesis", 0) + 1
+    return requests
 
 
 def cache_source_payload(

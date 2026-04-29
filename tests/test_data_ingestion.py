@@ -2,6 +2,7 @@ import json
 
 from data_ingestion import (
     ReviewedTransformation,
+    build_connector_snapshot_requests,
     build_data_connector_queue,
     build_data_passport_rows,
     build_data_readiness_backlog,
@@ -337,3 +338,39 @@ def test_data_connector_queue_groups_snapshot_work_by_authoritative_source(tmp_p
     assert "SHA256-Manifest" in queue[0]["connector_next_action"]
     assert "keine automatische Registry- oder Modellmutation" in queue[0]["guardrail"]
     assert "Telemedizin-Nutzung" not in queue[0]["example_parameters"]
+
+
+def test_connector_snapshot_requests_expose_first_safe_destatis_cache_contract(tmp_path):
+    parameters = [
+        {
+            "key": "bevoelkerung_mio",
+            "label": "Bevölkerung",
+            "unit": "million people",
+            "evidence_grade": "A",
+            "source_ids": ["destatis_genesis"],
+            "data_status": "aus_daten",
+        },
+        {
+            "key": "unknown_destatis_parameter",
+            "label": "Noch nicht gemappt",
+            "unit": "",
+            "evidence_grade": "A",
+            "source_ids": ["destatis_genesis"],
+            "data_status": "aus_daten",
+        },
+    ]
+    backlog = build_data_readiness_backlog(parameters, cache_root=tmp_path)
+
+    requests = build_connector_snapshot_requests(backlog)
+
+    assert len(requests) == 1
+    request = requests[0]
+    assert request["source_id"] == "destatis_genesis"
+    assert request["parameter_label"] == "Bevölkerung"
+    assert request["table_code"] == "12411-0001"
+    assert "genesisWS/rest/2020/data/tablefile" in request["endpoint_url"]
+    assert "format=csv" in request["endpoint_url"]
+    assert request["output_parameter_keys"] == ["bevoelkerung_mio"]
+    assert "cache_source_payload" in request["next_safe_action"]
+    assert "No automatic registry or model mutation" in request["transformation_note"]
+    assert "not a model import" in request["guardrail"]
