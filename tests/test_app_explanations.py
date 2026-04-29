@@ -13,6 +13,7 @@ from app import (
     build_kpi_assumption_trace,
     build_kpi_drilldown_items,
     build_kpi_explanations,
+    build_kpi_result_story,
     build_landing_hero_content,
     build_political_lever_detail_sections,
     build_political_result_checkpoints,
@@ -1001,6 +1002,24 @@ def test_result_explorer_topics_include_ordered_reading_paths():
     assert "Einheiten" in combined
     assert "Vote-Forecast" in combined
     assert "Lobbying-Empfehlung" in combined
+
+def test_kpi_result_story_answers_core_user_journey_without_new_claims():
+    agg, params = _sample_report_inputs()
+    item = {item["key"]: item for item in build_kpi_drilldown_items(agg, params)}["wartezeit_fa"]
+
+    story = build_kpi_result_story(item)
+    combined = " ".join(story.values())
+
+    assert story["headline"].startswith("Facharzt-Wartezeit")
+    assert "Start" in story["what_changed"] and "Ende" in story["what_changed"]
+    assert "Warum im Modell" not in story["why_it_changed"]  # value is answer text, not another heading
+    assert "Telemedizin" in story["changed_levers"]
+    assert "Effektstärke" in story["effect_strength"]
+    assert "Annahme" in story["assumption_checkpoint"] or "Caveat" in story["assumption_checkpoint"]
+    assert "Nächster Klick" in story["next_inspection"]
+    assert "keine amtliche Prognose" in story["scope_caveat"]
+    assert "Vote-Forecast" not in combined  # KPI story stays model-result focused, not political forecasting
+
 
 def test_political_result_checkpoints_link_friction_to_existing_kpi_targets():
     from political_feasibility import assess_political_feasibility

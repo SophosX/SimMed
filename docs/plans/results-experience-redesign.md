@@ -100,6 +100,19 @@ Small implementation slice:
 
 Guardrail: this is navigation/orchestration only. Do not create new empirical claims, new model effects, or a hidden political score; every answer must be assembled from existing explanation structures and caveats.
 
+## 2026-04-29 next slice: KPI result story inside each detail card
+
+Problem: KPI expanders already contain rich information, but a first-time reader still has to assemble the answer from several subsections. Alex's requested journey should be visible at the top of every KPI detail: what changed, why in the model, how strong, which changed levers/assumptions matter, and what to inspect next.
+
+Small implementation slice:
+
+1. Add a pure `build_kpi_result_story(item)` helper in `app.py` that condenses an existing KPI drill-down item into those user questions.
+2. Reuse only existing fields: observation, drivers, matching changed levers, assumption trace, effect strength, next step and scope caveat.
+3. Render this short story before the longer checklist/details inside each KPI expander, so users get the answer first and can then audit it.
+4. Add a focused test guarding that the story includes Start/Ende, Effektstärke, matched changed levers, an assumption checkpoint, next click, and the model/not-official-forecast caveat.
+
+Guardrail: no new empirical/model/political claims. This is an information-architecture slice that makes existing structured explanation fields easier to read.
+
 ## Verification
 
 Run:

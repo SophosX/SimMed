@@ -959,3 +959,16 @@ Local verification before sync: `python3 -m pytest -q` → 59 passed; py_compile
 - **Integrator Decision:** Added `build_political_result_checkpoints(...)`, rendered matched checkpoints inside political lever expanders, and added a regression test for Medizinstudienplätze plus unmatched safe no-op.
 - **Question to Alex if needed:** Keine neue Produktentscheidung offen; next safe work can continue with report/navigation coherence.
 - **Verification/Git:** Local tests and smoke passed before sync/commit.
+
+
+## 2026-04-29T19:13:05+00:00 — KPI result story slice
+
+- Context: Heartbeat focus remains deeper, coherent results experience. Before touching UX, updated `docs/plans/results-experience-redesign.md` with the small KPI-result-story slice.
+- Project Manager: Chose a reversible information-architecture slice rather than new model logic: make each KPI detail answer the user's five core questions immediately.
+- Designer/UX: Added a short story at the top of every KPI expander: what changed, why in the model, changed levers, strength, assumption/caveat, next click; longer details remain available below.
+- Creative Agent: Product-fit idea was an “answer first, audit next” pattern; accepted because it improves newcomer comprehension without adding spectacle or unsupported claims.
+- Political Health-System Strategist: No new stakeholder or feasibility claims; political caveats remain isolated in the existing political rubric.
+- Evidence/Domain: No new external claims or parameters. The helper reuses existing KPI observations, model-driver copy, assumption traces, registry evidence rows and the not-official-forecast caveat.
+- Integrator Decision: Implemented `build_kpi_result_story(item)` and rendered it inside `render_kpi_deep_dive`; added focused regression coverage.
+- Question to Alex if needed: No important decision open in this slice.
+- Verification/Git: Local tests and smoke passed; sync/commit/push status follows in heartbeat.

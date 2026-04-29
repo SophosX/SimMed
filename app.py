@@ -2548,6 +2548,43 @@ def build_kpi_drilldown_items(agg: pd.DataFrame, params: dict) -> List[Dict[str,
     return items
 
 
+def build_kpi_result_story(item: Dict[str, Any]) -> Dict[str, str]:
+    """Condense one KPI drill-down into the user's core result questions.
+
+    This is presentation logic only: every field is assembled from the existing
+    drill-down item, matching changed-lever bridge and caveats. It does not add
+    new model effects, empirical claims or political forecasts.
+    """
+    matching_levers = item.get("matching_changed_levers") or []
+    if matching_levers:
+        changed_levers = "; ".join(
+            f"{lever['label']}: {lever['change']} Wirkpfad: {lever['model_path']}"
+            for lever in matching_levers
+        )
+    else:
+        changed_levers = item.get("lever_context", "Keine direkte geänderte Stellschraube zugeordnet.")
+
+    assumption_trace = item.get("assumption_trace") or []
+    if assumption_trace:
+        assumption_checkpoint = "; ".join(
+            f"{check['label']} — {check['evidence']}; Annahme/Caveat: {check['registry_caveat']}"
+            for check in assumption_trace
+        )
+    else:
+        assumption_checkpoint = f"Annahme/Caveat: {item.get('assumption', 'Diese Kennzahl nur mit Nachbar-KPIs und Modellannahmen lesen.')}"
+
+    return {
+        "headline": f"{item.get('label', 'KPI')}: {item.get('effect_strength', 'Signal')} im Modell",
+        "what_changed": item.get("observation", "Keine Start-/Ende-Beobachtung verfügbar."),
+        "why_it_changed": item.get("drivers", "Keine Modelltreiber-Beschreibung verfügbar."),
+        "changed_levers": changed_levers,
+        "effect_strength": f"Effektstärke: {item.get('effect_strength', 'noch nicht bewertet')}; Prozentänderung: {float(item.get('pct_delta', 0.0)):+.1f}%.",
+        "assumption_checkpoint": assumption_checkpoint,
+        "next_inspection": f"Nächster Klick: {item.get('next_step', 'Zeitverlauf und verwandte KPI-Details prüfen.')}",
+        "scope_caveat": "SimMed erklärt einen Modell-/Referenzpfad, keine amtliche Prognose und keine gesicherte Realwelt-Kausalität.",
+    }
+
+
 def render_kpi_deep_dive(agg: pd.DataFrame, params: dict):
     """Explains KPI cards as a coherent reading path below the dashboard."""
     st.markdown("---")
@@ -2557,6 +2594,15 @@ def render_kpi_deep_dive(agg: pd.DataFrame, params: dict):
     for i, item in enumerate(build_kpi_drilldown_items(agg, params)):
         with cols[i % 2]:
             with st.expander(item["title"], expanded=False):
+                story = build_kpi_result_story(item)
+                st.markdown(f"**Kurzfassung:** {story['headline']}")
+                st.markdown(f"- **Was hat sich verändert?** {story['what_changed']}")
+                st.markdown(f"- **Warum im Modell?** {story['why_it_changed']}")
+                st.markdown(f"- **Geänderte Hebel:** {story['changed_levers']}")
+                st.markdown(f"- **Wie stark?** {story['effect_strength']}")
+                st.info(f"**Annahme/Caveat:** {story['assumption_checkpoint']}")
+                st.success(story["next_inspection"])
+                st.caption(story["scope_caveat"])
                 st.markdown("**Schnellantworten zu dieser Kennzahl:**")
                 for row in build_kpi_answer_checklist(item):
                     st.markdown(f"- **{row['question']}** {row['answer']}")
