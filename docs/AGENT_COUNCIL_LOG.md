@@ -1734,4 +1734,4 @@ Accepted: add `build_next_data_readiness_actions(...)`, expose `GET /data-readin
 Keine.
 
 ### Verification / Git
-Focused tests passed for the new API/UI helper; full suite passed (`106 passed`), py_compile passed, and simulation smoke passed (`df (60, 30)`, `reg (320, 6)`). Commit/push status updated below after git sync.
+Focused tests passed for the new API/UI helper; full suite passed (`106 passed`), py_compile passed, and simulation smoke passed (`df (60, 30)`, `reg (320, 6)`). Committed and pushed on branch `feat/platform-data-status-foundation` as `fc643dd` (`Add data readiness next actions`); zip refreshed at `/opt/data/cache/documents/health_simulation_app_updated.zip`.
