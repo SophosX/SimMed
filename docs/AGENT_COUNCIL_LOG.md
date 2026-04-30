@@ -6017,3 +6017,33 @@ Keine wichtige Entscheidung offen. Sicher weiterarbeiten: als Nächstes die daru
 Vor Commit: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 64 passed; `python3 -m pytest -q` → 291 passed; `py_compile` für zentrale Module; 50-run Smoke-Test → OK. Git-Commit/Push wird nach Sync im GitHub-Clone dokumentiert.
 
 Nachtrag Verification/Git: Commit `a344354` (`Clarify causal result first screen`) wurde auf `origin/main` gepusht. `git show --name-only --oneline -1` bestätigt: `app.py`, `result_causality.py`, `tests/test_result_causality.py`, `docs/AGENT_COUNCIL_LOG.md`.
+
+
+## 2026-04-30 20:10 Europe/Berlin — Heartbeat: Ein Ergebnisblock statt wiederholter First-View
+
+### Context
+Alex wollte die Ergebnis-Seite als eine klare, seriöse Lesefassung. Dieser Lauf hat die erste Streamlit-Ausgabe weiter beruhigt: Der öffentliche Packet-Vertrag liefert weiter Headline, kurze Antwort, Abschnitte, relevante KPIs und nächsten Prüfschritt; die UI rendert den Haupttext nun als einen einzigen Markdown-Briefingblock statt dieselben Abschnitte nochmals einzeln zusammenzusetzen.
+
+### Project Manager
+Priorität: Redundanz im ersten Screen senken. Risiko: ältere Audit-/Legacy-Felder werden noch gebraucht, dürfen aber nicht wieder nach oben rutschen. Nächster Task: visuelle Prüfung der Live-Seite und danach die geschlossene Detailprüfung weiter aufräumen.
+
+### Designer / UX
+Die erste Ansicht ist jetzt näher an einem Briefing: ein Textfluss von Ergebnis bis nächstem Prüfschritt, danach nur wenige kompakte Kennzahlkarten. Der Follow-up-Hinweis wird nicht zusätzlich als zweite Info-Box wiederholt, weil er bereits im Briefing steht.
+
+### Creative Agent
+Spätere Idee: aus genau diesem Markdown-Briefing eine Export-/Share-Karte machen. Fit: gut, weil es die neue Hierarchie wiederverwendet; noch nicht jetzt, damit die Ergebnis-Seite nicht erneut wächst.
+
+### Political Health-System Strategist
+Politische Bewertung bleibt bewusst unter der fachlichen Erstlesung. Bei weniger Medizinstudienplätzen ist die richtige Reihenfolge weiterhin: verzögerter Pipeline-Effekt, relevante Versorgungskennzahlen, Puffer/Drucksignale, dann erst politische Einordnung.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Keine neuen Realweltbehauptungen, Parameter oder Modellmechanismen; nur Kommunikations-/Rendervertrag. Evidenz- und Annahmengrenzen bleiben in der geschlossenen Vertiefung verfügbar.
+
+### Integrator Decision
+Akzeptiert: `public_result_view.primary_render_mode = single_markdown_briefing`, `first_screen_render_blocks` beginnt mit `briefing_markdown`, und `render_result_causal_overview(...)` nutzt diesen Block als Quelle der ersten Lesefassung. Modell-Dynamik unverändert.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; sicher weiter mit visueller Qualitätsprüfung und Reduktion der Detail-Dichte.
+
+### Verification / Git
+TDD: neuer Test zunächst rot wegen fehlendem `primary_render_mode`, danach grün. Verifiziert: `pytest tests/test_result_causality.py ... tests/test_app_explanations.py::test_result_causal_overview_exposes_briefing_quality_checks_for_first_view -q` → 65 passed; `pytest -q` → 291 passed; `py_compile` zentrale Module; 50-run Smoke-Test mit halbierten Medizinstudienplätzen → OK. Commit `d87a1eb` (`Clarify result first screen rendering`) wurde auf `origin/main` gepusht.
