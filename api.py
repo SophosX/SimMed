@@ -381,6 +381,35 @@ def get_data_readiness_registry_integration_decision_record(limit: int = 3) -> d
     }
 
 
+@api.get("/data-readiness/registry-integration-handoff")
+def get_data_readiness_registry_integration_handoff(limit: int = 3) -> dict:
+    """Return the focused read-only handoff packet before any Registry branch work."""
+
+    if limit < 1 or limit > 10:
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "status": "invalid_data_readiness_registry_integration_handoff_limit",
+                "limit": limit,
+                "guardrail": "Limit muss zwischen 1 und 10 liegen; kein Branch und keine Registry-/Modelländerung wurde ausgeführt.",
+            },
+        )
+    parameters = list_parameters()
+    items = build_data_readiness_backlog(parameters)
+    passport_rows = build_data_passport_rows(parameters)
+    preflight = build_data_readiness_integration_preflight(items, passport_rows, limit=10)
+    plan = build_data_readiness_integration_plan(preflight, limit=limit)
+    preview = build_data_readiness_registry_diff_preview(plan, parameters)
+    brief = build_data_readiness_integration_pr_brief(plan)
+    decision_record = build_data_readiness_registry_integration_decision_record(preview, brief)
+    return {
+        "status": "data_readiness_registry_integration_handoff_not_applied",
+        "guardrail": "Handoff ist read-only/status-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+        "summary": build_data_readiness_summary(items),
+        "registry_integration_handoff_packet": build_data_readiness_registry_integration_handoff_packet(decision_record),
+    }
+
+
 @api.get("/data-readiness/{parameter_key}")
 def get_parameter_data_readiness(parameter_key: str) -> dict:
     """Return the complete safe data workflow for one parameter.

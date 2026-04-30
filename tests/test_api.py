@@ -530,3 +530,27 @@ def test_api_exposes_registry_integration_decision_record_without_apply():
     assert "Go/Hold/Reject" in handoff_population["definition_of_done_before_branch"][0]
     assert "kein Branch" in handoff["guardrail"]
     assert "keine Registry-/Modellmutation" in decision["guardrail"]
+
+
+
+def test_api_exposes_focused_registry_integration_handoff_without_apply():
+    client = TestClient(api)
+    seed_response = client.post("/data-fixtures/seed-reference-review-demo")
+    assert seed_response.status_code == 200
+
+    response = client.get("/data-readiness/registry-integration-handoff?limit=3")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "data_readiness_registry_integration_handoff_not_applied"
+    assert "kein Branch" in body["guardrail"]
+    assert "keine Registry-/Modellmutation" in body["guardrail"]
+    handoff = body["registry_integration_handoff_packet"]
+    assert handoff["title"].startswith("Registry-Integrations-Handoff")
+    population = next(row for row in handoff["rows"] if row["parameter_key"] == "bevoelkerung_mio")
+    assert population["copyable_status_command"] == "GET /data-readiness/bevoelkerung_mio"
+    assert population["branch_name_if_go"] == "feat/integrate-reviewed-bevoelkerung_mio"
+    assert population["missing_checks_before_go"] == []
+    assert any("separat" in item.lower() for item in population["definition_of_done_before_branch"])
+    assert "kein Branch" in handoff["guardrail"]
+    assert "execute=true" in handoff["guardrail"]

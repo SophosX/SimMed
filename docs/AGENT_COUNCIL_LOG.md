@@ -2031,3 +2031,32 @@ Keine wichtige Produktentscheidung offen; safe default remains Hold unless all c
 
 ### Verification / Git
 Focused tests passed: handoff helper, API decision endpoint, Learning Page backlog. Full suite passed: `125 passed`. Py-compile passed for touched files. Runtime smoke passed: 20 runs × 2 years → df `(60, 30)`, regional `(320, 6)`. Commit/push pending in this heartbeat.
+
+## 2026-04-30 02:29 Europe/Berlin — Heartbeat: fokussierter Registry-Handoff-Endpunkt
+
+### Context
+Alex hat priorisiert, dass Herzschläge zuerst Core-Plattform ändern. Dieser Lauf blieb im Datenreife-/Provenance-Track und ergänzte einen fokussierten API-Zugang für den Registry-Integrations-Handoff.
+
+### Project Manager
+Priorität: den letzten Schritt vor einer späteren Registry-/Modell-PR operativ klarer machen, ohne automatische Mutation. Risiko: zu viele Statusobjekte sind nur in Aggregate-Endpunkten versteckt. Nächste Tasks: Learning-Page-Verlinkung auf den fokussierten Handoff, danach echte Review-/Diff-Operator-UX weiter verdichten.
+
+### Designer / UX
+Ein fokussierter Endpunkt ist für Agenten/Operatoren leichter zu erklären als ein großer Decision-Record-Response: “Was muss ich vor einem Branch prüfen?” bekommt nun eine direkte Route.
+
+### Creative Agent
+Idee: später ein “Go/Hold/Reject”-Klemmbrett pro Parameter mit Ampel, Kopierbefehl und Definition of Done. Fit: gut für sichere Arbeitsübergabe; noch nicht als Button/Mutation umsetzen.
+
+### Political Health-System Strategist
+Die Handoff-Schicht verhindert, dass datenbasierte Parameteränderungen wie politische oder amtliche Fakten wirken. Das ist wichtig, bevor SimMed in Policy-Briefings als Entscheidungsunterstützung genutzt wird.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Der Guardrail bleibt: Review/Diff/Handoff sind kein Wirkungsbeweis, keine amtliche Prognose und keine Registry-/Modellintegration.
+
+### Integrator Decision
+Akzeptiert: `GET /data-readiness/registry-integration-handoff` als read-only/status-only API, bewusst vor der dynamischen `{parameter_key}`-Route platziert. Keine UI-Mutation, kein execute=true, kein Branch.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; nächster sicherer Schritt ist UX/Operator-Verlinkung statt Modellwert-Änderung.
+
+### Verification / Git
+Fokustest: `/opt/data/projects/health_simulation_app/source/.venv/bin/python -m pytest tests/test_api.py::test_api_exposes_focused_registry_integration_handoff_without_apply -q` → 1 passed. Full suite: `126 passed`. Py-compile für Kernmodule/API/Test bestanden. Runtime-Smoke: 20 Runs × 2 Jahre → df `(60, 30)`, regional `(320, 6)`. Commit/Push folgt.
