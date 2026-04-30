@@ -522,6 +522,12 @@ def test_api_exposes_registry_integration_decision_record_without_apply():
     assert population["branch_name_if_go"] == "feat/integrate-reviewed-bevoelkerung_mio"
     assert any(option.startswith("Hold:") for option in population["safe_options"])
     assert "kein Branch" in population["guardrail"]
+    template = body["registry_integration_decision_template"]
+    assert template["title"].startswith("Ausfüllvorlage")
+    template_population = next(row for row in template["rows"] if row["parameter_key"] == "bevoelkerung_mio")
+    assert template_population["allowed_decisions"] == ["Go", "Hold", "Reject"]
+    assert "decision_rationale" in " ".join(template_population["decision_fields_to_fill"])
+    assert "keine Registry-/Modellmutation" in template_population["guardrail"]
     handoff = body["registry_integration_handoff_packet"]
     assert handoff["title"].startswith("Registry-Integrations-Handoff")
     handoff_population = next(row for row in handoff["rows"] if row["parameter_key"] == "bevoelkerung_mio")
@@ -531,6 +537,28 @@ def test_api_exposes_registry_integration_decision_record_without_apply():
     assert "kein Branch" in handoff["guardrail"]
     assert "keine Registry-/Modellmutation" in decision["guardrail"]
 
+
+
+def test_api_exposes_focused_registry_integration_decision_template_without_apply():
+    client = TestClient(api)
+    seed_response = client.post("/data-fixtures/seed-reference-review-demo")
+    assert seed_response.status_code == 200
+
+    response = client.get("/data-readiness/registry-integration-decision-template?limit=3")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "data_readiness_registry_integration_decision_template_not_applied"
+    assert "kein Branch" in body["guardrail"]
+    assert "keine Registry-/Modellmutation" in body["guardrail"]
+    template = body["registry_integration_decision_template"]
+    assert template["title"].startswith("Ausfüllvorlage")
+    population = next(row for row in template["rows"] if row["parameter_key"] == "bevoelkerung_mio")
+    assert population["allowed_decisions"] == ["Go", "Hold", "Reject"]
+    assert population["branch_name_if_go"] == "feat/integrate-reviewed-bevoelkerung_mio"
+    assert "GET /data-readiness/bevoelkerung_mio" in population["evidence_routes_to_open"]
+    assert "decision_rationale" in " ".join(population["decision_fields_to_fill"])
+    assert "keine Entscheidungsspeicherung" in population["guardrail"]
 
 
 def test_api_exposes_focused_registry_integration_handoff_without_apply():

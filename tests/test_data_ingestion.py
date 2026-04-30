@@ -16,6 +16,7 @@ from data_ingestion import (
     build_data_readiness_platform_brief,
     build_data_readiness_registry_diff_preview,
     build_data_readiness_registry_integration_decision_record,
+    build_data_readiness_registry_integration_decision_template,
     build_data_readiness_registry_integration_handoff_packet,
     build_data_readiness_summary,
     build_next_data_readiness_actions,
@@ -887,6 +888,47 @@ def test_registry_integration_decision_record_requires_human_go_hold_reject():
     assert blocked["status"] == "blocked_before_human_go_no_go"
     assert blocked["checks"]["pr_brief_available"] is False
     assert "keine Registry-/Modellmutation" in decision["guardrail"]
+
+
+def test_registry_integration_decision_template_is_auditable_and_read_only():
+    decision_record = {
+        "rows": [
+            {
+                "parameter_key": "bevoelkerung_mio",
+                "label": "Bevölkerung",
+                "status": "human_go_no_go_required_before_pr",
+                "checks": {
+                    "reviewed_value_present": True,
+                    "source_snapshot_sha256_present": True,
+                    "unit_matches_registry": True,
+                    "within_registry_bounds": True,
+                    "pr_brief_available": True,
+                },
+                "branch_name_if_go": "feat/integrate-reviewed-bevoelkerung_mio",
+                "recommended_default": "Hold, falls irgendein Check fehlt; Go nur vollständig.",
+                "safe_options": ["Go", "Hold", "Reject"],
+            }
+        ]
+    }
+
+    template = build_data_readiness_registry_integration_decision_template(decision_record)
+
+    assert template["title"].startswith("Ausfüllvorlage")
+    assert template["summary"] == {"decision_rows_seen": 1, "template_rows": 1, "go_eligible_rows": 1}
+    row = template["rows"][0]
+    assert row["parameter_key"] == "bevoelkerung_mio"
+    assert row["allowed_decisions"] == ["Go", "Hold", "Reject"]
+    assert row["recommended_default"].startswith("Hold")
+    assert row["decision_fields_to_fill"] == [
+        "decision: Go | Hold | Reject",
+        "decision_rationale: konkrete Begründung mit Quelle/Methode/Unsicherheit",
+        "decided_by: Name/Rolle der verantwortlichen Person",
+        "decided_at: ISO-Datum/Zeit",
+        "follow_up: nächster sicherer Schritt",
+    ]
+    assert "GET /data-readiness/bevoelkerung_mio" in row["evidence_routes_to_open"]
+    assert "kein Branch" in template["guardrail"]
+    assert "keine Registry-/Modellmutation" in row["guardrail"]
 
 
 def test_registry_integration_handoff_packet_is_copy_safe_and_read_only():

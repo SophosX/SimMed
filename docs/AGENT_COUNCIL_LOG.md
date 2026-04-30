@@ -2060,3 +2060,32 @@ Keine wichtige Entscheidung offen; nächster sicherer Schritt ist UX/Operator-Ve
 
 ### Verification / Git
 Fokustest: `/opt/data/projects/health_simulation_app/source/.venv/bin/python -m pytest tests/test_api.py::test_api_exposes_focused_registry_integration_handoff_without_apply -q` → 1 passed. Full suite: `126 passed`. Py-compile für Kernmodule/API/Test bestanden. Runtime-Smoke: 20 Runs × 2 Jahre → df `(60, 30)`, regional `(320, 6)`. Commit/Push folgt.
+
+## 2026-04-30 02:35 Europe/Berlin — Heartbeat: Registry-Decision-Template
+
+### Context
+Plattform-Track priorisiert: Data-Readiness ist bis Registry-Diff/PR-Brief/Handoff vorhanden; fehlte noch eine auditable Ausfüllvorlage, damit ein Mensch vor jeder Registry-/Modellintegration Go/Hold/Reject plus Begründung dokumentiert.
+
+### Project Manager
+Priorität: Datenintegration weiterhin sicher voranbringen, ohne schon Modellwerte zu ändern. Nächste Tasks: Template in Learning Page sichtbar machen, danach echte Decision-Record-Persistenz nur nach Alex-Entscheidung planen.
+
+### Designer / UX
+Die Vorlage übersetzt technische Checks in konkrete Felder: Entscheidung, Begründung, Entscheider/Rolle, Zeit und Follow-up. Das hilft Erstnutzern/Operatoren mehr als nur ein weiterer Status-Endpunkt.
+
+### Creative Agent
+Idee: später aus dieser Vorlage einen signierbaren „Daten-Gate-Zettel“ pro Parameter machen. Fit: erhöht Vertrauen und Nachvollziehbarkeit; heute nur read-only, keine Speicherung.
+
+### Political Health-System Strategist
+Für politisch sensible Gesundheitsdaten ist ein expliziter Hold-Default sinnvoll: auch ein technisch grüner Wert wird nicht still zum Modellfakt.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Änderung nutzt bestehende Review/SHA256/Unit/Bounds/PR-Brief Checks und macht keine neuen Sachbehauptungen.
+
+### Integrator Decision
+Akzeptiert: `build_data_readiness_registry_integration_decision_template(...)` plus focused API `GET /data-readiness/registry-integration-decision-template`; beide bleiben read-only/status-only.
+
+### Question to Alex
+Keine.
+
+### Verification / Git
+Gezielte Regressionstests: 5 passed. Commit/Push folgt nach Full-Test/Packaging in diesem Lauf.

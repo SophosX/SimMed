@@ -1314,6 +1314,58 @@ def build_data_readiness_registry_diff_preview(
 
 
 
+def build_data_readiness_registry_integration_decision_template(decision_record: dict) -> dict:
+    """Return an auditable, copy-safe template for the human Go/Hold/Reject step.
+
+    The decision record says what must be decided. This template says exactly which
+    fields a human/integrator should fill before any separate Registry integration
+    branch exists. It deliberately stores no decision and performs no side effect.
+    """
+
+    rows: list[dict] = []
+    for idx, row in enumerate(decision_record.get("rows", []), start=1):
+        parameter_key = row["parameter_key"]
+        rows.append({
+            "rank": idx,
+            "parameter_key": parameter_key,
+            "label": row.get("label", parameter_key),
+            "current_status": row.get("status", "blocked_before_human_go_no_go"),
+            "allowed_decisions": ["Go", "Hold", "Reject"],
+            "recommended_default": row.get("recommended_default", "Hold, bis alle Checks vollständig sind."),
+            "decision_fields_to_fill": [
+                "decision: Go | Hold | Reject",
+                "decision_rationale: konkrete Begründung mit Quelle/Methode/Unsicherheit",
+                "decided_by: Name/Rolle der verantwortlichen Person",
+                "decided_at: ISO-Datum/Zeit",
+                "follow_up: nächster sicherer Schritt",
+            ],
+            "evidence_routes_to_open": [
+                f"GET /data-readiness/{parameter_key}",
+                "GET /data-readiness/registry-diff-preview",
+                "GET /data-readiness/integration-pr-brief",
+            ],
+            "branch_name_if_go": row.get("branch_name_if_go"),
+            "go_only_if_all_checks_true": row.get("checks", {}),
+            "safe_options": row.get("safe_options", []),
+            "guardrail": "Ausfüllvorlage ist read-only: keine Entscheidungsspeicherung, kein Branch, kein execute=true, keine Cache-/Review-Aktion, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+        })
+    return {
+        "title": "Ausfüllvorlage für Registry-Integrationsentscheidung",
+        "plain_language_note": (
+            "Diese Vorlage verhindert stille Modelländerungen: Eine verantwortliche Person muss Go, "
+            "Hold oder Reject plus Begründung dokumentieren, bevor ein separater PR beginnt."
+        ),
+        "summary": {
+            "decision_rows_seen": len(decision_record.get("rows", [])),
+            "template_rows": len(rows),
+            "go_eligible_rows": sum(1 for row in rows if row["current_status"] == "human_go_no_go_required_before_pr"),
+        },
+        "rows": rows,
+        "guardrail": "Read-only/Template-only: kein Branch, kein execute=true, keine Datenaktion, keine Review-Erzeugung, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+    }
+
+
+
 def build_data_readiness_registry_integration_handoff_packet(decision_record: dict) -> dict:
     """Create a copy-safe operator handoff from the Go/Hold/Reject decision record.
 

@@ -29,6 +29,7 @@ from data_ingestion import (
     build_data_readiness_registry_diff_preview,
     build_data_readiness_platform_brief,
     build_data_readiness_registry_integration_decision_record,
+    build_data_readiness_registry_integration_decision_template,
     build_data_readiness_registry_integration_handoff_packet,
     build_data_readiness_gate_plan,
     build_data_readiness_summary,
@@ -377,7 +378,37 @@ def get_data_readiness_registry_integration_decision_record(limit: int = 3) -> d
         "registry_diff_preview": preview,
         "integration_pr_brief": brief,
         "registry_integration_decision_record": decision_record,
+        "registry_integration_decision_template": build_data_readiness_registry_integration_decision_template(decision_record),
         "registry_integration_handoff_packet": build_data_readiness_registry_integration_handoff_packet(decision_record),
+    }
+
+
+@api.get("/data-readiness/registry-integration-decision-template")
+def get_data_readiness_registry_integration_decision_template(limit: int = 3) -> dict:
+    """Return the read-only fill-in template for the human Go/Hold/Reject decision."""
+
+    if limit < 1 or limit > 10:
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "status": "invalid_data_readiness_registry_integration_decision_template_limit",
+                "limit": limit,
+                "guardrail": "Limit muss zwischen 1 und 10 liegen; keine Entscheidung, kein Branch und keine Registry-/Modelländerung wurde ausgeführt.",
+            },
+        )
+    parameters = list_parameters()
+    items = build_data_readiness_backlog(parameters)
+    passport_rows = build_data_passport_rows(parameters)
+    preflight = build_data_readiness_integration_preflight(items, passport_rows, limit=10)
+    plan = build_data_readiness_integration_plan(preflight, limit=limit)
+    preview = build_data_readiness_registry_diff_preview(plan, parameters)
+    brief = build_data_readiness_integration_pr_brief(plan)
+    decision_record = build_data_readiness_registry_integration_decision_record(preview, brief)
+    return {
+        "status": "data_readiness_registry_integration_decision_template_not_applied",
+        "guardrail": "Decision-Template ist read-only/status-only: keine Entscheidungsspeicherung, kein Branch, kein execute=true, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+        "summary": build_data_readiness_summary(items),
+        "registry_integration_decision_template": build_data_readiness_registry_integration_decision_template(decision_record),
     }
 
 
