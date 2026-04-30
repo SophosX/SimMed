@@ -4778,4 +4778,4 @@ Akzeptiert: `public_result_view.audit_sections` als strukturierter Vertrag zwisc
 Keine wichtige Entscheidung offen. Sicher weiter: Ergebnis-First-View weiter reduzieren und visuell als ein Briefing ausarbeiten.
 
 ### Verification / Git
-Lokal grün: `python3 -m pytest -q` (267 passed), `py_compile` für zentrale Dateien, Smoke-Test `run_simulation(... n_runs=50, n_years=3)` plus `build_causal_result_packet(...)`. Git-Sync/Commit/Push folgt in diesem Lauf.
+Lokal grün: `python3 -m pytest -q` (267 passed), `py_compile` für zentrale Dateien, Smoke-Test `run_simulation(... n_runs=50, n_years=3)` plus `build_causal_result_packet(...)`. Commit `9ee3686` (`Clarify result briefing audit sections`) wurde auf `origin/main` gepusht; `git show --name-only --oneline -1` bestätigte `app.py`, `result_causality.py`, `tests/test_result_causality.py` und diesen Council Log.
