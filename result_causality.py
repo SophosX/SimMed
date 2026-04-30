@@ -1024,9 +1024,9 @@ def build_causal_result_packet(
     ) or "keine priorisierten Kennzahlen verfügbar"
     if study_places_changed:
         short_answer = (
-            f"Die Medizinstudienplätze wurden gesenkt; die wichtigsten Signale sind: {top_kpi_sentences}. "
-            "Der Effekt kommt verzögert über die Ausbildungs-Pipeline: ab etwa Jahr 6 erreicht die kleinere Kohorte den Arbeitsmarkt, Richtung Jahr 11–15 wird der Facharztpfad wichtig. "
-            "Das bedeutet: späteren Kapazitätsdruck als nächste Prüfung zusammen mit Wartezeit, Belastung und sichtbaren Puffern bewerten."
+            f"Rausgekommen ist: Weniger Medizinstudienplätze erzeugen verzögerten Kapazitätsdruck; wichtigste Signale: {top_kpi_sentences}. "
+            "Warum? Über die Ausbildungs-Pipeline: ab etwa Jahr 6 kommt weniger Nachwuchs an, Richtung Jahr 11–15 wird der Facharztpfad wichtig. "
+            "Was bedeutet das? Das bedeutet: als Nächstes Wartezeit, Belastung und Puffer prüfen, dann politisch bewerten."
         )
     elif changed:
         short_answer = (

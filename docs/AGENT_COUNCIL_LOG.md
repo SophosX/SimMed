@@ -5456,3 +5456,33 @@ Keine wichtige Entscheidung offen. Sicher weiter: nächste Runde sollte die visu
 
 ### Verification / Git
 Verifiziert lokal: `python3 -m pytest -q` → 282 passed; `python3 -m py_compile app.py result_causality.py api.py simulation_core.py parameter_registry.py data_sources.py provenance.py`; Smoke-Test mit 50 Runs × 15 Jahre und halbierten Medizinstudienplätzen → OK, Headline “Weniger Medizinstudienplätze: der relevante Druck kommt verzögert”. Git: bestehende Ergebnis-Briefing-Commits sind auf `origin/main`; Council-Log-Nachtrag wurde als `732e5e7` gepusht.
+
+
+## 2026-04-30 17:52 Europe/Berlin — Result first-screen clarity pass
+
+### Context
+Alex's latest correction: the result page must feel like one clear German briefing, not another layer of overlapping explanation widgets. This pass tightens the public causal packet around a short answer and seven sequential headings: Ergebnis → Eingriff → Warum es passiert → Relevante Kennzahlen → Anpassungen → Einordnung → Nächster Prüfschritt.
+
+### Project Manager
+Priority: reduce first-screen ambiguity before adding new scenario levers. Risk: old helper fields still exist for collapsed audit/API compatibility, so renderers must keep them below the main briefing. Next tasks: verify the app rendering stays uncluttered, then move more legacy result helpers behind one audit expander.
+
+### Designer / UX
+The opening answer now starts with what came out, then why, then what it means. This is closer to a readable briefing and less like a dashboard assembled from many helper fragments.
+
+### Creative Agent
+Idea: later add a one-line “in one sentence” badge above the briefing for mobile screenshots. Fit is good only if it reuses `short_answer` and does not become another competing widget.
+
+### Political Health-System Strategist
+The wording avoids a political recommendation: it says to check waiting time, burden and buffers before judging. This keeps the page useful for policy discussion without pretending to be a vote forecast or lobbying plan.
+
+### Evidence / Domain
+No new source claim was introduced. The communication layer still labels the result as a SimMed model path, not an official forecast or policy-effect proof.
+
+### Integrator Decision
+Accepted: stricter public-packet clarity contract and shorter answer-first language for the medical-study-place scenario. Deferred: any model dynamics changes; this run is output/UX communication only.
+
+### Question to Alex
+No important decision is open; keep progressing safely on result-page simplification.
+
+### Verification / Git
+Focused tests passed locally: `tests/test_result_causality.py::test_short_answer_reads_like_plain_first_screen_result_not_helper_text`, `tests/test_result_causality.py::test_simplified_public_result_packet_is_short_clear_and_not_meta`, and `tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients`. Full-suite/Git verification follows in this heartbeat.
