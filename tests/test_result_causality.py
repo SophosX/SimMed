@@ -206,6 +206,26 @@ def test_public_result_view_answers_first_screen_questions_inside_one_briefing_n
     assert "Das bedeutet" in packet["short_answer"]
 
 
+def test_public_briefing_uses_polished_serious_german_not_shorthand():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    sections = {section["heading"]: section["body"] for section in packet["result_sections"]}
+    combined = packet["short_answer"] + "\n" + "\n".join(sections.values())
+
+    assert "dämpfender M" not in combined
+    assert "prüfbare Einordnung" not in combined
+    assert "Belastung" in sections["Anpassungen"]
+    assert "sichtbaren Entlastungsmechanismus" in sections["Anpassungen"]
+    assert sections["Anpassungen"].endswith("prüfen.")
+    assert sections["Einordnung"].startswith("Für Entscheidungen bedeutet")
+    assert "Modellbefund" in sections["Einordnung"]
+    assert "Wirksamkeitsnachweis" in sections["Einordnung"]
+    assert len(sections["Anpassungen"]) <= 120
+    assert len(sections["Einordnung"]) <= 120
+
+
 def test_relevant_kpis_show_units_and_one_sentence_meaning_for_first_screen():
     params = get_default_params()
     params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
@@ -454,7 +474,8 @@ def test_public_adaptation_section_is_not_truncated_mid_sentence():
     assert "beobachtet: Telemedizin steigt; Burnout steigt" in adaptation
     assert "dämpfender M" not in adaptation
     assert " M Fällt" not in adaptation
-    assert adaptation.endswith("Plausibilitätscheck.")
+    assert adaptation.endswith("prüfen.")
+
     assert all(section["body"].endswith((".", "?", "!")) for section in packet["result_sections"])
     assert why.startswith("Ausbildungs-Pipeline: Jahr 0–5 wenig Änderung")
     assert "Ab etwa Jahr 6" in why

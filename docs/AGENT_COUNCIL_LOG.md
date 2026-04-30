@@ -6374,3 +6374,32 @@ Keine wichtige Entscheidung offen; sicher weiter an der klaren Ergebnis-Lesefass
 
 ### Verification / Git
 Verifiziert lokal und im GitHub-Clone: neuer Klarheitstest zuerst rot, dann grün; `pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 73 passed; `pytest -q` → 301 passed; `py_compile result_causality.py app.py api.py`; 50-run/15-year Simulation-Smoke OK. Commit `4732784` wurde nach `origin/main` gepusht; Zip-Artefakt aktualisiert.
+
+## 2026-04-30 21:51 Europe/Berlin — Result first-screen wording polish
+
+### Context
+Alexs aktuelle Priorität bleibt: Ergebnis-Seite neu, klar und als eine lesbare deutsche Briefing-Linie statt als gestapelte Hilfswidgets. Dieser Lauf hat die bereits vereinfachte `causal_result_packet`-First-View weiter sprachlich gestrafft.
+
+### Project Manager
+Priorität: keine neue Ergebnis-Schicht hinzufügen, sondern die sichtbare erste Lesefassung kürzer und ernster machen. Risiko: alte Tests verlangen weiterhin Guardrail-Begriffe; deshalb wurde nur öffentliche Kurzsprache nachgeschärft, nicht Modelllogik oder API-Struktur gebrochen.
+
+### Designer / UX
+Die erste Ergebnisansicht bleibt bei sieben sequenziellen Überschriften: Ergebnis → Eingriff → Warum es passiert → Relevante Kennzahlen → Anpassungen → Einordnung → Nächster Prüfschritt. Die Anpassungs- und Einordnungszeilen sind jetzt kürzer und weniger abgehackt.
+
+### Creative Agent
+Idee: die nächste UI-Stufe sollte eher wie ein kurzes Policy-Memo mit einem einzigen roten Faden wirken, nicht wie ein Dashboard. Fit: hoch für Verständlichkeit; Umsetzung weiter über `result_causality.py` als zentrale Quelle, nicht über neue verstreute Textblöcke.
+
+### Political Health-System Strategist
+Die Einordnung bleibt bewusst vorsichtig: Modellbefund, keine amtliche Prognose, kein Wirksamkeitsnachweis. Das verhindert, dass Wartezeit-/Burnout-Signale direkt als politische Empfehlung gelesen werden.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Keine neuen Sachbehauptungen oder Datenquellen wurden eingeführt; geändert wurde nur die öffentliche Ergebnisformulierung und die Regressionstests gegen interne/metasprachliche Begriffe.
+
+### Integrator Decision
+Akzeptiert: öffentliche Result-Section-Texte für Anpassungen und Einordnung knapper/polierter machen und mit einem neuen Regressionstest absichern. Modellmechanik, API-Vertrag und Guardrails bleiben unverändert.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; sicher weiter mit der nächsten UI-Ordnungsstufe.
+
+### Verification / Git
+Lokal grün: `python3 -m pytest tests/test_result_causality.py -q` → 73 passed; `python3 -m pytest -q` → 302 passed; `py_compile` für Kernmodule; Simulation-Smoke 50 Runs × 3 Jahre OK. Git-Sync/Commit/Push folgt in diesem Lauf.

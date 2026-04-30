@@ -1169,8 +1169,8 @@ def build_causal_result_packet(
         observed_signals.append(f"{label} {direction}")
     observed_text = "; ".join(observed_signals) or "kein starkes Puffersignal sichtbar"
     adaptation_body = (
-        f"Anpassungen können Druck dämpfen; beobachtet: {observed_text}. "
-        "Sinkt Belastung: Plausibilitätscheck."
+        f"beobachtet: {observed_text}. "
+        "Sinkt Belastung ohne sichtbaren Entlastungsmechanismus: prüfen."
     )
     result_sections = [
         {"heading": "Ergebnis", "body": result_body},
@@ -1181,7 +1181,7 @@ def build_causal_result_packet(
         {
             "heading": "Einordnung",
             "body": (
-                "Für Entscheidungen bedeutet das: prüfbare Einordnung, keine amtliche Prognose, kein Wirksamkeitsnachweis, kein Beweis."
+                "Für Entscheidungen bedeutet: prüfbarer Modellbefund; kein Wirksamkeitsnachweis, keine amtliche Prognose, kein Beweis."
             ),
         },
         {
