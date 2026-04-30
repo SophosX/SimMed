@@ -978,3 +978,32 @@ def test_api_exposes_focused_registry_integration_safe_start_checklist_without_a
     invalid = client.get("/data-readiness/registry-integration-safe-start-checklist?limit=0")
     assert invalid.status_code == 422
     assert invalid.json()["detail"]["status"] == "invalid_data_readiness_registry_integration_safe_start_checklist_limit"
+
+
+def test_api_exposes_focused_registry_integration_safe_start_cards_without_apply():
+    client = TestClient(api)
+    seed_response = client.post("/data-fixtures/seed-reference-review-demo")
+    assert seed_response.status_code == 200
+
+    response = client.get("/data-readiness/registry-integration-safe-start-cards?limit=3")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "data_readiness_registry_integration_safe_start_cards_not_applied"
+    assert "kein Branch" in body["guardrail"]
+    assert "kein execute=true" in body["guardrail"]
+    cards = body["registry_integration_safe_start_cards"]
+    assert cards["title"].startswith("Safe-start-Karten")
+    assert cards["primary_parameter_key"] == "bevoelkerung_mio"
+    assert cards["primary_label"]
+    assert [card["rank"] for card in cards["cards"]] == [1, 2, 3, 4]
+    assert cards["cards"][0]["primary_action"] == "GET /data-readiness/registry-integration-status-board"
+    assert cards["cards"][1]["primary_action"] == "GET /data-readiness/bevoelkerung_mio"
+    assert cards["cards"][3]["is_stop_gate"] is True
+    assert not any("execute=true" in card["primary_action"] for card in cards["cards"])
+    assert "keine Registry-/Modellmutation" in cards["guardrail"]
+    assert "kein Policy-Wirkungsbeweis" in cards["guardrail"]
+
+    invalid = client.get("/data-readiness/registry-integration-safe-start-cards?limit=0")
+    assert invalid.status_code == 422
+    assert invalid.json()["detail"]["status"] == "invalid_data_readiness_registry_integration_safe_start_cards_limit"

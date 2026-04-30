@@ -2564,3 +2564,33 @@ Verified focused API regression (`1 passed`), full suite (`153 passed`), `py_com
 - **Integrator Decision:** `build_data_readiness_registry_integration_safe_start_cards(...)` als strukturierter Helper, API-Aggregate und Learning-Page-Anzeige ergänzt; Quelle bleibt die bestehende Checkliste.
 - **Question to Alex if needed:** Keine.
 - **Verification/Git:** Fokustests und Full Suite lokal grün (`153 passed`); Commit/Push folgt nach Zip-Refresh.
+
+
+## 2026-04-30 04:50 Europe/Berlin — Heartbeat: Safe-start Karten als fokussierte API
+
+### Context
+Core-platform heartbeat auf `feat/platform-data-status-foundation`: Die Registry-Integrations-Sicherheitskette hatte bereits Packet/Checklist/Cards in Aggregatantworten, aber keinen fokussierten API-Einstieg nur für mobile Safe-start-Karten.
+
+### Project Manager
+Priorität: Data-readiness/Registry-Integration weiter operationalisieren, ohne Modellwerte zu verändern. Nächste Tasks: UI-Learning-Page ggf. direkt auf den Karten-Endpunkt verweisen; danach echte Review-/Decision-Persistenz nur mit separater Planung.
+
+### Designer / UX
+Mobile Operatoren sollen nicht breite Tabellen parsen müssen. Ein eigener Karten-Endpunkt macht den ersten sicheren Klick explizit: Status lesen → Parameter prüfen → Audit öffnen → stoppen.
+
+### Creative Agent
+Idee: Safe-start-Karten später als kopierbare "Operator-Kärtchen" in Telegram/Policy-Briefing exportieren. Fit: gut für Verständlichkeit; noch nicht implementiert, weil Export/Apply-Flows separate Entscheidungen brauchen.
+
+### Political Health-System Strategist
+Die Stop-Gates bleiben politisch wichtig: keine branch-/modellwirksame Registry-Änderung ohne Go/Hold/Reject-Audit; damit entstehen keine scheinbar amtlichen Daten- oder Wirkungsbehauptungen.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Änderung betrifft nur status-/read-only API-Surfacing bestehender Guardrails; keine neuen Quellen-, Parameter- oder Wirksamkeitsclaims.
+
+### Integrator Decision
+Akzeptiert: fokussierter `GET /data-readiness/registry-integration-safe-start-cards` Endpoint mit Limit-Validierung und Regressionstest. Keine Datenaktion, kein Connector-Execute, keine Registry-/Modellmutation.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; sicherer nächster Plattformschritt ist Learning-Page/Operator-UX für diesen fokussierten Karten-Einstieg.
+
+### Verification / Git
+Gezielt verifiziert: `pytest` für Safe-start API-Tests (3 passed) und `py_compile api.py data_ingestion.py tests/test_api.py`. Commit/Push folgt in diesem Heartbeat.
