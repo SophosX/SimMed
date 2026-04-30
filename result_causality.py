@@ -978,13 +978,13 @@ def build_causal_result_packet(
     )
     top_kpi_sentences = "; ".join(
         f"{item['label']} {item['direction']} ({str(item['start']).replace('.', ',')} → {str(item['end']).replace('.', ',')})"
-        for item in kpis[:3]
+        for item in kpis[:2]
     ) or "keine priorisierten Kennzahlen verfügbar"
     if study_places_changed:
         short_answer = (
-            f"Die Medizinstudienplätze wurden gesenkt; relevant sind vor allem: {top_kpi_sentences}. "
-            "Warum: Der Eingriff wirkt verzögert über die Pipeline — ab etwa Jahr 6 kommt die kleinere Kohorte im Arbeitsmarkt an, Richtung Jahr 11–15 wird der Facharztpfad wichtig. "
-            "Das bedeutet prüfbaren Kapazitätsdruck, aber noch keine fertige politische Entscheidung; nächster Check sind Puffer wie Telemedizin, Delegation oder Zuwanderung."
+            f"Die Medizinstudienplätze wurden gesenkt; die wichtigsten Signale sind: {top_kpi_sentences}. "
+            "Der Effekt kommt über die Ausbildungs-Pipeline: ab etwa Jahr 6 erreicht die kleinere Kohorte den Arbeitsmarkt, Richtung Jahr 11–15 wird der Facharztpfad wichtig. "
+            "Das bedeutet möglichen Kapazitätsdruck; nächster Check: Puffer wie Telemedizin, Delegation oder Zuwanderung gegen Wartezeit und Belastung prüfen."
         )
     elif changed:
         short_answer = (
@@ -1016,7 +1016,7 @@ def build_causal_result_packet(
     ) or "Keine priorisierten Kennzahlen verfügbar."
     if study_places_changed:
         result_body = (
-            "Das Ergebnis ist ein verzögerter Kapazitätsdruck. Am Anfang ändert sich wenig; später geraten Ärzteangebot, Wartezeit und Belastung stärker in den Blick."
+            "Heraus kommt ein späterer Kapazitätsdruck: Anfangs bleibt die Versorgung fast unverändert, später zählen Ärzteangebot, Wartezeit und Belastung deutlich stärker."
         )
     elif changed:
         result_body = (
@@ -1038,9 +1038,9 @@ def build_causal_result_packet(
         observed_signals.append(f"{label} {direction}.")
     observed_text = " ".join(observed_signals) or "Kein starkes Anpassungssignal im kompakten Kennzahlen-Set."
     adaptation_body = (
-        "Das Modell prüft Puffer wie Telemedizin, Delegation oder Zuwanderung. "
+        "Das Modell prüft Puffer: Telemedizin, Delegation oder Zuwanderung. "
         f"Beobachtet: {observed_text} "
-        "Fällt Burnout trotz Ärztemangel, ist das ein Plausibilitätscheck."
+        "Sinkt Burnout trotz Ärztemangel, ist das ein Plausibilitätscheck."
     )
     result_sections = [
         {"heading": "Ergebnis", "body": result_body[:190]},

@@ -865,9 +865,18 @@ def test_simplified_public_causal_packet_is_concise_and_serious():
         "Audit-Layer",
         "Kurz gesagt",
         "Zahlen zu tapezieren",
+        "Relevante KPIs",
+        "KPI-Drilldowns",
+        "KPI-Karten",
     ]
     for term in banned_terms:
         assert term not in public_text
+
+    assert "Kennzahlen" in public_text
+    assert packet["public_result_view"]["briefing_markdown"].count("####") == len(packet["result_sections"])
+    assert "#### Ergebnis\n\n" in packet["public_result_view"]["briefing_markdown"]
+    assert "#### Relevante Kennzahlen" in packet["public_result_view"]["briefing_markdown"]
+    assert all("KPI" not in section["heading"] for section in packet["result_sections"])
 
 
 def test_first_view_public_copy_avoids_internal_packet_and_wall_jargon():

@@ -4986,3 +4986,32 @@ Keine wichtige Entscheidung offen. Continue safely with first-result visual cons
 
 ### Verification / Git
 Local verification before sync: focused causal/API tests `46 passed`; full test suite `273 passed`; `py_compile` for app/result/API/simulation/test files passed; 30-run simulation/result-packet smoke test passed. Git commit/push status is recorded in the heartbeat report after repository sync.
+
+## 2026-04-30 15:48 Europe/Berlin — Result-first briefing clarity slice
+
+### Context
+Alex's latest correction: the result page must feel like one readable German briefing, not another stack of overlapping explanation widgets. This run focused on the public `result_causality.py` packet and first-view wording for the medical-study-place stress test.
+
+### Project Manager
+Priority: preserve the new simplified public packet (`result_headline`, `short_answer`, `result_sections`, `relevant_kpis`, `follow_up_question`) and keep dense detail views collapsed. Risk: legacy helpers still exist for audit/reuse, so future UI work must not promote them back above the main briefing. Next tasks: tighten the Streamlit first-card visual hierarchy, then add a small render regression around collapsed detail defaults.
+
+### Designer / UX
+The first screen now starts with a concrete answer: what came out, which two signals matter first, why the effect is delayed, and what to check next. The wording avoids internal/meta phrases and keeps the main result in seven short sections.
+
+### Creative Agent
+Idea: later turn the first briefing into a printable one-page “Ergebnisblatt” with the same seven headings. Fit is good for politicians/operators because it reduces scrolling; not implemented now to avoid another surface before the result page itself is stable.
+
+### Political Health-System Strategist
+For the study-place scenario, the wording remains careful: delayed capacity pressure is a SimMed pathway to inspect, not a direct political proof. The next check explicitly asks whether buffers such as Telemedicine, delegation, or immigration plausibly explain the observed pressure signals.
+
+### Evidence / Domain
+No new external evidence was added in this run. The slice changed communication only, not model dynamics or registry values. Guardrails remain: no official forecast, no policy-effect proof, and evidence/assumptions stay in collapsed review surfaces rather than dumped into the first screen.
+
+### Integrator Decision
+Accepted: shorten and humanize the public short answer, keep only the top two KPI signals in the first sentence, preserve the seven-section result flow, and add stricter public-text tests that ban internal jargon such as KPI-Wand, Relevante KPIs, KPI-Drilldowns, generated/helper/meta wording.
+
+### Question to Alex
+No important decision is blocked. Continue safely with first-screen visual simplification and render-level regression tests next.
+
+### Verification / Git
+Focused verification passed locally: `tests/test_result_causality.py` (45 passed), `tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients` plus `tests/test_app_explanations.py` (65 passed). Full suite passed (`273 passed`), py_compile passed, and a 50-run simulation/result-packet smoke test passed. Commit/push status is recorded in the heartbeat report after repository sync.
