@@ -533,7 +533,12 @@ def build_causal_result_layout(packet: Mapping[str, Any]) -> dict[str, Any]:
         },
         "optional_details_after": packet.get("primary_result_view", {}).get(
             "optional_details_after",
-            ["KPI-Drilldowns", "Trend", "Policy-Briefing", "Politik/Stakeholder"],
+            [
+                "Kennzahlen im Detail",
+                "Zeitverlauf",
+                "Bericht mit Annahmen und Quellen",
+                "politische Einordnung",
+            ],
         ),
         "guardrail": packet.get("guardrail", RESULT_CAUSALITY_GUARDRAIL),
     }
@@ -1220,7 +1225,12 @@ def build_causal_result_packet(
             "timeline_windows": timeline_windows,
             "evidence_assumption_rows": evidence_rows,
             "briefing_quality_checks": briefing_quality_checks,
-            "optional_details_after": ["KPI-Drilldowns", "Trend", "Policy-Briefing", "Politik/Stakeholder"],
+            "optional_details_after": [
+                "Kennzahlen im Detail",
+                "Zeitverlauf",
+                "Bericht mit Annahmen und Quellen",
+                "politische Einordnung",
+            ],
             "guardrail": RESULT_CAUSALITY_GUARDRAIL,
         },
         "story_sections": story_sections,

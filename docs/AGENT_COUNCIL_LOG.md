@@ -5044,3 +5044,33 @@ No important decision open in this run; continue safely with result-page simplif
 
 ### Verification / Git
 Focused RED/GREEN completed locally: new test first failed on leaked `KPI-Details`/`Detailkarten`, then passed after the wording patch. Full verification and Git sync follow in this heartbeat.
+
+
+## 2026-04-30 16:06 Europe/Berlin — Result-page wording cleanup
+
+### Context
+Alexs aktuelle Korrektur bleibt maßgeblich: die Result Page soll wie ein lesbares deutsches Briefing wirken, nicht wie mehrere konkurrierende Erklärungsschichten. In diesem Lauf wurde die öffentliche Detail-Navigation weiter von internem KPI/Policy-Briefing-Jargon bereinigt.
+
+### Project Manager
+Priorität: erste Ergebnisansicht weiter entschlacken, ohne Modelllogik oder Datenpfade zu ändern. Risiko: alte Legacy-Namen können trotz guter Haupttexte in sichtbare Expander/Detail-Labels zurückrutschen.
+
+### Designer / UX
+Die erste Ansicht bleibt ein Bericht; nachgelagerte Details heißen jetzt leserfreundlich „Kennzahlen im Detail“, „Zeitverlauf“, „Bericht mit Annahmen und Quellen“ und „politische Einordnung“ statt interner Arbeitsbegriffe.
+
+### Creative Agent
+Idee: Die Vertiefung sollte künftig wie ein Inhaltsverzeichnis eines Policy-Memos wirken — erst Ergebnis, dann Belege — nicht wie ein Entwickler-Debug-Menü. Passt zur Briefing-Richtung und ist niedriges Risiko.
+
+### Political Health-System Strategist
+Die Änderung stärkt seriöse Kommunikation: politische Einordnung bleibt sichtbar, aber als nachgelagerte Bewertung nach Ergebnis, Wirkpfad und Annahmen; keine Lobbying- oder Prognose-Anmutung.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Es wurden keine neuen Fakten, Parameter oder Evidenzbehauptungen eingeführt; nur öffentliche Labels und Regressionstests wurden angepasst.
+
+### Integrator Decision
+Akzeptiert: sichtbare Detailbezeichnungen ohne KPI-/Policy-Briefing-Jargon plus Regressionstest. Modell, API-Struktur und Guardrails bleiben unverändert.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; weiter sicher in Richtung weniger Blöcke, klarere Hierarchie, ein lesbares Ergebnis-Briefing.
+
+### Verification / Git
+Verifiziert: `pytest tests/test_result_causality.py::test_causal_result_layout_uses_reader_friendly_detail_labels_without_kpi_jargon -q`, fokussierter Ergebnis/API/UI-Testlauf mit 112 passed, `pytest -q` mit 275 passed, 50-run Simulation-Smoke mit vereinfachtem Public Result View. Git-Sync/Commit/Push folgt in diesem Heartbeat.

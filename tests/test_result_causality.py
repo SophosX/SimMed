@@ -379,7 +379,12 @@ def test_causal_result_packet_has_sequential_free_text_blocks_before_optional_de
     assert primary["relevant_kpi_summary"] == packet["relevant_kpi_summary"]
     assert primary["adaptation_signal_trace"] == packet["adaptation_signal_trace"]
     assert primary["evidence_assumption_rows"] == packet["evidence_assumption_rows"]
-    assert primary["optional_details_after"] == ["KPI-Drilldowns", "Trend", "Policy-Briefing", "Politik/Stakeholder"]
+    assert primary["optional_details_after"] == [
+        "Kennzahlen im Detail",
+        "Zeitverlauf",
+        "Bericht mit Annahmen und Quellen",
+        "politische Einordnung",
+    ]
 
 
 def test_causal_result_packet_exposes_one_sequential_plain_text_story_for_api_clients():
@@ -970,6 +975,22 @@ def test_public_result_view_uses_kennzahlen_not_kpi_jargon_in_visible_copy():
     assert "Kennzahlen" in visible_text
     assert "KPI" not in visible_text
     assert "Detailkarten" not in visible_text
+
+
+def test_causal_result_layout_uses_reader_friendly_detail_labels_without_kpi_jargon():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    layout = build_causal_result_layout(packet)
+    detail_text = " ".join(layout.get("optional_details_after", []))
+
+    assert layout["first_view"] == "Ergebnisbericht"
+    assert "Kennzahlen" in detail_text
+    assert "KPI" not in detail_text
+    assert "Detailkarten" not in detail_text
+    assert "Policy-Briefing" not in detail_text
+    assert "Ergebnisbericht" in layout["dense_kpi_wall"]["label"]
 
 
 def test_professional_briefing_exposes_single_public_storyline_for_first_result_view():
