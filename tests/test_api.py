@@ -118,6 +118,27 @@ def test_api_exposes_transformation_review_draft_preflight_without_recording_rev
         assert "output_value" in " ".join(row["required_before_record_review"])
 
 
+def test_api_exposes_focused_transformation_review_draft_handoff_without_execution():
+    client = TestClient(api)
+    response = client.get("/data-snapshots/review-draft-handoff")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "transformation_review_draft_handoff_not_executed"
+    assert "kein execute=true" in body["guardrail"]
+    assert "keine Review-Erzeugung" in body["guardrail"]
+    packet = body["transformation_review_draft_handoff_packet"]
+    assert packet["preflight_route"] == "GET /data-snapshots/review-draft-preflight"
+    assert packet["copyable_preflight_command"] == "curl -s http://localhost:8000/data-snapshots/review-draft-preflight"
+    assert packet["status"] in {
+        "draft_blocked_by_integrity",
+        "draft_ready_for_manual_completion",
+        "no_review_draft_ready",
+    }
+    assert "keine Registry-/Modellmutation" in packet["guardrail"]
+
+
+
 def test_api_exposes_focused_snapshot_integrity_handoff_without_execution():
     client = TestClient(api)
     response = client.get("/data-snapshots/integrity-handoff")

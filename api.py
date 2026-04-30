@@ -158,6 +158,20 @@ def get_data_snapshot_review_draft_preflight() -> dict:
     }
 
 
+@api.get("/data-snapshots/review-draft-handoff")
+def get_data_snapshot_review_draft_handoff() -> dict:
+    """Expose focused operator handoff for manual review draft completion."""
+
+    integrity = build_cached_snapshot_integrity_report()
+    checklist = build_cached_snapshot_review_start_checklist(integrity)
+    preflight = build_transformation_review_draft_preflight(checklist)
+    return {
+        "status": "transformation_review_draft_handoff_not_executed",
+        "guardrail": "Handoff ist read-only/draft-only: kein execute=true, kein Netzwerkabruf, kein Cache-Schreiben, keine Review-Erzeugung und keine Registry-/Modellmutation.",
+        "transformation_review_draft_handoff_packet": build_transformation_review_draft_handoff_packet(preflight),
+    }
+
+
 @api.get("/data-snapshots/integrity-handoff")
 def get_data_snapshot_integrity_handoff() -> dict:
     """Expose copyable raw-cache integrity handoff without executing any action."""

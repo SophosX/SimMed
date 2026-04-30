@@ -2435,3 +2435,32 @@ Targeted tests: `3 passed`; full suite: `147 passed`; py_compile für betroffene
 - **Integrator Decision:** `build_transformation_review_draft_handoff_packet(...)` ergänzt und in `/data-snapshots/review-draft-preflight` sowie Review-Start-Aggregat eingebettet.
 - **Question to Alex if needed:** Keine.
 - **Verification/Git:** 148 Tests grün, py_compile grün, Simulation-Smoke `20 runs × 2 years` grün; Commit/Push folgt.
+
+## 2026-04-30 04:21 Europe/Berlin — Heartbeat: Review-Draft-Handoff fokussieren
+
+### Context
+Core-Plattform-Track priorisiert: Rohdaten-Cache → Integritätscheck → Review-Start → Draft-Preflight hatte bereits API/UI-Status, aber kein eigenes fokussiertes Handoff-Endpunkt/UX-Hinweis für den letzten Schritt vor manueller Review-Erfassung.
+
+### Project Manager
+Priorität bleibt Data-Ingestion/Provenance. Kleine sichere Scheibe: fokussiertes read-only Review-Draft-Handoff ergänzen und auf der Learning Page sichtbar machen; keine Live-Connectoren oder Modellintegration.
+
+### Designer / UX
+Learning Page zeigt nun nach dem Draft-Preflight auch den konkreten Handoff-Satz und einen kopierbaren Status-Befehl, damit Erstnutzer nicht im Tabellenstatus stecken bleiben.
+
+### Creative Agent
+Idee: später daraus eine geführte Operator-Checkliste mit Abhakfeldern machen. Fit gut für Motivation/Verständnis, aber erst nach Alex-Entscheid zur echten Review-Erfassung.
+
+### Political Health-System Strategist
+Die Trennung verhindert, dass ein gecachter Rohdatensatz politisch als fertiger Modellbeweis gelesen wird; wichtig für glaubwürdige Stakeholder-Kommunikation.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf; Änderung erzeugt keine neuen Sachbehauptungen. Guardrails bleiben: kein execute=true, kein Netzwerkabruf, kein Cache-Schreiben, keine Review-Erzeugung, keine Registry-/Modellmutation, keine amtliche Prognose, kein Policy-Wirkungsbeweis.
+
+### Integrator Decision
+Akzeptiert: fokussierter API-Endpunkt `GET /data-snapshots/review-draft-handoff` plus Learning-Page-Handoff-Feld aus bestehenden strukturierten Daten. Deferred: echte Review-Persistenz/Modellintegration bleibt separater geprüfter Schritt.
+
+### Question to Alex if needed
+Keine wichtige Produktentscheidung offen; empfohlener nächster Schritt ist weiterhin ein sicherer Plattformschritt Richtung geprüfte Transformation, nicht KI-Recherche.
+
+### Verification / Git
+Targeted API/UI tests grün, Full suite `149 passed`, py_compile und Simulation-Smoke `20 runs × 2 years` grün; Commit/Push folgt.
