@@ -1052,9 +1052,9 @@ def build_causal_result_packet(
     ) or "keine priorisierten Kennzahlen verfügbar"
     if study_places_changed:
         short_answer = (
-            f"Das Ergebnis: Gesenkte Medizinstudienplätze erzeugen Druck: {top_kpi_sentences}. "
+            f"Das Ergebnis: Weniger Medizinstudienplätze erhöhen verzögert Kapazitätsdruck: {top_kpi_sentences}. "
             "Weil ab etwa Jahr 6 weniger Nachwuchs ankommt, wird in Jahr 11–15 der Facharztpfad wichtig. "
-            "Das bedeutet: nächste Prüfung sind Wartezeit, Belastung und Puffer prüfen; dann politisch bewerten."
+            "Das bedeutet: nächste Prüfung sind Wartezeit, Belastung und Entlastungen prüfen."
         )
     elif changed:
         short_answer = (
@@ -1169,8 +1169,8 @@ def build_causal_result_packet(
         observed_signals.append(f"{label} {direction}")
     observed_text = "; ".join(observed_signals) or "kein starkes Puffersignal sichtbar"
     adaptation_body = (
-        f"Puffer prüfen; beobachtet: {observed_text}. "
-        "Sinkt Belastung, ist das ein Plausibilitätscheck."
+        f"Anpassungen können Druck dämpfen; beobachtet: {observed_text}. "
+        "Sinkt Belastung: Plausibilitätscheck."
     )
     result_sections = [
         {"heading": "Ergebnis", "body": result_body},
@@ -1181,8 +1181,7 @@ def build_causal_result_packet(
         {
             "heading": "Einordnung",
             "body": (
-                "Das bedeutet: prüfbare Kette, aber nicht entscheiden; "
-                "keine amtliche Prognose, kein Wirksamkeitsnachweis, kein Beweis."
+                "Für Entscheidungen bedeutet das: prüfbare Einordnung, keine amtliche Prognose, kein Wirksamkeitsnachweis, kein Beweis."
             ),
         },
         {

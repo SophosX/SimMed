@@ -44,6 +44,49 @@ def _public_text(packet):
     return "\n".join(parts)
 
 
+def test_public_packet_first_screen_answers_alexs_four_questions_concisely():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+
+    public = packet["public_result_view"]
+    assert set(public["briefing"]) >= {
+        "headline",
+        "short_answer",
+        "sections",
+        "relevant_kpis",
+        "next_check",
+        "guardrail",
+    }
+    assert len(public["briefing"]["sections"]) <= 7
+    assert all(len(section["body"]) <= 220 for section in public["briefing"]["sections"])
+
+    short_answer = public["briefing"]["short_answer"]
+    assert 2 <= len([s for s in short_answer.split(". ") if s.strip()]) <= 4
+    assert "Medizinstudienplätze" in short_answer
+    assert "Facharzt" in short_answer or "Wartezeit" in short_answer
+    assert "Jahr 6" in short_answer
+    assert "Nächster" in short_answer or "nächste" in short_answer
+
+    combined_public_text = _public_text(packet) + "\n" + public["briefing_markdown"]
+    banned_terms = [
+        "random Internet",
+        "Klartext",
+        "KPI-Wand",
+        "generated",
+        "helper",
+        "Meta",
+        "Audit",
+        "DataFrame",
+    ]
+    assert all(term not in combined_public_text for term in banned_terms)
+    assert "prüfbare Kette, aber nicht entscheiden" not in combined_public_text
+    assert "Puffer prüfen" not in combined_public_text
+    assert "Das bedeutet:" not in public["briefing"]["sections"][-2]["body"]
+    assert "Für Entscheidungen" in public["briefing"]["sections"][-2]["body"]
+
+
 def test_simplified_public_result_packet_is_short_clear_and_not_meta():
     params = get_default_params()
     params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5

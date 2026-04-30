@@ -6344,3 +6344,33 @@ Keine wichtige Entscheidung offen. Ich arbeite sicher weiter an der klaren Ergeb
 
 ### Verification / Git
 Verifiziert: neue Klarheitstests rot gesehen, dann grün; `pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 72 passed; `pytest -q` → 300 passed; `py_compile` + 50-run Simulation-Smoke OK. Commit `02fd6bc` wurde nach `origin/main` gepusht.
+
+
+## 2026-04-30 21:37 Europe/Berlin — Result Page: erste Lesefassung weiter bereinigt
+
+### Context
+Alexs Korrektur: Die Ergebnis-Seite muss sofort in einfachem, seriösem Deutsch sagen, was herauskam, was relevant verändert ist, warum es passiert und was es bedeutet. Dieser Lauf strafft die öffentliche Lesefassung im `causal_result_packet` weiter, ohne Modellmechanik zu ändern.
+
+### Project Manager
+Priorität: ein klarer erster Bildschirm statt weiterer Hilfswidgets. Risiko: alte Detail-/Audit-Begriffe sickern wieder in die öffentliche Lesefassung. Nächster Task: sichtbare Streamlit-Erstansicht visuell weiter als eine Briefing-Karte gestalten.
+
+### Designer / UX
+Die öffentlichen Abschnitte bleiben bei sieben festen Schritten: Ergebnis → Eingriff → Warum es passiert → Relevante Kennzahlen → Anpassungen → Einordnung → Nächster Prüfschritt. Die Texte wurden nochmals menschlicher und kürzer; die relevante KPI-Zeile bleibt einmalig im Briefing.
+
+### Creative Agent
+Idee: später eine druckbare Ein-Seiten-Briefing-Ansicht. Fit: gut, wenn die Lesefassung stabil ist; jetzt wurde bewusst kein neues Widget ergänzt.
+
+### Political Health-System Strategist
+Die politische Deutung bleibt nachgelagert. Bei weniger Medizinstudienplätzen muss zuerst geprüft werden, ob Facharztpfad, Wartezeit, Belastung und Entlastungsmechanismen zusammenpassen.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf; keine neuen externen Fakten. Die Änderung betrifft die Kommunikationsschicht. Die Grenze bleibt sichtbar: keine amtliche Prognose, kein Wirksamkeitsnachweis, kein Beweis realer Wirkung.
+
+### Integrator Decision
+Akzeptiert: strenger Klarheitstest für Alexs vier Startfragen, kürzerer `short_answer`, präzisere Einordnung und Anpassungsformulierung in `result_causality.py`. Keine Änderung an Simulation oder Parametern.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; sicher weiter an der klaren Ergebnis-Lesefassung arbeiten.
+
+### Verification / Git
+Verifiziert lokal: neuer Klarheitstest zuerst rot, dann grün; `pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 73 passed; `pytest -q` → 301 passed; `py_compile result_causality.py app.py api.py`; 50-run/15-year Simulation-Smoke OK. Git-Sync/Commit/Push folgt nach Spiegelung in den GitHub-Clone.
