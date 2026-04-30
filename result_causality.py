@@ -844,19 +844,48 @@ def build_causal_result_packet(
         "Einordnung",
         "nächste Prüfentscheidung",
     ]
+    narrative_hints = {
+        "Ausgangslage": "Warum das wichtig ist: Der Kontext verhindert, dass einzelne Endwerte wie eine Rangliste gelesen werden.",
+        "Eingriff": "Warum das wichtig ist: Nur sichtbare Änderungen gegenüber dem Standardpfad dürfen als mögliche Auslöser gelesen werden.",
+        "Berechnete Wirkpfade": "Warum das wichtig ist: Der Wirkpfad zeigt, wann eine Maßnahme überhaupt im Modell ankommen kann.",
+        "Relevante KPIs": "Warum das wichtig ist: Die erste Ansicht soll die tragenden Signale zeigen, nicht jede verfügbare Zahl.",
+        "Anpassungsreaktionen": "Warum das wichtig ist: Systeme puffern Druck oft erst ab; genau diese Puffer müssen vor der Deutung sichtbar werden.",
+        "Einordnung und Belastbarkeit": "Warum das wichtig ist: Evidenzgrad, Registry-Caveat und Monte-Carlo-Spannweite begrenzen die Aussagekraft.",
+        "Was daraus folgt": "Warum das wichtig ist: SimMed liefert eine prüfbare Wirkungslinie, keine einzelne Siegerzahl.",
+        "Nächste Prüfentscheidung": "Warum das wichtig ist: Erst fachlich prüfen, dann politisch bewerten — in dieser Reihenfolge bleibt der Bericht ehrlich.",
+    }
+    narrative_blocks = [
+        {
+            "heading": section["heading"],
+            "body": section["body"],
+            "reader_hint": narrative_hints.get(
+                section["heading"],
+                "Warum das wichtig ist: Diese Passage ordnet den Modelllauf vor der Detailprüfung ein.",
+            ),
+        }
+        for section in professional_sections
+    ]
     reader_brief = "\n\n".join(
-        f"{section['heading']}: {section['body']}" for section in professional_sections
+        f"{block['heading']}: {block['body']}\n{block['reader_hint']}" for block in narrative_blocks
+    )
+    reader_summary = (
+        f"{lead_paragraph} "
+        f"{policy_readiness_summary['why']} "
+        "Die Lesart bleibt bewusst nüchtern: keine amtliche Prognose, kein Wirksamkeitsnachweis, "
+        "sondern ein nachvollziehbarer SimMed-Wirkpfad mit Annahmen, Gegenchecks und nächster Prüfentscheidung."
     )
     professional_briefing = {
         "title": "Ergebnisbericht",
         "lead_paragraph": lead_paragraph,
+        "reader_summary": reader_summary,
         "section_flow": section_flow,
         "sections": professional_sections,
+        "narrative_blocks": narrative_blocks,
         "reader_brief": reader_brief,
         "first_view_kpi_cards": first_view_kpi_cards,
         "sequential_text": "\n\n".join(
             ["Ergebnisbericht"]
-            + [f"{section['heading']}\n{section['body']}" for section in professional_sections]
+            + [f"{block['heading']}\n{block['body']}\n{block['reader_hint']}" for block in narrative_blocks]
         ),
         "guardrail": RESULT_CAUSALITY_GUARDRAIL,
     }

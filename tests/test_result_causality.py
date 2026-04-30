@@ -613,3 +613,45 @@ def test_first_view_briefing_cards_include_consequence_card_without_jargon():
     assert "Audit-Layer" not in combined
     assert "random Internet" not in combined
     assert "KPI-Wand" not in combined
+
+
+def test_professional_briefing_exposes_reader_ready_narrative_blocks():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    briefing = packet["professional_briefing"]
+    narrative = briefing["narrative_blocks"]
+
+    headings = [block["heading"] for block in narrative]
+    assert headings == [
+        "Ausgangslage",
+        "Eingriff",
+        "Berechnete Wirkpfade",
+        "Relevante KPIs",
+        "Anpassungsreaktionen",
+        "Einordnung und Belastbarkeit",
+        "Was daraus folgt",
+        "Nächste Prüfentscheidung",
+    ]
+    assert all(block["body"].strip() for block in narrative)
+    assert all(block["reader_hint"].startswith("Warum das wichtig ist:") for block in narrative)
+    assert "Ab Jahr 6" in briefing["reader_summary"] or "ab Jahr 6" in briefing["reader_summary"]
+    assert "keine amtliche Prognose" in briefing["reader_summary"]
+    assert "kein Wirksamkeitsnachweis" in briefing["reader_summary"]
+    assert len(briefing["first_view_kpi_cards"]) <= 4
+
+    combined = " ".join(
+        str(value)
+        for block in narrative
+        for value in block.values()
+    ) + " " + briefing["reader_summary"]
+    banned = [
+        "random Internet",
+        "KPI-Wand",
+        "Audit-Layer",
+        "causal_result_packet",
+        "render_sequence",
+        "guardrail",
+    ]
+    assert not any(term in combined for term in banned)

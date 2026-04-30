@@ -4183,3 +4183,33 @@ No blocking decision. Safe next step: continue tightening the first result page 
 
 ### Verification / Git
 RED/GREEN targeted tests were run for the new reader-brief contract and render sequence. Verification: `python3 -m pytest -q` → 253 passed; py_compile for touched modules/tests passed; simulation smoke `n_runs=50, n_years=15` passed with reader brief/render-sequence assertions. Git: commit `c4115ea` pushed to `origin/main`.
+
+
+## 2026-04-30 12:18 Europe/Berlin — Heartbeat: Ergebnisbericht als echte Leserführung
+
+### Context
+Der Ergebnisbericht war fachlich schon deutlich besser, aber die erste Ansicht brauchte noch eine sauberere Leserführung: strukturierte Abschnitte mit kurzen „warum wichtig“-Hinweisen, ohne interne Paket-/Audit-Sprache. Betroffen: `result_causality.py`, `app.py`, `tests/test_result_causality.py`.
+
+### Project Manager
+Priorität: den neuen causal packet weiter als zentrale Quelle für UI/API stärken, statt alte Result-Helfer parallel wachsen zu lassen. Risiko: bestehende Detailschichten bleiben umfangreich und müssen im nächsten Schritt klar nachgeordnet werden.
+
+### Designer / UX
+Die erste Ergebnisansicht liest jetzt stärker wie ein menschlicher Vermerk: Überschrift, kurzer Kontext, dann Abschnitt für Abschnitt mit Hinweis, warum dieser Teil vor der nächsten Zahl wichtig ist. Das ist weniger Tabellenlogik und mehr Briefing — genau die Richtung.
+
+### Creative Agent
+Idee für später: dieselben `narrative_blocks` können als einseitiger „Briefingzettel“ exportiert werden. Fit: gut für Teilen/Entscheidungsvorbereitung; erst nach Stabilisierung der ersten Ansicht.
+
+### Political Health-System Strategist
+Die Reihenfolge bleibt politisch robust: erst Wirkpfad und Belastbarkeit, dann Bewertung. Gerade bei Studienplatz-Szenarien verhindert das vorschnelle Deutungen à la sofortige Einsparung oder sofortiger Kollaps.
+
+### Evidence / Domain
+Keine neuen externen Fakten; keine neue Recherche. Es wurde nur die Darstellung vorhandener Modelloutputs, Registry-Evidenz und Caveats verbessert. Guardrail bleibt: keine amtliche Prognose, kein Wirksamkeitsnachweis.
+
+### Integrator Decision
+Akzeptiert: `professional_briefing.narrative_blocks` und `reader_summary` als reader-ready Struktur; Streamlit rendert diese Blöcke direkt vor relevanten KPI-Karten. Keine Modellgleichung, kein Parameter und keine Datenintegration geändert.
+
+### Question to Alex
+Keine wichtige Entscheidung offen. Sicherer nächster Schritt: optionale Detail-/Legacy-Schichten weiter unter den Ergebnisbericht ordnen und den API-/Report-Export auf die neuen Narrative Blocks ausrichten.
+
+### Verification / Git
+Targeted tests grün: `python3 -m pytest tests/test_result_causality.py tests/test_api.py tests/test_app_explanations.py -q` → 159 passed. Full verification/Git wird nach Sync im Abschlussbericht dokumentiert.
