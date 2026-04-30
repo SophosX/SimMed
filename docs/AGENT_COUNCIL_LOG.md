@@ -4301,3 +4301,32 @@ Keine wichtige Entscheidung offen; sicher weiter mit Ergebnisbericht-Verdichtung
 
 ### Verification / Git
 Verified locally: `python3 -m pytest -q` → 257 passed; `py_compile` for app/API/core/result modules/tests; smoke run 30×3 with halved Medizinstudienplätze and public briefing assertions passed. Git sync/commit/push follows in this heartbeat.
+
+## 2026-04-30 10:46 UTC — Heartbeat: Ergebnisbericht ohne falschen Pipeline-Beifang
+
+### Context
+Alexs Ergebnis-UX-Priorität bleibt: ein seriöser, menschlich lesbarer Ergebnisbericht vor Detailkarten und Trendflächen. Beim Review fiel auf, dass der neue kausale Ergebnistext zwar für gekürzte Medizinstudienplätze gut funktioniert, aber der interne `coherent_story` bei einem reinen Finanzierungsszenario noch Ausbildungs-Lag-/Medizinstudienplätze-Sprache mitschleppen konnte.
+
+### Project Manager
+Priorität: die neue Ergebnisbericht-Schicht darf je Szenario nur den tatsächlich veränderten Hebel erklären. Risiko: falscher Pipeline-Beifang würde Vertrauen kosten, gerade wenn Nutzer:innen später DRG-, GKV- oder Leistungskatalog-Szenarien lesen. Nächste Aufgabe: weitere Szenariofamilien (Digitalisierung/Prävention) auf dieselbe saubere Wirkpfad-Trennung prüfen.
+
+### Designer / UX
+Die erste Ergebnisansicht bleibt berichtsorientiert: Ergebnisbericht zuerst, wenige relevante Kennzahlen, Detailprüfungen danach. Der heutige Fix verbessert die Leselogik, weil ein Finanzierungslauf nicht plötzlich nach Ärzteausbildung riecht — das wäre fachlich wie UX-seitig ein kleiner, aber auffälliger Fehlton.
+
+### Creative Agent
+Produktidee: später könnte jeder Starter-/Szenariofamilie ein eigener kurzer „Wirkpfad-Dialekt“ zugeordnet werden: Finanzierung spricht über Saldo/Beitrag/Leistungskatalog, Ausbildung über Pipeline, Digitalisierung über Adoption/Puffer, Prävention über verzögerte Morbidität. Fit: sehr gut für Verständlichkeit; aber nur als strukturierte Regel, nicht als freie Textmagie.
+
+### Political Health-System Strategist
+Für Finanzierungsszenarien ist saubere Sprache politisch wichtig: Dort sind Beitragssatz, Bundeszuschuss, Leistungskatalog und Verteilungskonflikte die ersten Konfliktachsen. Ausbildungs-Pipeline sollte nur erscheinen, wenn sie wirklich Szenariohebel ist; sonst wirkt der Bericht wie eine unpräzise Generaldiagnose.
+
+### Evidence / Domain
+Keine neue externe Recherche in diesem Lauf; es wurden keine neuen Sachclaims eingeführt. Änderung ist eine Interpretations-/Routing-Korrektur: vorhandene Modellpfade werden je geändertem Hebel sauberer getrennt. Guardrail bleibt: Modell-Einordnung, keine amtliche Prognose, kein Wirksamkeitsnachweis.
+
+### Integrator Decision
+Akzeptiert: Regressionstest für Finanzierungsszenarien, damit öffentliche/professionelle Ergebnistexte keine Medizinstudienplätze-, Ausbildungs-Pipeline- oder Ausbildungs-Lag-Sprache enthalten, wenn nur der GKV-Beitragssatz verändert wurde. Implementiert: bedingter `coherent_story` und neutralere „Was daraus folgt“-Passage für Nicht-Ausbildungsszenarien.
+
+### Question to Alex
+Keine wichtige Entscheidung offen. Sicher weiter: weitere Szenariofamilien systematisch durch die neue Ergebnisbericht-Schicht führen.
+
+### Verification / Git
+Vorläufig lokal grün: `pytest -q` → 257 passed; `py_compile` für zentrale Module; 50-run Smoke mit gekürzten Medizinstudienplätzen und `build_causal_result_packet` → OK. Commit/Push folgt nach Sync in den GitHub-Klon.

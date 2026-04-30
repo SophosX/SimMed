@@ -713,7 +713,7 @@ def build_causal_result_packet(
     elif changed:
         pathway_body = (
             "Der Eingriff läuft im Modell über die jeweils dokumentierten SimMed-Pfade — Kapazität, Nachfrage, Finanzierung, regionale Verteilung und Zeitverzug. "
-            "Für diesen Lauf wird kein Ausbildungs-Lag behauptet; der Bericht prüft deshalb die tatsächlich veränderten Hebel und die dazu passenden Kennzahlen. "
+            "Der Bericht bleibt bei den tatsächlich veränderten Hebeln und den dazu passenden Kennzahlen; zusätzliche Pipeline-Mechanismen werden nicht hineingelesen. "
             f"{timeline_text}"
         )
     else:
@@ -721,6 +721,75 @@ def build_causal_result_packet(
             "Es wurde keine zentrale Stellschraube verändert. Der Bericht liest deshalb den Referenzpfad selbst: Welche Kennzahlen bewegen sich im Modelllauf, "
             "obwohl kein zusätzlicher Eingriff gesetzt wurde, und welche davon sollten vor einer fachlichen Deutung genauer geprüft werden?"
         )
+
+    if study_places_changed:
+        result_headline = "Weniger Medizinstudienplätze: der Druck kommt verzögert"
+    elif changed:
+        first_changed_label = changed[0].get("label", "Szenario")
+        result_headline = f"{first_changed_label}: der Lauf zeigt die wichtigsten Folgewirkungen"
+    else:
+        result_headline = "Referenzpfad: die wichtigsten Bewegungen im Überblick"
+
+    visible_kpi_sentence = "; ".join(row["sentence"] for row in kpis[:3])
+    if study_places_changed:
+        short_answer = (
+            f"Die halbierten Medizinstudienplätze wirken nicht sofort, sondern über die Pipeline: ab Jahr 6 wird die kleinere Kohorte relevant. "
+            f"Im Ergebnis stehen vor allem Ärzte pro 100k, Wartezeit und Burnout im Mittelpunkt. {visible_kpi_sentence} "
+            "Wenn Entlastung durch Telemedizin oder andere Puffer sichtbar wird, gehört sie zur Erklärung; ohne solchen Puffer ist sinkender Druck prüfpflichtig."
+        )
+    else:
+        changed_sentence = changed_text if changed else "Der Lauf folgt dem Standardpfad."
+        short_answer = (
+            f"{changed_sentence} Die erste Lesart konzentriert sich auf die Kennzahlen, die sich fachlich am stärksten aufdrängen. "
+            f"{visible_kpi_sentence} Danach sollte geprüft werden, welcher Wirkpfad diese Bewegung trägt und welche Annahme sie begrenzt."
+        )
+
+    result_sections = [
+        {
+            "heading": "Ergebnis",
+            "body": short_answer,
+        },
+        {
+            "heading": "Eingriff",
+            "body": changed_text,
+        },
+        {
+            "heading": "Warum es passiert",
+            "body": (
+                "Der wichtigste Wirkpfad läuft über die Ausbildungs-Pipeline: erst die Studienplätze, dann Absolvent:innen, danach reale Kapazität. "
+                "Darum ist bei diesem Szenario nicht das Startjahr entscheidend, sondern die Jahre ab 6 und besonders der spätere 15-Jahres-Bereich."
+                if study_places_changed
+                else "Der Lauf wird entlang der veränderten Stellschrauben gelesen: welche Nachfrage, Kapazität, Finanzierung oder regionale Verteilung dadurch im Modell angestoßen wird."
+            ),
+        },
+        {
+            "heading": "Relevante Kennzahlen",
+            "body": visible_kpi_sentence or "Keine priorisierten Kennzahlen verfügbar.",
+        },
+        {
+            "heading": "Anpassungen",
+            "body": (
+                adaptation_trace_text
+                if adaptation_trace
+                else "In diesem kompakten Ergebnisblock ist kein spezifisches Anpassungssignal sichtbar; die Detailprüfung sollte klären, ob Puffer oder Drucksignale fehlen."
+            ),
+        },
+        {
+            "heading": "Einordnung",
+            "body": (
+                "Die Einordnung bleibt innerhalb der dokumentierten SimMed-Annahmen. Evidenzgrade und Caveats gehören in die Detailprüfung, "
+                "aber der erste Befund ist: Ergebnis, Wirkpfad und Puffer müssen zusammen gelesen werden."
+            ),
+        },
+        {
+            "heading": "Nächster Prüfschritt",
+            "body": (
+                "Zuerst die Zeitfenster ab Jahr 6, die drei relevanten Kennzahlen und die Anpassungssignale gegeneinander prüfen; danach erst Trend, Detailkarten und Politik öffnen."
+                if study_places_changed
+                else "Zuerst die relevanten Kennzahlen gegen den Wirkpfad prüfen; danach Detailkarten, Trend und politische Einordnung öffnen."
+            ),
+        },
+    ]
 
     policy_readiness_summary = {
         "headline": "Was daraus folgt",
@@ -780,7 +849,11 @@ def build_causal_result_packet(
             "heading": "Was daraus folgt",
             "body": (
                 "Der Bericht liefert damit keine einzelne Siegerzahl, sondern eine prüfbare Linie: Eingriff → Wirkpfad → beobachtete Kennzahlen → Anpassungsreaktionen → Belastbarkeitsgrenze. "
-                "Für diesen Lauf heißt das: Kapazitätsdruck darf erst dann politisch interpretiert werden, wenn die sichtbaren Puffer und Drucksignale gemeinsam zu prüfen sind."
+                + (
+                    "Für diesen Lauf heißt das: Kapazitätsdruck darf erst dann politisch interpretiert werden, wenn die sichtbaren Puffer und Drucksignale gemeinsam zu prüfen sind."
+                    if study_places_changed
+                    else "Für diesen Lauf heißt das: Die politische Deutung sollte beim tatsächlich veränderten Hebel beginnen und erst danach die nachgeordneten Versorgungs-, Finanzierungs- und Annahmenprüfungen öffnen."
+                )
             ),
         },
         {
@@ -921,14 +994,30 @@ def build_causal_result_packet(
     )
     sequential_plain_text = professional_briefing["sequential_text"]
 
-    coherent_story = (
-        f"Ausgangspunkt: {changed_text} Ergebnis: {kpi_text} "
-        f"Warum: Die Simulation liest Änderungen nicht als Einzelzahl, sondern als Wirkpfad über Kapazität, Nachfrage, Finanzierung und Zeitverzug. "
-        f"Bei Medizinstudienplätzen ist der zentrale Punkt der Ausbildungs-Lag: ab etwa Jahr 6 kommen weniger Absolvent:innen an; "
-        f"im 15-Jahres-Horizont sollte sich das in Ärzte pro 100k, Wartezeit und Burnout zeigen, sofern Anpassungsmechanismen es nicht sichtbar dämpfen. "
-        f"Zeitverlauf: {timeline_text} "
-        f"Anpassungsmechanismen: {mechanism_text} Beobachtete Signale: {adaptation_trace_text} Gegencheck: {counter_text}"
-    )
+    if study_places_changed:
+        coherent_story = (
+            f"Ausgangspunkt: {changed_text} Ergebnis: {kpi_text} "
+            f"Warum: Die Simulation liest Änderungen nicht als Einzelzahl, sondern als Wirkpfad über Kapazität, Nachfrage, Finanzierung und Zeitverzug. "
+            f"Bei Medizinstudienplätzen ist der zentrale Punkt der Ausbildungs-Lag: ab etwa Jahr 6 kommen weniger Absolvent:innen an; "
+            f"im 15-Jahres-Horizont sollte sich das in Ärzte pro 100k, Wartezeit und Burnout zeigen, sofern Anpassungsmechanismen es nicht sichtbar dämpfen. "
+            f"Zeitverlauf: {timeline_text} "
+            f"Anpassungsmechanismen: {mechanism_text} Beobachtete Signale: {adaptation_trace_text} Gegencheck: {counter_text}"
+        )
+    elif changed:
+        coherent_story = (
+            f"Ausgangspunkt: {changed_text} Ergebnis: {kpi_text} "
+            "Warum: Die Simulation liest die Änderung nicht als Einzelzahl, sondern als Wirkpfad über den tatsächlich veränderten Hebel, die passenden Kennzahlen und dokumentierte Annahmen. "
+            "Für diesen Lauf bleibt die erste Prüfung bei Finanzierung, Versorgungssignal und Belastbarkeitsgrenze; zusätzliche Zeitverzugsmechanismen werden nicht hineingelesen. "
+            f"Zeitverlauf: {timeline_text} "
+            f"Anpassungsmechanismen: {mechanism_text} Beobachtete Signale: {adaptation_trace_text} Gegencheck: {counter_text}"
+        )
+    else:
+        coherent_story = (
+            f"Ausgangspunkt: {changed_text} Ergebnis: {kpi_text} "
+            "Warum: Die Simulation liest den Referenzpfad als Wirkpfad über Kapazität, Nachfrage, Finanzierung und Zeitverzug, ohne einen zusätzlichen Szenariohebel zu erfinden. "
+            f"Zeitverlauf: {timeline_text} "
+            f"Anpassungsmechanismen: {mechanism_text} Beobachtete Signale: {adaptation_trace_text} Gegencheck: {counter_text}"
+        )
 
     return {
         "title": "Ergebnisbericht",
@@ -940,6 +1029,9 @@ def build_causal_result_packet(
             "4 · Anpassungsmechanismen",
             "5 · Gegencheck/Caveat",
         ],
+        "result_headline": result_headline,
+        "short_answer": short_answer,
+        "result_sections": result_sections,
         "changed_inputs": changed,
         "evidence_assumption_rows": evidence_rows,
         "relevant_kpis": kpis,
@@ -950,6 +1042,9 @@ def build_causal_result_packet(
         "counterintuitive_findings": counter,
         "free_text_blocks": free_text_blocks,
         "primary_result_view": {
+            "result_headline": result_headline,
+            "short_answer": short_answer,
+            "result_sections": result_sections,
             "headline": "Ergebnisbericht und anschließende Detailprüfung",
             "render_sequence": [
                 "professional_briefing_text",

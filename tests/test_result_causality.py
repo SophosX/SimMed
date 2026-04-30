@@ -490,12 +490,21 @@ def test_financing_scenario_prioritizes_finance_kpis_without_pipeline_language()
     packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
     kpi_keys = [row["metric_key"] for row in packet["relevant_kpis"]]
     briefing_text = packet["professional_briefing"]["sequential_text"]
+    public_text = " ".join([
+        packet["coherent_story"],
+        packet["public_briefing_text"],
+        packet["professional_briefing"]["reader_summary"],
+        packet["policy_readiness_summary"]["why"],
+    ])
 
     assert kpi_keys[0] == "gkv_saldo"
     assert "GKV-Saldo" in packet["relevant_kpis"][0]["label"]
     assert "Medizinstudienplätze" not in briefing_text
+    assert "Medizinstudienplätze" not in public_text
     assert "Ausbildungs-Pipeline" not in briefing_text
+    assert "Ausbildungs-Lag" not in public_text
     assert "Finanzierung" in briefing_text
+    assert "Kapazitätsdruck" not in packet["professional_briefing"]["sections"][6]["body"]
     assert packet["timeline_windows"] == []
     assert packet["adaptation_signal_trace"] == []
 
