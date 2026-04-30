@@ -5956,3 +5956,33 @@ Keine wichtige Entscheidung offen; sicher weiter mit visuellem Smoke und weitere
 
 ### Verification / Git
 Verifiziert in `/opt/data/projects/health_simulation_app/source`: `python3 -m pytest tests/test_result_causality.py -q` → 61 passed; `python3 -m pytest -q` → 289 passed; `python3 -m py_compile app.py result_causality.py api.py simulation_core.py`; 50-run Simulation-Smoke mit halbierten Medizinstudienplätzen → OK `(200, 30)` / `(800, 6)`. Git-Status wird nach Sync/Commit dieses Logeintrags dokumentiert.
+
+
+## 2026-04-30 19:55 Europe/Berlin — Heartbeat: Ergebnis-Seite als klare Erstansicht
+
+### Context
+Alexs jüngste Korrektur war eindeutig: die Ergebnis-Seite soll nicht noch eine weitere Erklärungsschicht bekommen, sondern zuerst als ein lesbarer deutscher Ergebnisbericht funktionieren. Dieser Lauf prüfte und konsolidierte den bestehenden `result_causality.py`-Pfad, `render_result_causal_overview(...)` und die API-Vertragsfläche für `causal_result_packet`.
+
+### Project Manager
+Priorität: first-screen Ergebnisverständnis vor weiterer Funktionsbreite. Risiko: zu viele konkurrierende Detail-Widgets verwässern die Antwort. Nächste Tasks: (1) echte Streamlit-Sicht im Browser/Smoke-Test prüfen, (2) legacy Ergebnis-Helfer weiter unter Audit/Detail halten, (3) danach nur noch fehlende Mechanismen statt neue Textblöcke ergänzen.
+
+### Designer / UX
+Die erste Ansicht folgt jetzt der klaren Lesereihenfolge Ergebnis → Eingriff → Warum es passiert → Relevante Kennzahlen → Anpassungen → Einordnung → Nächster Prüfschritt. Vollständige KPI-Karten, Trend, Policy-Briefing und politische Einordnung bleiben unter einer geschlossenen Detailprüfung, damit der erste Screen nicht wieder zerfasert.
+
+### Creative Agent
+Idee: später eine sehr ruhige „Briefing-Modus“-Ansicht als Export/PDF, die genau diese sieben Abschnitte übernimmt. Fit: stark für Entscheider:innen und Telegram/Sharing; noch nicht jetzt, weil zuerst die Live-Seite stabil und klar sein muss.
+
+### Political Health-System Strategist
+Die politische Einordnung bleibt bewusst nachgelagert. Gerade bei weniger Medizinstudienplätzen muss zuerst der verzögerte Kapazitätspfad verstanden werden, bevor Unterstützer/Bremser oder Strategiefragen diskutiert werden.
+
+### Evidence / Domain
+Keine neuen Quellen oder Modellannahmen eingeführt. Die Aussage bleibt: SimMed-Modelllauf mit dokumentierten Annahmen, keine amtliche Prognose und kein Wirksamkeitsnachweis. Der Ausbildungs-Lag ab etwa Jahr 6 und der Facharztpfad Richtung Jahr 11–15 bleiben als Modellannahme sichtbar.
+
+### Integrator Decision
+Akzeptiert: die Ergebnis-Kommunikation läuft über den vereinfachten öffentlichen Packet-Vertrag (`result_headline`, `short_answer`, `result_sections`, `relevant_kpis`, `follow_up_question`) und die erste UI-Ansicht rendert daraus einen einzigen Briefing-Block. Keine neuen Modell-Dynamiken in diesem Lauf.
+
+### Question to Alex
+Keine offene Grundsatzentscheidung. Empfehlung: weiter sicher in Richtung „ein Briefing zuerst, Audit danach“ iterieren.
+
+### Verification / Git
+Vorläufig: fokussierte Tests `tests/test_result_causality.py` plus API-Causal-Packet-Test laufen grün. Full suite, Sync, Commit und Push folgen in diesem Heartbeat.
