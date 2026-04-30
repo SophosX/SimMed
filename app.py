@@ -42,6 +42,7 @@ from data_ingestion import (
     build_data_readiness_integration_plan,
     build_data_readiness_integration_pr_brief,
     build_data_readiness_registry_diff_preview,
+    build_data_readiness_registry_integration_decision_audit_checklist,
     build_data_readiness_registry_integration_decision_record,
     build_data_readiness_registry_integration_decision_template,
     build_data_readiness_registry_integration_handoff_packet,
@@ -4147,6 +4148,7 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         "integration_pr_brief": integration_pr_brief,
         "registry_integration_decision_record": decision_record,
         "registry_integration_decision_template": build_data_readiness_registry_integration_decision_template(decision_record),
+        "registry_integration_decision_audit_checklist": build_data_readiness_registry_integration_decision_audit_checklist(decision_record),
         "registry_integration_handoff_packet": build_data_readiness_registry_integration_handoff_packet(decision_record),
         "rows": [
             {
@@ -4462,6 +4464,26 @@ def render_learning_data_readiness_backlog():
         else:
             st.caption("Noch keine Ausfüllvorlage, weil kein Decision-Record vorliegt.")
         st.caption(decision_template["guardrail"])
+        audit_checklist = backlog["registry_integration_decision_audit_checklist"]
+        st.markdown(f"**{audit_checklist['title']}**")
+        st.caption(audit_checklist["plain_language_note"])
+        audit_rows = [
+            {
+                "Rang": row["rank"],
+                "Parameter": row["label"],
+                "Audit-Fragen": " · ".join(row["audit_questions"][:3]),
+                "Fehlt vor Go": " · ".join(row["missing_technical_checks_before_go"]) or "nichts laut Checks",
+                "Routen erneut öffnen": " · ".join(row["evidence_routes_to_reopen"][:3]),
+                "Audit-Ausgang": " · ".join(row["audit_outcome_options"][:2]),
+                "Guardrail": row["guardrail"],
+            }
+            for row in audit_checklist["rows"]
+        ]
+        if audit_rows:
+            st.dataframe(pd.DataFrame(audit_rows), use_container_width=True, hide_index=True)
+        else:
+            st.caption("Noch keine Audit-Checkliste, weil kein Decision-Record vorliegt.")
+        st.caption(audit_checklist["guardrail"])
         handoff_packet = backlog["registry_integration_handoff_packet"]
         st.markdown(f"**{handoff_packet['title']}**")
         st.caption(handoff_packet["plain_language_note"])

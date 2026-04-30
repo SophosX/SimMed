@@ -123,6 +123,12 @@ def test_learning_data_readiness_backlog_includes_integration_preflight():
     assert all(row["allowed_decisions"] == ["Go", "Hold", "Reject"] for row in decision_template["rows"])
     assert all("GET /data-readiness/" in " ".join(row["evidence_routes_to_open"]) for row in decision_template["rows"])
     assert "keine Entscheidungsspeicherung" in " ".join(row["guardrail"] for row in decision_template["rows"])
+    audit_checklist = backlog["registry_integration_decision_audit_checklist"]
+    assert audit_checklist["title"].startswith("Audit-Checkliste")
+    assert audit_checklist["summary"]["audit_rows"] == decision_record["summary"]["decision_rows"]
+    assert all("Go, Hold oder Reject" in row["audit_questions"][0] for row in audit_checklist["rows"])
+    assert all("GET /data-readiness/" in " ".join(row["evidence_routes_to_reopen"]) for row in audit_checklist["rows"])
+    assert "keine Entscheidungsspeicherung" in " ".join(row["guardrail"] for row in audit_checklist["rows"])
     handoff_packet = backlog["registry_integration_handoff_packet"]
     assert handoff_packet["title"].startswith("Registry-Integrations-Handoff")
     assert handoff_packet["summary"]["handoff_rows"] == decision_record["summary"]["decision_rows"]

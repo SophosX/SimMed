@@ -1366,6 +1366,72 @@ def build_data_readiness_registry_integration_decision_template(decision_record:
 
 
 
+def build_data_readiness_registry_integration_decision_audit_checklist(decision_record: dict) -> dict:
+    """Return a read-only audit checklist for reviewing a filled Go/Hold/Reject decision.
+
+    The decision template tells humans what to fill. This checklist tells a reviewer
+    how to audit that filled record before any implementation branch exists. It is
+    intentionally status-only: it stores no decision, validates no private payload,
+    and performs no Registry/model mutation.
+    """
+
+    rows: list[dict] = []
+    for idx, row in enumerate(decision_record.get("rows", []), start=1):
+        parameter_key = row["parameter_key"]
+        checks = row.get("checks", {})
+        required_checks = [
+            "reviewed_value_present",
+            "source_snapshot_sha256_present",
+            "unit_matches_registry",
+            "within_registry_bounds",
+            "pr_brief_available",
+        ]
+        missing_technical_checks = [key for key in required_checks if checks.get(key) is not True]
+        rows.append({
+            "rank": idx,
+            "parameter_key": parameter_key,
+            "label": row.get("label", parameter_key),
+            "current_status": row.get("status", "blocked_before_human_go_no_go"),
+            "recommended_default": row.get("recommended_default", "Hold, bis alle Checks vollständig sind."),
+            "audit_questions": [
+                "Ist die Entscheidung ausdrücklich Go, Hold oder Reject?",
+                "Nennt die Begründung Quelle, Methode, Unsicherheit und konkrete Folge?",
+                "Sind decided_by, decided_at und follow_up ausgefüllt?",
+                "Wurden Diff-Preview, PR-Brief und Parameter-Workflow geöffnet?",
+                "Wird bei fehlenden Checks Hold statt Go empfohlen?",
+            ],
+            "technical_checks_to_reconfirm": checks,
+            "missing_technical_checks_before_go": missing_technical_checks,
+            "evidence_routes_to_reopen": [
+                f"GET /data-readiness/{parameter_key}",
+                "GET /data-readiness/registry-integration-decision-record",
+                "GET /data-readiness/registry-diff-preview",
+                "GET /data-readiness/integration-pr-brief",
+            ],
+            "audit_outcome_options": [
+                "audit_ok_for_separate_pr: nur wenn Decision=Go und alle technischen Checks true sind",
+                "audit_hold_required: wenn Begründung/Felder/Checks fehlen oder Unsicherheit offen ist",
+                "audit_reject_or_rework: wenn Reviewwert, Einheit, Methode oder Quelle nicht plausibel ist",
+            ],
+            "guardrail": "Audit-Checkliste ist read-only: keine Entscheidungsspeicherung, kein Branch, kein execute=true, keine Cache-/Review-Aktion, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+        })
+    return {
+        "title": "Audit-Checkliste für ausgefüllte Registry-Entscheidungen",
+        "plain_language_note": (
+            "Diese Checkliste prüft die menschliche Go/Hold/Reject-Dokumentation, bevor ein separater PR beginnt. "
+            "Sie macht unvollständige Entscheidungen sichtbar, speichert aber selbst nichts."
+        ),
+        "summary": {
+            "decision_rows_seen": len(decision_record.get("rows", [])),
+            "audit_rows": len(rows),
+            "rows_requiring_hold_by_checks": sum(1 for row in rows if row["missing_technical_checks_before_go"]),
+        },
+        "rows": rows,
+        "guardrail": "Read-only/Audit-only: kein Branch, kein execute=true, keine Datenaktion, keine Review-Erzeugung, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+    }
+
+
+
 def build_data_readiness_registry_integration_handoff_packet(decision_record: dict) -> dict:
     """Create a copy-safe operator handoff from the Go/Hold/Reject decision record.
 

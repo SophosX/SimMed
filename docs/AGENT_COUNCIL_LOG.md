@@ -2118,3 +2118,33 @@ Keine wichtige Entscheidung offen.
 
 ### Verification / Git
 Gezielt: `pytest tests/test_app_explanations.py::test_learning_data_readiness_backlog_includes_integration_preflight tests/test_api.py::test_api_exposes_focused_registry_integration_decision_template_without_apply -q` → 2 passed. Voll: `pytest -q` → 128 passed. `py_compile` für app/data_ingestion/api/tests ok. Simulation smoke: 20 runs × 2 Jahre → `(60, 30)` / `(320, 6)`.
+
+
+## 2026-04-30 02:45 Europe/Berlin — Heartbeat: Registry-Decision-Audit vor Modellintegration
+
+### Context
+Alex priorisiert Core-Plattform. Dieser Lauf erweitert die Daten-/Provenienz-Kette nach Decision-Template um eine read-only Audit-Checkliste, damit Go/Hold/Reject-Entscheidungen vor Registry-/Modell-PRs prüfbar bleiben.
+
+### Project Manager
+Priorität: Data-Ingestion/Governance vor echter Modellintegration weiter absichern. Risiko: ohne Audit-Schritt könnte ein ausgefülltes Template zu schnell als Go interpretiert werden. Nächste Aufgaben: Persistenzformat für echte Decision Records planen, danach nur bewusst separaten PR erlauben.
+
+### Designer / UX
+Die Learning Page zeigt jetzt nach der Ausfüllvorlage einen Audit-Schritt: Nutzer sehen erst Entscheidung, dann Vorlage, dann Prüffragen, dann Handoff. Das macht den Pfad auf Mobile/Tablet als Tabelle nachvollziehbar.
+
+### Creative Agent
+Idee: später aus der Audit-Checkliste einen “Integrations-TÜV” mit Ampeln machen. Fit: gut für Vertrauen, aber erst nach echter Decision-Record-Persistenz sinnvoll.
+
+### Political Health-System Strategist
+Für politisch sensible Parameter ist ein Audit zwischen Fachentscheidung und PR wichtig: es trennt Evidenz-/Methodenprüfung von politischer Interpretation und verhindert stille Modellwert-Änderungen.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Es wurden keine neuen Daten- oder Wirkungsclaims hinzugefügt; die Änderung ist Status-/Governance-only und hält Rohdaten, Review, Entscheidung und Modellintegration getrennt.
+
+### Integrator Decision
+Akzeptiert: `build_data_readiness_registry_integration_decision_audit_checklist(...)`, fokussierter API-Endpunkt und Learning-Page-Surface. Deferred: echte Entscheidungsspeicherung und Branch-Erzeugung.
+
+### Question to Alex
+Keine.
+
+### Verification / Git
+Vor Commit: 129 Tests grün, py_compile grün, Simulation-Smoke 20 Runs × 2 Jahre grün. Commit/Push folgt in diesem Lauf; Zip-Artefakt wird aktualisiert.
