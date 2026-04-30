@@ -3551,6 +3551,9 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
             else:
                 st.write(block["body"])
 
+        next_check = briefing.get("next_check") or view.get("follow_up_question") or packet.get("follow_up_question")
+        if next_check:
+            st.info(next_check)
         st.caption(view.get("executive_brief", {}).get("audit_hint") or briefing.get("guardrail") or view.get("guardrail", packet["guardrail"]))
 
     audit_sections = view.get("audit_sections", [])

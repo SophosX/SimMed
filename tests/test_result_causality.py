@@ -1759,3 +1759,63 @@ def test_public_result_text_uses_clear_serious_language_without_internal_terms()
     assert len(packet["relevant_kpis"]) <= 4
     assert all(len(section["body"].split(".")) <= 4 for section in packet["result_sections"])
 
+
+
+def test_public_result_packet_is_lean_first_screen_not_overlapping_explanation_stack():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    public = packet["public_result_view"]
+    sections = packet["result_sections"]
+    public_text = _public_text(packet)
+
+    banned_terms = [
+        "random Internet",
+        "Klartext",
+        "KPI-Wand",
+        "generated",
+        "helper",
+        "answer_first",
+        "Audit",
+        "Lesekarten",
+    ]
+    assert all(term not in public_text for term in banned_terms)
+    assert len(sections) <= 7
+    assert [section["heading"] for section in sections] == [
+        "Ergebnis",
+        "Eingriff",
+        "Warum es passiert",
+        "Relevante Kennzahlen",
+        "Anpassungen",
+        "Einordnung",
+        "Nächster Prüfschritt",
+    ]
+    assert all(len(section["body"]) <= 180 for section in sections)
+    assert len(packet["short_answer"]) <= 300
+    assert len(packet["short_answer"].split(". ")) <= 4
+    assert "Medizinstudienplätze" in packet["short_answer"]
+    assert any(kpi["label"] == "Facharzt-Wartezeit" for kpi in packet["relevant_kpis"])
+    assert "Jahr 6" in packet["short_answer"]
+    assert "Nächster" in packet["follow_up_question"]
+    assert public["suppressed_overlapping_widgets"] == [
+        "answer_rows",
+        "legacy_narrative_widgets",
+        "storyboard_widgets",
+        "full_kpi_grid",
+    ]
+
+
+def test_build_result_causal_overview_exposes_same_lean_public_packet_for_streamlit():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    overview = build_result_causal_overview(_agg_frame(), params)
+    public = overview["public_result_view"]
+
+    assert public["briefing"]["headline"] == overview["result_headline"]
+    assert public["briefing"]["short_answer"] == overview["short_answer"]
+    assert public["briefing"]["sections"] == overview["result_sections"]
+    assert public["briefing"]["next_check"] == overview["follow_up_question"]
+    assert public["deeper_review_default_expanded"] is False
+    assert public["dense_kpi_default_expanded"] is False

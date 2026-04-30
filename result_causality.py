@@ -1046,9 +1046,9 @@ def build_causal_result_packet(
     ) or "keine priorisierten Kennzahlen verfügbar"
     if study_places_changed:
         short_answer = (
-            f"Das Ergebnis: Weniger Medizinstudienplätze wirken nicht sofort, sondern später als Druck auf die Versorgung; sichtbar bei {top_kpi_sentences}. "
+            f"Das Ergebnis: Weniger Medizinstudienplätze wirken später: {top_kpi_sentences}. "
             "Das passiert, weil ab etwa Jahr 6 weniger Nachwuchs ankommt; Richtung Jahr 11–15 zählt der Facharztpfad. "
-            "Das bedeutet: nächste Prüfung sind Wartezeit, Belastung und Puffer; es ist kein Beweis realer politischer Wirkung."
+            "Das bedeutet: nächste Prüfung sind Wartezeit, Belastung und sichtbare Puffer."
         )
     elif changed:
         short_answer = (

@@ -5986,3 +5986,32 @@ Keine offene Grundsatzentscheidung. Empfehlung: weiter sicher in Richtung „ein
 
 ### Verification / Git
 `python3 -m pytest -q` passed (289 tests). `py_compile` passed for app/result_causality/API/core and focused tests. Smoke test: 50 runs × 3 years plus causal packet contract passed (`short_answer`, ≤7 sections, audit collapsed). Zip refreshed at `/opt/data/cache/documents/health_simulation_app_updated.zip`. Council-log sync committed/pushed as `bc6677d`; this verification note follows as a normal follow-up commit.
+
+## 2026-04-30 20:02 Europe/Berlin — Result First Screen Lean Briefing
+
+### Context
+Alexs neueste Korrektur war eindeutig: Die Ergebnisse sollen nicht noch eine weitere Erklärschicht bekommen, sondern als eine klare erste Ergebnisansicht lesbar werden. Fokus dieses Laufs: `result_causality.py`, `app.py`, API-Paket-Kompatibilität und Tests.
+
+### Project Manager
+Priorität: erste Ergebnisantwort verschlanken und trotzdem API/UI-Abwärtskompatibilität erhalten. Risiko: bestehende ältere Tests erwarten viele Legacy-Felder; deshalb blieb die Detail-/Audit-Struktur erhalten, aber unter einer geschlossenen Vertiefung.
+
+### Designer / UX
+Die erste Ansicht folgt jetzt stärker einer einzigen Leselogik: Headline, kurze Antwort, sieben feste Abschnitte, kompakte relevante Kennzahlen, dann erst Vertiefung. Der nächste Prüfschritt wird im Streamlit-Block sichtbar, statt nur im API-Paket zu liegen.
+
+### Creative Agent
+Produktidee für später: aus dieser ersten Ergebnisantwort eine teilbare Kurz-Briefing-Karte erzeugen. Fit: gut für Verständlichkeit und Kommunikation, aber erst nach weiterer Stabilisierung der Ergebnislogik.
+
+### Political Health-System Strategist
+Die Formulierung bleibt bewusst nüchtern: keine politische Siegerzahl, sondern „erst fachlich prüfen, dann politisch bewerten“. Gerade bei weniger Medizinstudienplätzen bleibt der verzögerte Pipeline-Effekt und die Prüfung von Wartezeit/Belastung/Puffern im Vordergrund.
+
+### Evidence / Domain
+Keine neuen externen Fakten oder Modellannahmen in diesem Lauf. Die Änderung betrifft Kommunikation/Struktur; bestehende Evidenz-/Annahmenzeilen bleiben in der geschlossenen Vertiefung sichtbar. Keine neue Recherche in diesem Lauf.
+
+### Integrator Decision
+Akzeptiert: kürzere `short_answer` für den Public Packet, neue Regressionstests gegen Meta-/Jargonbegriffe und überlange erste Bildschirmtexte, Streamlit zeigt den nächsten Prüfschritt direkt im Ergebnisblock. Modell-Dynamik unverändert.
+
+### Question to Alex
+Keine wichtige Entscheidung offen. Sicher weiterarbeiten: als Nächstes die darunterliegenden Legacy-KPI-/Dashboard-Blöcke weiter in eine sauberere geschlossene „Vertiefung“ umräumen, ohne Modellwerte zu ändern.
+
+### Verification / Git
+Vor Commit: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 64 passed; `python3 -m pytest -q` → 291 passed; `py_compile` für zentrale Module; 50-run Smoke-Test → OK. Git-Commit/Push wird nach Sync im GitHub-Clone dokumentiert.
