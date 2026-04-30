@@ -6432,4 +6432,4 @@ Akzeptiert: Test für ein kurzes, öffentliches `causal_result_packet` ohne inte
 Keine wichtige Entscheidung offen; weiter sicher/reversibel an der Ergebnis-Klarheit arbeiten.
 
 ### Verification / Git
-Focused RED/GREEN: `python3 -m pytest tests/test_result_causality.py::test_public_causal_result_packet_is_concise_and_free_of_internal_wording tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` grün nach Kürzung. Full verification/commit follows in this heartbeat.
+Focused RED/GREEN: neuer Klarheits-Test fiel zunächst wegen zu langer öffentlicher Abschnitte und wurde nach Kürzung grün. Full verification: `python3 -m pytest -q` → 303 passed; `py_compile` Kernmodule inkl. `result_causality.py`; Simulation-Smoke 50 Runs × 3 Jahre OK. Git: Commit `77e12e8` auf `main` gepusht.
