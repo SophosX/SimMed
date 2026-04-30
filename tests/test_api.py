@@ -1090,3 +1090,31 @@ def test_api_exposes_registry_integration_command_palette_without_actions():
     invalid = client.get("/data-readiness/registry-integration-command-palette?limit=0")
     assert invalid.status_code == 422
     assert invalid.json()["detail"]["status"] == "invalid_data_readiness_registry_integration_command_palette_limit"
+
+
+def test_api_exposes_registry_integration_operator_briefing_without_actions():
+    client = TestClient(api)
+    seed_response = client.post("/data-fixtures/seed-reference-review-demo")
+    assert seed_response.status_code == 200
+
+    response = client.get("/data-readiness/registry-integration-operator-briefing?limit=3")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "data_readiness_registry_integration_operator_briefing_not_applied"
+    assert "kein execute=true" in body["guardrail"]
+    assert "keine Registry-/Modellmutation" in body["guardrail"]
+    briefing = body["registry_integration_operator_briefing"]
+    assert briefing["primary_parameter_key"] == "bevoelkerung_mio"
+    assert briefing["first_safe_command"] == "GET /data-readiness/registry-integration-status-board"
+    assert briefing["next_parameter_command"] == "GET /data-readiness/bevoelkerung_mio"
+    assert briefing["human_decision_command"] == "GET /data-readiness/registry-integration-decision-audit-checklist"
+    assert briefing["stop_before_code"].startswith("STOP:")
+    assert any("Go/Hold/Reject" in question for question in briefing["operator_questions"])
+    assert not any("execute=true" in briefing[key] for key in ["first_safe_command", "next_parameter_command", "human_decision_command", "stop_before_code"])
+    assert "kein Branch" in briefing["guardrail"]
+    assert "kein Policy-Wirkungsbeweis" in briefing["guardrail"]
+
+    invalid = client.get("/data-readiness/registry-integration-operator-briefing?limit=0")
+    assert invalid.status_code == 422
+    assert invalid.json()["detail"]["status"] == "invalid_data_readiness_registry_integration_operator_briefing_limit"

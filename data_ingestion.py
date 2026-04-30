@@ -2576,6 +2576,67 @@ def build_data_readiness_registry_integration_command_palette(progress_timeline:
 
 
 
+def build_data_readiness_registry_integration_operator_briefing(
+    progress_timeline: dict,
+    command_palette: dict,
+) -> dict:
+    """Return a one-screen read-only briefing for the final Registry gates.
+
+    The command palette is useful for operators, but first-time users need an
+    answer-first summary before they copy routes. This briefing turns the same
+    timeline/palette data into a mobile-safe overview: where to start, what to
+    open next, where to stop, and what must never be inferred from the status.
+    It is deliberately status-only and must not contain execute=true or branch
+    creation commands.
+    """
+
+    commands = command_palette.get("commands", [])
+    read_commands = [command for command in commands if command.get("mode") == "read_only_status"]
+    stop_command = next((command for command in commands if command.get("mode") == "stop_no_command"), {})
+    primary_key = progress_timeline.get("primary_parameter_key")
+    primary_label = progress_timeline.get("primary_label") or "kein Parameter"
+    next_read_command = next(
+        (
+            command.get("copyable_command")
+            for command in read_commands
+            if command.get("copyable_command", "").startswith(f"GET /data-readiness/{primary_key}")
+        ),
+        f"GET /data-readiness/{primary_key or '{parameter_key}'}",
+    )
+    return {
+        "title": "Registry-Integration: Operator-Briefing vor Codearbeit",
+        "plain_language_summary": (
+            f"Start mit Status lesen, dann {primary_label} einzeln prüfen, danach menschliche Go/Hold/Reject-"
+            "Entscheidung auditieren. Vor Branch/PR bewusst stoppen."
+        ),
+        "primary_parameter_key": primary_key,
+        "primary_label": primary_label,
+        "first_safe_command": read_commands[0].get("copyable_command") if read_commands else "GET /data-readiness/registry-integration-status-board",
+        "next_parameter_command": next_read_command,
+        "human_decision_command": next(
+            (
+                command.get("copyable_command")
+                for command in read_commands
+                if "decision-audit-checklist" in command.get("copyable_command", "")
+            ),
+            "GET /data-readiness/registry-integration-decision-audit-checklist",
+        ),
+        "stop_before_code": stop_command.get(
+            "copyable_command",
+            "STOP: erst menschliches Go außerhalb dieses Pakets dokumentieren",
+        ),
+        "operator_questions": [
+            "Welcher Parameter ist zuerst auditierbar?",
+            "Sind Raw-Cache, Transformationsreview, Einheit, Grenzen und PR-Brief nachvollziehbar?",
+            "Ist die Entscheidung Go/Hold/Reject mit Rationale, Entscheider und Zeitpunkt dokumentiert?",
+            "Wurde vor Branch/PR klar gestoppt?",
+        ],
+        "definition_of_done_before_branch": command_palette.get("definition_of_done_before_branch", []),
+        "guardrail": "Read-only/Operator-briefing-only: kein Branch, kein execute=true, keine Datenaktion, keine Review-Erzeugung, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    }
+
+
+
 def build_data_readiness_registry_integration_handoff_packet(decision_record: dict) -> dict:
     """Create a copy-safe operator handoff from the Go/Hold/Reject decision record.
 

@@ -2631,3 +2631,33 @@ Gezielt verifiziert: `pytest` für Safe-start API-Tests (3 passed) und `py_compi
 - **Integrator Decision:** `build_data_readiness_registry_integration_command_palette(...)` in `data_ingestion.py`, fokussierter API-Endpunkt `/data-readiness/registry-integration-command-palette`, Einbettung in Learning Page und Regressionstests ergänzt.
 - **Question to Alex:** Keine wichtige Entscheidung offen.
 - **Verification/Git:** Fokus-Tests, volle Pytest-Suite, py_compile und kleiner Simulation-Smoke bestanden; Commit/Push folgt.
+
+
+## 2026-04-30 05:16 Europe/Berlin — Heartbeat: Registry-Operator-Briefing
+
+### Context
+Core-platform priority: Daten-/Provenienz-Gates weiter operationalisieren. Neu: ein read-only Operator-Briefing bündelt Timeline und Command-Palette vor Registry-Codearbeit.
+
+### Project Manager
+Nächster Plattformnutzen ist weniger Streuverlust in den finalen Registry-Integrationsgates: ein Operator sieht Startbefehl, Parameterprüfung, menschliches Audit und Stop-Gate auf einem Bildschirm.
+
+### Designer / UX
+Mobile/First-contact-Sinncheck: statt noch einer dichten Tabelle gibt es eine Antwort-zuerst-Zusammenfassung mit vier Operatorfragen und klaren Copy-Routen.
+
+### Creative Agent
+Idee: später daraus eine "Schichtübergabe" für den Daten-Operator machen; passt, solange es Status-only bleibt und keine Ausführungsbuttons versteckt.
+
+### Political Health-System Strategist
+Vor Modellintegration bleibt die menschliche Go/Hold/Reject-Entscheidung sichtbar. Das verhindert, dass technisch grüne Datenpfade als politische Wirkungsbeweise oder amtliche Prognosen missverstanden werden.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Es wurden keine neuen Daten-/Wirkungsclaims ergänzt; Guardrails halten Cache/Review/Status getrennt von Registry-/Modellmutation.
+
+### Integrator Decision
+Akzeptiert: `build_data_readiness_registry_integration_operator_briefing(...)` und fokussierter API-Endpunkt `GET /data-readiness/registry-integration-operator-briefing`. Keine UI-Ausführung, kein Branch-/PR-Befehl, kein `execute=true`.
+
+### Question to Alex if needed
+Keine wichtige Produktentscheidung offen; sicherer nächster Schritt ist, dieses Operator-Briefing auch auf der Learning Page kompakt sichtbar zu machen.
+
+### Verification / Git
+Spezifischer API-Test, volle Testsuite, py_compile und kleiner Simulations-Smoke bestanden. Commit/Push folgt nach Zip-Refresh.
