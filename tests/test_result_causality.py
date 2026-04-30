@@ -629,6 +629,18 @@ def test_causal_result_layout_keeps_dense_kpis_optional_after_cleartext():
     ]
     assert "mehrere konkurrierende Erklärblöcke" in layout["optional_interpretation_layers"]["reason"]
     assert "Klartext" not in layout["optional_interpretation_layers"]["reason"]
+    secondary = layout["secondary_detail_layers"]
+    assert secondary["mode"] == "single_collapsed_detail_area"
+    assert secondary["default_expanded"] is False
+    assert secondary["label"] == "Detailprüfung nach dem Ergebnisbericht"
+    assert secondary["sections"] == [
+        "KPI-Details",
+        "Trend und Timing",
+        "Policy-Briefing",
+        "politische Einordnung",
+    ]
+    assert "ersten Ergebnisbriefing" in secondary["reason"]
+    assert all(term not in secondary["label"] + secondary["reason"] for term in ["KPI-Wand", "Klartext", "generated", "helper"])
     assert layout["guardrail"] == packet["guardrail"]
 
 

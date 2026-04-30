@@ -3703,104 +3703,114 @@ def render_dashboard(agg: pd.DataFrame, params: dict):
             cls = "mc-green" if v > 60 else "mc-orange"
             render_metric_card_with_details("Patientenzufr.", f"{v:.0f} / 100", "zufriedenheit_patienten", d, True, cls)
 
-    render_kpi_deep_dive(agg, params)
-    render_main_trend_chart(agg, params)
-    render_simulation_report(agg, params)
-
-    defaults = get_default_params()
-    parameter_changes = {k: v for k, v in params.items() if k in defaults and v != defaults[k]}
-    political_assessment = assess_political_feasibility(parameter_changes)
-    feasibility = political_assessment.get("category", "noch nicht bewertet")
-    overview = political_assessment.get("stakeholder_overview", {})
-    lever_notes = political_assessment.get("lever_notes", [])
-
-    st.markdown("---")
-    st.markdown("### Wer unterstützt? Wer bremst? Warum?")
-    st.caption(
-        "Diese Karte ist eine qualitative Orientierung zur politischen Umsetzbarkeit — "
-        "keine Wahlprognose, kein Lobby-Ranking und kein validierter Score."
-    )
-
-    st.info(political_assessment.get("summary", "Noch keine politische Einordnung vorhanden."))
-
-    col_support, col_block, col_why = st.columns(3)
-    with col_support:
-        st.markdown("**Mögliche Unterstützer**")
-        supporters = overview.get("likely_supporters") or ["Noch keine Unterstützer-Regel hinterlegt."]
-        for item in supporters[:6]:
-            st.markdown(f"- {item}")
-    with col_block:
-        st.markdown("**Mögliche Bremser**")
-        blockers = overview.get("likely_blockers") or ["Noch keine Bremser-Regel hinterlegt."]
-        for item in blockers[:6]:
-            st.markdown(f"- {item}")
-    with col_why:
-        st.markdown("**Warum ist das wichtig?**")
-        st.write(overview.get("plain_summary", "SimMed erklärt neben Modellwerten auch Zuständigkeiten, Budgets und Akzeptanz."))
-        st.write(f"**Umsetzbarkeit:** {feasibility}")
-
-    lever_detail_sections = build_political_lever_detail_sections(political_assessment)
-    bridge_items = build_changed_parameter_impact_bridge(agg, params)
-    political_checkpoints = {
-        _normalized_result_label(item["label"]): item for item in build_political_result_checkpoints(lever_detail_sections, bridge_items)
-    }
-    if lever_detail_sections:
-        st.markdown("#### Politische Lesespur nach geändertem Hebel")
-        st.caption("Öffne pro Hebel: Wirkung → mögliche Unterstützer/Bremser → Verzögerung/Reibung → nächster Prüfpunkt.")
-        for section in lever_detail_sections:
-            section_norm = _normalized_result_label(section["label"])
-            checkpoint = next(
-                (
-                    item for label, item in political_checkpoints.items()
-                    if label == section_norm or label in section_norm or section_norm in label
-                ),
-                None,
+    secondary = causal_layout.get("secondary_detail_layers", {})
+    with st.expander(
+        secondary.get("label", "Detailprüfung nach dem Ergebnisbericht"),
+        expanded=secondary.get("default_expanded", False),
+    ):
+        st.caption(
+            secondary.get(
+                "reason",
+                "Einzelne Kennzahlen, Zeitverlauf, Annahmen und politische Einordnung folgen als Prüfung nach der ersten Ergebnisantwort.",
             )
-            with st.expander(f"{section['label']} — warum politisch relevant?", expanded=False):
-                st.markdown(f"**1 · Was ändert dieser Hebel?** {section['effect']}")
-                st.markdown(
-                    f"**2 · Umsetzung lesen:** Verzögerung: {section['implementation_lag']} · "
-                    f"politische Reibung: {section['political_friction']}"
+        )
+        render_kpi_deep_dive(agg, params)
+        render_main_trend_chart(agg, params)
+        render_simulation_report(agg, params)
+
+        defaults = get_default_params()
+        parameter_changes = {k: v for k, v in params.items() if k in defaults and v != defaults[k]}
+        political_assessment = assess_political_feasibility(parameter_changes)
+        feasibility = political_assessment.get("category", "noch nicht bewertet")
+        overview = political_assessment.get("stakeholder_overview", {})
+        lever_notes = political_assessment.get("lever_notes", [])
+
+        st.markdown("---")
+        st.markdown("### Wer unterstützt? Wer bremst? Warum?")
+        st.caption(
+            "Diese Karte ist eine qualitative Orientierung zur politischen Umsetzbarkeit — "
+            "keine Wahlprognose, kein Lobby-Ranking und kein validierter Score."
+        )
+
+        st.info(political_assessment.get("summary", "Noch keine politische Einordnung vorhanden."))
+
+        col_support, col_block, col_why = st.columns(3)
+        with col_support:
+            st.markdown("**Mögliche Unterstützer**")
+            supporters = overview.get("likely_supporters") or ["Noch keine Unterstützer-Regel hinterlegt."]
+            for item in supporters[:6]:
+                st.markdown(f"- {item}")
+        with col_block:
+            st.markdown("**Mögliche Bremser**")
+            blockers = overview.get("likely_blockers") or ["Noch keine Bremser-Regel hinterlegt."]
+            for item in blockers[:6]:
+                st.markdown(f"- {item}")
+        with col_why:
+            st.markdown("**Warum ist das wichtig?**")
+            st.write(overview.get("plain_summary", "SimMed erklärt neben Modellwerten auch Zuständigkeiten, Budgets und Akzeptanz."))
+            st.write(f"**Umsetzbarkeit:** {feasibility}")
+
+        lever_detail_sections = build_political_lever_detail_sections(political_assessment)
+        bridge_items = build_changed_parameter_impact_bridge(agg, params)
+        political_checkpoints = {
+            _normalized_result_label(item["label"]): item for item in build_political_result_checkpoints(lever_detail_sections, bridge_items)
+        }
+        if lever_detail_sections:
+            st.markdown("#### Politische Lesespur nach geändertem Hebel")
+            st.caption("Öffne pro Hebel: Wirkung → mögliche Unterstützer/Bremser → Verzögerung/Reibung → nächster Prüfpunkt.")
+            for section in lever_detail_sections:
+                section_norm = _normalized_result_label(section["label"])
+                checkpoint = next(
+                    (
+                        item for label, item in political_checkpoints.items()
+                        if label == section_norm or label in section_norm or section_norm in label
+                    ),
+                    None,
                 )
-                st.markdown("**3 · Mögliche Unterstützer — warum erscheinen sie?**")
-                for row in section["supporters"]:
-                    st.markdown(f"- **{row['stakeholder']}**: {row['why']}")
-                st.markdown("**4 · Mögliche Bremser — warum erscheinen sie?**")
-                for row in section["blockers"]:
-                    st.markdown(f"- **{row['stakeholder']}**: {row['why']}")
-                st.info(f"**5 · Unsicherheit:** {section['caveat']}")
-                if checkpoint:
-                    st.markdown("**6 · Ergebnis-Checkpoint vor politischer Bewertung:**")
-                    for observed in checkpoint["observed_kpis"]:
-                        st.markdown(f"- {observed}")
-                    for target in checkpoint["drilldown_targets"]:
-                        st.caption(f"KPI-Ziel: {target['next_step']}")
-                    st.warning(checkpoint["caveat"])
-                    st.success(f"**7 · Nächster Prüfpunkt:** {checkpoint['next_step']}")
-                    st.caption(
-                        f"Verzögerung: {checkpoint['implementation_lag']} · politische Reibung: {checkpoint['political_friction']}"
+                with st.expander(f"{section['label']} — warum politisch relevant?", expanded=False):
+                    st.markdown(f"**1 · Was ändert dieser Hebel?** {section['effect']}")
+                    st.markdown(
+                        f"**2 · Umsetzung lesen:** Verzögerung: {section['implementation_lag']} · "
+                        f"politische Reibung: {section['political_friction']}"
                     )
-                else:
-                    st.success(f"**6 · Nächster Prüfpunkt:** {section['next_inspection']}")
-                st.caption(f"Strategie-Modus später: {section['strategy_checkpoint']}")
+                    st.markdown("**3 · Mögliche Unterstützer — warum erscheinen sie?**")
+                    for row in section["supporters"]:
+                        st.markdown(f"- **{row['stakeholder']}**: {row['why']}")
+                    st.markdown("**4 · Mögliche Bremser — warum erscheinen sie?**")
+                    for row in section["blockers"]:
+                        st.markdown(f"- **{row['stakeholder']}**: {row['why']}")
+                    st.info(f"**5 · Unsicherheit:** {section['caveat']}")
+                    if checkpoint:
+                        st.markdown("**6 · Ergebnis-Checkpoint vor politischer Bewertung:**")
+                        for observed in checkpoint["observed_kpis"]:
+                            st.markdown(f"- {observed}")
+                        for target in checkpoint["drilldown_targets"]:
+                            st.caption(f"KPI-Ziel: {target['next_step']}")
+                        st.warning(checkpoint["caveat"])
+                        st.success(f"**7 · Nächster Prüfpunkt:** {checkpoint['next_step']}")
+                        st.caption(
+                            f"Verzögerung: {checkpoint['implementation_lag']} · politische Reibung: {checkpoint['political_friction']}"
+                        )
+                    else:
+                        st.success(f"**6 · Nächster Prüfpunkt:** {section['next_inspection']}")
+                    st.caption(f"Strategie-Modus später: {section['strategy_checkpoint']}")
 
-    stakeholder_rows = build_political_stakeholder_rows(political_assessment)
-    if stakeholder_rows:
-        with st.expander("Alle Stakeholder-Zeilen kompakt anzeigen", expanded=False):
-            for row in stakeholder_rows:
-                st.markdown(f"**{row['role']}: {row['stakeholder']}** — Hebel: {row['lever']}")
-                st.write(row["why"])
-                st.caption(f"Unsicherheit: {row['caveat']}")
+        stakeholder_rows = build_political_stakeholder_rows(political_assessment)
+        if stakeholder_rows:
+            with st.expander("Alle Stakeholder-Zeilen kompakt anzeigen", expanded=False):
+                for row in stakeholder_rows:
+                    st.markdown(f"**{row['role']}: {row['stakeholder']}** — Hebel: {row['lever']}")
+                    st.write(row["why"])
+                    st.caption(f"Unsicherheit: {row['caveat']}")
 
-    if lever_notes:
-        with st.expander("Geänderte Hebel fachlich einordnen", expanded=False):
-            for note in lever_notes:
-                st.markdown(f"**{note['label']}**")
-                st.write(note["why_it_matters"])
-                st.caption(f"Verzögerung: {note['implementation_lag']} · Reibung: {note['political_friction']}")
-                st.caption(f"Achtung: {note['caveat']}")
-                st.caption(f"Nächster Strategie-Prüfpunkt: {note['strategy_foundation']}")
-
+        if lever_notes:
+            with st.expander("Geänderte Hebel fachlich einordnen", expanded=False):
+                for note in lever_notes:
+                    st.markdown(f"**{note['label']}**")
+                    st.write(note["why_it_matters"])
+                    st.caption(f"Verzögerung: {note['implementation_lag']} · Reibung: {note['political_friction']}")
+                    st.caption(f"Achtung: {note['caveat']}")
+                    st.caption(f"Nächster Strategie-Prüfpunkt: {note['strategy_foundation']}")
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UI: STATISTIKEN TAB

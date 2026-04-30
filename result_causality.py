@@ -568,6 +568,21 @@ def build_causal_result_layout(packet: Mapping[str, Any]) -> dict[str, Any]:
                 "als ein lesbarer Bericht beginnt und nicht als mehrere konkurrierende Erklärblöcke."
             ),
         },
+        "secondary_detail_layers": {
+            "label": "Detailprüfung nach dem Ergebnisbericht",
+            "mode": "single_collapsed_detail_area",
+            "default_expanded": False,
+            "sections": [
+                "KPI-Details",
+                "Trend und Timing",
+                "Policy-Briefing",
+                "politische Einordnung",
+            ],
+            "reason": (
+                "Alles nach dem ersten Ergebnisbriefing ist bewusst Prüfung: einzelne Kennzahlen, "
+                "Zeitverlauf, Annahmen und politische Einordnung werden geöffnet, wenn die erste Antwort verstanden ist."
+            ),
+        },
         "optional_details_after": packet.get("primary_result_view", {}).get(
             "optional_details_after",
             [

@@ -5486,3 +5486,33 @@ No important decision is open; keep progressing safely on result-page simplifica
 
 ### Verification / Git
 Verifiziert lokal: `python3 -m pytest -q` → 283 passed; `python3 -m py_compile app.py result_causality.py api.py simulation_core.py tests/test_result_causality.py tests/test_api.py`; Smoke-Test mit 50 Runs × 3 Jahre und halbierten Medizinstudienplätzen → OK. Git: Commit `52a0a82` (`Clarify causal result first answer`) wurde auf `origin/main` gepusht; enthält `result_causality.py`, `tests/test_result_causality.py`, `docs/AGENT_COUNCIL_LOG.md`.
+
+
+## 2026-04-30 16:10 UTC — Result page detail layers collapsed under one review area
+
+### Context
+Alexs Korrektur bleibt: Die Ergebnisseite soll zuerst wie ein klarer deutscher Befund gelesen werden, nicht wie eine Sammlung übereinanderliegender Widgets. Nach der vereinfachten Kausalantwort zeigte der Dashboard-Flow noch mehrere Detailbereiche direkt nacheinander. Relevante Dateien: `result_causality.py`, `app.py`, `tests/test_result_causality.py`.
+
+### Project Manager
+Priorität: die erste Ergebnisansicht schützen und alle Detailprüfungen nachgelagert halten. Risiko: volle KPI-Details, Trend, Policy-Briefing und politische Einordnung können den neuen Einstieg wieder überdecken, wenn sie nicht gemeinsam als Prüfung markiert sind. Nächster Schritt: realen Streamlit-Screenshot/Browser-Smoke prüfen und die visuelle Karte weiter beruhigen.
+
+### Designer / UX
+Akzeptiert wurde ein einzelner geschlossener Bereich „Detailprüfung nach dem Ergebnisbericht“. Darin liegen KPI-Details, Trend/Timing, Policy-Briefing und politische Einordnung. Dadurch bleibt die erste Seite: eine Antwort, wenige relevante Kennzahlen, dann bewusstes Öffnen der Tiefe.
+
+### Creative Agent
+Idee: Später kann der erste Ergebnisblock als „1-Minuten-Brief“ exportiert werden. Fit: sehr gut für Teilen und Demo; noch nicht umgesetzt, damit der Screen nicht wieder einen zusätzlichen Block bekommt.
+
+### Political Health-System Strategist
+Die politische Bewertung bleibt nachgeordnet. Bei Szenarien wie weniger Medizinstudienplätzen werden erst Kapazität, Wartezeit, Belastung und Puffer geprüft; erst danach werden Unterstützer/Bremser und Umsetzbarkeit geöffnet.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Keine neuen Modellannahmen, Parameter oder Quellen. Die Änderung betrifft ausschließlich Ergebnis-Hierarchie und Darstellung; Guardrails zu Annahmen, Evidenzgrenzen, amtlicher Prognose und Wirksamkeitsnachweis bleiben erhalten.
+
+### Integrator Decision
+Akzeptiert: `build_causal_result_layout(...)` beschreibt jetzt `secondary_detail_layers` als eine geschlossene Detailprüfung, und `render_dashboard(...)` legt KPI-Deep-Dive, Trend, Policy-Briefing und politische Einordnung in diesen einen Bereich. Modellmechanik unverändert.
+
+### Question to Alex
+Keine wichtige Entscheidung offen. Sicherer Default: weiter visuell vereinfachen und nur dort neue Blöcke zulassen, wo sie die erste Antwort wirklich kürzer machen.
+
+### Verification / Git
+Verifiziert lokal: `pytest tests/test_result_causality.py::test_causal_result_layout_keeps_dense_kpis_optional_after_cleartext -q` → passed; `pytest tests/test_result_causality.py tests/test_api.py -q` → 124 passed; `py_compile app.py result_causality.py api.py simulation_core.py`; `pytest -q` → 283 passed; 50-run/15-year Smoke mit halbierten Medizinstudienplätzen → OK. Git-Sync/Commit/Push folgt.
