@@ -593,3 +593,13 @@ Guardrail: these timeline rows are SimMed model assumptions/checkpoints, not an 
 - Added `sequential_plain_text` to the causal result packet so UI/API clients can consume one coherent German story from headline through result, change, mechanism, adaptation, countercheck, and evidence guardrail.
 - This is output restructuring only: no simulation dynamics, data cache, Registry value, or evidence grade changed.
 - Next implementation slice should either render/copy this single story more prominently in Streamlit or add the next model regression around the year-6-to-15 medical-study-place pressure path before changing dynamics.
+
+
+## 2026-04-30 heartbeat note: adaptation signal trace
+
+A safe incremental slice now adds `adaptation_signal_trace` to `result_causality.py::build_causal_result_packet(...)` and the Streamlit first-result view. This does **not** change model equations. It makes the current causal output less vague by separating:
+
+- expected/likely adaptation mechanisms (e.g. Telemedizin/Delegation/Mehrarbeit as buffers), from
+- observed compact-KPI signals (e.g. Telemedizin steigt as buffer; Burnout steigt as pressure signal).
+
+Guardrail remains unchanged: the trace is local SimMed model behavior from selected KPIs, not an official forecast, not a new evidence claim, not a web search, and not proof of reform effectiveness. Next stronger slice should either add year-window KPI trace rows from real simulation years (0–5/6–10/11–15) or start the explicit adaptation-mechanism registry described above.

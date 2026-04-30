@@ -3556,6 +3556,20 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
             hide_index=True,
         )
 
+    if packet.get("adaptation_signal_trace"):
+        st.markdown("**Beobachtete Anpassungs- und Drucksignale**")
+        st.dataframe(
+            pd.DataFrame(packet["adaptation_signal_trace"])[[
+                "label",
+                "observed_change",
+                "role",
+                "plain_interpretation",
+            ]],
+            use_container_width=True,
+            hide_index=True,
+        )
+        st.caption(packet["adaptation_signal_trace"][0]["guardrail"])
+
     if packet.get("evidence_assumption_rows"):
         with st.expander("Evidenz-/Annahmegrenzen der geänderten Hebel", expanded=True):
             st.dataframe(

@@ -155,6 +155,7 @@ def test_causal_result_packet_has_sequential_free_text_blocks_before_optional_de
         "sequential_plain_text": packet["sequential_plain_text"],
         "relevant_kpis": packet["relevant_kpis"],
         "relevant_kpi_summary": packet["relevant_kpi_summary"],
+        "adaptation_signal_trace": packet["adaptation_signal_trace"],
         "evidence_assumption_rows": packet["evidence_assumption_rows"],
         "optional_details_after": ["KPI-Drilldowns", "Trend", "Policy-Briefing", "Politik/Stakeholder"],
     }
@@ -211,6 +212,26 @@ def test_causal_result_packet_explains_why_each_relevant_kpi_was_selected():
     assert "Wartezeit" in combined or "Burnout" in combined
     assert packet["primary_result_view"]["relevant_kpi_summary"] == rows
     assert "nicht als KPI-Wand" in rows[0]["next_check"]
+
+
+def test_causal_result_packet_traces_observed_adaptation_signals_inside_main_story():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+
+    trace = packet["adaptation_signal_trace"]
+    assert trace
+    telemedicine = next(row for row in trace if row["signal_key"] == "telemedizin_rate")
+    burnout = next(row for row in trace if row["signal_key"] == "burnout_rate")
+    assert telemedicine["observed_direction"] == "steigt"
+    assert "dämpfender Mechanismus" in telemedicine["plain_interpretation"]
+    assert burnout["observed_direction"] == "steigt"
+    assert "Drucksignal" in burnout["plain_interpretation"]
+    assert "keine amtliche Prognose" in telemedicine["guardrail"]
+    assert packet["primary_result_view"]["adaptation_signal_trace"] == trace
+    assert "Telemedizin steigt" in packet["sequential_plain_text"]
+    assert "Burnout steigt" in packet["sequential_plain_text"]
 
 
 def test_causal_result_layout_keeps_dense_kpis_optional_after_cleartext():

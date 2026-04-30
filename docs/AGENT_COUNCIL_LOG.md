@@ -3667,3 +3667,33 @@ No important decision is blocked; continue safely with packet-centered causal ou
 
 ### Verification / Git
 TDD red observed: `tests/test_result_causality.py::test_causal_result_packet_explains_why_each_relevant_kpi_was_selected` failed with missing `relevant_kpi_summary`. Focused verification passed: `pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients tests/test_simulation_core.py::test_medical_study_places_halving_creates_delayed_capacity_and_burnout_pressure -q` → 12 passed. Full verification passed: `pytest -q` → 218 passed. Compile/smoke passed: `py_compile result_causality.py app.py api.py simulation_core.py` plus 30-run/15-year packet smoke (`OK smoke (480, 30) (480, 6) Ärzte pro 100k`). Commit/push pending in this heartbeat.
+
+
+## 2026-04-30 08:10 UTC — Adaptation Signal Trace in Causal Packet
+
+### Context
+Heartbeat continued Alex's causal-output restructuring: the first result view should not only list adaptation mechanisms in prose, but show which adaptation/pressure signals are actually visible in the selected KPI set. Touched `result_causality.py`, `app.py`, and `tests/test_result_causality.py`.
+
+### Project Manager
+Priority: make `build_causal_result_packet(...)` more self-contained before deeper model changes. Risk: naming likely mechanisms without observed signals can still feel vague. Next tasks: add year-window KPI trace rows from real simulation years or begin the explicit adaptation-mechanism registry.
+
+### Designer / UX
+The answer-first result surface now includes a short table of observed adaptation and pressure signals (e.g. Telemedizin as buffer, Burnout as pressure signal) directly after the relevant KPI rationale, reducing the need to infer mechanisms from a KPI wall.
+
+### Creative Agent
+Idea: later turn adaptation signals into a small causal timeline card. Fit is strong for storytelling, but today the safe step is structured packet data reused by UI/API.
+
+### Political Health-System Strategist
+For controversial workforce scenarios, separating adaptation buffers from pressure signals helps avoid simplistic “cut places -> one KPI changes” narratives. No stakeholder, vote, or lobbying claim was added.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. The trace describes observed SimMed model behavior from selected KPIs only; it does not add new evidence claims, coefficients, official forecasts, or policy-effect proof.
+
+### Integrator Decision
+Accepted: add `adaptation_signal_trace` to the causal packet and `primary_result_view`, include it in the sequential Klartext block, and render it in Streamlit. Deferred: changing simulation equations or adding new real-world source claims.
+
+### Question to Alex
+No important decision is blocked; continue safely with packet-centered causal output and explicit model-regression/adaptation registry work.
+
+### Verification / Git
+TDD red observed: `tests/test_result_causality.py::test_causal_result_packet_traces_observed_adaptation_signals_inside_main_story` failed with missing `adaptation_signal_trace`. Focused verification passed: `python3 -m pytest tests/test_result_causality.py -q` → 11 passed. Full verification passed: `python3 -m pytest -q` → 219 passed; `py_compile result_causality.py app.py api.py simulation_core.py` passed; 30-run/15-year causal smoke passed (`OK smoke (480, 30) (480, 6) ['telemedizin_rate', 'burnout_rate']`). Commit/push pending.

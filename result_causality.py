@@ -236,6 +236,55 @@ def _relevant_kpi_summary(
     return rows
 
 
+def _adaptation_signal_trace(kpis: Sequence[Mapping[str, Any]], params: Mapping[str, Any]) -> list[dict[str, str]]:
+    """Explain observed adaptation/pressure signals from the selected KPI set."""
+
+    defaults = get_default_params()
+    study_places_cut = float(params.get("medizinstudienplaetze", defaults["medizinstudienplaetze"])) < float(defaults["medizinstudienplaetze"])
+    if not study_places_cut:
+        return []
+
+    trace: list[dict[str, str]] = []
+    by_key = {str(row.get("metric_key")): row for row in kpis}
+    interpretations = {
+        "telemedizin_rate": {
+            "if_up": "Telemedizin steigt als dämpfender Mechanismus gegen Wartezeit- und Kapazitätsdruck.",
+            "if_down": "Telemedizin sinkt; im Ärztemangel fehlt damit ein sichtbarer digitaler Puffer.",
+            "if_flat": "Telemedizin bleibt stabil; sie erklärt dann kaum eine Kompensation des Kapazitätsdrucks.",
+            "role": "Anpassung/Puffer",
+        },
+        "burnout_rate": {
+            "if_up": "Burnout steigt als Drucksignal: die Belegschaft trägt einen Teil des Kapazitätsmangels.",
+            "if_down": "Burnout sinkt trotz Kapazitätsmangel; das ist nur plausibel, wenn ein Entlastungsmechanismus stark genug sichtbar ist.",
+            "if_flat": "Burnout bleibt stabil; prüfen, ob Telemedizin, Delegation oder Nachfrageverzicht den Druck wirklich erklären.",
+            "role": "Drucksignal",
+        },
+    }
+    for key, config in interpretations.items():
+        row = by_key.get(key)
+        if not row:
+            continue
+        direction = str(row.get("direction", "bleibt stabil"))
+        if direction == "steigt":
+            interpretation = config["if_up"]
+        elif direction == "sinkt":
+            interpretation = config["if_down"]
+        else:
+            interpretation = config["if_flat"]
+        trace.append(
+            {
+                "signal_key": key,
+                "label": str(row.get("label", key)),
+                "observed_direction": direction,
+                "observed_change": str(row.get("sentence", "")),
+                "role": config["role"],
+                "plain_interpretation": interpretation,
+                "guardrail": f"{RESULT_CAUSALITY_GUARDRAIL} Das Signal beschreibt Modellverhalten, keine amtliche Prognose.",
+            }
+        )
+    return trace
+
+
 def _counterintuitive_findings(kpis: Sequence[Mapping[str, Any]], params: Mapping[str, Any]) -> list[dict[str, str]]:
     defaults = get_default_params()
     by_key = {row["metric_key"]: row for row in kpis}
@@ -336,6 +385,7 @@ def build_causal_result_packet(
     kpis = _relevant_kpis(agg, max_kpis=max_kpis)
     kpi_summary = _relevant_kpi_summary(kpis, changed)
     mechanisms = _adaptation_mechanisms(params, kpis)
+    adaptation_trace = _adaptation_signal_trace(kpis, params)
     timeline_windows = _timeline_windows(params)
     counter = _counterintuitive_findings(kpis, params)
     changed_text = " ".join(item["change"] for item in changed) or "Keine zentrale Stellschraube wurde gegenüber dem Standardpfad verändert."
@@ -343,6 +393,9 @@ def build_causal_result_packet(
     mechanism_text = " ".join(
         f"{item['mechanism']}: {item['expected_effect']} Timing: {item['timing']}." for item in mechanisms
     ) or "Keine spezifischen Anpassungsmechanismen wurden aus den geänderten Haupthebeln abgeleitet."
+    adaptation_trace_text = " ".join(
+        f"{item['label']} {item['observed_direction']}: {item['plain_interpretation']}" for item in adaptation_trace
+    ) or "Keine beobachteten Anpassungs-/Drucksignale im kompakten KPI-Set."
     timeline_text = " ".join(
         f"{item['window']}: {item['expected_signal']} ({item['pressure_check']})." for item in timeline_windows
     ) or "Kein spezifisches verzögertes Zeitfenster aus den geänderten Haupthebeln abgeleitet."
@@ -372,7 +425,7 @@ def build_causal_result_packet(
         },
         {
             "step": "4. Anpassung",
-            "text": mechanism_text,
+            "text": f"{mechanism_text} Beobachtete Signale: {adaptation_trace_text}",
         },
         {
             "step": "5. Gegencheck",
@@ -431,7 +484,7 @@ def build_causal_result_packet(
         f"Bei Medizinstudienplätzen ist der zentrale Punkt der Ausbildungs-Lag: ab etwa Jahr 6 kommen weniger Absolvent:innen an; "
         f"im 15-Jahres-Horizont sollte sich das in Ärzte pro 100k, Wartezeit und Burnout zeigen, sofern Anpassungsmechanismen es nicht sichtbar dämpfen. "
         f"Zeitverlauf: {timeline_text} "
-        f"Anpassungsmechanismen: {mechanism_text} Gegencheck: {counter_text}"
+        f"Anpassungsmechanismen: {mechanism_text} Beobachtete Signale: {adaptation_trace_text} Gegencheck: {counter_text}"
     )
 
     return {
@@ -449,6 +502,7 @@ def build_causal_result_packet(
         "relevant_kpis": kpis,
         "relevant_kpi_summary": kpi_summary,
         "adaptation_mechanisms": mechanisms,
+        "adaptation_signal_trace": adaptation_trace,
         "timeline_windows": timeline_windows,
         "counterintuitive_findings": counter,
         "free_text_blocks": free_text_blocks,
@@ -458,6 +512,7 @@ def build_causal_result_packet(
             "sequential_plain_text": sequential_plain_text,
             "relevant_kpis": kpis,
             "relevant_kpi_summary": kpi_summary,
+            "adaptation_signal_trace": adaptation_trace,
             "evidence_assumption_rows": evidence_rows,
             "optional_details_after": ["KPI-Drilldowns", "Trend", "Policy-Briefing", "Politik/Stakeholder"],
         },
