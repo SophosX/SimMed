@@ -1033,6 +1033,9 @@ def test_result_causal_overview_exposes_briefing_quality_checks_for_first_view()
         "Belastbarkeit begrenzt",
     ]
     assert all(row["status"] == "erfüllt" for row in checks)
+    assert overview["primary_result_view"]["render_sequence"][0] == "professional_briefing_text"
+    assert overview["primary_result_view"]["professional_briefing_text"].startswith("Ausgangslage: ")
+    assert "\n\nNächste Prüfentscheidung: " in overview["primary_result_view"]["professional_briefing_text"]
     combined = " ".join(row["evidence"] for row in checks)
     assert "Ausgangslage → Eingriff → Wirkpfad" in combined
     assert "keine amtliche Prognose" in combined

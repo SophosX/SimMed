@@ -844,11 +844,15 @@ def build_causal_result_packet(
         "Einordnung",
         "nächste Prüfentscheidung",
     ]
+    reader_brief = "\n\n".join(
+        f"{section['heading']}: {section['body']}" for section in professional_sections
+    )
     professional_briefing = {
         "title": "Ergebnisbericht",
         "lead_paragraph": lead_paragraph,
         "section_flow": section_flow,
         "sections": professional_sections,
+        "reader_brief": reader_brief,
         "first_view_kpi_cards": first_view_kpi_cards,
         "sequential_text": "\n\n".join(
             ["Ergebnisbericht"]
@@ -895,17 +899,17 @@ def build_causal_result_packet(
         "primary_result_view": {
             "headline": "Ergebnisbericht und anschließende Detailprüfung",
             "render_sequence": [
-                "professional_briefing",
-                "first_view_briefing_cards",
+                "professional_briefing_text",
                 "first_view_kpi_cards",
-                "policy_readiness_summary",
-                "next_check",
+                "adaptation_and_plausibility",
+                "briefing_quality_checks",
                 "optional_audit_layers",
             ],
             "main_blocks": free_text_blocks,
             "legacy_numbered_story": legacy_numbered_story,
             "sequential_plain_text": sequential_plain_text,
             "professional_briefing": professional_briefing,
+            "professional_briefing_text": reader_brief,
             "lead_paragraph": lead_paragraph,
             "section_flow": section_flow,
             "first_view_briefing_cards": first_view_briefing_cards,

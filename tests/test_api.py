@@ -54,13 +54,13 @@ def test_simulate_embeds_causal_result_packet_for_answer_first_clients():
     assert packet["primary_result_view"]["first_view_briefing_cards"] == packet["first_view_briefing_cards"]
     assert "keine amtliche Prognose" in packet["first_view_briefing_cards"][5]["why_it_matters"]
     assert packet["primary_result_view"]["render_sequence"] == [
-        "professional_briefing",
-        "first_view_briefing_cards",
+        "professional_briefing_text",
         "first_view_kpi_cards",
-        "policy_readiness_summary",
-        "next_check",
+        "adaptation_and_plausibility",
+        "briefing_quality_checks",
         "optional_audit_layers",
     ]
+    assert packet["primary_result_view"]["professional_briefing_text"].startswith("Ausgangslage: ")
     assert packet["policy_readiness_summary"]["headline"] == "Was daraus folgt"
     assert "ab Jahr 6" in packet["policy_readiness_summary"]["why"]
 

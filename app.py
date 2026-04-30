@@ -3527,18 +3527,18 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
         st.markdown(f"**{primary_view.get('headline', 'Ergebnisbericht')}**")
         if professional.get("lead_paragraph"):
             st.info(professional["lead_paragraph"])
+        reader_brief = professional.get("reader_brief") or primary_view.get("professional_briefing_text")
+        if reader_brief:
+            st.markdown(reader_brief.replace("\n", "\n\n"))
         briefing_cards = packet.get("first_view_briefing_cards", []) or primary_view.get("first_view_briefing_cards", [])
         if briefing_cards:
-            st.markdown("**Ergebnisbericht in Lesereihenfolge**")
-            st.dataframe(
-                pd.DataFrame(briefing_cards)[["stage", "answer", "why_it_matters", "next_step"]],
-                use_container_width=True,
-                hide_index=True,
-            )
-            st.caption(briefing_cards[0].get("guardrail", packet["guardrail"]))
-        for section in professional.get("sections", []):
-            st.markdown(f"**{section['heading']}**")
-            st.write(section["body"])
+            with st.expander("Lesereihenfolge als Prüftabelle anzeigen", expanded=False):
+                st.dataframe(
+                    pd.DataFrame(briefing_cards)[["stage", "answer", "why_it_matters", "next_step"]],
+                    use_container_width=True,
+                    hide_index=True,
+                )
+                st.caption(briefing_cards[0].get("guardrail", packet["guardrail"]))
     else:
         if primary_view:
             st.markdown(f"**{primary_view['headline']}**")

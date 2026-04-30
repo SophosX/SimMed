@@ -4154,3 +4154,32 @@ Keine wichtige Entscheidung offen; sicherer nächster Schritt ist weitere Konsol
 
 ### Verification / Git
 Gezielte Tests grün: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 25 passed. Full verification grün: `python3 -m pytest -q` → 252 passed; `py_compile` für zentrale Module grün; Smoke-Test 30 Läufe × 3 Jahre grün (`df=(120, 30)`, `reg=(480, 6)`). Git: Commit `848c024` auf `main` gepusht; Follow-up-Log-Commit folgt separat ohne Force-Push.
+
+## 2026-04-30 12:12 Europe/Berlin — Heartbeat: Ergebnisbericht als lesbarer Erstblick
+
+### Context
+Alex requested a larger, coherent result-experience slice: the first simulation result should read as a serious German briefing, not a KPI wall or a pile of helper snippets. Relevant files: `result_causality.py`, `app.py`, `api.py`, `tests/test_result_causality.py`, `tests/test_api.py`, `tests/test_app_explanations.py`.
+
+### Project Manager
+Priority: keep consolidating the causal packet as the single source of truth for first-result UI/API. Risk: legacy result helpers remain useful but can crowd the first view if rendered too early. Next tasks: make the remaining optional audit layers visibly secondary, then refine the policy-briefing export around the same packet.
+
+### Designer / UX
+The first view now favors one reader brief (`Ausgangslage → Eingriff → berechnete Wirkpfade → relevante KPIs → Anpassungsreaktionen → Einordnung → nächste Prüfentscheidung`) before any table. The old reading-order table remains available, but collapsed as a Prüftabelle rather than becoming the primary result surface.
+
+### Creative Agent
+Product-fit idea: later offer a one-page “Arztbrief fürs System” export generated from the same `reader_brief`. Fit is good for sharing and deliberation, but only if every paragraph keeps the model/evidence boundary visible. Deferred until export/report work.
+
+### Political Health-System Strategist
+The “Was daraus folgt” framing is intentionally conservative: no vote forecast, no lobbying route, no direct policy proof. For study-place cuts, political interpretation should wait until the delayed pipeline and compensation signals are inspected together.
+
+### Evidence / Domain
+No new external factual claim was added. This was an explanation/UI/API structure change over existing model outputs and registry evidence/caveats. Guardrail remains: SimMed-Modelllauf, documented assumptions, Monte-Carlo spans; not an official forecast or effectiveness proof.
+
+### Integrator Decision
+Accepted: expose `professional_briefing.reader_brief`, make `primary_result_view.render_sequence` start with `professional_briefing_text`, and render that paragraph-style brief before KPI cards. Kept: relevant KPI cards, adaptation/plausibility rows, evidence/caveat rows, optional detailed audit layers.
+
+### Question to Alex
+No blocking decision. Safe next step: continue tightening the first result page by making legacy drilldowns/report/political sections clearly subordinate to the new Ergebnisbericht.
+
+### Verification / Git
+RED/GREEN targeted tests were run for the new reader-brief contract and render sequence. Full verification and git push follow in this heartbeat.

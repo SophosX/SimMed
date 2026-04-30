@@ -416,11 +416,10 @@ def test_primary_result_view_declares_single_sequential_briefing_before_optional
     first_view = packet["primary_result_view"]
 
     assert first_view["render_sequence"] == [
-        "professional_briefing",
-        "first_view_briefing_cards",
+        "professional_briefing_text",
         "first_view_kpi_cards",
-        "policy_readiness_summary",
-        "next_check",
+        "adaptation_and_plausibility",
+        "briefing_quality_checks",
         "optional_audit_layers",
     ]
     assert first_view["first_view_briefing_cards"][0]["stage"] == "Ausgangslage"
@@ -430,6 +429,27 @@ def test_primary_result_view_declares_single_sequential_briefing_before_optional
     assert first_view["optional_audit_layers"]["expanded_by_default"] is False
     assert first_view["optional_audit_layers"]["reason"].startswith("Detailprüfungen bleiben verfügbar")
     assert "keine zweite erste Ergebnisansicht" not in first_view["optional_audit_layers"]["reason"]
+
+
+def test_professional_briefing_exposes_human_reader_brief_without_table_first_language():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    briefing = packet["professional_briefing"]
+
+    assert briefing["reader_brief"].startswith("Ausgangslage: ")
+    assert "\n\nEingriff: " in briefing["reader_brief"]
+    assert "\n\nBerechnete Wirkpfade: " in briefing["reader_brief"]
+    assert "\n\nRelevante KPIs: " in briefing["reader_brief"]
+    assert "\n\nAnpassungsreaktionen: " in briefing["reader_brief"]
+    assert "\n\nEinordnung und Belastbarkeit: " in briefing["reader_brief"]
+    assert "\n\nWas daraus folgt: " in briefing["reader_brief"]
+    assert "\n\nNächste Prüfentscheidung: " in briefing["reader_brief"]
+    assert "Tabelle" not in briefing["reader_brief"]
+    assert "DataFrame" not in briefing["reader_brief"]
+    assert "KPI-Wand" not in briefing["reader_brief"]
+    assert packet["primary_result_view"]["professional_briefing_text"] == briefing["reader_brief"]
 
 
 def test_packet_primary_plain_text_is_the_professional_briefing_not_legacy_numbered_blocks():
@@ -576,7 +596,7 @@ def test_causal_packet_has_plain_consequence_and_readiness_summary_for_first_vie
     assert summary["recommended_next_step"].startswith("Zuerst")
     assert "keine amtliche Prognose" in summary["guardrail"]
     assert packet["primary_result_view"]["policy_readiness_summary"] == summary
-    assert "policy_readiness_summary" in packet["primary_result_view"]["render_sequence"]
+    assert "adaptation_and_plausibility" in packet["primary_result_view"]["render_sequence"]
 
 
 def test_first_view_briefing_cards_include_consequence_card_without_jargon():
