@@ -334,6 +334,14 @@ def test_learning_data_readiness_backlog_includes_integration_preflight():
     assert "Branch/PR stoppen" in " ".join(export_bundle["bundle_steps"])
     assert "execute=true" not in " ".join(export_bundle["focused_status_routes"])
     assert "keine Registry-/Modellmutation" in export_bundle["guardrail"]
+    bundle_walkthrough = backlog["registry_integration_operator_export_bundle_walkthrough"]
+    assert bundle_walkthrough["title"].startswith("Registry-Export-Bundle")
+    assert bundle_walkthrough["copy_safe"] is True
+    assert [step["rank"] for step in bundle_walkthrough["steps"]] == [1, 2, 3, 4]
+    assert "Packet-SHA256" in bundle_walkthrough["steps"][0]["what_to_check"]
+    assert bundle_walkthrough["steps"][1]["safe_route"].startswith("GET /data-readiness/")
+    assert "execute=true" not in " ".join(step["safe_route"] for step in bundle_walkthrough["steps"])
+    assert "keine Registry-/Modellmutation" in bundle_walkthrough["guardrail"]
     handoff_packet = backlog["registry_integration_handoff_packet"]
     assert handoff_packet["title"].startswith("Registry-Integrations-Handoff")
     assert handoff_packet["summary"]["handoff_rows"] == decision_record["summary"]["decision_rows"]

@@ -2932,3 +2932,16 @@ Vor Commit: gezielte Tests 3 passed; volle Suite `165 passed`; `py_compile app.p
 - **Integrator Decision:** `build_data_readiness_registry_integration_operator_export_bundle(...)` in `data_ingestion.py`, fokussierter API-Endpunkt `/data-readiness/registry-integration-operator-export-bundle`, Learning-Page-Surfacing und Regressionstests ergänzt.
 - **Question to Alex if needed:** Keine.
 - **Verification/Git:** `pytest -q` → 165 passed; `py_compile` für App/API/Data/Test-Dateien; 20×2 Simulation-Smoke → `(60, 30)`/`(320, 6)`. Commit/Push folgt in diesem Lauf.
+
+
+## 2026-04-30T04:28:31Z – Registry-Export-Bundle-Walkthrough
+
+- **Context:** Alex priorisiert Core-Plattform vor KI/Evidence; heutiger Slice bleibt im Data-Readiness-/Registry-Integrationspfad und macht den letzten read-only Export-Handoff verständlicher.
+- **Project Manager:** Sinnvoller kleiner Plattform-Schritt: vorhandenes Export-Bundle nicht nur als Objekt, sondern als klare Lesereihenfolge für Operatoren/API/UI bereitstellen; kein Live-Connector und keine Modellmutation.
+- **Designer/UX:** Mobile/touch-safe Walkthrough-Tabelle ergänzt Copy-Safety → Parameter-Fokus → Digest/Karten → Stop-Gate, damit Neulinge nicht in verschachtelten Exportobjekten suchen müssen.
+- **Creative Agent:** Die Bundle-Walkthrough-Karten funktionieren wie eine Checkliste vor dem Kontrollturm: erst Sicherheitsanzeige, dann Statuspfad, dann teilbarer Digest, dann rotes Stop-Gate.
+- **Political Health-System Strategist:** Keine neue politische Behauptung; Guardrails verhindern, dass eine technische Datenübergabe als amtliche Prognose, Policy-Wirkungsbeweis oder Lobbying-Empfehlung gelesen wird.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; Änderung betrifft Status-/Governance-UX und übernimmt bestehende Registry-/Review-/SHA256-Gates.
+- **Integrator Decision:** Implementiert `build_data_readiness_registry_integration_operator_export_bundle_walkthrough(...)`, API `GET /data-readiness/registry-integration-operator-export-bundle-walkthrough`, Learning-Page-Surface und Regressionstests.
+- **Question to Alex if needed:** Keine.
+- **Verification/Git:** Full pytest 165 passed; py_compile für app/data_ingestion/api/tests; Simulation smoke 20 runs × 2 years OK `(60, 30)` / `(320, 6)`. Commit/Push folgt nach Mirror/Zip.

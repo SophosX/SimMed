@@ -3082,6 +3082,63 @@ def build_data_readiness_registry_integration_operator_export_bundle(
     }
 
 
+def build_data_readiness_registry_integration_operator_export_bundle_walkthrough(export_bundle: dict) -> dict:
+    """Create an answer-first walkthrough for using the export bundle safely.
+
+    The bundle already joins packet/audit/digest/cards. This helper turns it into
+    a first-contact sequence for mobile or future operators so the last handoff is
+    understandable without opening all nested objects first. It remains strictly
+    read-only and stops before branch/PR or Registry/model changes.
+    """
+
+    primary_label = export_bundle.get("primary_label") or export_bundle.get("primary_parameter_key") or "erster Parameter"
+    routes = export_bundle.get("focused_status_routes", [])
+    return {
+        "title": "Registry-Export-Bundle: sichere Lesereihenfolge",
+        "plain_language_note": (
+            "Diese Walkthrough-Karten sagen einem Operator, was im Bundle zuerst zu lesen ist, "
+            "welcher Statuspfad sicher ist und wo vor Branch/PR zwingend gestoppt wird."
+        ),
+        "primary_parameter_key": export_bundle.get("primary_parameter_key"),
+        "primary_label": primary_label,
+        "copy_safe": export_bundle.get("copy_safe") is True,
+        "packet_sha256": export_bundle.get("packet_sha256"),
+        "steps": [
+            {
+                "rank": 1,
+                "label": "Copy-Safety prüfen",
+                "what_to_check": "Bundle muss copy-safe sein und eine Packet-SHA256 zeigen.",
+                "safe_route": routes[1] if len(routes) > 1 else "GET /data-readiness/registry-integration-operator-export-audit",
+                "stop_if": "copy_safe ist nicht ja oder unsafe findings sind sichtbar.",
+            },
+            {
+                "rank": 2,
+                "label": f"Parameter-Fokus öffnen: {primary_label}",
+                "what_to_check": "Statusroute öffnen, aber nur lesen: Rohdaten, Review, Diff und Entscheidungslage nachvollziehen.",
+                "safe_route": f"GET /data-readiness/{export_bundle.get('primary_parameter_key')}",
+                "stop_if": "Review-Wert, SHA256/Manifest, Einheit, Grenzen oder Entscheidung fehlen.",
+            },
+            {
+                "rank": 3,
+                "label": "Digest/Karten teilen",
+                "what_to_check": "Nur Status-/Handoff-Text teilen; keine Ausführungs-, Git- oder execute=true-Kommandos ergänzen.",
+                "safe_route": routes[2] if len(routes) > 2 else "GET /data-readiness/registry-integration-operator-export-digest",
+                "stop_if": "Der Text fordert Branch, Netzwerkabruf, Cache-/Review-Schreiben oder Modelländerung.",
+            },
+            {
+                "rank": 4,
+                "label": "Stop-Gate vor Branch/PR",
+                "what_to_check": export_bundle.get("stop_condition") or "Vor Branch/PR stoppen und Go/Hold/Reject separat entscheiden.",
+                "safe_route": "GET /data-readiness/registry-integration-decision-template",
+                "stop_if": "Go/Hold/Reject ist nicht auditiert dokumentiert oder Definition-of-done ist offen.",
+            },
+        ],
+        "definition_of_done_before_branch": export_bundle.get("definition_of_done_before_branch", []),
+        "guardrail": "Read-only/Export-bundle-walkthrough-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    }
+
+
+
 def build_data_readiness_registry_integration_handoff_packet(decision_record: dict) -> dict:
     """Create a copy-safe operator handoff from the Go/Hold/Reject decision record.
 

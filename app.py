@@ -67,6 +67,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_operator_export_digest,
     build_data_readiness_registry_integration_operator_export_share_cards,
     build_data_readiness_registry_integration_operator_export_bundle,
+    build_data_readiness_registry_integration_operator_export_bundle_walkthrough,
     build_data_readiness_registry_integration_pr_runbook,
     build_data_readiness_registry_integration_progress_timeline,
     build_data_readiness_registry_integration_status_board,
@@ -4254,6 +4255,9 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
     operator_export_bundle = build_data_readiness_registry_integration_operator_export_bundle(
         operator_export_packet, operator_export_audit, operator_export_digest, operator_export_share_cards
     )
+    operator_export_bundle_walkthrough = build_data_readiness_registry_integration_operator_export_bundle_walkthrough(
+        operator_export_bundle
+    )
     return {
         "title": "Nächste Daten-Schritte: erst Cache, dann Review, dann Integration",
         "plain_language_note": (
@@ -4293,6 +4297,7 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         "registry_integration_operator_export_digest": operator_export_digest,
         "registry_integration_operator_export_share_cards": operator_export_share_cards,
         "registry_integration_operator_export_bundle": operator_export_bundle,
+        "registry_integration_operator_export_bundle_walkthrough": operator_export_bundle_walkthrough,
         "registry_integration_handoff_packet": build_data_readiness_registry_integration_handoff_packet(decision_record),
         "registry_integration_pr_runbook": pr_runbook,
         "rows": [
@@ -4780,6 +4785,20 @@ def render_learning_data_readiness_backlog():
         st.caption("Bundle-Schritte: " + " → ".join(export_bundle["bundle_steps"]))
         st.caption("Fokussierte Statusrouten: " + " · ".join(export_bundle["focused_status_routes"]))
         st.caption(export_bundle["guardrail"])
+        bundle_walkthrough = backlog["registry_integration_operator_export_bundle_walkthrough"]
+        st.markdown(f"**{bundle_walkthrough['title']}**")
+        st.caption(bundle_walkthrough["plain_language_note"])
+        st.dataframe(pd.DataFrame([
+            {
+                "Rang": step["rank"],
+                "Schritt": step["label"],
+                "Prüfen": step["what_to_check"],
+                "Sichere Route": step["safe_route"],
+                "Stop wenn": step["stop_if"],
+            }
+            for step in bundle_walkthrough["steps"]
+        ]), use_container_width=True, hide_index=True)
+        st.caption(bundle_walkthrough["guardrail"])
         command_palette = backlog["registry_integration_command_palette"]
         st.markdown(f"**{command_palette['title']}**")
         st.caption(command_palette["plain_language_note"])

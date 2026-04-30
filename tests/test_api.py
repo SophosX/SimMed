@@ -1250,6 +1250,20 @@ def test_api_exposes_registry_integration_operator_briefing_without_actions():
     assert bundle_body["registry_integration_operator_export_bundle"]["focused_status_routes"][0].startswith("GET ")
     assert "kein execute=true" in bundle_body["guardrail"]
 
+    walkthrough = body["registry_integration_operator_export_bundle_walkthrough"]
+    assert walkthrough["copy_safe"] is True
+    assert walkthrough["steps"][0]["label"] == "Copy-Safety prüfen"
+    assert walkthrough["steps"][-1]["safe_route"] == "GET /data-readiness/registry-integration-decision-template"
+    assert "execute=true" not in " ".join(step["safe_route"] for step in walkthrough["steps"])
+    assert "keine Registry-/Modellmutation" in walkthrough["guardrail"]
+
+    walkthrough_response = client.get("/data-readiness/registry-integration-operator-export-bundle-walkthrough?limit=3")
+    assert walkthrough_response.status_code == 200
+    walkthrough_body = walkthrough_response.json()
+    assert walkthrough_body["status"] == "data_readiness_registry_integration_operator_export_bundle_walkthrough_not_applied"
+    assert len(walkthrough_body["registry_integration_operator_export_bundle_walkthrough"]["steps"]) == 4
+    assert "kein execute=true" in walkthrough_body["guardrail"]
+
     invalid = client.get("/data-readiness/registry-integration-operator-briefing?limit=0")
     assert invalid.status_code == 422
     assert invalid.json()["detail"]["status"] == "invalid_data_readiness_registry_integration_operator_briefing_limit"

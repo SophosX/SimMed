@@ -53,6 +53,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_operator_export_digest,
     build_data_readiness_registry_integration_operator_export_share_cards,
     build_data_readiness_registry_integration_operator_export_bundle,
+    build_data_readiness_registry_integration_operator_export_bundle_walkthrough,
     build_data_readiness_registry_integration_operator_steps,
     build_data_readiness_registry_integration_safe_start_packet,
     build_data_readiness_registry_integration_safe_start_checklist,
@@ -994,6 +995,7 @@ def get_data_readiness_registry_integration_operator_briefing(limit: int = 3) ->
     export_bundle = build_data_readiness_registry_integration_operator_export_bundle(
         export_packet, export_audit, export_digest, export_share_cards
     )
+    export_bundle_walkthrough = build_data_readiness_registry_integration_operator_export_bundle_walkthrough(export_bundle)
     return {
         "status": "data_readiness_registry_integration_operator_briefing_not_applied",
         "guardrail": "Operator-Briefing ist read-only/status-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
@@ -1006,6 +1008,7 @@ def get_data_readiness_registry_integration_operator_briefing(limit: int = 3) ->
         "registry_integration_operator_export_digest": export_digest,
         "registry_integration_operator_export_share_cards": export_share_cards,
         "registry_integration_operator_export_bundle": export_bundle,
+        "registry_integration_operator_export_bundle_walkthrough": export_bundle_walkthrough,
     }
 
 
@@ -1097,6 +1100,19 @@ def get_data_readiness_registry_integration_operator_export_bundle(limit: int = 
         "guardrail": "Operator-Export-Bundle ist read-only/status-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
         "summary": response["summary"],
         "registry_integration_operator_export_bundle": response["registry_integration_operator_export_bundle"],
+    }
+
+
+@api.get("/data-readiness/registry-integration-operator-export-bundle-walkthrough")
+def get_data_readiness_registry_integration_operator_export_bundle_walkthrough(limit: int = 3) -> dict:
+    """Return the first-contact read-only walkthrough for the operator export bundle."""
+
+    response = get_data_readiness_registry_integration_operator_briefing(limit=limit)
+    return {
+        "status": "data_readiness_registry_integration_operator_export_bundle_walkthrough_not_applied",
+        "guardrail": "Operator-Export-Bundle-Walkthrough ist read-only/status-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+        "summary": response["summary"],
+        "registry_integration_operator_export_bundle_walkthrough": response["registry_integration_operator_export_bundle_walkthrough"],
     }
 
 
