@@ -6313,4 +6313,4 @@ Verifiziert: `python3 -m pytest tests/test_result_causality.py tests/test_api.py
 
 **Question to Alex if needed:** No blocking decision; next safe step is a stronger visual first-screen card/layout and hiding legacy detail blocks further down.
 
-**Verification/Git:** Focused result/API tests and full suite passed locally; smoke simulation passed. Git sync/push handled in following verification step.
+**Verification/Git:** `tests/test_result_causality.py` + API causal packet test passed, full suite passed (`300 passed`), py_compile and 50-run smoke simulation passed. Commit `374f3d2` was pushed to `origin/main`.
