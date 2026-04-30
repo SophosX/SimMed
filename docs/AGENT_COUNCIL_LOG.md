@@ -3017,3 +3017,15 @@ Keine wichtige Entscheidung offen.
 
 ### Verification / Git
 Gezielte Tests und volle Suite liefen grün: 169 passed. Py-compile und 20-run Simulation-Smoke OK. Commit/Push folgt in diesem Heartbeat; Zip-Artefakt wird aktualisiert.
+
+## 2026-04-30 04:54 UTC – Registry-Export-Share-Brief
+
+- **Context:** Core-platform heartbeat continued the Data-Readiness/Registry-integration handoff chain after the export review checklist.
+- **Project Manager:** Small safe slice: make the final status handoff copyable without turning it into a branch, connector execution, review write, or Registry/model mutation.
+- **Designer/UX:** Added an answer-first Share-Brief for mobile/touch users: status, parameter, safe GET routes, STOP gate, and next step are visible as one short pasteable block.
+- **Creative Agent:** Kept the “handoff card/brief” pattern instead of adding another dense table; useful for future operator chats/issues while preserving stop-first workflow.
+- **Political Health-System Strategist:** No new political claims; the slice strengthens governance before policy-relevant data values can enter the Registry.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; no new model/evidence claims. Guardrails explicitly keep raw/status/review/governance separate from policy-effect proof.
+- **Integrator Decision:** Implemented `build_data_readiness_registry_integration_operator_export_share_brief(...)`, exposed it in aggregate/API/Learning Page, and added API/unit regression tests.
+- **Question to Alex if needed:** Keine – this is a low-risk, reversible platform governance/UX step.
+- **Verification/Git:** `pytest -q` → 171 passed; `py_compile` for touched files passed; 20-run/2-year simulation smoke passed. Commit/push pending in this heartbeat after zip refresh.

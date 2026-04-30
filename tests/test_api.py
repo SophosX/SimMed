@@ -1203,6 +1203,11 @@ def test_api_exposes_registry_integration_operator_briefing_without_actions():
     assert "GET /data-readiness/bevoelkerung_mio" in share_cards["cards"][1]["body"]
     assert share_cards["cards"][2]["is_stop_gate"] is True
     assert "kein execute=true" in share_cards["guardrail"]
+    share_brief = body["registry_integration_operator_export_share_brief"]
+    assert share_brief["copy_safe"] is True
+    assert "GET /data-readiness/bevoelkerung_mio" in share_brief["markdown"]
+    assert "STOP:" in share_brief["markdown"]
+    assert "execute=true" not in share_brief["markdown"]
 
     export_response = client.get("/data-readiness/registry-integration-operator-export-packet?limit=3")
     assert export_response.status_code == 200
@@ -1311,3 +1316,21 @@ def test_api_exposes_registry_operator_export_review_checklist_without_execution
     assert all(route.startswith("GET ") for route in checklist["safe_routes_to_open"])
     assert "kein execute=true" in payload["guardrail"]
     assert "keine Registry-/Modellmutation" in checklist["guardrail"]
+
+
+def test_api_exposes_registry_operator_export_share_brief_without_execution():
+    client = TestClient(api)
+    response = client.get("/data-readiness/registry-integration-operator-export-share-brief")
+
+    assert response.status_code == 200
+    payload = response.json()
+    share_brief = payload["registry_integration_operator_export_share_brief"]
+    assert payload["status"] == "data_readiness_registry_integration_operator_export_share_brief_not_applied"
+    assert share_brief["title"] == "Registry-Export-Share-Brief"
+    assert share_brief["copy_safe"] is True
+    assert all(route.startswith("GET ") for route in share_brief["safe_routes_to_open"])
+    assert "STOP:" in share_brief["markdown"]
+    assert "execute=true" not in share_brief["markdown"]
+    assert "kein execute=true" in payload["guardrail"]
+    assert "keine Registry-/Modellmutation" in share_brief["guardrail"]
+

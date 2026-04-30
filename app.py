@@ -71,6 +71,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_operator_export_next_review,
     build_data_readiness_registry_integration_operator_export_review_stoplight,
     build_data_readiness_registry_integration_operator_export_review_checklist,
+    build_data_readiness_registry_integration_operator_export_share_brief,
     build_data_readiness_registry_integration_pr_runbook,
     build_data_readiness_registry_integration_progress_timeline,
     build_data_readiness_registry_integration_status_board,
@@ -4270,6 +4271,9 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
     operator_export_review_checklist = build_data_readiness_registry_integration_operator_export_review_checklist(
         operator_export_review_stoplight
     )
+    operator_export_share_brief = build_data_readiness_registry_integration_operator_export_share_brief(
+        operator_export_review_checklist
+    )
     return {
         "title": "Nächste Daten-Schritte: erst Cache, dann Review, dann Integration",
         "plain_language_note": (
@@ -4313,6 +4317,7 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         "registry_integration_operator_export_next_review": operator_export_next_review,
         "registry_integration_operator_export_review_stoplight": operator_export_review_stoplight,
         "registry_integration_operator_export_review_checklist": operator_export_review_checklist,
+        "registry_integration_operator_export_share_brief": operator_export_share_brief,
         "registry_integration_handoff_packet": build_data_readiness_registry_integration_handoff_packet(decision_record),
         "registry_integration_pr_runbook": pr_runbook,
         "rows": [
@@ -4853,6 +4858,12 @@ def render_learning_data_readiness_backlog():
         ]), use_container_width=True, hide_index=True)
         st.caption("Sichere Routen: " + " → ".join(export_review_checklist["safe_routes_to_open"]))
         st.caption(export_review_checklist["guardrail"])
+        export_share_brief = backlog["registry_integration_operator_export_share_brief"]
+        st.markdown(f"**{export_share_brief['title']}**")
+        st.caption(export_share_brief["plain_language_note"])
+        st.code(export_share_brief["markdown"], language="markdown")
+        st.caption(export_share_brief["operator_next_step"])
+        st.caption(export_share_brief["guardrail"])
         command_palette = backlog["registry_integration_command_palette"]
         st.markdown(f"**{command_palette['title']}**")
         st.caption(command_palette["plain_language_note"])

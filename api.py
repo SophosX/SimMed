@@ -57,6 +57,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_operator_export_next_review,
     build_data_readiness_registry_integration_operator_export_review_stoplight,
     build_data_readiness_registry_integration_operator_export_review_checklist,
+    build_data_readiness_registry_integration_operator_export_share_brief,
     build_data_readiness_registry_integration_operator_steps,
     build_data_readiness_registry_integration_safe_start_packet,
     build_data_readiness_registry_integration_safe_start_checklist,
@@ -1006,9 +1007,11 @@ def get_data_readiness_registry_integration_operator_briefing(limit: int = 3) ->
         export_next_review, export_audit
     )
     export_review_checklist = build_data_readiness_registry_integration_operator_export_review_checklist(
-        export_review_stoplight
-    )
+        export_review_stoplight)
+    export_share_brief = build_data_readiness_registry_integration_operator_export_share_brief(
+        export_review_checklist)
     return {
+
         "status": "data_readiness_registry_integration_operator_briefing_not_applied",
         "guardrail": "Operator-Briefing ist read-only/status-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
         "summary": build_data_readiness_summary(items),
@@ -1024,6 +1027,7 @@ def get_data_readiness_registry_integration_operator_briefing(limit: int = 3) ->
         "registry_integration_operator_export_next_review": export_next_review,
         "registry_integration_operator_export_review_stoplight": export_review_stoplight,
         "registry_integration_operator_export_review_checklist": export_review_checklist,
+        "registry_integration_operator_export_share_brief": export_share_brief,
     }
 
 
@@ -1167,6 +1171,19 @@ def get_data_readiness_registry_integration_operator_export_review_checklist(lim
         "guardrail": "Operator-Export-Review-Checkliste ist read-only/status-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
         "summary": response["summary"],
         "registry_integration_operator_export_review_checklist": response["registry_integration_operator_export_review_checklist"],
+    }
+
+
+@api.get("/data-readiness/registry-integration-operator-export-share-brief")
+def get_data_readiness_registry_integration_operator_export_share_brief(limit: int = 3) -> dict:
+    """Return the final read-only share brief for the Registry export checklist."""
+
+    response = get_data_readiness_registry_integration_operator_briefing(limit=limit)
+    return {
+        "status": "data_readiness_registry_integration_operator_export_share_brief_not_applied",
+        "guardrail": "Operator-Export-Share-Brief ist read-only/status-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+        "summary": response["summary"],
+        "registry_integration_operator_export_share_brief": response["registry_integration_operator_export_share_brief"],
     }
 
 

@@ -36,6 +36,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_operator_export_share_cards,
     build_data_readiness_registry_integration_operator_export_review_stoplight,
     build_data_readiness_registry_integration_operator_export_review_checklist,
+    build_data_readiness_registry_integration_operator_export_share_brief,
     build_data_readiness_registry_integration_operator_steps,
     build_data_readiness_registry_integration_pr_runbook,
     build_data_readiness_registry_integration_progress_timeline,
@@ -1724,3 +1725,38 @@ def test_registry_operator_export_review_checklist_is_mobile_safe_and_read_only(
     assert blocked["may_share_status_handoff"] is False
     assert blocked["failed_check_count"] == 1
     assert any(item["status"] == "stoppen" for item in blocked["checklist_items"])
+
+
+def test_registry_operator_export_share_brief_is_final_read_only_handoff():
+    checklist = {
+        "primary_parameter_key": "bevoelkerung_mio",
+        "primary_label": "Bevölkerung",
+        "may_share_status_handoff": True,
+        "failed_check_count": 0,
+        "safe_routes_to_open": [
+            "GET /data-readiness/registry-integration-operator-export-audit",
+            "GET /data-readiness/bevoelkerung_mio",
+            "GET /data-readiness/registry-integration-decision-template",
+        ],
+        "stop_condition": "STOP: vor Branch/PR menschliches Go/Hold/Reject dokumentieren.",
+    }
+
+    brief = build_data_readiness_registry_integration_operator_export_share_brief(checklist)
+
+    assert brief["title"] == "Registry-Export-Share-Brief"
+    assert brief["copy_safe"] is True
+    assert brief["status_label"] == "teilbar_nur_als_status"
+    assert all(route.startswith("GET ") for route in brief["safe_routes_to_open"])
+    assert "GET /data-readiness/bevoelkerung_mio" in brief["markdown"]
+    assert "STOP:" in brief["markdown"]
+    assert "execute=true" not in brief["markdown"]
+    assert "kein Branch" in brief["guardrail"]
+    assert "keine Registry-/Modellmutation" in brief["guardrail"]
+
+    blocked = build_data_readiness_registry_integration_operator_export_share_brief(
+        {**checklist, "failed_check_count": 1, "safe_routes_to_open": ["POST /bad"]}
+    )
+    assert blocked["copy_safe"] is False
+    assert blocked["status_label"] == "nicht_teilen_stoppen"
+    assert blocked["safe_routes_to_open"] == []
+

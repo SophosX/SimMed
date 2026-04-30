@@ -3291,6 +3291,58 @@ def build_data_readiness_registry_integration_operator_export_review_checklist(
     }
 
 
+def build_data_readiness_registry_integration_operator_export_share_brief(
+    export_review_checklist: dict,
+) -> dict:
+    """Return a final answer-first share brief for the Registry export checklist.
+
+    The review checklist is still a list of checks. This helper turns it into the
+    exact short status a human can paste into chat or an issue before stopping. It
+    intentionally contains only GET/status routes and stop language; it never
+    includes execution, Git, branch, cache/review-write, or model-mutation steps.
+    """
+
+    routes = [route for route in export_review_checklist.get("safe_routes_to_open", []) if str(route).startswith("GET ")]
+    may_share = export_review_checklist.get("may_share_status_handoff") is True
+    failed_count = int(export_review_checklist.get("failed_check_count", 0) or 0)
+    status_label = "teilbar_nur_als_status" if may_share and failed_count == 0 else "nicht_teilen_stoppen"
+    raw_stop_condition = export_review_checklist.get("stop_condition") or "kein Branch/PR ohne dokumentierte Go/Hold/Reject-Entscheidung."
+    stop_condition = raw_stop_condition if raw_stop_condition.startswith("STOP:") else f"STOP: {raw_stop_condition}"
+    summary_lines = [
+        f"Status: {status_label}",
+        f"Parameter: {export_review_checklist.get('primary_label') or export_review_checklist.get('primary_parameter_key') or 'kein Parameter'}",
+        f"Sichere Routen: {' → '.join(routes) if routes else 'keine sichere GET-Route'}",
+        stop_condition,
+        "Guardrail: nur Status teilen; keine Ausführung, kein Branch, keine Registry-/Modellmutation.",
+    ]
+    unsafe_tokens = ["execute=true", "POST ", "git checkout", "git commit", "git push"]
+    markdown = "\n".join(summary_lines)
+    unsafe_findings = [token for token in unsafe_tokens if token in markdown]
+    copy_safe = may_share and failed_count == 0 and bool(routes) and not unsafe_findings
+    return {
+        "title": "Registry-Export-Share-Brief",
+        "plain_language_note": (
+            "Kurzbrief für die letzte menschliche Statusübergabe: sagt in einem Blick, ob geteilt werden darf, "
+            "welche GET-Routen sicher sind und wo vor Branch/PR gestoppt wird."
+        ),
+        "primary_parameter_key": export_review_checklist.get("primary_parameter_key"),
+        "primary_label": export_review_checklist.get("primary_label"),
+        "status_label": status_label if copy_safe else "nicht_teilen_stoppen",
+        "copy_safe": copy_safe,
+        "safe_routes_to_open": routes,
+        "failed_check_count": failed_count,
+        "markdown": markdown,
+        "unsafe_findings": unsafe_findings,
+        "stop_condition": stop_condition,
+        "operator_next_step": (
+            "Statusbrief darf geteilt werden; danach vor Branch/PR stoppen, bis Go/Hold/Reject separat dokumentiert ist."
+            if copy_safe
+            else "Nicht teilen: Checkliste/GET-Routen/Stop-Gate reparieren und erneut prüfen."
+        ),
+        "guardrail": "Read-only/Share-brief-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    }
+
+
 def _check_passed(checks: list[dict], needle: str) -> bool:
     return any(needle in check.get("check", "") and check.get("passed") is True for check in checks)
 
