@@ -3466,3 +3466,16 @@ Verified locally: `python -m pytest -q` → 205 passed; `python -m py_compile ap
 - **Integrator Decision:** `build_uncertainty_robustness_brief(...)` in `result_uncertainty.py` hinzugefügt, in `/simulate` und Streamlit-Unsicherheitsblock eingebunden, Tests ergänzt.
 - **Question to Alex if needed:** Keine.
 - **Verification/Git:** Lokal: `pytest tests/test_result_uncertainty.py tests/test_api.py::test_simulate_exposes_uncertainty_band_summary_for_agents -q`, `py_compile result_uncertainty.py api.py app.py`, 20-run Smoke, danach volle Suite `206 passed`. Commit/Push folgt in diesem Lauf.
+
+
+## 2026-04-30 07:13 UTC — Causal result overview before KPI wall
+
+- **Context:** Alex wants stronger core-platform progress and clearer explanations of what a simulation output means, especially for delayed medical-study-place scenarios and counterintuitive adaptation effects.
+- **Project Manager:** Chose a small, safe UX/platform slice: finish and surface the existing `result_causality.py` work instead of adding more KI evidence.
+- **Designer/UX:** Added an answer-first causal overview before the dense KPI cards: changed inputs → relevant KPI subset → timing/mechanisms → counterintuitive findings/guardrail. This is mobile/tablet safer than relying on hover-only KPI details.
+- **Creative Agent:** Product fit is a “simulation story card” rather than another chart: fewer KPIs, one coherent causal path, explicit caveat.
+- **Political Health-System Strategist:** Kept wording non-propagandistic and non-predictive; adaptation and financing reactions are described as model/policy logic, not a forecast of laws or lobbying strategy.
+- **Evidence/Domain:** No new factual claims or external research in this run; reused known model caveats (study-place lag, headcount ≠ FTE/capacity, no official forecast).
+- **Integrator Decision:** Wired `build_causal_result_packet()` into `app.py` through `build_result_causal_overview()`/`render_result_causal_overview()` and added a regression test that the app reuses the packet before the KPI wall.
+- **Question to Alex if needed:** Keine; safe reversible UX/platform slice.
+- **Verification/Git:** `pytest tests/test_result_causality.py -q` → 3 passed; full `pytest -q` → 209 passed; `py_compile` for touched core files passed; 20-run/3-year simulation smoke with causal overview passed. Commit/push follows in this heartbeat.

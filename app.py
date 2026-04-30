@@ -98,6 +98,7 @@ from result_uncertainty import (
     build_uncertainty_interpretation_packet,
     build_uncertainty_robustness_brief,
 )
+from result_causality import build_causal_result_packet
 import scenario_gallery as scenario_gallery_module
 from simulation_report import build_simulation_report as build_policy_briefing_report
 
@@ -3510,6 +3511,47 @@ def render_uncertainty_band_summary(agg: pd.DataFrame):
         st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
 
 
+def build_result_causal_overview(agg: pd.DataFrame, params: dict) -> dict:
+    """Return the compact causal result packet used before the KPI wall."""
+    return build_causal_result_packet(agg, params, max_kpis=5)
+
+
+def render_result_causal_overview(agg: pd.DataFrame, params: dict):
+    """Render an answer-first causal explanation before dense KPI cards."""
+    packet = build_result_causal_overview(agg, params)
+    st.markdown(f"### {packet['title']}")
+    st.caption(packet["subtitle"])
+    st.info(packet["coherent_story"])
+
+    cols = st.columns(2)
+    with cols[0]:
+        st.markdown("**Lesereihenfolge**")
+        for step in packet["reading_order"]:
+            st.markdown(f"- {step}")
+    with cols[1]:
+        st.markdown("**Guardrail**")
+        st.caption(packet["guardrail"])
+
+    if packet["relevant_kpis"]:
+        st.markdown("**Relevante KPI-Auswahl statt KPI-Wand**")
+        st.dataframe(
+            pd.DataFrame(packet["relevant_kpis"])[[
+                "label",
+                "start",
+                "end",
+                "direction",
+                "interpretation",
+                "why_relevant",
+            ]],
+            use_container_width=True,
+            hide_index=True,
+        )
+
+    if packet["counterintuitive_findings"]:
+        with st.expander("Gegenintuition prüfen", expanded=True):
+            st.dataframe(pd.DataFrame(packet["counterintuitive_findings"]), use_container_width=True, hide_index=True)
+
+
 def render_dashboard(agg: pd.DataFrame, params: dict):
     """Zeigt Dashboard-Karten mit Trend-Pfeilen."""
     st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
@@ -3519,6 +3561,7 @@ def render_dashboard(agg: pd.DataFrame, params: dict):
     endjahr = int(last["jahr"])
 
     render_result_narrative_summary(agg, params)
+    render_result_causal_overview(agg, params)
     render_result_decision_checkpoints(agg, params)
     render_result_storyboard(agg, params)
     render_uncertainty_band_summary(agg)
