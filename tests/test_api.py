@@ -53,7 +53,7 @@ def test_simulate_embeds_causal_result_packet_for_answer_first_clients():
         "Ausgangslage",
         "Eingriff",
         "Berechnete Wirkpfade",
-        "Relevante KPIs",
+        "Relevante Kennzahlen",
         "Anpassungsreaktionen",
         "Einordnung und Belastbarkeit",
         "Was daraus folgt",

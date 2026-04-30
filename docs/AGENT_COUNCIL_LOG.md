@@ -5280,3 +5280,33 @@ No important decision open; continue safely with clearer first-screen result hie
 
 ### Verification / Git
 Focused tests passed: `tests/test_result_causality.py::test_simplified_public_result_packet_is_short_clear_and_not_meta`, `tests/test_result_causality.py::test_public_result_view_has_single_follow_up_rendering_instruction`, `tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients`. Full suite passed: `279 passed`. Runtime smoke passed: `run_simulation(... n_runs=50, n_years=3)` plus causal packet build. Git push confirmed on `main`: `f01a8a0 Clarify causal result first view`.
+
+
+## 2026-04-30 17:15 Europe/Berlin — Result page public wording cleanup
+
+### Context
+Alex's latest correction: the first result screen must read as one clear German briefing, not as overlapping generated widgets. This run tightened the public causal packet language around the result page and removed legacy KPI jargon from the professional/public briefing path.
+
+### Project Manager
+Priority: keep rebuilding the result page around one readable first answer. Risk: older compatibility fields can leak internal or table-first wording back into the first screen. Next tasks: make the Streamlit card visually more report-like, then move remaining dense dashboard elements further below collapsed detail sections.
+
+### Designer / UX
+The first-view wording should say “Relevante Kennzahlen” consistently, because “KPI” feels like dashboard jargon. The page still needs a stronger visual hierarchy, but the public packet now has cleaner labels for the briefing flow.
+
+### Creative Agent
+Idea: later turn the first result screen into a one-page “Befundbogen” with a short lead, three relevant metric rows, and one next-check callout. Fit: high for comprehension, but should reuse the current packet rather than adding another explanation layer.
+
+### Political Health-System Strategist
+Keep political interpretation after the result/evidence/timing checks. For the study-place scenario, the serious reading remains delayed workforce pressure, not an immediate partisan conclusion.
+
+### Evidence / Domain
+No new external evidence was added in this run. The change is communication-layer only; it does not alter model dynamics, parameter values, source grades, or causal assumptions.
+
+### Integrator Decision
+Accepted: replace legacy “Relevante KPIs” wording in the professional/public causal briefing with “Relevante Kennzahlen” and add a regression test preventing public/primary result text from leaking KPI jargon, helper/meta wording, or expanded audit language.
+
+### Question to Alex
+No important product decision is required for this safe cleanup. Continue with the larger first-screen visual simplification next.
+
+### Verification / Git
+Local verification before sync: `python3 -m pytest -q` → 280 passed; `python3 -m py_compile app.py result_causality.py api.py simulation_core.py tests/test_result_causality.py tests/test_api.py`; 50-run/15-year simulation smoke test passed and confirmed the public packet style. Git commit/push status is recorded in the heartbeat report after clone sync.

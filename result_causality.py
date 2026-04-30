@@ -822,7 +822,7 @@ def build_causal_result_packet(
             "body": pathway_body,
         },
         {
-            "heading": "Relevante KPIs",
+            "heading": "Relevante Kennzahlen",
             "body": kpi_text,
         },
         {
@@ -906,7 +906,7 @@ def build_causal_result_packet(
         "Ausgangslage",
         "Eingriff",
         "berechneter Wirkpfad",
-        "relevante KPIs",
+        "relevante Kennzahlen",
         "Anpassungsreaktionen",
         "Einordnung",
         "nächste Prüfentscheidung",
@@ -915,7 +915,7 @@ def build_causal_result_packet(
         "Ausgangslage": "Warum das wichtig ist: Der Kontext verhindert, dass einzelne Endwerte wie eine Rangliste gelesen werden.",
         "Eingriff": "Warum das wichtig ist: Nur sichtbare Änderungen gegenüber dem Standardpfad dürfen als mögliche Auslöser gelesen werden.",
         "Berechnete Wirkpfade": "Warum das wichtig ist: Der Wirkpfad zeigt, wann eine Maßnahme überhaupt im Modell ankommen kann.",
-        "Relevante KPIs": "Warum das wichtig ist: Die erste Ansicht soll die tragenden Signale zeigen, nicht jede verfügbare Zahl.",
+        "Relevante Kennzahlen": "Warum das wichtig ist: Die erste Ansicht soll die tragenden Signale zeigen, nicht jede verfügbare Zahl.",
         "Anpassungsreaktionen": "Warum das wichtig ist: Systeme puffern Druck oft erst ab; genau diese Puffer müssen vor der Deutung sichtbar werden.",
         "Einordnung und Belastbarkeit": "Warum das wichtig ist: Evidenzgrad, Registry-Caveat und Monte-Carlo-Spannweite begrenzen die Aussagekraft.",
         "Was daraus folgt": "Warum das wichtig ist: SimMed liefert eine prüfbare Wirkungslinie, keine einzelne Siegerzahl.",
@@ -934,7 +934,7 @@ def build_causal_result_packet(
     ]
     public_stage_labels = {
         "Berechnete Wirkpfade": "Wirkpfad der Simulation",
-        "Relevante KPIs": "Relevante Kennzahlen",
+        "Relevante Kennzahlen": "Relevante Kennzahlen",
         "Einordnung und Belastbarkeit": "Einordnung",
     }
     public_briefing_sequence = [

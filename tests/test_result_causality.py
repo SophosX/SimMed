@@ -324,7 +324,7 @@ def test_professional_briefing_is_single_human_readable_flow_with_consequence_se
         "Ausgangslage",
         "Eingriff",
         "Berechnete Wirkpfade",
-        "Relevante KPIs",
+        "Relevante Kennzahlen",
         "Anpassungsreaktionen",
         "Einordnung und Belastbarkeit",
         "Was daraus folgt",
@@ -332,7 +332,7 @@ def test_professional_briefing_is_single_human_readable_flow_with_consequence_se
     ]
     text = briefing["sequential_text"]
     assert text.index("Ausgangslage") < text.index("Eingriff") < text.index("Berechnete Wirkpfade")
-    assert text.index("Relevante KPIs") < text.index("Anpassungsreaktionen") < text.index("Einordnung und Belastbarkeit")
+    assert text.index("Relevante Kennzahlen") < text.index("Anpassungsreaktionen") < text.index("Einordnung und Belastbarkeit")
     assert text.index("Was daraus folgt") < text.index("Nächste Prüfentscheidung")
     assert "KPI-Wand" not in text
     assert "random Internet" not in text
@@ -444,7 +444,7 @@ def test_causal_result_packet_exposes_one_sequential_plain_text_story_for_api_cl
     assert story.startswith("Ergebnisbericht")
     assert story.count("\n\n") >= 5
     assert story.index("Ausgangslage") < story.index("Eingriff") < story.index("Berechnete Wirkpfade")
-    assert story.index("Berechnete Wirkpfade") < story.index("Relevante KPIs") < story.index("Anpassungsreaktionen")
+    assert story.index("Berechnete Wirkpfade") < story.index("Relevante Kennzahlen") < story.index("Anpassungsreaktionen")
     assert story.index("Anpassungsreaktionen") < story.index("Einordnung und Belastbarkeit") < story.index("Nächste Prüfentscheidung")
     assert "Medizinstudienplätze" in story
     assert "ab Jahr 6" in story
@@ -582,7 +582,7 @@ def test_causal_result_packet_reads_like_professional_sequential_briefing():
         "Ausgangslage",
         "Eingriff",
         "Berechnete Wirkpfade",
-        "Relevante KPIs",
+        "Relevante Kennzahlen",
         "Anpassungsreaktionen",
         "Einordnung und Belastbarkeit",
         "Was daraus folgt",
@@ -591,7 +591,7 @@ def test_causal_result_packet_reads_like_professional_sequential_briefing():
     text = briefing["sequential_text"]
     assert text.startswith("Ergebnisbericht\n\nAusgangslage")
     assert text.index("Ausgangslage") < text.index("Eingriff") < text.index("Berechnete Wirkpfade")
-    assert text.index("Berechnete Wirkpfade") < text.index("Relevante KPIs") < text.index("Anpassungsreaktionen")
+    assert text.index("Berechnete Wirkpfade") < text.index("Relevante Kennzahlen") < text.index("Anpassungsreaktionen")
     assert text.index("Anpassungsreaktionen") < text.index("Einordnung und Belastbarkeit") < text.index("Nächste Prüfentscheidung")
     assert "Medizinstudienplätze" in text
     assert "Jahr 6" in text
@@ -620,7 +620,7 @@ def test_professional_briefing_has_human_first_view_kpi_cards_without_meta_table
         "Ausgangslage",
         "Eingriff",
         "berechneter Wirkpfad",
-        "relevante KPIs",
+        "relevante Kennzahlen",
         "Anpassungsreaktionen",
         "Einordnung",
         "nächste Prüfentscheidung",
@@ -685,7 +685,7 @@ def test_professional_briefing_exposes_human_reader_brief_without_table_first_la
     assert briefing["reader_brief"].startswith("Ausgangslage: ")
     assert "\n\nEingriff: " in briefing["reader_brief"]
     assert "\n\nBerechnete Wirkpfade: " in briefing["reader_brief"]
-    assert "\n\nRelevante KPIs: " in briefing["reader_brief"]
+    assert "\n\nRelevante Kennzahlen: " in briefing["reader_brief"]
     assert "\n\nAnpassungsreaktionen: " in briefing["reader_brief"]
     assert "\n\nEinordnung und Belastbarkeit: " in briefing["reader_brief"]
     assert "\n\nWas daraus folgt: " in briefing["reader_brief"]
@@ -851,7 +851,7 @@ def test_causal_result_packet_exposes_compact_briefing_cards_for_first_view():
         "Ausgangslage",
         "Eingriff",
         "Berechnete Wirkpfade",
-        "Relevante KPIs",
+        "Relevante Kennzahlen",
         "Anpassungsreaktionen",
         "Einordnung und Belastbarkeit",
         "Was daraus folgt",
@@ -949,6 +949,36 @@ def test_public_result_view_declares_one_non_duplicative_first_screen_flow():
     assert view["deeper_review_default_expanded"] is False
     assert view["dense_kpi_default_expanded"] is False
     assert len(view["audit_sections"]) == 3
+
+
+def test_primary_result_view_uses_plain_public_language_without_legacy_kpi_jargon():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    primary = packet["primary_result_view"]
+    public = packet["public_result_view"]
+    public_payload = " ".join(
+        [
+            primary["headline"],
+            primary["short_answer"],
+            primary["next_check"]["label"],
+            primary["next_check"]["text"],
+            public["briefing_markdown"],
+        ]
+        + [section["heading"] + " " + section["body"] for section in primary["result_sections"]]
+        + [block["heading"] + " " + block["body"] for block in primary["first_screen_blocks"]]
+        + [section["heading"] + " " + section["body"] for section in packet["professional_briefing"]["sections"]]
+    )
+
+    assert "Relevante Kennzahlen" in public_payload
+    assert "Relevante KPIs" not in public_payload
+    assert "KPI-" not in public_payload
+    assert "Audit-Layer" not in public_payload
+    assert "helper" not in public_payload
+    assert len(primary["result_sections"]) <= 7
+    assert all(len(section["body"]) <= 300 for section in primary["result_sections"])
+    assert primary["audit_sections"] == public["audit_sections"]
 
 
 def test_first_view_public_copy_avoids_internal_packet_and_wall_jargon():
@@ -1141,7 +1171,7 @@ def test_professional_briefing_exposes_reader_ready_narrative_blocks():
         "Ausgangslage",
         "Eingriff",
         "Berechnete Wirkpfade",
-        "Relevante KPIs",
+        "Relevante Kennzahlen",
         "Anpassungsreaktionen",
         "Einordnung und Belastbarkeit",
         "Was daraus folgt",
