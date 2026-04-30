@@ -74,6 +74,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_operator_export_share_brief,
     build_data_readiness_registry_integration_operator_export_status_card,
     build_data_readiness_registry_integration_final_gate_summary,
+    build_data_readiness_registry_integration_final_gate_issue_stub,
     build_data_readiness_registry_integration_pr_runbook,
     build_data_readiness_registry_integration_progress_timeline,
     build_data_readiness_registry_integration_status_board,
@@ -4468,6 +4469,9 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
     final_gate_summary = build_data_readiness_registry_integration_final_gate_summary(
         operator_export_status_card
     )
+    final_gate_issue_stub = build_data_readiness_registry_integration_final_gate_issue_stub(
+        final_gate_summary
+    )
     return {
         "title": "Nächste Daten-Schritte: erst Cache, dann Review, dann Integration",
         "plain_language_note": (
@@ -4514,6 +4518,7 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         "registry_integration_operator_export_share_brief": operator_export_share_brief,
         "registry_integration_operator_export_status_card": operator_export_status_card,
         "registry_integration_final_gate_summary": final_gate_summary,
+        "registry_integration_final_gate_issue_stub": final_gate_issue_stub,
         "registry_integration_handoff_packet": build_data_readiness_registry_integration_handoff_packet(decision_record),
         "registry_integration_pr_runbook": pr_runbook,
         "rows": [
@@ -5083,6 +5088,11 @@ def render_learning_data_readiness_backlog():
         }]), use_container_width=True, hide_index=True)
         st.caption("Vor Branch erforderlich: " + " · ".join(final_gate_summary["required_external_go_before_branch"]))
         st.caption(final_gate_summary["guardrail"])
+        final_gate_issue_stub = backlog["registry_integration_final_gate_issue_stub"]
+        st.markdown(f"**{final_gate_issue_stub['title']}**")
+        st.caption(final_gate_issue_stub["plain_language_note"])
+        st.code(final_gate_issue_stub["markdown"], language="markdown")
+        st.caption(final_gate_issue_stub["guardrail"])
         command_palette = backlog["registry_integration_command_palette"]
         st.markdown(f"**{command_palette['title']}**")
         st.caption(command_palette["plain_language_note"])

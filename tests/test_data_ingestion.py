@@ -38,6 +38,8 @@ from data_ingestion import (
     build_data_readiness_registry_integration_operator_export_review_checklist,
     build_data_readiness_registry_integration_operator_export_share_brief,
     build_data_readiness_registry_integration_operator_export_status_card,
+    build_data_readiness_registry_integration_final_gate_summary,
+    build_data_readiness_registry_integration_final_gate_issue_stub,
     build_data_readiness_registry_integration_operator_steps,
     build_data_readiness_registry_integration_pr_runbook,
     build_data_readiness_registry_integration_progress_timeline,
@@ -1793,3 +1795,28 @@ def test_registry_operator_export_status_card_is_one_screen_safe_handoff():
     assert blocked["traffic_light"] == "rot_stoppen_nicht_teilen"
     assert blocked["first_safe_route"] == "keine sichere GET-Route"
     assert blocked["copy_safe"] is False
+
+
+def test_registry_final_gate_issue_stub_is_copy_safe_no_code_handoff():
+    status_card = {
+        "primary_parameter_key": "bevoelkerung_mio",
+        "primary_label": "Bevölkerung",
+        "copy_safe": True,
+        "first_safe_route": "GET /data-readiness/bevoelkerung_mio",
+        "stop_condition": "STOP: vor Branch/PR menschliches Go/Hold/Reject dokumentieren.",
+    }
+
+    summary = build_data_readiness_registry_integration_final_gate_summary(status_card)
+    stub = build_data_readiness_registry_integration_final_gate_issue_stub(summary)
+
+    assert stub["title"] == "Registry-Final-Gate Issue-Stub"
+    assert stub["copy_safe"] is True
+    assert stub["status_route"] == "GET /data-readiness/bevoelkerung_mio"
+    assert "Statusroute: GET /data-readiness/bevoelkerung_mio" in stub["markdown"]
+    assert "Codearbeit startet nicht" in stub["markdown"]
+    assert "STOP:" in stub["markdown"]
+    assert "execute=true" not in stub["markdown"]
+    assert "git commit" not in stub["markdown"]
+    assert stub["unsafe_findings"] == []
+    assert summary["can_start_code_work_from_this_surface"] is False
+    assert "keine Registry-/Modellmutation" in stub["guardrail"]

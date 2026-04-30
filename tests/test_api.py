@@ -1595,7 +1595,28 @@ def test_api_exposes_registry_final_gate_summary_without_code_work():
     assert "STOP" in summary["operator_answer"]
     assert "kein execute=true" in payload["guardrail"]
     assert "keine Registry-/Modellmutation" in summary["guardrail"]
+    stub = payload["registry_integration_final_gate_issue_stub"]
+    assert stub["copy_safe"] is True
+    assert stub["status_route"].startswith("GET ")
+    assert "Codearbeit startet nicht" in stub["markdown"]
+    assert "execute=true" not in stub["markdown"]
 
+
+def test_api_exposes_registry_final_gate_issue_stub_without_code_work():
+    client = TestClient(api)
+    response = client.get("/data-readiness/registry-integration-final-gate-issue-stub")
+
+    assert response.status_code == 200
+    payload = response.json()
+    stub = payload["registry_integration_final_gate_issue_stub"]
+    assert payload["status"] == "data_readiness_registry_integration_final_gate_issue_stub_not_applied"
+    assert stub["title"] == "Registry-Final-Gate Issue-Stub"
+    assert stub["copy_safe"] is True
+    assert stub["unsafe_findings"] == []
+    assert "STOP:" in stub["markdown"]
+    assert "git commit" not in stub["markdown"]
+    assert "kein execute=true" in payload["guardrail"]
+    assert "keine Registry-/Modellmutation" in stub["guardrail"]
 
 
 def test_simulate_exposes_uncertainty_band_summary_for_agents():

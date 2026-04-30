@@ -3427,6 +3427,57 @@ def build_data_readiness_registry_integration_final_gate_summary(
 
 
 
+def build_data_readiness_registry_integration_final_gate_issue_stub(final_gate_summary: dict) -> dict:
+    """Return a copy-safe issue stub for documenting the final no-code gate.
+
+    The final gate tells an operator not to start a branch yet. This helper makes
+    that stop state easy to paste into an issue or handoff without adding any Git,
+    POST, execute=true, cache/review-write, or Registry/model mutation command.
+    """
+
+    required_go = list(final_gate_summary.get("required_external_go_before_branch", []))
+    first_route = final_gate_summary.get("first_safe_route") or "GET /data-readiness/registry-integration-final-gate-summary"
+    stop_condition = final_gate_summary.get("stop_condition") or "STOP: kein Branch/PR ohne dokumentierte Go/Hold/Reject-Entscheidung."
+    if not str(stop_condition).startswith("STOP:"):
+        stop_condition = f"STOP: {stop_condition}"
+    issue_lines = [
+        f"# {final_gate_summary.get('title', 'Letztes Gate vor Registry-/Modell-PR')}",
+        "",
+        f"Parameter: {final_gate_summary.get('primary_label') or final_gate_summary.get('primary_parameter_key') or 'kein Parameter'}",
+        f"Statusroute: {first_route}",
+        "",
+        "Warum dieses Issue nur ein Handoff ist:",
+        "- Status/Datenpfad darf gelesen und referenziert werden.",
+        "- Codearbeit startet nicht aus diesem Surface.",
+        f"- {stop_condition}",
+        "",
+        "Pflicht vor einem separaten Branch/PR:",
+        *[f"- {item}" for item in required_go],
+        "",
+        "Guardrail: read-only Issue-Stub; kein Branch, keine Ausführung, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    ]
+    markdown = "\n".join(issue_lines).strip()
+    unsafe_tokens = ["execute=true", "POST ", "git checkout", "git commit", "git push"]
+    unsafe_findings = [token for token in unsafe_tokens if token in markdown]
+    return {
+        "title": "Registry-Final-Gate Issue-Stub",
+        "plain_language_note": (
+            "Kopierbarer Handoff-Text für Issue/Chat: Statusroute, Stop-Gate und Pflichtchecks, "
+            "aber keine Ausführung und kein Branch."
+        ),
+        "primary_parameter_key": final_gate_summary.get("primary_parameter_key"),
+        "primary_label": final_gate_summary.get("primary_label"),
+        "copy_safe": not unsafe_findings and str(first_route).startswith("GET ") and final_gate_summary.get("can_start_code_work_from_this_surface") is False,
+        "status_route": first_route,
+        "stop_condition": stop_condition,
+        "required_external_go_before_branch": required_go,
+        "markdown": markdown,
+        "unsafe_findings": unsafe_findings,
+        "guardrail": "Read-only/Issue-stub-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    }
+
+
+
 def _check_passed(checks: list[dict], needle: str) -> bool:
     return any(needle in check.get("check", "") and check.get("passed") is True for check in checks)
 

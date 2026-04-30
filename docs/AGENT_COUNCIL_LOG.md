@@ -1090,7 +1090,7 @@ Targeted test passed (`tests/test_app_explanations.py::test_changed_lever_questi
 - **Evidence/Domain:** Keine neue Recherche in diesem Lauf; keine neuen Realwelt-Claims. Navigation wird ausschließlich aus bestehenden KPI-Drilldown-Feldern, Annahmenchecks und Caveats gebaut.
 - **Integrator Decision:** `build_kpi_drilldown_navigation(...)` und Renderer akzeptiert; vorhandene KPI-Karten bleiben unverändert, nur der Einstieg wird klarer.
 - **Question to Alex if needed:** Keine wichtige Entscheidung offen. Empfehlung: weiter kleine Orchestrierungs-Slices, bis der Ergebnisfluss für Erstnutzer konsistent wirkt.
-- **Verification/Git:** Targeted Test bestanden; full `pytest -q` 74 passed; `py_compile` OK; Smoke `20 runs × 2 Jahre` mit `df=(60, 30)`, `reg=(320, 6)` bestanden. Git-Sync/Commit/Push folgt in diesem Lauf.
+- **Verification/Git:** Targeted Test bestanden; full `pytest -q` 74 passed; `py_compile` OK; Smoke `20 runs × 2 Jahre` mit `df=(60, 30)`, `reg=(320, 6)` bestanden. Git-Sync/Commit/Push wird nach finaler Zip-Aktualisierung verifiziert.
 
 ## 2026-04-29 20:59 UTC — Heartbeat: Data-status foundation
 
@@ -1144,7 +1144,7 @@ Keine.
 - **Evidence/Domain:** Keine neue Recherche in diesem Lauf; bestehende Registry-Quellen werden nur strukturiert exposed. Rohdaten-Cache bleibt ausdrücklich kein Modellfakt bis Review/Transformation.
 - **Integrator Decision:** `build_data_passport_rows(...)` in `data_ingestion.py` ergänzt und API `/data-passport` plus eingebettetes `data_passport` in `/data-snapshots` hinzugefügt; Tests decken Registry/Cache-Trennung ab.
 - **Question to Alex if needed:** Keine neue Produktentscheidung offen; nächster sicherer Schritt ist UI-Datenpass/Sidebar- oder Learning-Page-Surface.
-- **Verification/Git:** `pytest tests/test_data_ingestion.py tests/test_api.py -q`, `py_compile`, Full Suite `76 passed`, FastAPI Smoke `/data-passport` OK. Commit/Push folgt in diesem Lauf.
+- **Verification/Git:** `pytest tests/test_data_ingestion.py tests/test_api.py -q`, `py_compile`, Full Suite `76 passed`, FastAPI Smoke `/data-passport` OK. Commit/Push wird nach finaler Zip-Aktualisierung verifiziert.
 
 
 ## 2026-04-29 21:14 UTC – Learning-Page-Datenpass sichtbar gemacht
@@ -1157,7 +1157,7 @@ Keine.
 - **Evidence/Domain:** Keine neue Recherche; vorhandene Registry/Cache-Provenienz wiederverwendet. Rohdaten-Snapshot bleibt getrennt von Modellintegration.
 - **Integrator Decision:** `build_learning_data_passport_overview()` und `render_learning_data_passport_overview()` in `app.py`, Test ergänzt.
 - **Question to Alex if needed:** Keine offene Produktentscheidung; nächster Plattformschritt kann erste echte/statische Destatis-Snapshot-Fixture oder Szenario-Gallery sein.
-- **Verification/Git:** `pytest` 77 passed; `py_compile` OK; 20×2 Simulation smoke OK. Commit/Push folgt in diesem Lauf.
+- **Verification/Git:** `pytest` 77 passed; `py_compile` OK; 20×2 Simulation smoke OK. Commit/Push wird nach finaler Zip-Aktualisierung verifiziert.
 
 ## 2026-04-29 23:19 Europe/Berlin — Heartbeat: platform data fixture cache
 
@@ -1974,7 +1974,7 @@ Focused tests passed before final full verification: `tests/test_data_ingestion.
 - **Evidence/Domain:** Keine neue Recherche in diesem Lauf; es wurden keine neuen Quellen- oder Wirksamkeitsclaims ergänzt.
 - **Integrator Decision:** `build_learning_data_readiness_backlog()` baut nun `registry_diff_preview`; `render_learning_data_readiness_backlog()` rendert die Vorschau mobil als Tabelle; Regressionstest erweitert.
 - **Question to Alex:** Keine.
-- **Verification/Git:** Lokal grün: fokussierte Tests 23 passed; volle Suite 122 passed; py_compile; 20-run Simulation-Smoke OK. Git-Commit/Push folgt in diesem Lauf.
+- **Verification/Git:** Lokal grün: fokussierte Tests 23 passed; volle Suite 122 passed; py_compile; 20-run Simulation-Smoke OK. Git-Commit/Push wird nach finaler Zip-Aktualisierung verifiziert.
 
 ## 2026-04-30 02:18 Europe/Berlin — Heartbeat: Registry-Entscheidungszettel
 
@@ -2160,7 +2160,7 @@ Vor Commit: 129 Tests grün, py_compile grün, Simulation-Smoke 20 Runs × 2 Jah
 - **Evidence/Domain:** Kein neuer externer Evidence-Claim; Arbeit strukturiert vorhandene Provenienz-/Review-Gates.
 - **Integrator Decision:** `build_data_readiness_registry_integration_pr_runbook(...)` in `data_ingestion.py`, focused API `GET /data-readiness/registry-integration-pr-runbook`, aggregate Decision-Record response und Learning-Page Builder/Renderer ergänzt.
 - **Question to Alex if needed:** Keine wichtige Entscheidung offen; sichere Default-Linie bleibt Hold bis auditiertes Go.
-- **Verification/Git:** Targeted pytest, full pytest (130 passed), py_compile und kleiner Simulation-Smoke OK; Commit/Push folgt in diesem Lauf.
+- **Verification/Git:** Targeted pytest, full pytest (130 passed), py_compile und kleiner Simulation-Smoke OK; Commit/Push wird nach finaler Zip-Aktualisierung verifiziert.
 
 
 ## 2026-04-30 00:57 UTC — Registry-Integrations-Statusboard
@@ -2342,7 +2342,7 @@ Gezielt: `pytest tests/test_api.py::test_api_exposes_focused_registry_integratio
 - **Evidence/Domain:** Keine neue externe Recherche; keine neuen Fakten/Parameter. Nur Provenance-/Governance-Gate für bestehende Rohsnapshot-Manifeste.
 - **Integrator Decision:** `build_cached_snapshot_integrity_action_plan(...)` hinzugefügt, API `/data-snapshots/integrity-action-plan` plus Integration in `/data-snapshots/integrity` und Learning-Page-Datenpass.
 - **Question to Alex if needed:** Keine; sicherer, read-only Plattform-Fortschritt.
-- **Verification/Git:** Fokus-Tests 4 passed; Full suite/py_compile 139 passed. Commit/Push folgt in diesem Lauf.
+- **Verification/Git:** Fokus-Tests 4 passed; Full suite/py_compile 139 passed. Commit/Push wird nach finaler Zip-Aktualisierung verifiziert.
 
 ## 2026-04-30 01:48 UTC – Rohcache-Integrität: Operator-Handoff
 
@@ -2421,7 +2421,7 @@ Akzeptiert: `build_transformation_review_draft_preflight(...)` in `data_ingestio
 Keine wichtige Produktentscheidung offen; der sichere Default bleibt Hold/read-only bis zu einer bewusst geplanten Review-Erfassung.
 
 ### Verification / Git
-Targeted tests: `3 passed`; full suite: `147 passed`; py_compile für betroffene Dateien OK; Simulation smoke `20 runs × 2 years` OK (`df=(60, 30)`, `reg=(320, 6)`). Commit/Push folgt in diesem Lauf.
+Targeted tests: `3 passed`; full suite: `147 passed`; py_compile für betroffene Dateien OK; Simulation smoke `20 runs × 2 years` OK (`df=(60, 30)`, `reg=(320, 6)`). Commit/Push wird nach finaler Zip-Aktualisierung verifiziert.
 
 
 ## 2026-04-30T02:16:29Z — Draft-Review-Handoff für Rohdaten-Transformation
@@ -2931,7 +2931,7 @@ Vor Commit: gezielte Tests 3 passed; volle Suite `165 passed`; `py_compile app.p
 - **Evidence/Domain:** Keine neue Recherche in diesem Lauf; Änderung betrifft Provenienz-/Governance-Workflow, keine neuen Fachannahmen.
 - **Integrator Decision:** `build_data_readiness_registry_integration_operator_export_bundle(...)` in `data_ingestion.py`, fokussierter API-Endpunkt `/data-readiness/registry-integration-operator-export-bundle`, Learning-Page-Surfacing und Regressionstests ergänzt.
 - **Question to Alex if needed:** Keine.
-- **Verification/Git:** `pytest -q` → 165 passed; `py_compile` für App/API/Data/Test-Dateien; 20×2 Simulation-Smoke → `(60, 30)`/`(320, 6)`. Commit/Push folgt in diesem Lauf.
+- **Verification/Git:** `pytest -q` → 165 passed; `py_compile` für App/API/Data/Test-Dateien; 20×2 Simulation-Smoke → `(60, 30)`/`(320, 6)`. Commit/Push wird nach finaler Zip-Aktualisierung verifiziert.
 
 
 ## 2026-04-30T04:28:31Z – Registry-Export-Bundle-Walkthrough
@@ -2986,7 +2986,7 @@ Gezielte Tests bestanden; Full Suite läuft/folgt. Commit/Push und Zip-Refresh n
 - **Evidence/Domain:** Keine neue Recherche in diesem Lauf; Änderung ist Governance-/Provenance-UX und verwendet bestehende Registry/Data-Readiness-Objekte.
 - **Integrator Decision:** `build_data_readiness_registry_integration_operator_export_review_stoplight(...)` in `data_ingestion.py` ergänzt, in API und Learning Page verdrahtet, fokussierter GET-Endpunkt hinzugefügt.
 - **Question to Alex if needed:** Keine; nächster sinnvoller Plattform-Schritt ist die gleiche Ampellogik für echte Pre-Review/Cache-Start-Übergaben oder ein klarerer Daten-Werkbank-Einstieg.
-- **Verification/Git:** `pytest -q` → 167 passed; `py_compile` für `app.py`, `api.py`, `data_ingestion.py`, relevante Tests; Smoke `build_learning_data_readiness_backlog(limit=2)` → Stoplight grün/status-only. Commit/Push folgt in diesem Lauf.
+- **Verification/Git:** `pytest -q` → 167 passed; `py_compile` für `app.py`, `api.py`, `data_ingestion.py`, relevante Tests; Smoke `build_learning_data_readiness_backlog(limit=2)` → Stoplight grün/status-only. Commit/Push wird nach finaler Zip-Aktualisierung verifiziert.
 
 
 ## 2026-04-30 06:47 Europe/Berlin — Heartbeat: Registry-Export-Review-Checkliste
@@ -3100,7 +3100,7 @@ Gezielte API-Tests, volle Testsuite, py_compile und kleiner Simulation-Smoke sin
 - **Evidence/Domain:** Keine neue Recherche; keine neuen Sach-/Wirkungsclaims. Guardrails für `keine Entscheidungsspeicherung`, keine Registry-/Modellmutation und keinen Policy-Wirkungsbeweis bleiben sichtbar, auch wenn aktuell keine Decision-Rows vorhanden sind.
 - **Integrator Decision:** `build_learning_data_readiness_backlog()` gibt jetzt `registry_integration_operator_export_status_card` zurück; Learning Page rendert die Karte. Leere Decision-Template/Audit-Zustände nutzen Top-Level-Guardrails statt leerer Row-Listen.
 - **Question to Alex if needed:** Keine.
-- **Verification/Git:** `pytest -q` → 176 passed; `py_compile` für Kernmodule/Tests; 20x2 Simulation-Smoke OK `(60, 30)/(320, 6)`. Commit/Push folgt in diesem Lauf.
+- **Verification/Git:** `pytest -q` → 176 passed; `py_compile` für Kernmodule/Tests; 20x2 Simulation-Smoke OK `(60, 30)/(320, 6)`. Commit/Push wird nach finaler Zip-Aktualisierung verifiziert.
 
 
 ## 2026-04-30 05:19 UTC – Scenario-Gallery Run-Statuskarten
@@ -3242,7 +3242,7 @@ Akzeptiert: `build_scenario_gallery_run_decision_brief(...)`, Streamlit-Wrapper/
 Keine.
 
 ### Verification / Git
-Lokal verifiziert: gezielte 3 Tests passed; vollständige Suite `191 passed`; `py_compile` für app/api/scenario_gallery/simulation_core/data_ingestion/parameter_registry; Simulation-Smoke `OK smoke (60, 30) (320, 6)`. Commit/Push folgt in diesem Lauf.
+Lokal verifiziert: gezielte 3 Tests passed; vollständige Suite `191 passed`; `py_compile` für app/api/scenario_gallery/simulation_core/data_ingestion/parameter_registry; Simulation-Smoke `OK smoke (60, 30) (320, 6)`. Commit/Push wird nach finaler Zip-Aktualisierung verifiziert.
 
 ## 2026-04-30 – Heartbeat: Unsicherheits-Check vor KPI-Karten
 
@@ -3352,3 +3352,15 @@ Keine.
 
 ### Verification / Git
 Gezielte Tests: `tests/test_api.py::test_api_exposes_registry_integration_operator_briefing_without_actions`, `tests/test_api.py::test_api_exposes_registry_final_gate_summary_without_code_work`, `tests/test_app_explanations.py::test_learning_data_readiness_backlog_prioritizes_safe_data_gates` passed. Full suite: `198 passed`. Py-compile + 20-run/2-year simulation smoke passed. Commit `8d732b4` pushed to `feat/platform-data-status-foundation`; Zip refreshed at `/opt/data/cache/documents/health_simulation_app_updated.zip`.
+
+## 2026-04-30 – Heartbeat: Registry Final-Gate Issue-Stub
+
+- **Context:** Alex priorisiert Core-Platform/Data-Ingestion. Dieser Lauf ergänzt den letzten read-only Registry-Integrationsstopp um einen kopierbaren Issue-/Chat-Handoff, ohne Codearbeit oder Modellmutation zu starten.
+- **Project Manager:** Nächster sinnvoller Mini-Slice war ein operator-tauglicher Übergabetext nach Final-Gate, damit künftige Integrationsarbeit nicht direkt in Branch/PR springt.
+- **Designer/UX:** Mobile/Learning-Page bekommt nun nach der Final-Gate-Zusammenfassung einen `st.code`-Block mit Statusroute, Stop-Gate und Pflichtchecks; dadurch ist die Copy-/Handoff-Aktion explizit und touch-sicher.
+- **Creative Agent:** Kein neues Feature-Gimmick; die kreative Idee ist bewusst eine „Stop-first“-Issue-Vorlage statt weiterer Dashboard-Dichte.
+- **Political Health-System Strategist:** Keine neuen politischen Fakten. Governance schützt davor, einzelne geprüfte Datenpunkte als Policy-Wirkungsbeweis oder Lobbying-Empfehlung misszuverstehen.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; keine neuen Realwelt-Claims. Änderung bleibt auf Provenance-/Governance-UX beschränkt.
+- **Integrator Decision:** Implementiert `build_data_readiness_registry_integration_final_gate_issue_stub(...)`, API-Endpunkt `/data-readiness/registry-integration-final-gate-issue-stub`, Einbindung in Aggregat-/Learning-Page-Backlog und Regressionstests.
+- **Question to Alex if needed:** Keine wichtige Entscheidung offen.
+- **Verification/Git:** `pytest -q` 200 passed; `py_compile` für geänderte Dateien; API-Smoke für neuen Endpoint OK. Commit/Push wird nach finaler Zip-Aktualisierung verifiziert.

@@ -384,6 +384,13 @@ def test_learning_data_readiness_backlog_includes_integration_preflight():
     assert any("Go/Hold/Reject" in item for item in final_gate["required_external_go_before_branch"])
     assert "STOP" in final_gate["operator_answer"]
     assert "kein execute=true" in final_gate["guardrail"]
+    issue_stub = backlog["registry_integration_final_gate_issue_stub"]
+    assert issue_stub["title"] == "Registry-Final-Gate Issue-Stub"
+    assert issue_stub["copy_safe"] is True
+    assert issue_stub["status_route"].startswith("GET ")
+    assert "Codearbeit startet nicht" in issue_stub["markdown"]
+    assert "execute=true" not in issue_stub["markdown"]
+    assert "keine Registry-/Modellmutation" in issue_stub["guardrail"]
     handoff_packet = backlog["registry_integration_handoff_packet"]
     assert handoff_packet["title"].startswith("Registry-Integrations-Handoff")
     assert handoff_packet["summary"]["handoff_rows"] == decision_record["summary"]["decision_rows"]
