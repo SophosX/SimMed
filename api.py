@@ -19,6 +19,7 @@ from data_ingestion import (
     build_cached_snapshot_review_start_checklist,
     build_cached_snapshot_review_start_handoff_packet,
     build_cached_snapshot_review_start_status_cards,
+    build_transformation_review_draft_example_payload,
     build_transformation_review_draft_handoff_packet,
     build_transformation_review_draft_preflight,
     build_transformation_review_draft_status_cards,
@@ -153,6 +154,7 @@ def get_data_snapshot_review_start_checklist() -> dict:
         "transformation_review_draft_preflight": (preflight := build_transformation_review_draft_preflight(checklist)),
         "transformation_review_draft_status_cards": build_transformation_review_draft_status_cards(preflight),
         "transformation_review_draft_handoff_packet": build_transformation_review_draft_handoff_packet(preflight),
+        "transformation_review_draft_example_payload": build_transformation_review_draft_example_payload(preflight),
     }
 
 
@@ -170,6 +172,22 @@ def get_data_snapshot_review_draft_preflight() -> dict:
         "transformation_review_draft_preflight": preflight,
         "transformation_review_draft_status_cards": build_transformation_review_draft_status_cards(preflight),
         "transformation_review_draft_handoff_packet": build_transformation_review_draft_handoff_packet(preflight),
+        "transformation_review_draft_example_payload": build_transformation_review_draft_example_payload(preflight),
+    }
+
+
+@api.get("/data-snapshots/review-draft/example-payload")
+def get_data_snapshot_review_draft_example_payload() -> dict:
+    """Expose a copyable manual draft-validation payload without persisting a review."""
+
+    integrity = build_cached_snapshot_integrity_report()
+    checklist = build_cached_snapshot_review_start_checklist(integrity)
+    preflight = build_transformation_review_draft_preflight(checklist)
+    return {
+        "status": "transformation_review_draft_example_payload_not_persisted",
+        "guardrail": "Beispielpayload ist read-only: keine Review-Erzeugung, kein Cache-Schreiben und keine Registry-/Modellmutation.",
+        "transformation_review_draft_preflight": preflight,
+        "transformation_review_draft_example_payload": build_transformation_review_draft_example_payload(preflight),
     }
 
 

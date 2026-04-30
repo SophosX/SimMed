@@ -36,6 +36,7 @@ from data_ingestion import (
     build_cached_snapshot_review_start_checklist,
     build_cached_snapshot_review_start_handoff_packet,
     build_cached_snapshot_review_start_status_cards,
+    build_transformation_review_draft_example_payload,
     build_transformation_review_draft_handoff_packet,
     build_transformation_review_draft_preflight,
     build_transformation_review_draft_status_cards,
@@ -4110,6 +4111,7 @@ def build_learning_data_passport_overview(limit: int = 8) -> dict[str, Any]:
         "snapshot_review_draft_preflight": draft_preflight,
         "snapshot_review_draft_status_cards": build_transformation_review_draft_status_cards(draft_preflight),
         "snapshot_review_draft_handoff_packet": build_transformation_review_draft_handoff_packet(draft_preflight),
+        "snapshot_review_draft_example_payload": build_transformation_review_draft_example_payload(draft_preflight),
         "snapshot_review_draft_validation_example": validate_transformation_review_draft_payload(
             draft_preflight,
             {
@@ -4176,6 +4178,9 @@ def render_learning_data_passport_overview():
             st.markdown(f"**Review-Draft-Preflight:** {draft_preflight['first_safe_step']}")
             st.dataframe(pd.DataFrame(overview["snapshot_review_draft_status_cards"]), use_container_width=True, hide_index=True)
             st.markdown(f"**Review-Draft-Handoff:** {draft_handoff['first_safe_step']}")
+            draft_example = overview["snapshot_review_draft_example_payload"]
+            st.caption(f"Beispielpayload (nicht speichern): {draft_example['next_safe_step']}")
+            st.code(str(draft_example["example_payload"]), language="python")
             validation_example = overview["snapshot_review_draft_validation_example"]
             st.caption(
                 f"Draft-Validierung (read-only): {validation_example['status']} – "

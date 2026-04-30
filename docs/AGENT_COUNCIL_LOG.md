@@ -2594,3 +2594,16 @@ Keine wichtige Entscheidung offen; sicherer nächster Plattformschritt ist Learn
 
 ### Verification / Git
 Gezielt verifiziert: `pytest` für Safe-start API-Tests (3 passed) und `py_compile api.py data_ingestion.py tests/test_api.py`. Commit/Push folgt in diesem Heartbeat.
+
+
+## 2026-04-30T02:57:06Z — Review-Draft Beispielpayload (read-only)
+
+- **Context:** Core-platform heartbeat, Fokus Dateningestion/Provenienz statt KI-Recherche. Aktueller Branch: `feat/platform-data-status-foundation`.
+- **Project Manager:** Kleine sichere Lücke geschlossen: Operatoren bekommen nun vor `/data-snapshots/review-draft/validate` ein copybares Beispielpayload mit Pflicht-Ersetzungen.
+- **Designer/UX:** Learning Page zeigt den Beispielpayload direkt beim Rohcache→Review-Draft-Pfad; mobile Nutzer müssen nicht aus API-Schema/Preflight-Feldern selbst einen Request zusammensetzen.
+- **Creative Agent:** Kein neues Feature-Spielzeug; bewusst als "nicht speichern"-Zwischenschritt gestaltet, damit der Datenpfad verständlicher wird.
+- **Political Health-System Strategist:** Keine neuen Policy-/Stakeholder-Claims; Guardrails verhindern weiterhin amtliche Prognose, Wirkungsbeweis oder Modellmutation.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; Änderung betrifft Provenienz-Workflow, nicht Evidenzinhalt.
+- **Integrator Decision:** `build_transformation_review_draft_example_payload(...)` in `data_ingestion.py`, API `GET /data-snapshots/review-draft/example-payload`, Einbettung in Data-Passport/Learning-Page und Regressionstests.
+- **Question to Alex if needed:** Keine wichtige Produktentscheidung offen; nächster sicherer Schritt bleibt weitere echte Dateningestion-/Review-Operator-Führung.
+- **Verification/Git:** Gezielte Tests 3 passed; Full suite 156 passed; py_compile ok; Simulation smoke 20x2 ok. Commit/Push folgt.

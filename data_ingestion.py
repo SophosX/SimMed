@@ -762,6 +762,48 @@ def build_transformation_review_draft_preflight(review_start_checklist: dict) ->
 
 
 
+def build_transformation_review_draft_example_payload(draft_preflight: dict) -> dict:
+    """Return a copyable example payload for draft validation without persisting it.
+
+    This helps operators move from preflight status to a concrete manual review
+    draft while keeping the step read-only. Placeholder values must be replaced
+    after opening the raw file, manifest, and review template.
+    """
+
+    rows = draft_preflight.get("rows", [])
+    first_row = rows[0] if rows else {}
+    example_payload = {
+        "parameter_key": first_row.get("parameter_key", "<parameter_key_from_preflight>"),
+        "source_snapshot_sha256": first_row.get("source_snapshot_sha256", "<sha256_from_manifest>"),
+        "reviewer": "<Name/Rolle der manuellen Reviewer:in>",
+        "method_note": "<Tabelle, Filter, Berichtsjahr, Nenner, Einheit und Transformationsweg dokumentieren>",
+        "output_value": "<manuell geprüfter Zahlenwert>",
+        "output_unit": "<geprüfte Einheit passend zum Registry-Parameter>",
+        "caveat": "<Unsicherheit/Caveat; ausdrücklich keine Registry-/Modellintegration>",
+    }
+    return {
+        "title": "Transformation-Review-Draft: Beispielpayload für Validierung",
+        "status": "draft_example_ready_not_persisted" if rows else "draft_example_blocked_no_preflight_row",
+        "example_payload": example_payload,
+        "copyable_validate_command": "curl -s -X POST http://localhost:8000/data-snapshots/review-draft/validate -H 'Content-Type: application/json' -d '<payload>'",
+        "review_template_route": first_row.get("review_template_route", ""),
+        "required_manual_replacements": [
+            "Reviewer-Identität/Rolle eintragen",
+            "Rohdatei und SHA256-Manifest öffnen und Hash/Quelle/Periode prüfen",
+            "Methode mit Tabelle, Filtern, Jahr, Einheit und Denominator dokumentieren",
+            "Output-Wert gegen Registry-Plausibilitätsgrenzen prüfen",
+            "Caveat ausfüllen und Nicht-Integration ausdrücklich festhalten",
+        ],
+        "next_safe_step": (
+            "Payload manuell ausfüllen und nur gegen /data-snapshots/review-draft/validate prüfen; Persistenz/Modellintegration separat."
+            if rows
+            else "Erst Rohsnapshot-Integrität und Draft-Preflight herstellen; kein Payload aus Platzhaltern speichern."
+        ),
+        "guardrail": "Beispielpayload ist read-only: keine Review-Erzeugung, kein Cache-Schreiben, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    }
+
+
+
 def validate_transformation_review_draft_payload(draft_preflight: dict, payload: dict) -> dict:
     """Validate a manual ReviewedTransformation draft without persisting it.
 

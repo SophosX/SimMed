@@ -116,6 +116,14 @@ def test_api_exposes_transformation_review_draft_preflight_without_recording_rev
     assert packet["preflight_route"] == "GET /data-snapshots/review-draft-preflight"
     assert "curl -s" in packet["copyable_preflight_command"]
     assert "keine Review-Erzeugung" in packet["guardrail"]
+    example = body["transformation_review_draft_example_payload"]
+    assert example["status"] in {
+        "draft_example_ready_not_persisted",
+        "draft_example_blocked_no_preflight_row",
+    }
+    assert "example_payload" in example
+    assert "review-draft/validate" in example["copyable_validate_command"]
+    assert "keine Registry-/Modellmutation" in example["guardrail"]
     for row in preflight["rows"]:
         assert row["draft_status"] == "template_ready_not_recorded"
         assert "review_template_route" in row
@@ -143,6 +151,25 @@ def test_api_exposes_focused_transformation_review_draft_handoff_without_executi
         "no_review_draft_ready",
     }
     assert "keine Registry-/Modellmutation" in packet["guardrail"]
+
+
+def test_api_exposes_transformation_review_draft_example_payload_without_persisting():
+    client = TestClient(api)
+    response = client.get("/data-snapshots/review-draft/example-payload")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "transformation_review_draft_example_payload_not_persisted"
+    assert "keine Review-Erzeugung" in body["guardrail"]
+    example = body["transformation_review_draft_example_payload"]
+    assert example["status"] in {
+        "draft_example_ready_not_persisted",
+        "draft_example_blocked_no_preflight_row",
+    }
+    assert "parameter_key" in example["example_payload"]
+    assert "review-draft/validate" in example["copyable_validate_command"]
+    assert "keine Registry-/Modellmutation" in example["guardrail"]
+
 
 
 def test_api_validates_transformation_review_draft_without_persisting():

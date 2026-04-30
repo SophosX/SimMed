@@ -9,6 +9,7 @@ from data_ingestion import (
     build_cached_snapshot_review_start_checklist,
     build_cached_snapshot_review_start_handoff_packet,
     build_cached_snapshot_review_start_status_cards,
+    build_transformation_review_draft_example_payload,
     build_transformation_review_draft_handoff_packet,
     build_transformation_review_draft_preflight,
     build_transformation_review_draft_status_cards,
@@ -290,6 +291,35 @@ def test_transformation_review_draft_handoff_packet_turns_preflight_into_copyabl
     assert "ReviewedTransformation erst nach manueller Prüfung erfassen" in packet["operator_sequence"]
     assert "keine Review-Erzeugung" in packet["guardrail"]
     assert "keine Registry-/Modellmutation" in packet["guardrail"]
+
+
+def test_transformation_review_draft_example_payload_is_copyable_but_not_persisted(tmp_path):
+    snapshot = cache_source_payload(
+        source_id="destatis_genesis",
+        source_url="https://www-genesis.destatis.de/genesis/online",
+        payload=b"year,value\n2024,84.4\n",
+        filename="population.csv",
+        cache_root=tmp_path,
+        source_period="2024",
+        output_parameter_keys=("bevoelkerung_mio",),
+        transformation_note="raw fixture only; no model mutation",
+        retrieved_at="2026-04-29T20:00:00+00:00",
+    )
+    checklist = build_cached_snapshot_review_start_checklist(
+        build_cached_snapshot_integrity_report(cache_root=tmp_path)
+    )
+    preflight = build_transformation_review_draft_preflight(checklist)
+
+    example = build_transformation_review_draft_example_payload(preflight)
+
+    assert example["status"] == "draft_example_ready_not_persisted"
+    assert example["example_payload"]["parameter_key"] == "bevoelkerung_mio"
+    assert example["example_payload"]["source_snapshot_sha256"] == snapshot.sha256
+    assert "review-draft/validate" in example["copyable_validate_command"]
+    assert "Rohdatei und SHA256-Manifest" in " ".join(example["required_manual_replacements"])
+    assert "keine Review-Erzeugung" in example["guardrail"]
+    assert "keine Registry-/Modellmutation" in example["guardrail"]
+
 
 
 def test_transformation_review_draft_preflight_lists_required_fields_without_recording_review(tmp_path):
