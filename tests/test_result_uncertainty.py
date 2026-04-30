@@ -1,4 +1,8 @@
-from result_uncertainty import build_uncertainty_band_summary_from_final, build_uncertainty_result_questions
+from result_uncertainty import (
+    build_uncertainty_band_summary_from_final,
+    build_uncertainty_decision_checklist,
+    build_uncertainty_result_questions,
+)
 
 
 def test_uncertainty_summary_from_final_is_api_safe_and_guarded():
@@ -49,3 +53,29 @@ def test_uncertainty_result_questions_make_p5_p95_actionable_without_overclaimin
     assert "nicht als eindeutige Punktprognose" in questions[0]["safe_reading"]
     assert "keine amtliche Prognose" in questions[0]["guardrail"]
     assert "kein Wirksamkeitsnachweis" in questions[0]["guardrail"]
+
+
+def test_uncertainty_decision_checklist_prevents_decision_overclaiming():
+    rows = [
+        {
+            "metric_key": "gkv_saldo",
+            "label": "GKV-Saldo",
+            "signal": "breites Band",
+        },
+        {
+            "metric_key": "wartezeit_fa",
+            "label": "Facharzt-Wartezeit",
+            "signal": "enges Band",
+        },
+    ]
+
+    checklist = build_uncertainty_decision_checklist(rows)
+
+    assert checklist[0]["rank"] == "1"
+    assert checklist[0]["decision_status"] == "erst Robustheit prüfen"
+    assert "P5/P95-Band" in checklist[0]["required_check_before_decision"]
+    assert "KPI-Detailkarte" in checklist[0]["what_to_open_next"]
+    assert checklist[1]["decision_status"] == "relativ stabil im Modell"
+    assert "Evidenzgrad" in checklist[1]["required_check_before_decision"]
+    assert "keine amtliche Prognose" in checklist[0]["guardrail"]
+    assert "kein Wirksamkeitsnachweis" in checklist[0]["guardrail"]

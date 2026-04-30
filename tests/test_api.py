@@ -1582,6 +1582,11 @@ def test_simulate_exposes_uncertainty_band_summary_for_agents():
     assert questions
     assert {"question", "answer_first", "what_to_open_next", "safe_reading", "guardrail"} <= set(questions[0])
     assert "KPI-Detailkarte" in questions[0]["what_to_open_next"]
+    checklist = body["uncertainty_decision_checklist"]
+    assert checklist
+    assert {"decision_status", "required_check_before_decision", "what_to_open_next", "guardrail"} <= set(checklist[0])
+    assert "KPI-Detailkarte" in checklist[0]["what_to_open_next"]
+    assert "keine amtliche Prognose" in checklist[0]["guardrail"]
     assert "keine amtliche Prognose" in body["uncertainty_guardrail"]
     assert all("kein Wirksamkeitsnachweis" in row["guardrail"] for row in rows)
     assert body["final_year_summary"]["jahr"] == 2028.0

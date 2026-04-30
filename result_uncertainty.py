@@ -63,6 +63,46 @@ def build_uncertainty_result_questions(
     return questions
 
 
+def build_uncertainty_decision_checklist(
+    band_rows: Sequence[Mapping[str, str]],
+    *,
+    limit: int = 4,
+) -> list[dict[str, str]]:
+    """Build a decision-hygiene checklist from existing uncertainty bands.
+
+    The checklist answers what a first-time user should do before treating a
+    Monte-Carlo result as decision-ready. It is read-only: no simulations,
+    sensitivity runs, connector calls, or model mutations happen here.
+    """
+
+    checklist: list[dict[str, str]] = []
+    for index, row in enumerate(list(band_rows)[:limit], start=1):
+        label = row.get("label") or row.get("metric_key") or "Kennzahl"
+        signal = row.get("signal", "Spannweite prüfen")
+        if signal == "breites Band":
+            decision_status = "erst Robustheit prüfen"
+            required_check = "Parameterannahmen, geänderte Hebel und P5/P95-Band vor jeder Entscheidung prüfen."
+        elif signal == "mittleres Band":
+            decision_status = "mit Vorsicht nutzbar"
+            required_check = "Mittelwert nur zusammen mit P5/P95, Trend-Timing und KPI-Detailkarte lesen."
+        else:
+            decision_status = "relativ stabil im Modell"
+            required_check = "Trotz engem Band Evidenzgrad, Wirkpfad und politische Umsetzbarkeit gegenprüfen."
+        checklist.append(
+            {
+                "rank": str(index),
+                "metric_key": row.get("metric_key", ""),
+                "label": label,
+                "uncertainty_signal": signal,
+                "decision_status": decision_status,
+                "required_check_before_decision": required_check,
+                "what_to_open_next": f"KPI-Detailkarte und Annahmen-Check für {label} öffnen; danach Trend-Timing lesen.",
+                "guardrail": UNCERTAINTY_GUARDRAIL,
+            }
+        )
+    return checklist
+
+
 
 def build_uncertainty_band_summary_from_final(
     final_year_summary: Mapping[str, Any],

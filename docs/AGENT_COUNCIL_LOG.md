@@ -3297,3 +3297,16 @@ Keine.
 
 ### Verification / Git
 Gezielt verifiziert: `pytest tests/test_result_uncertainty.py tests/test_api.py::test_simulate_exposes_uncertainty_band_summary_for_agents tests/test_app_explanations.py::test_uncertainty_band_summary_surfaces_p5_p95_before_kpi_cards -q` → 4 passed. Commit/Push folgt im Integrator-Schritt.
+
+
+## 2026-04-30T06:15Z — Unsicherheits-Entscheidungscheck
+
+- **Context:** Cron-Heartbeat mit Fokus auf Core-Plattform statt KI/Evidence; bestehende P5/P95-Unsicherheitszeilen waren vorhanden, aber noch ohne klare Entscheidungs-Hygiene vor KPI-Interpretation.
+- **Project Manager:** Kleine, sichere Plattform-Scheibe gewählt: bestehende Monte-Carlo-Bänder in konkrete Vor-Entscheidungschecks übersetzen; kein neues Modell und keine Datenmutation.
+- **Designer/UX:** Mobile/tablet-sichere Tabelle im Unsicherheits-Expander ergänzt: Signal, Entscheidungsstatus, Pflichtprüfung und nächster Klick vor Interpretation.
+- **Creative Agent:** Produktfit: weniger neue Visualisierung, mehr klare Lesereihenfolge gegen Überinterpretation; passt zur Policy-Briefing-Logik.
+- **Political Health-System Strategist:** Guardrail wichtig, weil breite Finanz-/Versorgungsbänder nicht als belastbares Mandat oder Lobbying-/Vote-Signal gelesen werden dürfen.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; nur vorhandene Monte-Carlo-Aggregate und bestehende Guardrails genutzt.
+- **Integrator Decision:** `build_uncertainty_decision_checklist(...)` in `result_uncertainty.py` als API-/UI-Quelle ergänzt, `/simulate` damit erweitert und Streamlit-Unsicherheits-Expander daran angeschlossen.
+- **Question to Alex if needed:** Keine.
+- **Verification/Git:** Fokus-Tests und PyCompile/Smoke grün; Commit/Push folgt in diesem Heartbeat.
