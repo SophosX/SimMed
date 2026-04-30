@@ -5485,4 +5485,4 @@ Accepted: stricter public-packet clarity contract and shorter answer-first langu
 No important decision is open; keep progressing safely on result-page simplification.
 
 ### Verification / Git
-Focused tests passed locally: `tests/test_result_causality.py::test_short_answer_reads_like_plain_first_screen_result_not_helper_text`, `tests/test_result_causality.py::test_simplified_public_result_packet_is_short_clear_and_not_meta`, and `tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients`. Full-suite/Git verification follows in this heartbeat.
+Verifiziert lokal: `python3 -m pytest -q` → 283 passed; `python3 -m py_compile app.py result_causality.py api.py simulation_core.py tests/test_result_causality.py tests/test_api.py`; Smoke-Test mit 50 Runs × 3 Jahre und halbierten Medizinstudienplätzen → OK. Git: Commit `52a0a82` (`Clarify causal result first answer`) wurde auf `origin/main` gepusht; enthält `result_causality.py`, `tests/test_result_causality.py`, `docs/AGENT_COUNCIL_LOG.md`.
