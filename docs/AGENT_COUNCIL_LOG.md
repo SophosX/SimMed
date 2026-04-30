@@ -4659,4 +4659,4 @@ Accepted: add a stricter clarity regression test and shorten the public packet t
 No important decision open. Continue safely with the visual Streamlit result-card cleanup next.
 
 ### Verification / Git
-Pre-push verification in source tree: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 37 passed; `python3 -m pytest -q` → 264 passed; `python3 -m py_compile app.py result_causality.py api.py simulation_core.py` passed; 20-run simulation/packet smoke passed. Git commit/push pending at time of this entry.
+Verification in source tree: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 37 passed; `python3 -m pytest -q` → 264 passed; `python3 -m py_compile app.py result_causality.py api.py simulation_core.py` passed; 20-run simulation/packet smoke passed. GitHub push confirmed: `e19b486 Tighten public causal result packet` on `origin/main` with `docs/AGENT_COUNCIL_LOG.md`, `result_causality.py`, and `tests/test_result_causality.py`.
