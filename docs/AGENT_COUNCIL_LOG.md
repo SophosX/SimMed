@@ -5780,3 +5780,32 @@ Keine wichtige Entscheidung offen; weiter sicher in Richtung klarer Ergebnis-Bri
 
 ### Verification / Git
 Verifikation lokal grün: `python3 -m pytest -q` → 287 passed; `py_compile` für Kernmodule; 50-run Simulation-Smoke mit halbierten Medizinstudienplätzen und Causal-Packet-Check erfolgreich. Git-Commit/Push wird nach Sync aus dem Arbeitsverzeichnis in den GitHub-Clone verifiziert.
+
+## 2026-04-30 19:19 Europe/Berlin — Result first-view clarity consolidation
+
+### Context
+Alex's latest correction is that the result page must read as one clear German briefing, not as stacked explanation widgets. Current work inspected `result_causality.py`, `app.py`, API exposure, and result/API tests around the simplified causal packet.
+
+### Project Manager
+Priority: keep the first result screen focused on Ergebnis → Eingriff → Warum → relevante Kennzahlen → Anpassungen → Einordnung → nächster Prüfschritt. Risk: preserving older audit helpers can still make the page feel busy if they are open by default. Next tasks: keep legacy/detail layers collapsed, then continue extracting one coherent first-view renderer.
+
+### Designer / UX
+The public packet now has a single headline, short answer, seven concise sections, compact relevant KPIs, and collapsed audit sections. The first screen should answer what changed and why before showing dense KPI cards.
+
+### Creative Agent
+Idea: next slice could turn the first result block into a printable one-page “Lagebild” with exactly one recommended next check. Fit: improves seriousness and shareability, but should reuse the same packet rather than adding new prose.
+
+### Political Health-System Strategist
+Keep the political interpretation after the factual/model briefing. The first screen should say what SimMed calculates and where uncertainty sits, not suggest a vote forecast or lobbying route.
+
+### Evidence / Domain
+No new source or real-world effectiveness claim was added in this run. The communication layer still labels outputs as SimMed model results, not official forecasts or proof of policy effectiveness. Keine neue Recherche in diesem Lauf.
+
+### Integrator Decision
+Accepted: continue with the simplified causal-result packet and collapsed audit-first hierarchy as the safe direction. No model dynamics were changed in this slice.
+
+### Question to Alex
+No important decision is blocked; continue safely with clearer first-view rendering and fewer visible result widgets by default.
+
+### Verification / Git
+Focused clarity/API tests passed locally: `python3 -m pytest tests/test_result_causality.py tests/test_app_explanations.py::test_result_causal_overview_exposes_briefing_quality_checks_for_first_view tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 61 passed. Full verification also passed: `python3 -m pytest -q` → 287 passed; `py_compile` for `app.py`, `result_causality.py`, `api.py`, `simulation_core.py`; 50-run simulation smoke with halved medical study places produced a valid simplified causal packet. Git commit/push status is recorded in the heartbeat response.
