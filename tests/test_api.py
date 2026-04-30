@@ -57,9 +57,12 @@ def test_simulate_embeds_causal_result_packet_for_answer_first_clients():
         "professional_briefing",
         "first_view_briefing_cards",
         "first_view_kpi_cards",
+        "policy_readiness_summary",
         "next_check",
         "optional_audit_layers",
     ]
+    assert packet["policy_readiness_summary"]["headline"] == "Was daraus folgt"
+    assert "ab Jahr 6" in packet["policy_readiness_summary"]["why"]
 
 
 def test_api_exposes_data_snapshot_status_guardrail():

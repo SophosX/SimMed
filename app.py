@@ -3580,6 +3580,12 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
             )
 
     next_check = primary_view.get("next_check") if primary_view else None
+    readiness = primary_view.get("policy_readiness_summary") if primary_view else None
+    if readiness:
+        st.markdown(f"**{readiness['headline']}**")
+        st.write(readiness["why"])
+        st.write(readiness["before_decision"])
+        st.caption(f"Nächster Schritt: {readiness['recommended_next_step']}")
     if next_check:
         st.markdown(f"**{next_check['label']}**")
         st.write(next_check["text"])

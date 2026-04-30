@@ -722,6 +722,26 @@ def build_causal_result_packet(
             "obwohl kein zusätzlicher Eingriff gesetzt wurde, und welche davon sollten vor einer fachlichen Deutung genauer geprüft werden?"
         )
 
+    policy_readiness_summary = {
+        "headline": "Was daraus folgt",
+        "current_read": "prüfpflichtig" if study_places_changed or counter else "belastbar innerhalb der Modellannahmen",
+        "why": (
+            "Medizinstudienplätze wirken in diesem Lauf nicht sofort, sondern über die Ausbildungs-Pipeline: "
+            "ab Jahr 6 wird die kleinere Kohorte arbeitsmarktnäher, Richtung Jahr 11–15 wird der Facharzt-/Kapazitätspfad entscheidend."
+            if study_places_changed
+            else "Der Lauf sollte entlang der veränderten Stellschrauben, der relevanten Kennzahlen und der dokumentierten Annahmen gelesen werden."
+        ),
+        "before_decision": (
+            "Vor einer politischen Bewertung zuerst prüfen: passen Telemedizin, Delegation oder Zuwanderung als Puffer zum beobachteten Wartezeit- und Burnout-Signal?"
+            if study_places_changed
+            else "Vor einer politischen Bewertung zuerst prüfen, ob die gezeigten Kennzahlen zum dokumentierten Modellpfad und zu den Registry-Caveats passen."
+        ),
+        "recommended_next_step": (
+            "Zuerst die Zeitfenster 6–10 und 11–15, die relevanten KPI-Detailkarten und die Evidenz-/Annahmegrenzen öffnen; erst danach die politische Einordnung lesen."
+        ),
+        "guardrail": f"{RESULT_CAUSALITY_GUARDRAIL} Kurz: keine amtliche Prognose, kein Wirksamkeitsnachweis.",
+    }
+
     professional_sections = [
         {
             "heading": "Ausgangslage",
@@ -878,6 +898,7 @@ def build_causal_result_packet(
                 "professional_briefing",
                 "first_view_briefing_cards",
                 "first_view_kpi_cards",
+                "policy_readiness_summary",
                 "next_check",
                 "optional_audit_layers",
             ],
@@ -889,6 +910,7 @@ def build_causal_result_packet(
             "section_flow": section_flow,
             "first_view_briefing_cards": first_view_briefing_cards,
             "first_view_kpi_cards": first_view_kpi_cards,
+            "policy_readiness_summary": policy_readiness_summary,
             "next_check": {
                 "label": "Was daraus folgt",
                 "text": (
@@ -917,6 +939,7 @@ def build_causal_result_packet(
         "story_sections": story_sections,
         "professional_briefing": professional_briefing,
         "first_view_briefing_cards": first_view_briefing_cards,
+        "policy_readiness_summary": policy_readiness_summary,
         "briefing_quality_checks": briefing_quality_checks,
         "legacy_numbered_story": legacy_numbered_story,
         "sequential_plain_text": sequential_plain_text,

@@ -419,6 +419,7 @@ def test_primary_result_view_declares_single_sequential_briefing_before_optional
         "professional_briefing",
         "first_view_briefing_cards",
         "first_view_kpi_cards",
+        "policy_readiness_summary",
         "next_check",
         "optional_audit_layers",
     ]
@@ -557,3 +558,38 @@ def test_first_view_public_copy_avoids_internal_packet_and_wall_jargon():
     assert "Audit-Layer" not in public_text
     assert "Ergebnisbericht" in public_text
     assert "Detailprüfung" in public_text
+
+
+def test_causal_packet_has_plain_consequence_and_readiness_summary_for_first_view():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    summary = packet["policy_readiness_summary"]
+
+    assert summary["headline"] == "Was daraus folgt"
+    assert summary["current_read"] in {"prüfpflichtig", "beobachten", "belastbar innerhalb der Modellannahmen"}
+    assert "Medizinstudienplätze" in summary["why"]
+    assert "ab Jahr 6" in summary["why"]
+    assert "Telemedizin" in summary["before_decision"]
+    assert "Burnout" in summary["before_decision"]
+    assert summary["recommended_next_step"].startswith("Zuerst")
+    assert "keine amtliche Prognose" in summary["guardrail"]
+    assert packet["primary_result_view"]["policy_readiness_summary"] == summary
+    assert "policy_readiness_summary" in packet["primary_result_view"]["render_sequence"]
+
+
+def test_first_view_briefing_cards_include_consequence_card_without_jargon():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    cards = packet["first_view_briefing_cards"]
+    consequence_card = next(card for card in cards if card["stage"] == "Was daraus folgt")
+
+    assert "prüfbare Linie" in consequence_card["answer"]
+    assert "Nächste Prüfentscheidung" in consequence_card["next_step"] or "Prüfentscheidung" in consequence_card["next_step"]
+    combined = " ".join(str(value) for card in cards for value in card.values())
+    assert "Audit-Layer" not in combined
+    assert "random Internet" not in combined
+    assert "KPI-Wand" not in combined

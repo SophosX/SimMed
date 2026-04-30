@@ -4124,3 +4124,33 @@ No decision needed; this is a safe wording and first-view coherence improvement.
 
 ### Verification / Git
 Targeted result-causality tests passed locally before full verification. Commit/push status will be recorded by the final heartbeat report after sync to GitHub clone.
+
+
+## 2026-04-30 12:04 Europe/Berlin — Heartbeat: Ergebnisbericht-Prüfentscheidung
+
+### Context
+Alex wollte eine größere, zusammenhängende Result-Experience statt weiterer Mini-Snippets. Dieser Lauf erweitert `result_causality.py`, `app.py` und API-Tests um eine explizite erste Konsequenz-/Prüfentscheidung nach dem Ergebnisbericht.
+
+### Project Manager
+Priorität bleibt: Ergebnis zuerst als professionelle Simulationseinordnung, Detailkarten danach. Risiko: zu viele bestehende Hilfsschichten können wieder wie ein KPI-Labyrinth wirken. Nächste Tasks: 1) weitere alte Result-Hilfen in den neuen Bericht einklappen, 2) relevante KPI-Auswahl für mehr Hebel-Familien prüfen, 3) freie Szenario-Vorschläge nur als Review-Objekte planen.
+
+### Designer / UX
+Die erste Ansicht bekommt jetzt nach Bericht und wenigen KPI-Signalen ein klares „Was daraus folgt“: erst Wirkpfad/Puffer/Drucksignale prüfen, dann politisch einordnen. Das reduziert Zahlenwand-Gefühl und klingt näher an einem menschlichen Briefing.
+
+### Creative Agent
+Idee: später eine „Bericht als Gesprächsnotiz“-Ansicht anbieten — nicht als Chatbot, sondern als sauberer Vermerk für Ministerium/Fraktion/Kasse. Fit: gut für Teilbarkeit; erst nach Stabilisierung des Ergebnisberichts.
+
+### Political Health-System Strategist
+Die neue Prüfentscheidung ist politisch sinnvoll: weniger Studienplätze darf nicht sofort als Einspar- oder Schadenszahl verkauft werden. Erst müssen Pipeline-Lag, Telemedizin/Delegation/Zuwanderung und Burnout/Wartezeit als Drucksignale zusammen gelesen werden.
+
+### Evidence / Domain
+Keine neuen externen Fakten in diesem Lauf; keine neue Recherche. Die Änderung bleibt Darstellung/Interpretation vorhandener Modellausgaben und Registry-Caveats. Guardrail bleibt: keine amtliche Prognose, kein Wirksamkeitsnachweis.
+
+### Integrator Decision
+Akzeptiert: `policy_readiness_summary` als strukturierter Bestandteil des causal result packets und als Streamlit-first-view-Block. Kein Modellparameter, keine Simulationgleichung und keine Datenintegration geändert.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; sicherer nächster Schritt ist weitere Konsolidierung des Ergebnisberichts statt neuer isolierter Widgets.
+
+### Verification / Git
+Gezielte Tests grün: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 25 passed. Full verification/Git folgt in diesem Heartbeat.
