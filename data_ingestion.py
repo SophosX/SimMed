@@ -2814,6 +2814,50 @@ def build_data_readiness_registry_integration_operator_briefing_handoff_sheet(br
 
 
 
+def build_data_readiness_registry_integration_operator_export_packet(
+    operator_briefing: dict,
+    briefing_cards: dict,
+    handoff_sheet: dict,
+) -> dict:
+    """Return a copy-safe export packet for the final Registry operator workflow.
+
+    The briefing, cards, and handoff sheet are useful in different UI/API contexts;
+    this packet bundles their read-only routes and stop conditions so a future
+    operator can copy one structured object into an issue, PR description draft, or
+    handoff note without accidentally executing connectors or changing Registry
+    defaults. It deliberately contains no execute=true, branch, PR, cache-write, or
+    model-mutation command.
+    """
+
+    evidence_routes = [
+        row.get("copyable_command", "")
+        for row in handoff_sheet.get("rows", [])
+        if row.get("copyable_command", "").startswith("GET ")
+    ]
+    stop_rows = [row for row in handoff_sheet.get("rows", []) if row.get("is_stop_gate")]
+    return {
+        "title": "Registry-Operator-Exportpaket ohne Ausführung",
+        "plain_language_note": (
+            "Ein kompaktes Paket zum Weitergeben: Startbefehl, Parameterroute, "
+            "Entscheidungsroute, Stop-Gate und Definition of Done. Es ist nur ein "
+            "Status-/Handoff-Paket und führt nichts aus."
+        ),
+        "primary_parameter_key": operator_briefing.get("primary_parameter_key"),
+        "primary_label": operator_briefing.get("primary_label"),
+        "copyable_summary": (
+            f"Status lesen → {operator_briefing.get('primary_label') or 'Parameter'} prüfen → "
+            "Go/Hold/Reject auditieren → vor Branch/PR stoppen."
+        ),
+        "safe_routes_to_open": evidence_routes,
+        "stop_condition": stop_rows[0].get("handoff_note") if stop_rows else "STOP: erst dokumentiertes menschliches Go außerhalb dieses Pakets.",
+        "operator_questions": operator_briefing.get("operator_questions", []),
+        "cards_available": len(briefing_cards.get("cards", [])),
+        "definition_of_done_before_branch": handoff_sheet.get("operator_definition_of_done", []),
+        "guardrail": "Read-only/Export-packet-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    }
+
+
+
 def build_data_readiness_registry_integration_handoff_packet(decision_record: dict) -> dict:
     """Create a copy-safe operator handoff from the Go/Hold/Reject decision record.
 

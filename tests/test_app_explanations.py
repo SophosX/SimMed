@@ -278,6 +278,14 @@ def test_learning_data_readiness_backlog_includes_integration_preflight():
     assert handoff_sheet["rows"][-1]["is_stop_gate"] is True
     assert "Go/Hold/Reject" in handoff_sheet["operator_definition_of_done"][2]
     assert "kein Branch" in handoff_sheet["guardrail"]
+    export_packet = backlog["registry_integration_operator_export_packet"]
+    assert export_packet["title"].startswith("Registry-Operator-Exportpaket")
+    assert export_packet["primary_parameter_key"] == operator_briefing["primary_parameter_key"]
+    assert operator_briefing["next_parameter_command"] in export_packet["safe_routes_to_open"]
+    assert export_packet["cards_available"] == len(briefing_cards["cards"])
+    assert "Go/Hold/Reject" in export_packet["copyable_summary"]
+    assert not any("execute=true" in route for route in export_packet["safe_routes_to_open"])
+    assert "keine Registry-/Modellmutation" in export_packet["guardrail"]
     handoff_packet = backlog["registry_integration_handoff_packet"]
     assert handoff_packet["title"].startswith("Registry-Integrations-Handoff")
     assert handoff_packet["summary"]["handoff_rows"] == decision_record["summary"]["decision_rows"]

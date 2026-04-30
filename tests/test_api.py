@@ -1167,6 +1167,23 @@ def test_api_exposes_registry_integration_operator_briefing_without_actions():
     assert sheet_body["registry_integration_operator_briefing_handoff_sheet"]["rows"][1]["copyable_command"] == "GET /data-readiness/bevoelkerung_mio"
     assert "kein execute=true" in sheet_body["guardrail"]
 
+    export_packet = body["registry_integration_operator_export_packet"]
+    assert export_packet["primary_parameter_key"] == "bevoelkerung_mio"
+    assert "GET /data-readiness/bevoelkerung_mio" in export_packet["safe_routes_to_open"]
+    assert export_packet["copyable_summary"].startswith("Status lesen")
+    assert "Go/Hold/Reject" in export_packet["copyable_summary"]
+    assert export_packet["cards_available"] == 4
+    assert "kein execute=true" in export_packet["guardrail"]
+    assert "keine Registry-/Modellmutation" in export_packet["guardrail"]
+    assert not any("execute=true" in route for route in export_packet["safe_routes_to_open"])
+
+    export_response = client.get("/data-readiness/registry-integration-operator-export-packet?limit=3")
+    assert export_response.status_code == 200
+    export_body = export_response.json()
+    assert export_body["status"] == "data_readiness_registry_integration_operator_export_packet_not_applied"
+    assert export_body["registry_integration_operator_export_packet"]["safe_routes_to_open"][1] == "GET /data-readiness/bevoelkerung_mio"
+    assert "kein Branch" in export_body["guardrail"]
+
     invalid = client.get("/data-readiness/registry-integration-operator-briefing?limit=0")
     assert invalid.status_code == 422
     assert invalid.json()["detail"]["status"] == "invalid_data_readiness_registry_integration_operator_briefing_limit"

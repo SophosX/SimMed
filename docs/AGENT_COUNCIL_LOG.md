@@ -2792,3 +2792,32 @@ Lokal verifiziert: gezielte Tests für Data-Ingestion/API/App, danach `python3 -
 - Integrator Decision: Implemented `build_data_readiness_registry_integration_operator_briefing_handoff_sheet(...)`, surfaced it in API and Learning Page data, and added focused regression coverage.
 - Question to Alex if needed: Keine — safe/read-only platform plumbing.
 - Verification/Git: Targeted tests passed; full pytest passed (164); py_compile passed; simulation smoke passed (20 runs × 2 years). Commit/push pending in this heartbeat.
+
+## 2026-04-30 05:50 Europe/Berlin — Registry-Operator-Exportpaket
+
+### Context
+Alex priorisiert Kernplattform statt KI/Evidence. Dieser Lauf erweitert den Registry/Data-Readiness-Pfad um ein kopierbares Operator-Exportpaket, das Briefing, mobile Karten und Handoff-Sheet bündelt, ohne irgendeine Daten- oder Modellaktion auszuführen.
+
+### Project Manager
+Priorität: Data-Ingestion/Provenance-Foundation bis zur sicheren Registry-Integration nachvollziehbar machen. Risiko: zu viele Einzelschichten können Operatoren verwirren; das Exportpaket fasst nur bestehende read-only Routen zusammen. Nächste Plattform-Schritte: denselben Pfad für echte Review-Erstellung/Go-Entscheidungen weiterhin strikt getrennt planen.
+
+### Designer / UX
+Mobile/Tablet-Nutzer bekommen nun nach Karten und Handoff-Sheet eine kurze Weitergabe-Zusammenfassung: Status lesen → Parameter prüfen → Go/Hold/Reject auditieren → vor Branch/PR stoppen.
+
+### Creative Agent
+Idee: Das Exportpaket kann später als Issue-/PR-Handoff oder Download genutzt werden. Fit: gut für Zusammenarbeit, solange es read-only bleibt und nicht als Apply-Button missverstanden wird.
+
+### Political Health-System Strategist
+Die Stop-Bedingung vor Codearbeit schützt politisch sensible Parameteränderungen vor stiller Automatisierung. Menschliches Go/Hold/Reject bleibt dokumentationspflichtig.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Keine neuen Daten- oder Wirksamkeitsclaims; das Paket bündelt nur existierende Status-/Evidenzrouten und Guardrails.
+
+### Integrator Decision
+Akzeptiert: `build_data_readiness_registry_integration_operator_export_packet(...)`, API-Aggregat und fokussierter Endpoint `/data-readiness/registry-integration-operator-export-packet`, Learning-Page-Builder/Render und Tests. Keine Registry-/Modellmutation.
+
+### Question to Alex
+Keine.
+
+### Verification / Git
+Lokal verifiziert: gezielte API/UI-Tests, volle Suite `164 passed`, `py_compile`, Simulation-Smoke `20 runs × 2 Jahre`. Git-Commit/Push folgt in diesem Heartbeat.
