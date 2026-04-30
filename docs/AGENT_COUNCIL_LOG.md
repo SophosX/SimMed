@@ -4957,3 +4957,32 @@ No immediate decision required. Continue safely with result-page clarity/styling
 
 ### Verification / Git
 Verified locally before Git sync: `python3 -m pytest tests/test_result_causality.py tests/test_api.py tests/test_app_explanations.py -q` → 177 passed; full `python3 -m pytest -q` → 272 passed; `python3 -m py_compile app.py result_causality.py api.py simulation_core.py`; 30-run simulation/result-packet smoke test passed. Git commit/push status added in final heartbeat report after sync.
+
+## 2026-04-30 15:42 Europe/Berlin — Result briefing wording polish
+
+### Context
+Alex asked for a clearer, calmer result page rather than more stacked explanation widgets. This heartbeat kept the simplified causal result structure and tightened the public wording where it still looked machine-like: German number formatting and the medical-study-place input sentence.
+
+### Project Manager
+Priority: remove small but trust-damaging clarity issues from the first result screen. Risk: visual/page consolidation still matters more than micro-copy, but incorrect grammar and raw float values weaken the first impression. Next tasks: style the first briefing as one clean card and continue reducing historical detail clutter below it.
+
+### Designer / UX
+The first result now says “Medizinstudienplätze wurden gesenkt: 11.000 → 5.500” instead of exposing Python-style values such as `5500.0`. Relevant KPI values in the public packet use German decimal commas, so the briefing reads more like a serious report and less like a data dump.
+
+### Creative Agent
+Idea kept for next slice: a compact policy-memo front page with one headline, three signal rows, and one next-check callout. Fit remains strong, but this run only corrected wording/formatting inside the existing simplified structure.
+
+### Political Health-System Strategist
+No political conclusion was added. The study-place scenario remains framed as delayed capacity pressure and a need for fachliche Prüfung before any political assessment.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. No model dynamics, evidence grades, source claims, or parameter assumptions changed; this is a communication-layer improvement over existing SimMed outputs.
+
+### Integrator Decision
+Accepted: German public-number formatting helper and plural phrasing for Medizinstudienplätze in the public causal packet. Deferred: broader visual redesign and broader reform levers/free-text proposal workflow.
+
+### Question to Alex
+Keine wichtige Entscheidung offen. Continue safely with first-result visual consolidation and fewer legacy blocks.
+
+### Verification / Git
+Local verification before sync: focused causal/API tests `46 passed`; full test suite `273 passed`; `py_compile` for app/result/API/simulation/test files passed; 30-run simulation/result-packet smoke test passed. Git commit/push status is recorded in the heartbeat report after repository sync.

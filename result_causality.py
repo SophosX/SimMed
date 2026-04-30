@@ -59,6 +59,17 @@ def _fmt(value: float) -> str:
     return f"{value:.2f}"
 
 
+def _fmt_de(value: Any, *, decimals: int = 2) -> str:
+    """Format public German result numbers without exposing Python float noise."""
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return str(value)
+    if decimals == 0 or number.is_integer():
+        return f"{int(round(number)):,}".replace(",", ".")
+    return f"{number:,.{decimals}f}".replace(",", "X").replace(".", ",").replace("X", ".")
+
+
 def _changed_inputs(params: Mapping[str, Any]) -> list[dict[str, str]]:
     defaults = get_default_params()
     changed: list[dict[str, str]] = []
@@ -79,13 +90,17 @@ def _changed_inputs(params: Mapping[str, Any]) -> list[dict[str, str]]:
             direction = "erhöht" if delta > 0 else "gesenkt"
         except (TypeError, ValueError):
             direction = "geändert"
+        label = labels.get(key, key)
+        default_text = _fmt_de(defaults[key], decimals=0)
+        value_text = _fmt_de(value, decimals=0)
+        verb = "wurden" if label == "Medizinstudienplätze" else "wurde"
         changed.append(
             {
                 "key": key,
-                "label": labels.get(key, key),
-                "change": f"{labels.get(key, key)} wurde {direction}: {defaults[key]} → {value}.",
-                "default": str(defaults[key]),
-                "value": str(value),
+                "label": label,
+                "change": f"{label} {verb} {direction}: {default_text} → {value_text}.",
+                "default": default_text,
+                "value": value_text,
             }
         )
     return changed
@@ -986,6 +1001,10 @@ def build_causal_result_packet(
     relevant_kpis_public = [
         {
             **row,
+            "start": _fmt_de(row.get("start"), decimals=2),
+            "end": _fmt_de(row.get("end"), decimals=2),
+            "abs_delta": _fmt_de(row.get("abs_delta"), decimals=2),
+            "pct_delta": _fmt_de(row.get("pct_delta"), decimals=2),
             "direction": "stabil" if row.get("direction") == "bleibt stabil" else row.get("direction", "stabil"),
             "meaning": row.get("meaning") or row.get("why_relevant", "Diese Kennzahl ordnet den Modelllauf ein."),
         }

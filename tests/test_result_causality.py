@@ -123,6 +123,22 @@ def test_public_adaptation_section_is_not_truncated_mid_sentence():
     assert "Ab etwa Jahr 6" in why
 
 
+def test_public_briefing_uses_clean_german_number_and_input_phrasing():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    section_by_heading = {section["heading"]: section["body"] for section in packet["result_sections"]}
+    public_text = _public_text(packet)
+
+    assert "Medizinstudienplätze wurden gesenkt" in section_by_heading["Eingriff"]
+    assert "11.000 → 5.500" in section_by_heading["Eingriff"]
+    assert "5500.0" not in public_text
+    assert "430,00 → 360,00" in public_text
+    assert "25,00 → 45,00" in public_text
+    assert "wurde gesenkt" not in section_by_heading["Eingriff"]
+
+
 def test_public_result_view_separates_briefing_from_collapsed_audit_layers():
     params = get_default_params()
     params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
