@@ -2821,3 +2821,34 @@ Keine.
 
 ### Verification / Git
 Lokal verifiziert: gezielte API/UI-Tests, volle Suite `164 passed`, `py_compile`, Simulation-Smoke `20 runs × 2 Jahre`. Git-Commit/Push folgt in diesem Heartbeat.
+
+
+## 2026-04-30 03:57 UTC — Heartbeat: Registry-Operator-Export-Audit
+
+### Context
+Core-platform priority: final Registry/data-readiness handoff needed one more copy-safety verification layer before future operators move from read-only status packets toward any separate Registry PR. Added a deterministic export-audit around the existing Registry-Operator-Exportpaket.
+
+### Project Manager
+Priority bleibt Data-Ingestion/Provenienz: safer operator handoff before any model integration. Risk: copyable packets can drift into execution instructions if not audited. Next tasks: expose the same audit as a concise operator/download surface, then move back toward actual reviewed data integration only after a documented human Go.
+
+### Designer / UX
+The Learning Page now can show SHA256, GET-route count, copy-safe status, and unsafe findings in one mobile-safe row. This helps first-time operators understand “prüfen/kopieren” versus “ausführen/integrieren”.
+
+### Creative Agent
+Idea: later make a “green handoff badge” for read-only packets when audit copy-safe is true. Fit: useful as trust cue; defer visual polish until more data-workflow substance is complete.
+
+### Political Health-System Strategist
+For politically sensitive Registry defaults, the extra audit reinforces that SimMed does not silently turn data artifacts into policy claims or model truth. The default remains stop-before-code until an auditable human Go/Hold/Reject exists.
+
+### Evidence / Domain
+No new evidence claims and no new external research in this run. The change only verifies read-only packet integrity and unsafe command absence; it does not alter sources, parameters, assumptions, or model outputs.
+
+### Integrator Decision
+Accepted: `build_data_readiness_registry_integration_operator_export_audit(...)`, focused API route `/data-readiness/registry-integration-operator-export-audit`, aggregate API inclusion, Learning Page rendering, and regression tests. Deferred: any Registry/model mutation, live connector execution, or branch/PR runbook execution.
+
+### Question to Alex
+Keine.
+
+### Verification / Git
+Full tests and smoke passed locally before commit; commit/push and zip refresh follow this entry.
+

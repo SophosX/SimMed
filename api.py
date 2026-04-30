@@ -49,6 +49,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_operator_briefing_cards,
     build_data_readiness_registry_integration_operator_briefing_handoff_sheet,
     build_data_readiness_registry_integration_operator_export_packet,
+    build_data_readiness_registry_integration_operator_export_audit,
     build_data_readiness_registry_integration_operator_steps,
     build_data_readiness_registry_integration_safe_start_packet,
     build_data_readiness_registry_integration_safe_start_checklist,
@@ -991,6 +992,9 @@ def get_data_readiness_registry_integration_operator_briefing(limit: int = 3) ->
         "registry_integration_operator_briefing_cards": operator_cards,
         "registry_integration_operator_briefing_handoff_sheet": handoff_sheet,
         "registry_integration_operator_export_packet": build_data_readiness_registry_integration_operator_export_packet(operator_briefing, operator_cards, handoff_sheet),
+        "registry_integration_operator_export_audit": build_data_readiness_registry_integration_operator_export_audit(
+            build_data_readiness_registry_integration_operator_export_packet(operator_briefing, operator_cards, handoff_sheet)
+        ),
     }
 
 
@@ -1030,6 +1034,19 @@ def get_data_readiness_registry_integration_operator_export_packet(limit: int = 
         "guardrail": "Operator-Exportpaket ist read-only/status-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
         "summary": response["summary"],
         "registry_integration_operator_export_packet": response["registry_integration_operator_export_packet"],
+    }
+
+
+@api.get("/data-readiness/registry-integration-operator-export-audit")
+def get_data_readiness_registry_integration_operator_export_audit(limit: int = 3) -> dict:
+    """Return the deterministic read-only audit for the operator export packet."""
+
+    response = get_data_readiness_registry_integration_operator_briefing(limit=limit)
+    return {
+        "status": "data_readiness_registry_integration_operator_export_audit_not_applied",
+        "guardrail": "Operator-Export-Audit ist read-only/status-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+        "summary": response["summary"],
+        "registry_integration_operator_export_audit": response["registry_integration_operator_export_audit"],
     }
 
 

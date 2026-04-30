@@ -63,6 +63,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_operator_briefing_cards,
     build_data_readiness_registry_integration_operator_briefing_handoff_sheet,
     build_data_readiness_registry_integration_operator_export_packet,
+    build_data_readiness_registry_integration_operator_export_audit,
     build_data_readiness_registry_integration_pr_runbook,
     build_data_readiness_registry_integration_progress_timeline,
     build_data_readiness_registry_integration_status_board,
@@ -4274,6 +4275,11 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         "registry_integration_operator_export_packet": build_data_readiness_registry_integration_operator_export_packet(
             operator_briefing, operator_briefing_cards, operator_handoff_sheet
         ),
+        "registry_integration_operator_export_audit": build_data_readiness_registry_integration_operator_export_audit(
+            build_data_readiness_registry_integration_operator_export_packet(
+                operator_briefing, operator_briefing_cards, operator_handoff_sheet
+            )
+        ),
         "registry_integration_handoff_packet": build_data_readiness_registry_integration_handoff_packet(decision_record),
         "registry_integration_pr_runbook": pr_runbook,
         "rows": [
@@ -4721,6 +4727,17 @@ def render_learning_data_readiness_backlog():
         st.caption("Stop-Bedingung: " + export_packet["stop_condition"])
         st.caption("Definition of done vor Branch: " + " · ".join(export_packet["definition_of_done_before_branch"]))
         st.caption(export_packet["guardrail"])
+        export_audit = backlog["registry_integration_operator_export_audit"]
+        st.markdown(f"**{export_audit['title']}**")
+        st.caption(export_audit["plain_language_note"])
+        st.dataframe(pd.DataFrame([{
+            "SHA256": export_audit["packet_sha256"],
+            "GET-Routen": export_audit["safe_route_count"],
+            "Nur GET": "ja" if export_audit["all_routes_are_get"] else "nein",
+            "Copy-safe": "ja" if export_audit["copy_safe"] else "nein",
+            "Unsichere Treffer": ", ".join(export_audit["unsafe_findings"]) or "keine",
+        }]), use_container_width=True, hide_index=True)
+        st.caption(export_audit["guardrail"])
         command_palette = backlog["registry_integration_command_palette"]
         st.markdown(f"**{command_palette['title']}**")
         st.caption(command_palette["plain_language_note"])

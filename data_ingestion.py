@@ -2814,6 +2814,13 @@ def build_data_readiness_registry_integration_operator_briefing_handoff_sheet(br
 
 
 
+def _stable_read_only_packet_hash(packet: dict) -> str:
+    """Return a deterministic SHA256 for read-only operator handoff packets."""
+
+    canonical = json.dumps(packet, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+    return sha256(canonical).hexdigest()
+
+
 def build_data_readiness_registry_integration_operator_export_packet(
     operator_briefing: dict,
     briefing_cards: dict,
@@ -2856,6 +2863,44 @@ def build_data_readiness_registry_integration_operator_export_packet(
         "guardrail": "Read-only/Export-packet-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
     }
 
+
+def build_data_readiness_registry_integration_operator_export_audit(export_packet: dict) -> dict:
+    """Audit an operator export packet for copy-safety before handoff.
+
+    This is a deterministic, read-only verification layer for future operators and
+    agents: it records a stable packet hash, counts copied routes, and flags unsafe
+    command fragments. It does not execute routes, create branches, or write any
+    model/Registry state.
+    """
+
+    routes = list(export_packet.get("safe_routes_to_open", []))
+    text_fragments = [
+        export_packet.get("copyable_summary", ""),
+        export_packet.get("stop_condition", ""),
+        *routes,
+    ]
+    unsafe_tokens = ["execute=true", "POST ", "git checkout -b", "git commit", "git push"]
+    unsafe_findings = [
+        token
+        for token in unsafe_tokens
+        if any(token in fragment for fragment in text_fragments)
+    ]
+    return {
+        "title": "Registry-Operator-Export-Audit",
+        "plain_language_note": (
+            "Dieses Audit macht das Exportpaket prüfbar: stabiler SHA256, Anzahl "
+            "der reinen Statusrouten, Stop-Gate und Warnung, falls ein Ausführungs-"
+            " oder Git-Befehl im Paket auftaucht."
+        ),
+        "packet_sha256": _stable_read_only_packet_hash(export_packet),
+        "safe_route_count": len(routes),
+        "all_routes_are_get": all(route.startswith("GET ") for route in routes),
+        "unsafe_findings": unsafe_findings,
+        "copy_safe": bool(routes) and all(route.startswith("GET ") for route in routes) and not unsafe_findings,
+        "stop_condition": export_packet.get("stop_condition", ""),
+        "definition_of_done_before_branch": export_packet.get("definition_of_done_before_branch", []),
+        "guardrail": "Read-only/Export-Audit-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    }
 
 
 def build_data_readiness_registry_integration_handoff_packet(decision_record: dict) -> dict:

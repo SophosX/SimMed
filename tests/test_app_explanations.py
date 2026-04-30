@@ -286,6 +286,13 @@ def test_learning_data_readiness_backlog_includes_integration_preflight():
     assert "Go/Hold/Reject" in export_packet["copyable_summary"]
     assert not any("execute=true" in route for route in export_packet["safe_routes_to_open"])
     assert "keine Registry-/Modellmutation" in export_packet["guardrail"]
+    export_audit = backlog["registry_integration_operator_export_audit"]
+    assert export_audit["title"] == "Registry-Operator-Export-Audit"
+    assert export_audit["copy_safe"] is True
+    assert export_audit["safe_route_count"] == len(export_packet["safe_routes_to_open"])
+    assert len(export_audit["packet_sha256"]) == 64
+    assert export_audit["unsafe_findings"] == []
+    assert "keine Registry-/Modellmutation" in export_audit["guardrail"]
     handoff_packet = backlog["registry_integration_handoff_packet"]
     assert handoff_packet["title"].startswith("Registry-Integrations-Handoff")
     assert handoff_packet["summary"]["handoff_rows"] == decision_record["summary"]["decision_rows"]

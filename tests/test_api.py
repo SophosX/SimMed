@@ -1176,6 +1176,13 @@ def test_api_exposes_registry_integration_operator_briefing_without_actions():
     assert "kein execute=true" in export_packet["guardrail"]
     assert "keine Registry-/Modellmutation" in export_packet["guardrail"]
     assert not any("execute=true" in route for route in export_packet["safe_routes_to_open"])
+    export_audit = body["registry_integration_operator_export_audit"]
+    assert export_audit["copy_safe"] is True
+    assert export_audit["all_routes_are_get"] is True
+    assert export_audit["safe_route_count"] == len(export_packet["safe_routes_to_open"])
+    assert len(export_audit["packet_sha256"]) == 64
+    assert export_audit["unsafe_findings"] == []
+    assert "kein execute=true" in export_audit["guardrail"]
 
     export_response = client.get("/data-readiness/registry-integration-operator-export-packet?limit=3")
     assert export_response.status_code == 200
@@ -1183,6 +1190,13 @@ def test_api_exposes_registry_integration_operator_briefing_without_actions():
     assert export_body["status"] == "data_readiness_registry_integration_operator_export_packet_not_applied"
     assert export_body["registry_integration_operator_export_packet"]["safe_routes_to_open"][1] == "GET /data-readiness/bevoelkerung_mio"
     assert "kein Branch" in export_body["guardrail"]
+
+    audit_response = client.get("/data-readiness/registry-integration-operator-export-audit?limit=3")
+    assert audit_response.status_code == 200
+    audit_body = audit_response.json()
+    assert audit_body["status"] == "data_readiness_registry_integration_operator_export_audit_not_applied"
+    assert audit_body["registry_integration_operator_export_audit"]["copy_safe"] is True
+    assert "kein execute=true" in audit_body["guardrail"]
 
     invalid = client.get("/data-readiness/registry-integration-operator-briefing?limit=0")
     assert invalid.status_code == 422
