@@ -43,6 +43,7 @@ from data_ingestion import (
     build_data_readiness_integration_pr_brief,
     build_data_readiness_registry_diff_preview,
     build_data_readiness_registry_integration_decision_record,
+    build_data_readiness_registry_integration_decision_template,
     build_data_readiness_registry_integration_handoff_packet,
     build_data_readiness_gate_plan,
     build_data_readiness_operator_handoff,
@@ -4145,6 +4146,7 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         "registry_diff_preview": registry_diff_preview,
         "integration_pr_brief": integration_pr_brief,
         "registry_integration_decision_record": decision_record,
+        "registry_integration_decision_template": build_data_readiness_registry_integration_decision_template(decision_record),
         "registry_integration_handoff_packet": build_data_readiness_registry_integration_handoff_packet(decision_record),
         "rows": [
             {
@@ -4440,6 +4442,26 @@ def render_learning_data_readiness_backlog():
         else:
             st.caption("Noch kein Go/Hold/Reject-Entscheidungszettel, weil kein Registry-Diff vorliegt.")
         st.caption(decision_record["guardrail"])
+        decision_template = backlog["registry_integration_decision_template"]
+        st.markdown(f"**{decision_template['title']}**")
+        st.caption(decision_template["plain_language_note"])
+        template_rows = [
+            {
+                "Rang": row["rank"],
+                "Parameter": row["label"],
+                "Erlaubte Entscheidung": " / ".join(row["allowed_decisions"]),
+                "Default": row["recommended_default"],
+                "Auszufüllen": " · ".join(row["decision_fields_to_fill"][:3]),
+                "Evidenz öffnen": " · ".join(row["evidence_routes_to_open"]),
+                "Guardrail": row["guardrail"],
+            }
+            for row in decision_template["rows"]
+        ]
+        if template_rows:
+            st.dataframe(pd.DataFrame(template_rows), use_container_width=True, hide_index=True)
+        else:
+            st.caption("Noch keine Ausfüllvorlage, weil kein Decision-Record vorliegt.")
+        st.caption(decision_template["guardrail"])
         handoff_packet = backlog["registry_integration_handoff_packet"]
         st.markdown(f"**{handoff_packet['title']}**")
         st.caption(handoff_packet["plain_language_note"])

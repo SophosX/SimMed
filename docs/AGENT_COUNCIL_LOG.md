@@ -2089,3 +2089,32 @@ Keine.
 
 ### Verification / Git
 Gezielte Regressionstests: 5 passed. Commit/Push folgt nach Full-Test/Packaging in diesem Lauf.
+
+## 2026-04-30 00:40 UTC — Heartbeat: Data-Readiness Decision Template in Learning Page
+
+### Context
+Alex priorisiert wieder Core-Plattform. Aktiver Branch: `feat/platform-data-status-foundation`. Der bestehende Data-Readiness-Pfad hatte API/Backend-Helfer für die Go/Hold/Reject-Ausfüllvorlage, aber die Learning Page sprang im UI vom Decision-Record direkt zum Handoff.
+
+### Project Manager
+Priorität: sichere Datenintegrationskette für echte Daten verständlicher machen. Risiko: Nutzer könnten einen geprüften Review-Wert als automatische Modellintegration missverstehen. Nächste Tasks: (1) focused API/UX für Decision-Template weiter glätten, (2) danach echte Connector-/Review-Arbeit nur bewusst und getrennt.
+
+### Designer / UX
+Die Learning Page zeigt jetzt vor dem Handoff explizit die auszufüllenden Entscheidungsfelder, erlaubte Optionen und Evidenzrouten. Das ist mobil/tablet-sicher als Tabelle und reduziert den Sprung von technischer Diff-Preview zu Branch-Handoff.
+
+### Creative Agent
+Idee: später aus der Vorlage ein kopierbares „Decision Slip“-Snippet machen, das in PRs/Reviews eingefügt wird. Fit: gut für Nachvollziehbarkeit; noch kein Persistieren, solange Governance/Reviewer-Identitäten nicht entschieden sind.
+
+### Political Health-System Strategist
+Konservativer Hold-Default bleibt richtig: Datenwerte mit politischer/finanzieller Relevanz dürfen nicht durch einen grünen technischen Preflight still als politischer Wirkungsbeweis erscheinen.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf; keine neuen externen Fakten. Änderung betrifft nur Guardrail-/Workflow-Sichtbarkeit für bereits strukturierte Data-Readiness-Objekte.
+
+### Integrator Decision
+Akzeptiert: `build_learning_data_readiness_backlog()` enthält nun `registry_integration_decision_template`, und `render_learning_data_readiness_backlog()` rendert die Ausfüllvorlage vor dem Handoff. Kein Branch, kein execute=true, keine Cache-/Review-Erzeugung, keine Registry-/Modellmutation.
+
+### Question to Alex if needed
+Keine wichtige Entscheidung offen.
+
+### Verification / Git
+Gezielt: `pytest tests/test_app_explanations.py::test_learning_data_readiness_backlog_includes_integration_preflight tests/test_api.py::test_api_exposes_focused_registry_integration_decision_template_without_apply -q` → 2 passed. Voll: `pytest -q` → 128 passed. `py_compile` für app/data_ingestion/api/tests ok. Simulation smoke: 20 runs × 2 Jahre → `(60, 30)` / `(320, 6)`.

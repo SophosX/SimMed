@@ -117,6 +117,12 @@ def test_learning_data_readiness_backlog_includes_integration_preflight():
     decision_record = backlog["registry_integration_decision_record"]
     assert decision_record["title"].startswith("Registry-Integrationsentscheidung")
     assert decision_record["summary"]["decision_rows"] == diff_preview["summary"]["shown_diff_previews"]
+    decision_template = backlog["registry_integration_decision_template"]
+    assert decision_template["title"].startswith("Ausfüllvorlage")
+    assert decision_template["summary"]["template_rows"] == decision_record["summary"]["decision_rows"]
+    assert all(row["allowed_decisions"] == ["Go", "Hold", "Reject"] for row in decision_template["rows"])
+    assert all("GET /data-readiness/" in " ".join(row["evidence_routes_to_open"]) for row in decision_template["rows"])
+    assert "keine Entscheidungsspeicherung" in " ".join(row["guardrail"] for row in decision_template["rows"])
     handoff_packet = backlog["registry_integration_handoff_packet"]
     assert handoff_packet["title"].startswith("Registry-Integrations-Handoff")
     assert handoff_packet["summary"]["handoff_rows"] == decision_record["summary"]["decision_rows"]
