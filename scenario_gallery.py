@@ -148,6 +148,36 @@ def build_scenario_gallery_guided_apply_plan(
     return plans
 
 
+def build_scenario_gallery_operator_status_cards(
+    *, n_runs: int = 100, n_years: int = 15, seed: int = 42
+) -> list[dict[str, Any]]:
+    """Summarize scenario-gallery run packets as mobile-safe status cards.
+
+    These cards make the deliberate-run bridge easier to scan on the landing
+    page/API before any execution. They intentionally stay read-only and only
+    point to existing payload/checklist/reading-path objects.
+    """
+
+    cards: list[dict[str, Any]] = []
+    for packet in build_scenario_gallery_operator_run_packets(n_runs=n_runs, n_years=n_years, seed=seed):
+        cards.append({
+            "card_id": packet["card_id"],
+            "title": packet["title"],
+            "status_label": "Bereit zur bewussten Prüfung, nicht ausgeführt",
+            "primary_action": f"Payload prüfen: {packet['copyable_api_route']}",
+            "changed_parameters_plain": packet["changed_parameters_plain"],
+            "first_safe_check": packet["pre_run_checklist"][0],
+            "evidence_check_count": len(packet["evidence_checks"]),
+            "post_run_first_read": packet["post_run_reading_order"][1],
+            "stop_rule_short": "Kein Ergebnis als Prognose, Wirkungsbeweis, Lobbying-Empfehlung oder automatische Modellentscheidung verwenden.",
+            "guardrail": (
+                "Statuskarte ist read-only: kein Apply-Button, keine Session-State-Mutation, "
+                "kein Simulationslauf, keine Registry-/Modellmutation und keine amtliche Prognose."
+            ),
+        })
+    return cards
+
+
 def build_scenario_gallery_operator_run_packets(
     *, n_runs: int = 100, n_years: int = 15, seed: int = 42
 ) -> list[dict[str, Any]]:

@@ -25,6 +25,7 @@ from app import (
     build_scenario_gallery_cards,
     build_scenario_gallery_guided_apply_plan,
     build_scenario_gallery_operator_run_packets,
+    build_scenario_gallery_operator_status_cards,
     build_scenario_gallery_manifest_previews,
     build_political_lever_detail_sections,
     build_political_result_checkpoints,
@@ -646,6 +647,38 @@ def test_scenario_gallery_operator_run_packets_are_copy_safe_and_read_only():
     assert medical_packet["copyable_api_payload"]["parameter_changes"] == {"medizinstudienplaetze": 9000}
     assert medical_packet["evidence_checks"][0]["parameter_key"] == "medizinstudienplaetze"
     assert medical_packet["evidence_checks"][0]["evidence_grade"] in {"A", "B", "C", "D", "E"}
+
+
+def test_scenario_gallery_operator_status_cards_make_run_packets_mobile_scannable_without_execution():
+    cards = build_scenario_gallery_operator_status_cards(n_runs=100, n_years=15, seed=42)
+    combined = " ".join(str(value) for card in cards for value in card.values())
+
+    assert len(cards) == len(build_scenario_gallery_cards())
+    first = cards[0]
+    assert {
+        "card_id",
+        "title",
+        "status_label",
+        "primary_action",
+        "changed_parameters_plain",
+        "first_safe_check",
+        "evidence_check_count",
+        "post_run_first_read",
+        "stop_rule_short",
+        "guardrail",
+    } <= set(first)
+    assert all(card["status_label"] == "Bereit zur bewussten Prüfung, nicht ausgeführt" for card in cards)
+    assert all(card["primary_action"] == "Payload prüfen: POST /simulate" for card in cards)
+    assert all(card["evidence_check_count"] >= 1 for card in cards)
+    assert "Ergebnis-Storyboard" in combined
+    assert "Kein Ergebnis als Prognose" in combined
+    assert "Wirkungsbeweis" in combined
+    assert "kein Apply-Button" in combined
+    assert "kein Simulationslauf" in combined
+    assert "keine Registry-/Modellmutation" in combined
+    medical_card = next(card for card in cards if card["card_id"] == "medical_training_pipeline")
+    assert "Medizinstudienplätze" in medical_card["changed_parameters_plain"]
+    assert "nichts wird automatisch angewendet" in medical_card["first_safe_check"]
 
 
 def test_direction_word_uses_plain_language_and_preference_direction():

@@ -3101,3 +3101,16 @@ Gezielte API-Tests, volle Testsuite, py_compile und kleiner Simulation-Smoke sin
 - **Integrator Decision:** `build_learning_data_readiness_backlog()` gibt jetzt `registry_integration_operator_export_status_card` zurück; Learning Page rendert die Karte. Leere Decision-Template/Audit-Zustände nutzen Top-Level-Guardrails statt leerer Row-Listen.
 - **Question to Alex if needed:** Keine.
 - **Verification/Git:** `pytest -q` → 176 passed; `py_compile` für Kernmodule/Tests; 20x2 Simulation-Smoke OK `(60, 30)/(320, 6)`. Commit/Push folgt in diesem Lauf.
+
+
+## 2026-04-30 05:19 UTC – Scenario-Gallery Run-Statuskarten
+
+- **Context:** Heartbeat priorisiert Core-Plattform; vorhandene Scenario-Gallery hatte Run-Packets, aber der Landing-/API-Status war für Erstnutzer:innen noch zu dicht.
+- **Project Manager:** Kleine, sichere UX/API-Scheibe gewählt: Run-Packets nicht ausführen, sondern als mobile Statuskarten scannbar machen.
+- **Designer/UX:** Statuskarte zeigt Status, erste sichere Prüfung, Payload-Route, geänderte Parameter, Stop-Regel und nächsten Leseanker.
+- **Creative Agent:** MiroFish-inspirierter Demo-Start bleibt geführt, aber SimMed behält Guardrails statt automatischer Zukunfts-Claims.
+- **Political Health-System Strategist:** Stop-Regel verhindert, dass Beispiel-Szenarien als Prognose, Wirksamkeitsbeweis, Lobbying-Empfehlung oder automatische Entscheidung gelesen werden.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; keine neuen externen Fakten oder Modelwirkungen hinzugefügt.
+- **Integrator Decision:** `build_scenario_gallery_operator_status_cards(...)` in `scenario_gallery.py`, App-Wrapper/Rendering und API-Feld `status_cards` ergänzt; bestehende Run-Packets bleiben read-only.
+- **Question to Alex if needed:** Keine – niedrigriskante Plattform-/Onboarding-Verbesserung.
+- **Verification/Git:** pytest vollständig 177 passed; py_compile für Kernmodule; 20-run Smoke OK. Commit/Push folgt in diesem Heartbeat.

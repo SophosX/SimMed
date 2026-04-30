@@ -627,6 +627,19 @@ def test_api_exposes_scenario_gallery_operator_run_packets_without_execution():
     assert "kein Simulationslauf" in body["guardrail"]
     assert "keine Registry-/Modellmutation" in body["guardrail"]
     packets = body["packets"]
+    status_cards = body["status_cards"]
+    assert status_cards
+    medical_status = next(card for card in status_cards if card["card_id"] == "medical_training_pipeline")
+    assert medical_status["status_label"] == "Bereit zur bewussten Prüfung, nicht ausgeführt"
+    assert medical_status["primary_action"] == "Payload prüfen: POST /simulate"
+    assert medical_status["evidence_check_count"] == 1
+    assert "kein Simulationslauf" in medical_status["guardrail"]
+    assert "keine Registry-/Modellmutation" in medical_status["guardrail"]
+    assert "Wirkungsbeweis" in medical_status["stop_rule_short"]
+    assert "Ergebnis-Storyboard" in medical_status["post_run_first_read"]
+    assert "Medizinstudienplätze" in medical_status["changed_parameters_plain"]
+    assert "nichts wird automatisch angewendet" in medical_status["first_safe_check"]
+    assert len(status_cards) == len(packets)
     assert packets
     medical_packet = next(packet for packet in packets if packet["card_id"] == "medical_training_pipeline")
     assert medical_packet["status"] == "run_packet_ready_but_not_executed"

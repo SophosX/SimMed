@@ -85,6 +85,7 @@ from political_feasibility import assess_political_feasibility
 from scenario_gallery import (
     build_scenario_gallery_guided_apply_plan,
     build_scenario_gallery_operator_run_packets,
+    build_scenario_gallery_operator_status_cards,
 )
 from simulation_core import MODEL_VERSION, build_scenario_manifest, get_default_params, run_scenario
 
@@ -1432,9 +1433,11 @@ def get_scenario_gallery_operator_run_packets(
             },
         )
     packets = build_scenario_gallery_operator_run_packets(n_runs=n_runs, n_years=n_years, seed=seed)
+    status_cards = build_scenario_gallery_operator_status_cards(n_runs=n_runs, n_years=n_years, seed=seed)
     return {
         "status": "scenario_gallery_operator_run_packets_not_executed",
         "guardrail": "Read-only Run-Packets: kein automatischer Apply-Button, keine Session-State-Mutation, kein Simulationslauf, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+        "status_cards": status_cards,
         "packets": packets,
     }
 

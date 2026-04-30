@@ -1164,6 +1164,18 @@ def build_scenario_gallery_operator_run_packets(
     )
 
 
+def build_scenario_gallery_operator_status_cards(
+    *, n_runs: int = 100, n_years: int = 15, seed: int = 42
+) -> List[dict[str, Any]]:
+    """Return mobile-safe read-only status cards for scenario run packets."""
+
+    return scenario_gallery_module.build_scenario_gallery_operator_status_cards(
+        n_runs=n_runs,
+        n_years=n_years,
+        seed=seed,
+    )
+
+
 def sidebar_quick_start_steps() -> List[str]:
     """Kurze Orientierung, damit neue Nutzer:innen sofort wissen, was zu tun ist."""
     return [
@@ -1196,6 +1208,9 @@ def render_landing_hero() -> None:
         run_packets = {
             item["card_id"]: item for item in build_scenario_gallery_operator_run_packets()
         }
+        run_status_cards = {
+            item["card_id"]: item for item in build_scenario_gallery_operator_status_cards()
+        }
         for card in build_scenario_gallery_cards():
             st.markdown(f"**{card['title']}**")
             st.write(card["question"])
@@ -1213,6 +1228,13 @@ def render_landing_hero() -> None:
             st.caption("Lesereihenfolge: " + " → ".join(plan["reading_order"]))
             st.caption("API-Payload: " + json.dumps(plan["api_payload"], ensure_ascii=False))
             packet = run_packets[card["id"]]
+            status_card = run_status_cards[card["id"]]
+            st.caption(
+                "Run-Status: "
+                + status_card["status_label"]
+                + " · erster Check: "
+                + status_card["first_safe_check"]
+            )
             st.caption("Vor dem Lauf prüfen: " + " | ".join(packet["pre_run_checklist"][:2]))
             st.caption("Run-Packet: " + packet["copyable_api_route"] + " · " + packet["operator_stop_rule"])
             st.caption("Guardrail: " + plan["guardrail"])
