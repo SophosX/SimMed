@@ -3351,4 +3351,4 @@ Akzeptiert: `build_data_readiness_registry_integration_final_gate_summary(...)`,
 Keine.
 
 ### Verification / Git
-Gezielte Tests: `tests/test_api.py::test_api_exposes_registry_integration_operator_briefing_without_actions`, `tests/test_api.py::test_api_exposes_registry_final_gate_summary_without_code_work`, `tests/test_app_explanations.py::test_learning_data_readiness_backlog_prioritizes_safe_data_gates` passed. Full suite: `198 passed`. Py-compile + 20-run/2-year simulation smoke passed. Commit/Push folgt nach Zip-Refresh.
+Gezielte Tests: `tests/test_api.py::test_api_exposes_registry_integration_operator_briefing_without_actions`, `tests/test_api.py::test_api_exposes_registry_final_gate_summary_without_code_work`, `tests/test_app_explanations.py::test_learning_data_readiness_backlog_prioritizes_safe_data_gates` passed. Full suite: `198 passed`. Py-compile + 20-run/2-year simulation smoke passed. Commit `8d732b4` pushed to `feat/platform-data-status-foundation`; Zip refreshed at `/opt/data/cache/documents/health_simulation_app_updated.zip`.
