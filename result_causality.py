@@ -1124,11 +1124,10 @@ def build_causal_result_packet(
         "render_order": [
             "result_headline",
             "short_answer",
-            "briefing_markdown",
             "result_sections",
             "relevant_kpis",
             "follow_up_question",
-            "audit_sections",
+            "collapsed_audit_sections",
         ],
         "headline": result_headline,
         "short_answer": short_answer,

@@ -5074,3 +5074,32 @@ Keine wichtige Entscheidung offen; weiter sicher in Richtung weniger Blöcke, kl
 
 ### Verification / Git
 Verifiziert: `pytest tests/test_result_causality.py::test_causal_result_layout_uses_reader_friendly_detail_labels_without_kpi_jargon -q`, fokussierter Ergebnis/API/UI-Testlauf mit 112 passed, `pytest -q` mit 275 passed, 50-run Simulation-Smoke mit vereinfachtem Public Result View. Git-Sync/Commit/Push folgt in diesem Heartbeat.
+
+## 2026-04-30 16:13 Europe/Berlin — Result first-view de-duplication
+
+### Context
+Alex's latest correction prioritizes a clearer result page: one serious German briefing first, fewer overlapping widgets, and relevant signals before dense audit material. This run touched `result_causality.py` and `tests/test_result_causality.py`.
+
+### Project Manager
+Priority: remove first-screen duplication instead of adding another explanation layer. Risk: older tests and callers still rely on legacy diagnostic packet fields, so the safe slice keeps diagnostics available but removes them from the public render order. Next tasks: visually consolidate the Streamlit first result card, then move older KPI/storyboard/detail surfaces further down as explicit audit.
+
+### Designer / UX
+The first view should now be read as `headline → short answer → result sections → relevant Kennzahlen → next check → collapsed audit`, not as markdown plus repeated sections. This is a small but important hierarchy correction.
+
+### Creative Agent
+A future fit idea: make the first result view feel like a one-page doctor's briefing — "Befund, Ursache, Verlauf, nächste Untersuchung" — but only if the wording stays serious and not gimmicky.
+
+### Political Health-System Strategist
+For politically sensitive levers such as cutting medical study places, the first screen must not invite premature interpretation. Keeping the next step as a professional plausibility check before political Bewertung is the right default.
+
+### Evidence / Domain
+No new external evidence claim was added. The communication layer changed only; model dynamics and source/provenance assumptions remain unchanged.
+
+### Integrator Decision
+Accepted now: public result render order no longer declares `briefing_markdown` as an open first-screen block and names the audit step as collapsed. Deferred: larger Streamlit visual redesign of the first result card.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; safely continue with the clearer first-screen dashboard integration next.
+
+### Verification / Git
+Focused RED test failed first for the duplicate render order, then passed after implementation. Verification run: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients tests/test_app_explanations.py::test_result_causal_overview_exposes_briefing_quality_checks_for_first_view -q` → 50 passed; full `python3 -m pytest -q` → 276 passed; py_compile + 50-run simulation smoke passed. Git sync/commit/push pending in this run.

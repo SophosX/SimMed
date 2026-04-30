@@ -67,11 +67,10 @@ def test_simplified_public_result_packet_is_short_clear_and_not_meta():
     assert packet["public_result_view"]["render_order"] == [
         "result_headline",
         "short_answer",
-        "briefing_markdown",
         "result_sections",
         "relevant_kpis",
         "follow_up_question",
-        "audit_sections",
+        "collapsed_audit_sections",
     ]
     assert [section["heading"] for section in packet["result_sections"]] == [
         "Ergebnis",
@@ -157,7 +156,7 @@ def test_public_result_view_separates_briefing_from_collapsed_audit_layers():
     assert all("Ergebnis" not in section["title"] for section in view["audit_sections"])
     assert any("Zeitfenster" in section["contains"] for section in view["audit_sections"])
     assert any("vollständige Kennzahlen" in section["contains"] for section in view["audit_sections"])
-    assert "audit_sections" in view["render_order"]
+    assert "collapsed_audit_sections" in view["render_order"]
 
 
 def test_first_result_view_has_one_sequential_briefing_with_kpis_in_place():
@@ -706,11 +705,10 @@ def test_public_result_packet_is_short_clear_and_not_a_legacy_helper_dump():
     assert public_view["render_order"] == [
         "result_headline",
         "short_answer",
-        "briefing_markdown",
         "result_sections",
         "relevant_kpis",
         "follow_up_question",
-        "audit_sections",
+        "collapsed_audit_sections",
     ]
     assert public_view["first_screen_blocks"][0]["heading"] == "Ergebnis"
     assert "professional_briefing" not in public_view
@@ -876,12 +874,33 @@ def test_simplified_public_causal_packet_is_concise_and_serious():
     ]
     for term in banned_terms:
         assert term not in public_text
-
     assert "Kennzahlen" in public_text
     assert packet["public_result_view"]["briefing_markdown"].count("####") == len(packet["result_sections"])
     assert "#### Ergebnis\n\n" in packet["public_result_view"]["briefing_markdown"]
     assert "#### Relevante Kennzahlen" in packet["public_result_view"]["briefing_markdown"]
     assert all("KPI" not in section["heading"] for section in packet["result_sections"])
+
+
+def test_public_result_view_declares_one_non_duplicative_first_screen_flow():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    view = packet["public_result_view"]
+
+    assert view["briefing_style"] == "single_readable_briefing"
+    assert view["render_order"] == [
+        "result_headline",
+        "short_answer",
+        "result_sections",
+        "relevant_kpis",
+        "follow_up_question",
+        "collapsed_audit_sections",
+    ]
+    assert "briefing_markdown" not in view["render_order"]
+    assert view["deeper_review_default_expanded"] is False
+    assert view["dense_kpi_default_expanded"] is False
+    assert len(view["audit_sections"]) == 3
 
 
 def test_first_view_public_copy_avoids_internal_packet_and_wall_jargon():
@@ -924,11 +943,10 @@ def test_public_result_view_is_one_short_briefing_without_duplicate_opening_widg
     assert public["render_order"] == [
         "result_headline",
         "short_answer",
-        "briefing_markdown",
         "result_sections",
         "relevant_kpis",
         "follow_up_question",
-        "audit_sections",
+        "collapsed_audit_sections",
     ]
     assert [section["heading"] for section in public["result_sections"]] == [
         "Ergebnis",
@@ -1246,11 +1264,10 @@ def test_result_layout_uses_human_first_view_names_not_internal_widget_language(
     assert view["render_order"] == [
         "result_headline",
         "short_answer",
-        "briefing_markdown",
         "result_sections",
         "relevant_kpis",
         "follow_up_question",
-        "audit_sections",
+        "collapsed_audit_sections",
     ]
     assert layout["primary_sequence"] == [
         "Ergebnis",
