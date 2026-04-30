@@ -4690,3 +4690,32 @@ No important decision open. Continue safely with Streamlit visual cleanup of the
 
 ### Verification / Git
 Local verification passed in source tree: focused causal/API tests → 38 passed; full suite → 265 passed; `py_compile` for `app.py`, `result_causality.py`, `api.py`, `simulation_core.py` passed; 30-run simulation/packet smoke passed. GitHub push confirmed: `b1a1314 Tighten result packet first view` on `origin/main` with `docs/AGENT_COUNCIL_LOG.md`, `result_causality.py`, and `tests/test_result_causality.py`.
+
+## 2026-04-30 14:28 Europe/Berlin — Result briefing clarity pass
+
+### Context
+Alex's latest correction says the result page must read as one clear German briefing, not as stacked helper widgets. This heartbeat tightened the first result view in `result_causality.py` and added a focused regression test for clipped public copy.
+
+### Project Manager
+Priority remains the first screen: Ergebnis → Eingriff → Warum es passiert → Relevante Kennzahlen → Anpassungen → Einordnung → Nächster Prüfschritt. Risk: legacy detail layers are still present below, so they must remain collapsed and clearly secondary. Next tasks: continue removing redundant old widgets from the first route and make the compact KPI rows visually calmer.
+
+### Designer / UX
+The public adaptation text now avoids mid-sentence truncation. The first view should feel less like generated fragments and more like a readable briefing paragraph plus compact signals.
+
+### Creative Agent
+Idea: later add a one-line “Lesen wie ein Gutachten” visual rail beside the seven headings. Fit: useful only if it supports hierarchy; defer until the wording is stable.
+
+### Political Health-System Strategist
+The briefing keeps political interpretation behind the technical plausibility check: for fewer study places, timing and capacity pressure must be checked before stakeholder conclusions.
+
+### Evidence / Domain
+No new external evidence claim was introduced. The change is communication-layer only; model dynamics and evidence grades remain unchanged.
+
+### Integrator Decision
+Accepted now: fix the public adaptation section so observed Telemedizin/Burnout signals are complete sentences, and keep the delayed year-6 wording grammatically clean. Defer broader model/UX redesign beyond this coherent first-screen slice.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; weiter sicher an Klarheit und Hierarchie arbeiten.
+
+### Verification / Git
+Focused RED/GREEN regression: `tests/test_result_causality.py::test_public_adaptation_section_is_not_truncated_mid_sentence`. Full verification and Git status follow after this entry.

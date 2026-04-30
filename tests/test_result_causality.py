@@ -88,7 +88,7 @@ def test_simplified_public_result_packet_is_short_clear_and_not_meta():
     assert section_by_heading["Ergebnis"] != packet["result_headline"]
     assert "Ärzte pro 100k" in section_by_heading["Ergebnis"]
     assert "Facharzt-Wartezeit" in section_by_heading["Ergebnis"]
-    assert "ab etwa Jahr 6" in section_by_heading["Warum es passiert"]
+    assert "Ab etwa Jahr 6" in section_by_heading["Warum es passiert"]
     assert "bedeutet" in section_by_heading["Einordnung"].lower()
     assert "Detailkarten" not in packet["short_answer"]
     text = _public_text(packet)
@@ -101,6 +101,23 @@ def test_simplified_public_result_packet_is_short_clear_and_not_meta():
     assert "nächste" in packet["short_answer"].lower()
     assert "Das bedeutet" in packet["short_answer"]
     assert "prüfbaren" in section_by_heading["Einordnung"]
+
+
+def test_public_adaptation_section_is_not_truncated_mid_sentence():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    section_by_heading = {section["heading"]: section["body"] for section in packet["result_sections"]}
+    adaptation = section_by_heading["Anpassungen"]
+    why = section_by_heading["Warum es passiert"]
+
+    assert "Beobachtet: Telemedizin steigt." in adaptation
+    assert "Burnout steigt." in adaptation
+    assert "dämpfender M" not in adaptation
+    assert " M Fällt" not in adaptation
+    assert why.startswith("Der Eingriff wirkt verzögert. In Jahr 0–5")
+    assert "Ab etwa Jahr 6" in why
 
 
 def test_first_result_view_has_one_sequential_briefing_with_kpis_in_place():

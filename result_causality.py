@@ -1003,13 +1003,20 @@ def build_causal_result_packet(
     if study_places_changed:
         why_body = (
             "Der Eingriff wirkt verzögert. In Jahr 0–5 ändert sich die Versorgung kaum. "
-            "ab etwa Jahr 6 kommt die kleinere Kohorte näher an den Arbeitsmarkt; Richtung Jahr 11–15 wird der Facharzt- und Kapazitätspfad entscheidend."
+            "Ab etwa Jahr 6 kommt die kleinere Kohorte näher an den Arbeitsmarkt; Richtung Jahr 11–15 wird der Facharzt- und Kapazitätspfad entscheidend."
         )
     else:
         why_body = pathway_body[:340]
+
+    observed_signals = []
+    for signal in adaptation_trace[:2]:
+        label = str(signal.get("label", "Signal"))
+        direction = str(signal.get("observed_direction", "ändert sich"))
+        observed_signals.append(f"{label} {direction}.")
+    observed_text = " ".join(observed_signals) or "Kein starkes Anpassungssignal im kompakten Kennzahlen-Set."
     adaptation_body = (
         "Das Modell prüft Puffer wie Telemedizin, Delegation oder Zuwanderung. "
-        f"Beobachtet: {adaptation_trace_text[:55]} "
+        f"Beobachtet: {observed_text} "
         "Fällt Burnout trotz Ärztemangel, ist das ein Plausibilitätscheck."
     )
     result_sections = [
