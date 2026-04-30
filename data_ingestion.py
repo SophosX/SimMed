@@ -647,6 +647,58 @@ def build_cached_snapshot_review_start_checklist(integrity_report: dict, limit: 
     }
 
 
+def build_cached_snapshot_review_start_status_cards(review_start_checklist: dict) -> list[dict]:
+    """Return mobile-safe status cards for the raw-snapshot -> review-start gate.
+
+    The cards are intentionally read-only UX guidance. They translate the
+    checklist into a first-contact sequence without creating reviews or making
+    model/registry claims.
+    """
+
+    rows = review_start_checklist.get("rows", [])
+    blocked_count = review_start_checklist.get("blocked_snapshot_count", 0)
+    ready_count = review_start_checklist.get("ready_snapshot_count", len(rows))
+    if blocked_count:
+        first_action = "Integritätsblocker klären; kein Review starten."
+        review_gate_status = "blockiert"
+    elif rows:
+        first_action = "Erste Review-Vorlage öffnen und Rohdatei/Manifest manuell prüfen."
+        review_gate_status = "bereit für manuelle Prüfung"
+    else:
+        first_action = "Erst Rohsnapshot-Integrität oder Connector-Dry-run prüfen."
+        review_gate_status = "noch nicht bereit"
+
+    return [
+        {
+            "order": 1,
+            "title": "1. Rohcache-Integrität",
+            "status": review_start_checklist.get("status", "unknown"),
+            "signal": f"{ready_count} SHA256-passende Snapshots, {blocked_count} Blocker",
+            "first_action": "Nur Snapshots mit SHA256-Match dürfen in die manuelle Review-Vorbereitung.",
+            "route": "GET /data-snapshots/integrity",
+            "guardrail": "Integrität ist noch keine Transformation, kein Modellwert und kein Wirkungsbeweis.",
+        },
+        {
+            "order": 2,
+            "title": "2. Transformation-Review vorbereiten",
+            "status": review_gate_status,
+            "signal": f"{len(rows)} Review-Start-Zeilen werden angezeigt",
+            "first_action": first_action,
+            "route": "GET /data-snapshots/review-start-checklist",
+            "guardrail": "Vorbereitung ist read-only: keine Review-Erzeugung und keine Registry-/Modellmutation.",
+        },
+        {
+            "order": 3,
+            "title": "3. Modellintegration getrennt halten",
+            "status": "immer separater PR",
+            "signal": "Review-Template kann Evidenz ordnen, setzt aber keinen Defaultwert.",
+            "first_action": "Erst nach ausgefülltem Review, Entscheidung und Tests einen separaten Registry-/Modell-PR planen.",
+            "route": "GET /data-readiness/integration-preflight",
+            "guardrail": "Keine amtliche Prognose, kein automatischer Import und kein Wirkungsbeweis.",
+        },
+    ]
+
+
 def build_cached_snapshot_review_start_handoff_packet(review_start_checklist: dict) -> dict:
     """Create a copyable handoff for starting manual transformation reviews.
 

@@ -2380,3 +2380,16 @@ Gezielt: `pytest tests/test_api.py::test_api_exposes_focused_registry_integratio
 - **Integrator Decision:** `build_cached_snapshot_review_start_handoff_packet(...)` ergänzt, in `/data-snapshots/review-start-checklist` und Learning-Page-Datenpass eingebunden; Guardrails bleiben read-only/pre-review-only.
 - **Question to Alex if needed:** Keine wichtige Entscheidung offen.
 - **Verification/Git:** Fokustests für Data-Ingestion/API/Learning-Page bestanden; Full suite + py_compile bestanden (144 passed). Commit/Push folgt.
+
+
+## 2026-04-30T02:03Z — Review-Start-Statuskarten für Daten-Werkbank
+
+- **Context:** Core-Plattform bleibt Primärtrack. Nach Pre-Review-Checkliste und Handoff fehlte eine kompakte, mobile/touch-sichere Statuskarten-Schicht, die Erstnutzer durch Rohcache-Integrität → Review-Vorbereitung → getrennte Modellintegration führt.
+- **Project Manager:** Sicherer Daten-Provenienz-Slice mit klarer API/UI-Oberfläche; keine Live-Datenaktion und keine KI/Evidence-Nebenstrecke.
+- **Designer/UX:** Learning Page zeigt jetzt Statuskarten statt nur Rohlisten, damit Nutzer direkt sehen: wo stehen wir, welche Route öffne ich, was darf noch nicht passieren?
+- **Creative Agent:** Die Daten-Werkbank bekommt einen dreistufigen „Airlock“: Integrität prüfen, Review vorbereiten, Modellintegration getrennt halten.
+- **Political Health-System Strategist:** Keine neuen politischen Claims; Guardrails verhindern, dass Review-Vorbereitung als amtliche Prognose, automatischer Import oder Wirkungsbeweis gelesen wird.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; Änderung betrifft Governance/Provenance-UX und nutzt vorhandene Snapshot-/Review-Metadaten.
+- **Integrator Decision:** `build_cached_snapshot_review_start_status_cards(...)` in `data_ingestion.py`, API-Feld `review_start_status_cards` in `/data-snapshots/review-start-checklist`, Learning-Page-Datenpass-Integration und Regressionstests ergänzt.
+- **Question to Alex if needed:** Keine wichtige Entscheidung offen.
+- **Verification/Git:** Full pytest 145 passed, py_compile für geänderte Module/Tests OK, 20×2 Simulation-Smoke OK. Commit/Push folgt.

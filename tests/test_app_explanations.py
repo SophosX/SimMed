@@ -94,6 +94,10 @@ def test_learning_data_passport_overview_separates_registry_cache_and_transforma
     assert "keine Registry-/Modellmutation" in overview["snapshot_integrity_action_plan"]["guardrail"]
     handoff = overview["snapshot_integrity_handoff_packet"]
     assert handoff["status_route"] == "GET /data-snapshots/integrity"
+    review_cards = overview["snapshot_review_start_status_cards"]
+    assert [card["order"] for card in review_cards] == [1, 2, 3]
+    assert review_cards[1]["route"] == "GET /data-snapshots/review-start-checklist"
+    assert "keine Registry-/Modellmutation" in review_cards[1]["guardrail"]
     review_handoff = overview["snapshot_review_start_handoff_packet"]
     assert review_handoff["checklist_route"] == "GET /data-snapshots/review-start-checklist"
     assert "keine Review-Erzeugung" in review_handoff["guardrail"]

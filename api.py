@@ -18,6 +18,7 @@ from data_ingestion import (
     build_cached_snapshot_integrity_report,
     build_cached_snapshot_review_start_checklist,
     build_cached_snapshot_review_start_handoff_packet,
+    build_cached_snapshot_review_start_status_cards,
     build_connector_execution_plan,
     build_connector_execution_workbench,
     build_connector_snapshot_requests,
@@ -132,6 +133,7 @@ def get_data_snapshot_review_start_checklist() -> dict:
         "guardrail": "Checkliste ist read-only: kein Netzwerkabruf, kein Cache-Schreiben, keine Review-Erzeugung und keine Registry-/Modellmutation.",
         "snapshot_integrity": integrity,
         "review_start_checklist": checklist,
+        "review_start_status_cards": build_cached_snapshot_review_start_status_cards(checklist),
         "review_start_handoff_packet": build_cached_snapshot_review_start_handoff_packet(checklist),
     }
 

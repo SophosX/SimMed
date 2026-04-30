@@ -8,6 +8,7 @@ from data_ingestion import (
     build_cached_snapshot_integrity_report,
     build_cached_snapshot_review_start_checklist,
     build_cached_snapshot_review_start_handoff_packet,
+    build_cached_snapshot_review_start_status_cards,
     build_connector_snapshot_requests,
     build_data_connector_queue,
     build_data_passport_rows,
@@ -201,6 +202,34 @@ def test_cached_snapshot_review_start_checklist_routes_only_sha_matched_snapshot
     assert blocked["status"] == "review_start_blocked_by_integrity"
     assert blocked["blocked_snapshot_count"] == 1
     assert blocked["rows"] == []
+
+
+def test_cached_snapshot_review_start_status_cards_make_pre_review_gate_mobile_safe(tmp_path):
+    cache_source_payload(
+        source_id="destatis_genesis",
+        source_url="https://www-genesis.destatis.de/genesis/online",
+        payload=b"year,value\n2024,84.4\n",
+        filename="population.csv",
+        cache_root=tmp_path,
+        source_period="2024",
+        output_parameter_keys=("bevoelkerung_mio",),
+        transformation_note="raw fixture only; no model mutation",
+        retrieved_at="2026-04-29T20:00:00+00:00",
+    )
+    checklist = build_cached_snapshot_review_start_checklist(
+        build_cached_snapshot_integrity_report(cache_root=tmp_path)
+    )
+
+    cards = build_cached_snapshot_review_start_status_cards(checklist)
+
+    assert [card["order"] for card in cards] == [1, 2, 3]
+    assert cards[0]["route"] == "GET /data-snapshots/integrity"
+    assert "1 SHA256-passende Snapshots" in cards[0]["signal"]
+    assert cards[1]["status"] == "bereit für manuelle Prüfung"
+    assert "Review-Vorlage öffnen" in cards[1]["first_action"]
+    assert cards[2]["route"] == "GET /data-readiness/integration-preflight"
+    assert "kein automatischer Import" in cards[2]["guardrail"]
+    assert "kein Wirkungsbeweis" in cards[2]["guardrail"]
 
 
 def test_cached_snapshot_review_start_handoff_packet_points_to_review_templates_without_creating_reviews(tmp_path):
