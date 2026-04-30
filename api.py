@@ -85,6 +85,7 @@ from political_feasibility import assess_political_feasibility
 from result_uncertainty import (
     build_uncertainty_band_summary_from_final,
     build_uncertainty_decision_checklist,
+    build_uncertainty_first_contact_cards,
     build_uncertainty_result_questions,
 )
 from scenario_gallery import (
@@ -1587,6 +1588,7 @@ def simulate(req: ScenarioRequest) -> dict:
     result["model"] = MODEL_VERSION
     result["political_feasibility"] = assess_political_feasibility(req.parameter_changes)
     result["uncertainty_band_summary"] = build_uncertainty_band_summary_from_final(result["final_year_summary"])
+    result["uncertainty_first_contact_cards"] = build_uncertainty_first_contact_cards(result["uncertainty_band_summary"])
     result["uncertainty_result_questions"] = build_uncertainty_result_questions(result["uncertainty_band_summary"])
     result["uncertainty_decision_checklist"] = build_uncertainty_decision_checklist(result["uncertainty_band_summary"])
     result["uncertainty_guardrail"] = (

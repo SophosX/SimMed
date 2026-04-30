@@ -1578,6 +1578,11 @@ def test_simulate_exposes_uncertainty_band_summary_for_agents():
     rows = body["uncertainty_band_summary"]
     assert rows
     assert {"metric_key", "mean", "p5", "p95", "signal", "guardrail"} <= set(rows[0])
+    first_contact_cards = body["uncertainty_first_contact_cards"]
+    assert first_contact_cards
+    assert {"step", "title", "answer_first", "what_to_open_next", "guardrail"} <= set(first_contact_cards[0])
+    assert "KPI-Detailkarte" in first_contact_cards[0]["what_to_open_next"]
+    assert "keine amtliche Prognose" in first_contact_cards[0]["guardrail"]
     questions = body["uncertainty_result_questions"]
     assert questions
     assert {"question", "answer_first", "what_to_open_next", "safe_reading", "guardrail"} <= set(questions[0])

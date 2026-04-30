@@ -3310,3 +3310,16 @@ Gezielt verifiziert: `pytest tests/test_result_uncertainty.py tests/test_api.py:
 - **Integrator Decision:** `build_uncertainty_decision_checklist(...)` in `result_uncertainty.py` als API-/UI-Quelle ergänzt, `/simulate` damit erweitert und Streamlit-Unsicherheits-Expander daran angeschlossen.
 - **Question to Alex if needed:** Keine.
 - **Verification/Git:** Fokus-Tests und PyCompile/Smoke grün; Commit/Push folgt in diesem Heartbeat.
+
+
+## 2026-04-30 06:21 UTC — Unsicherheits-First-Contact-Karten
+
+- **Context:** Plattform-Heartbeat priorisiert Core-UX/Unsicherheit statt neuer KI-Recherche. Vorhandene P5/P95-Bänder waren API/UI-seitig vorhanden, aber der erste mobile Einstieg war noch stärker tabellarisch.
+- **Project Manager:** Kleiner, reversibler Plattform-Slice: vorhandene Unsicherheitsdaten besser lesbar machen, keine neue Modelllogik.
+- **Designer/UX:** Ergänzt drei mobile First-Contact-Karten: erst Spannweite/Mittelwert, breite Bänder als Robustheitsfrage, enge Bänder bleiben Modellannahmen.
+- **Creative Agent:** Nutzt ein klares Karten-/Lesepfad-Muster statt weiterer Tabellen; gut für Erstnutzer und Tablet.
+- **Political Health-System Strategist:** Guardrail bleibt vorangestellt: keine amtliche Prognose, kein Wirksamkeitsnachweis; politische/Entscheidungsinterpretation erst nach KPI, Annahmen und Timing.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; nur vorhandene Monte-Carlo-Aggregate und Guardrails neu orchestriert.
+- **Integrator Decision:** `result_uncertainty.build_uncertainty_first_contact_cards(...)` als zentrale API/UI-Hilfe eingeführt, in `/simulate` und Streamlit-Unsicherheitsbereich verdrahtet.
+- **Question to Alex if needed:** Keine.
+- **Verification/Git:** Fokus-Tests und py_compile liefen lokal; Simulation-Smoke mit 20 Runs/2 Jahren erfolgreich. Commit/Push folgt in diesem Heartbeat.

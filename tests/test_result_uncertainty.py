@@ -1,6 +1,7 @@
 from result_uncertainty import (
     build_uncertainty_band_summary_from_final,
     build_uncertainty_decision_checklist,
+    build_uncertainty_first_contact_cards,
     build_uncertainty_result_questions,
 )
 
@@ -79,3 +80,24 @@ def test_uncertainty_decision_checklist_prevents_decision_overclaiming():
     assert "Evidenzgrad" in checklist[1]["required_check_before_decision"]
     assert "keine amtliche Prognose" in checklist[0]["guardrail"]
     assert "kein Wirksamkeitsnachweis" in checklist[0]["guardrail"]
+
+
+def test_uncertainty_first_contact_cards_create_mobile_reading_path():
+    rows = [
+        {"metric_key": "gkv_saldo", "label": "GKV-Saldo", "signal": "breites Band"},
+        {"metric_key": "wartezeit_fa", "label": "Facharzt-Wartezeit", "signal": "mittleres Band"},
+        {"metric_key": "aerzte_pro_100k", "label": "Ärzte pro 100k", "signal": "enges Band"},
+    ]
+
+    cards = build_uncertainty_first_contact_cards(rows)
+
+    assert [card["step"] for card in cards] == ["1", "2", "3"]
+    assert "3 Kennzahlen" in cards[0]["answer_first"]
+    assert "1 breit, 1 mittel, 1 eng" in cards[0]["answer_first"]
+    assert "Starte mit GKV-Saldo" in cards[0]["answer_first"]
+    assert "KPI-Detailkarte" in cards[0]["what_to_open_next"]
+    assert "Robustheitsfrage" in cards[1]["title"]
+    assert "nicht sofort eine Entscheidung" in cards[1]["answer_first"]
+    assert "Modellannahmen" in cards[2]["title"]
+    assert "keine amtliche Prognose" in cards[0]["guardrail"]
+    assert "kein Wirksamkeitsnachweis" in cards[0]["guardrail"]

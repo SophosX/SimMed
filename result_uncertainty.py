@@ -63,6 +63,59 @@ def build_uncertainty_result_questions(
     return questions
 
 
+def build_uncertainty_first_contact_cards(
+    band_rows: Sequence[Mapping[str, str]],
+) -> list[dict[str, str]]:
+    """Build mobile-safe cards that explain how to start with uncertainty.
+
+    The cards summarize existing P5/P95 rows into a first-contact reading path.
+    They are status/UX only: no sensitivity run, no model mutation, and no claim
+    that Monte-Carlo spread is an official forecast interval.
+    """
+
+    rows = list(band_rows)
+    if not rows:
+        return []
+    broad = [row for row in rows if row.get("signal") == "breites Band"]
+    medium = [row for row in rows if row.get("signal") == "mittleres Band"]
+    narrow = [row for row in rows if row.get("signal") == "enges Band"]
+    first = rows[0]
+    first_label = first.get("label") or first.get("metric_key") or "erste Kennzahl"
+    return [
+        {
+            "step": "1",
+            "title": "Erst Spannweite, dann Mittelwert",
+            "answer_first": (
+                f"{len(rows)} Kennzahlen haben P5/P95-Bänder; {len(broad)} breit, "
+                f"{len(medium)} mittel, {len(narrow)} eng. Starte mit {first_label}."
+            ),
+            "what_to_open_next": f"Öffne die KPI-Detailkarte für {first_label} und lies Mittelwert, P5 und P95 zusammen.",
+            "guardrail": UNCERTAINTY_GUARDRAIL,
+        },
+        {
+            "step": "2",
+            "title": "Breite Bänder als Robustheitsfrage lesen",
+            "answer_first": (
+                "Breite Bänder bedeuten: Ergebnisrichtung und Annahmen zuerst prüfen, "
+                "nicht sofort eine Entscheidung aus dem Mittelwert ableiten."
+            ),
+            "what_to_open_next": "Danach Annahmen-/Evidenzcheck und Trend-Timing der passenden geänderten Hebel öffnen.",
+            "guardrail": UNCERTAINTY_GUARDRAIL,
+        },
+        {
+            "step": "3",
+            "title": "Enge Bänder bleiben Modellannahmen",
+            "answer_first": (
+                "Auch ein enges Band ist nur innerhalb dieser SimMed-Läufe stabil; Quelle, "
+                "Wirkpfad und politische Umsetzbarkeit müssen trotzdem geprüft werden."
+            ),
+            "what_to_open_next": "Erst nach KPI-Detail, Annahmencheck und politischer Einordnung vorsichtig interpretieren.",
+            "guardrail": UNCERTAINTY_GUARDRAIL,
+        },
+    ]
+
+
+
 def build_uncertainty_decision_checklist(
     band_rows: Sequence[Mapping[str, str]],
     *,
