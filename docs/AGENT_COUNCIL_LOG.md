@@ -4390,3 +4390,32 @@ Keine neue Entscheidung nötig; die sichere Richtung ist weiter: weniger erste S
 
 ### Verification / Git
 Verifiziert lokal: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 33 passed; `python3 -m pytest -q` → 260 passed; `py_compile` für `app.py`, `result_causality.py`, `api.py`, `simulation_core.py`; 50-run Simulation-Smoke mit causal packet OK. GitHub Push bestätigt: `74ee1d9 Clarify result page first view` auf `origin/main`; Commit enthält `app.py`, `result_causality.py`, `tests/test_result_causality.py`, `docs/AGENT_COUNCIL_LOG.md`.
+
+## 2026-04-30 13:11 Europe/Berlin — Result page first-view simplification
+
+### Context
+Alex's latest correction was that the result page still felt like overlapping explanation widgets rather than one clear briefing. This slice touched `result_causality.py`, `app.py`, and `tests/test_result_causality.py` to make the first result view use human German section names and to keep deeper material collapsed.
+
+### Project Manager
+Priority: reduce first-screen complexity before adding more model levers. Risk: legacy helper structures still exist for compatibility, so the UI must keep them clearly below the main result. Next tasks: continue pruning/relocating old result helpers, then make the relevant-KPI first view visually stronger.
+
+### Designer / UX
+The result should now start with one answer, one sequence, and a few relevant KPI rows. Labels like “Weitere Prüfung” and “Weitere Kennzahlen” are clearer than internal layout language and avoid making the page feel generated.
+
+### Creative Agent
+Idea: next, make the first result card read like a short clinical handover: one headline, one sentence for the intervention, three vital signs, then the next check. Fit: good for clarity if it stays sober and evidence-limited.
+
+### Political Health-System Strategist
+The sequence keeps political interpretation after evidence, timing, and plausibility checks. This is important for contentious levers such as medical study places, where delayed effects and compensating adaptations must be explicit before stakeholder framing.
+
+### Evidence / Domain
+No new external factual claims were added; this was communication/layout work around existing simulation outputs and registry caveats. The first screen still states no official forecast and no proof of real-world policy effectiveness. Keine neue Recherche in diesem Lauf.
+
+### Integrator Decision
+Accepted: public packet layout keys and UI labels now favor plain reader-facing structure (`Ergebnis → Eingriff → Warum es passiert → Relevante Kennzahlen → Anpassungen → Einordnung → Nächster Prüfschritt`), with older narrative/detail blocks collapsed below.
+
+### Question to Alex
+No immediate product decision required; continue safely toward a cleaner single-briefing result page.
+
+### Verification / Git
+Verified locally: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients tests/test_app_explanations.py -q` (98 passed), full `python3 -m pytest -q` (261 passed), `py_compile`, and a 50-run simulation/result-packet smoke test. Git commit/push pending at time of this entry.

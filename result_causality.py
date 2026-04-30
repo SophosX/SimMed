@@ -484,24 +484,26 @@ def build_causal_result_layout(packet: Mapping[str, Any]) -> dict[str, Any]:
     return {
         "first_view": str(packet.get("title", "Ergebnisbericht")),
         "primary_sequence": [
-            "coherent_free_text",
-            "relevant_kpis",
-            "adaptation_mechanisms",
-            "counterintuitive_checks",
-            "evidence_assumptions",
+            "Ergebnis",
+            "Eingriff",
+            "Warum es passiert",
+            "Relevante Kennzahlen",
+            "Anpassungen",
+            "Einordnung",
+            "Nächster Prüfschritt",
         ],
         "dense_kpi_wall": {
-            "label": "Optionale Detailkarten nach dem Ergebnisbericht",
-            "mode": "optional_expander_after_causal_story",
+            "label": "Weitere Kennzahlen nach dem Ergebnisbericht",
+            "mode": "collapsed_after_result_briefing",
             "default_expanded": False,
             "reason": (
-                "Die vollständigen Kennzahlen stehen nachgeordnet, weil die erste Ansicht zunächst "
-                "Ausgangslage, Eingriff, Wirkpfad, Anpassung und Einordnung zusammenhängend erklärt."
+                "Die vollständigen Kennzahlen bleiben verfügbar, stehen aber unter der ersten Lesefassung: "
+                "zuerst Ergebnis, Eingriff, Wirkpfad, Anpassung und Einordnung; danach die Detailprüfung."
             ),
         },
         "optional_interpretation_layers": {
-            "label": "Optionale Vertiefungen nach dem Ergebnisbericht",
-            "mode": "collapsed_after_primary_causal_packet",
+            "label": "Weitere Prüfung: Zeitverlauf, Unsicherheit und Detailbegründung",
+            "mode": "collapsed_after_result_briefing",
             "default_expanded": False,
             "sections": [
                 "Narrative Zusammenfassung",
@@ -510,8 +512,8 @@ def build_causal_result_layout(packet: Mapping[str, Any]) -> dict[str, Any]:
                 "Unsicherheitsband",
             ],
             "reason": (
-                "Diese bestehenden Hilfen bleiben als vertiefende Prüfung erhalten, sind aber keine zweite erste Ergebnisansicht; "
-                "die primäre Interpretation kommt aus dem Ergebnisbericht."
+                "Diese Abschnitte vertiefen den Ergebnisbericht. Sie bleiben geschlossen, damit der Einstieg "
+                "als ein lesbarer Bericht beginnt und nicht als mehrere konkurrierende Erklärblöcke."
             ),
         },
         "optional_details_after": packet.get("primary_result_view", {}).get(
@@ -1030,12 +1032,12 @@ def build_causal_result_packet(
 
     public_result_view = {
         "render_order": [
-            "headline",
+            "result_headline",
             "short_answer",
-            "sections",
+            "result_sections",
             "relevant_kpis",
             "follow_up_question",
-            "audit_expanders",
+            "deeper_review",
         ],
         "headline": result_headline,
         "short_answer": short_answer,

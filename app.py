@@ -3549,7 +3549,7 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
 
     st.caption(view.get("guardrail", packet["guardrail"]))
 
-    with st.expander("Audit: Zeitfenster, Annahmen und Plausibilität", expanded=False):
+    with st.expander("Weitere Prüfung: Zeitfenster, Annahmen und Plausibilität", expanded=False):
         if packet.get("timeline_windows"):
             st.markdown("**Zeitfenster des Wirkpfads**")
             st.dataframe(

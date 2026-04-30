@@ -52,12 +52,12 @@ def test_simplified_public_result_packet_is_short_clear_and_not_meta():
 
     assert packet["result_headline"].startswith("Weniger Medizinstudienplätze")
     assert packet["public_result_view"]["render_order"] == [
-        "headline",
+        "result_headline",
         "short_answer",
-        "sections",
+        "result_sections",
         "relevant_kpis",
         "follow_up_question",
-        "audit_expanders",
+        "deeper_review",
     ]
     assert [section["heading"] for section in packet["result_sections"]] == [
         "Ergebnis",
@@ -347,18 +347,20 @@ def test_causal_result_layout_keeps_dense_kpis_optional_after_cleartext():
 
     assert layout["first_view"] == "Ergebnisbericht"
     assert layout["primary_sequence"] == [
-        "coherent_free_text",
-        "relevant_kpis",
-        "adaptation_mechanisms",
-        "counterintuitive_checks",
-        "evidence_assumptions",
+        "Ergebnis",
+        "Eingriff",
+        "Warum es passiert",
+        "Relevante Kennzahlen",
+        "Anpassungen",
+        "Einordnung",
+        "Nächster Prüfschritt",
     ]
-    assert layout["dense_kpi_wall"]["mode"] == "optional_expander_after_causal_story"
+    assert layout["dense_kpi_wall"]["mode"] == "collapsed_after_result_briefing"
     assert layout["dense_kpi_wall"]["default_expanded"] is False
-    assert "nachgeordnet" in layout["dense_kpi_wall"]["reason"]
-    assert "Detailkarten" in layout["dense_kpi_wall"]["label"]
+    assert "unter der ersten Lesefassung" in layout["dense_kpi_wall"]["reason"]
+    assert "Weitere Kennzahlen" in layout["dense_kpi_wall"]["label"]
     assert "KPI-Wand" not in layout["dense_kpi_wall"]["label"]
-    assert layout["optional_interpretation_layers"]["mode"] == "collapsed_after_primary_causal_packet"
+    assert layout["optional_interpretation_layers"]["mode"] == "collapsed_after_result_briefing"
     assert layout["optional_interpretation_layers"]["default_expanded"] is False
     assert layout["optional_interpretation_layers"]["sections"] == [
         "Narrative Zusammenfassung",
@@ -366,7 +368,7 @@ def test_causal_result_layout_keeps_dense_kpis_optional_after_cleartext():
         "Storyboard",
         "Unsicherheitsband",
     ]
-    assert "keine zweite erste Ergebnisansicht" in layout["optional_interpretation_layers"]["reason"]
+    assert "mehrere konkurrierende Erklärblöcke" in layout["optional_interpretation_layers"]["reason"]
     assert "Klartext" not in layout["optional_interpretation_layers"]["reason"]
     assert layout["guardrail"] == packet["guardrail"]
 
@@ -849,3 +851,41 @@ def test_relevant_kpis_have_plain_meaning_for_first_result_view():
         assert row["direction"] in {"steigt", "sinkt", "stabil"}
         assert row.get("meaning")
         assert "amtliche Prognose" not in row["meaning"]
+
+
+def test_result_layout_uses_human_first_view_names_not_internal_widget_language():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+
+    view = packet["public_result_view"]
+    layout = build_causal_result_layout(packet)
+
+    assert view["render_order"] == [
+        "result_headline",
+        "short_answer",
+        "result_sections",
+        "relevant_kpis",
+        "follow_up_question",
+        "deeper_review",
+    ]
+    assert layout["primary_sequence"] == [
+        "Ergebnis",
+        "Eingriff",
+        "Warum es passiert",
+        "Relevante Kennzahlen",
+        "Anpassungen",
+        "Einordnung",
+        "Nächster Prüfschritt",
+    ]
+    public_layout_text = " ".join(
+        [
+            layout["dense_kpi_wall"]["label"],
+            layout["dense_kpi_wall"]["reason"],
+            layout["optional_interpretation_layers"]["label"],
+            layout["optional_interpretation_layers"]["reason"],
+        ]
+    )
+    banned = ["KPI-Wand", "Widget", "generated", "helper", "Audit-Layer", "render", "causal_result_packet"]
+    assert not any(term in public_layout_text for term in banned)
+    assert "Weitere Prüfung" in layout["optional_interpretation_layers"]["label"]
