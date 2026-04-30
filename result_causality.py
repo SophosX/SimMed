@@ -782,6 +782,39 @@ def build_causal_result_packet(
             " Bei weniger Medizinstudienplätzen ist der kritische Punkt nicht das Startjahr, "
             "sondern die Pipeline: erst ab Jahr 6 kommt die kleinere Kohorte spürbar am Arbeitsmarkt an."
         )
+    first_view_briefing_cards = [
+        {
+            "stage": section["heading"],
+            "answer": section["body"][:360],
+            "why_it_matters": why,
+            "next_step": next_step,
+            "guardrail": RESULT_CAUSALITY_GUARDRAIL,
+        }
+        for section, why, next_step in zip(
+            professional_sections,
+            [
+                "Setzt den Kontext, bevor Zahlen interpretiert werden.",
+                "Macht sichtbar, welche Stellschraube den Lauf vom Standardpfad trennt.",
+                "Erklärt die berechnete Kette zwischen Eingriff, Zeitverzug und Ergebnis.",
+                "Reduziert die erste Ansicht auf die Kennzahlen, die den Wirkpfad tragen.",
+                "Prüft, ob Puffer wie Telemedizin oder Drucksignale wie Burnout zur Bewegung passen.",
+                "Hält Evidenz, Annahmen und Grenzen zusammen: keine amtliche Prognose, kein Wirksamkeitsnachweis.",
+                "Übersetzt den Bericht in eine prüfbare Lesereihenfolge statt in eine einzelne Siegerzahl.",
+                "Sagt, welche fachliche Prüfung vor der politischen Deutung kommen sollte.",
+            ],
+            [
+                "Danach den Eingriff lesen.",
+                "Danach den berechneten Wirkpfad und die Zeitfenster prüfen.",
+                "Danach nur die relevanten KPI-Signale lesen, nicht die ganze KPI-Wand.",
+                "Danach Anpassungsreaktionen und Gegenintuitionen prüfen.",
+                "Danach Belastbarkeit und Registry-Caveats prüfen.",
+                "Danach Detailkarten, Trend und Policy-Briefing als Audit-Layer öffnen.",
+                "Danach die nächste fachliche Prüfentscheidung bewusst setzen.",
+                "Danach entscheiden, ob weitere Modell-/Annahmenprüfung nötig ist.",
+            ],
+            strict=False,
+        )
+    ]
     section_flow = [
         "Ausgangslage",
         "Eingriff",
@@ -843,6 +876,7 @@ def build_causal_result_packet(
             "headline": "Ergebnisbericht und anschließende Detailprüfung",
             "render_sequence": [
                 "professional_briefing",
+                "first_view_briefing_cards",
                 "first_view_kpi_cards",
                 "next_check",
                 "optional_audit_layers",
@@ -853,6 +887,7 @@ def build_causal_result_packet(
             "professional_briefing": professional_briefing,
             "lead_paragraph": lead_paragraph,
             "section_flow": section_flow,
+            "first_view_briefing_cards": first_view_briefing_cards,
             "first_view_kpi_cards": first_view_kpi_cards,
             "next_check": {
                 "label": "Was daraus folgt",
@@ -881,6 +916,7 @@ def build_causal_result_packet(
         },
         "story_sections": story_sections,
         "professional_briefing": professional_briefing,
+        "first_view_briefing_cards": first_view_briefing_cards,
         "briefing_quality_checks": briefing_quality_checks,
         "legacy_numbered_story": legacy_numbered_story,
         "sequential_plain_text": sequential_plain_text,

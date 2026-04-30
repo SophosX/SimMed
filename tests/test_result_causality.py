@@ -417,10 +417,12 @@ def test_primary_result_view_declares_single_sequential_briefing_before_optional
 
     assert first_view["render_sequence"] == [
         "professional_briefing",
+        "first_view_briefing_cards",
         "first_view_kpi_cards",
         "next_check",
         "optional_audit_layers",
     ]
+    assert first_view["first_view_briefing_cards"][0]["stage"] == "Ausgangslage"
     assert first_view["next_check"]["label"] == "Was daraus folgt"
     assert "Anpassungsreaktionen" in first_view["next_check"]["text"]
     assert "erst danach" in first_view["next_check"]["text"].lower()
@@ -500,3 +502,31 @@ def test_result_briefing_quality_check_guards_first_view_style_and_sequence():
     assert "random Internet" not in combined
     assert "Klartext" not in combined
     assert packet["primary_result_view"]["briefing_quality_checks"] == checks
+
+
+def test_causal_result_packet_exposes_compact_briefing_cards_for_first_view():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    cards = packet["first_view_briefing_cards"]
+
+    assert [card["stage"] for card in cards] == [
+        "Ausgangslage",
+        "Eingriff",
+        "Berechnete Wirkpfade",
+        "Relevante KPIs",
+        "Anpassungsreaktionen",
+        "Einordnung und Belastbarkeit",
+        "Was daraus folgt",
+        "Nächste Prüfentscheidung",
+    ]
+    assert packet["primary_result_view"]["first_view_briefing_cards"] == cards
+    assert all(card["answer"] and len(card["answer"]) <= 360 for card in cards)
+    assert all(card["why_it_matters"] and card["next_step"] for card in cards)
+    combined = " ".join(card["answer"] + " " + card["why_it_matters"] + " " + card["next_step"] for card in cards)
+    assert "ab Jahr 6" in combined
+    assert "Telemedizin" in combined and "Burnout" in combined
+    assert "keine amtliche Prognose" in combined
+    assert "random Internet" not in combined
+    assert "Klartext" not in combined

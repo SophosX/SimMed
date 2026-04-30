@@ -46,8 +46,16 @@ def test_simulate_embeds_causal_result_packet_for_answer_first_clients():
         "Nächste Prüfentscheidung",
     ]
     assert len(briefing["first_view_kpi_cards"]) <= 4
+    assert [card["stage"] for card in packet["first_view_briefing_cards"]][:3] == [
+        "Ausgangslage",
+        "Eingriff",
+        "Berechnete Wirkpfade",
+    ]
+    assert packet["primary_result_view"]["first_view_briefing_cards"] == packet["first_view_briefing_cards"]
+    assert "keine amtliche Prognose" in packet["first_view_briefing_cards"][5]["why_it_matters"]
     assert packet["primary_result_view"]["render_sequence"] == [
         "professional_briefing",
+        "first_view_briefing_cards",
         "first_view_kpi_cards",
         "next_check",
         "optional_audit_layers",

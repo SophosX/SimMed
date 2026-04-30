@@ -4066,3 +4066,32 @@ Keine neue Entscheidung nötig. Sicher weiter mit Ergebnisbericht/Relevant-KPI-V
 
 ### Verification / Git
 Gezielt grün: `pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients tests/test_app_explanations.py::test_result_causal_overview_exposes_briefing_quality_checks_for_first_view -q`; `py_compile result_causality.py app.py api.py simulation_core.py`; Runtime-Smoke 30 Runs × 3 Jahre mit `build_causal_result_packet`. GitHub bestätigt: Commit `d4cc278` auf `main` gepusht; `git show --name-only --oneline -1` enthält `app.py`, `result_causality.py`, `tests/test_result_causality.py`, `docs/AGENT_COUNCIL_LOG.md`.
+
+## 2026-04-30 09:50 UTC — Causal Result Briefing Cards
+
+### Context
+Alex wants the first result view to feel like a serious, human-readable simulation briefing, not a KPI wall. This run continued the causal result packet and dashboard integration in `result_causality.py`, `app.py`, `tests/test_result_causality.py`, and `tests/test_api.py`.
+
+### Project Manager
+Priority remains the end-to-end result experience. This slice adds compact briefing cards to the API/UI packet so first-time readers get a sequential route before detailed KPI cards. Next tasks: make relevant KPI cards visually quieter, then connect the same structure into export/report surfaces.
+
+### Designer / UX
+The first view now has a table-like reading path: Ausgangslage → Eingriff → Wirkpfad → KPIs → Anpassung → Einordnung → Was folgt → nächste Prüfung. This should reduce scanning fatigue and make the dashboard feel less like a spreadsheet that drank too much coffee.
+
+### Creative Agent
+Idea: later turn the briefing cards into a printable one-page “SimMed Ergebniszettel” with the same stages and no extra claims. Fit is good for sharing, but only after the on-screen sequence is stable.
+
+### Political Health-System Strategist
+The briefing keeps the political interpretation downstream of mechanism and plausibility checks. That is important: a wait-time or workforce signal should not become a policy argument until timing, adaptation, and evidence limits are visible.
+
+### Evidence / Domain
+No new factual or source claims were introduced. The change reuses existing registry/evidence guardrails and explicitly preserves the no-official-forecast / no-effectiveness-proof boundary.
+
+### Integrator Decision
+Accepted: add `first_view_briefing_cards` to the causal packet and render them in the dashboard before KPI cards. Deferred: changing model dynamics or adding new policy levers; this slice is presentation/orchestration only.
+
+### Question to Alex
+No important decision required now; continue safely with result-briefing clarity.
+
+### Verification / Git
+Targeted RED/GREEN test added for compact briefing cards, API expectation updated, UI rendering wired. Verification run: `python3 -m pytest -q` → 249 passed; `py_compile` for `app.py result_causality.py api.py simulation_core.py`; 50-run simulation smoke with causal packet check passed. Commit/push status is reported in the heartbeat after GitHub confirmation.
