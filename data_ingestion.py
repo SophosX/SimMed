@@ -1633,6 +1633,90 @@ def build_data_readiness_registry_integration_status_cards(status_board: dict) -
 
 
 
+def build_data_readiness_registry_integration_operator_steps(
+    status_board: dict,
+    status_cards: dict | None = None,
+) -> dict:
+    """Return a copy-safe operator sequence for the final Registry gates.
+
+    Status cards answer what is open; this sequence answers what to do first,
+    second and third without turning any step into execution. It is deliberately
+    status/read-only and keeps a human Go/Hold/Reject decision separate from
+    branch/PR work and Registry/model mutation.
+    """
+
+    rows = status_board.get("rows", [])
+    cards = (status_cards or {}).get("cards", [])
+    card_by_id = {card.get("id"): card for card in cards}
+    first_row = rows[0] if rows else {}
+    first_waiting = next((row for row in rows if row.get("board_status") != "bereit_fuer_menschliches_go_audit"), None)
+    first_ready = next((row for row in rows if row.get("board_status") == "bereit_fuer_menschliches_go_audit"), None)
+    primary_row = first_waiting or first_ready or first_row
+
+    steps = [
+        {
+            "rank": 1,
+            "title": "Status zuerst lesen",
+            "why": card_by_id.get("overall_registry_gate", {}).get(
+                "answer",
+                "Kandidaten nach Preflight/Diff/Decision-Record ansehen; noch keine Modelländerungen.",
+            ),
+            "copyable_status_command": "GET /data-readiness/registry-integration-status-board",
+            "expected_result": "Board zeigt Board-Status, fehlende Checks und sichere nächste Route pro Parameter.",
+            "guardrail": "Nur Status lesen: kein execute=true, kein Netzwerkabruf, kein Branch und keine Registry-/Modellmutation.",
+        },
+        {
+            "rank": 2,
+            "title": "Blocker oder menschliches Go/Hold/Reject prüfen",
+            "why": (primary_row or {}).get("next_gate", "Erst prüfen, ob technische Checks fehlen oder nur eine menschliche Entscheidung offen ist."),
+            "copyable_status_command": (primary_row or {}).get(
+                "audit_route",
+                "GET /data-readiness/registry-integration-decision-audit-checklist",
+            ),
+            "expected_result": "Audit zeigt missing checks; sicherer Default bleibt Hold, bis alle Pflichtfelder und Checks nachvollziehbar sind.",
+            "guardrail": "Decision-Prüfung speichert keine Entscheidung und startet keinen PR; grün ist kein Wirkungsbeweis.",
+        },
+        {
+            "rank": 3,
+            "title": "Parameter-Workflow öffnen, bevor ein PR geplant wird",
+            "why": (primary_row or {}).get("label", "Ersten Parameter aus dem Statusboard einzeln prüfen."),
+            "copyable_status_command": (primary_row or {}).get("status_route", "GET /data-readiness/{parameter_key}"),
+            "expected_result": "Workflow zeigt Data-Passport, Cache, Transformation-Review, Preflight, Diff und Guardrails für genau einen Parameter.",
+            "guardrail": "Workflow ist read-only: keine Datenaktion, keine Review-Erzeugung, keine Registry-/Modellmutation und keine amtliche Prognose.",
+        },
+        {
+            "rank": 4,
+            "title": "PR-Runbook erst nach auditiertem Go lesen",
+            "why": card_by_id.get("ready_for_human_audit", {}).get(
+                "answer",
+                "Nur falls alle Checks grün und menschlich auditiert sind, wird ein separater PR geplant.",
+            ),
+            "copyable_status_command": (primary_row or {}).get(
+                "runbook_route",
+                "GET /data-readiness/registry-integration-pr-runbook",
+            ),
+            "expected_result": "Runbook nennt Branchnamen nur als falls-Go-Hinweis; echte Codearbeit bleibt separater getesteter PR.",
+            "guardrail": "Kein Branch aus diesem Paket: keine automatische Integration, kein official forecast, kein Policy-Wirkungsbeweis.",
+        },
+    ]
+    return {
+        "title": "Registry-Integrations-Operatorfolge: lesen → auditieren → einzeln prüfen → PR separat",
+        "plain_language_note": (
+            "Diese Folge macht aus Statusboard und Karten eine kopierbare Arbeitsreihenfolge für Operatoren. "
+            "Alle Befehle sind Status-/Lesewege; sie enthalten bewusst kein execute=true und starten keinen Branch."
+        ),
+        "primary_parameter_key": primary_row.get("parameter_key") if primary_row else None,
+        "steps": steps,
+        "definition_of_done_before_branch": [
+            "Statusboard gelesen und Parameter einzeln geöffnet",
+            "Audit-Checklist ohne fehlende technische Checks",
+            "Go/Hold/Reject-Entscheidung mit Rationale, Person und Zeitpunkt außerhalb dieses read-only Pakets dokumentiert",
+            "PR-Runbook nur nach auditiertem Go genutzt; Registry-/Modelländerung in separatem getestetem PR",
+        ],
+        "guardrail": "Read-only/Operatorfolge-only: kein Branch, kein execute=true, keine Datenaktion, keine Review-Erzeugung, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    }
+
+
 def build_data_readiness_registry_integration_handoff_packet(decision_record: dict) -> dict:
     """Create a copy-safe operator handoff from the Go/Hold/Reject decision record.
 

@@ -688,3 +688,28 @@ def test_api_exposes_focused_registry_integration_status_cards_without_apply():
     ]
     assert any(card["next_click"] == "GET /data-readiness/bevoelkerung_mio" for card in cards["cards"])
     assert "kein execute=true" in cards["guardrail"]
+
+
+def test_api_exposes_registry_integration_operator_steps_without_apply():
+    client = TestClient(api)
+    seed_response = client.post("/data-fixtures/seed-reference-review-demo")
+    assert seed_response.status_code == 200
+
+    response = client.get("/data-readiness/registry-integration-operator-steps?limit=3")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "data_readiness_registry_integration_operator_steps_not_applied"
+    assert "kein Branch" in body["guardrail"]
+    assert "kein execute=true" in body["guardrail"]
+    steps = body["registry_integration_operator_steps"]
+    assert steps["title"].startswith("Registry-Integrations-Operatorfolge")
+    assert steps["primary_parameter_key"] == "bevoelkerung_mio"
+    assert [step["rank"] for step in steps["steps"]] == [1, 2, 3, 4]
+    commands = [step["copyable_status_command"] for step in steps["steps"]]
+    assert commands[0] == "GET /data-readiness/registry-integration-status-board"
+    assert "GET /data-readiness/bevoelkerung_mio" in commands
+    assert not any("execute=true" in command for command in commands)
+    assert any("separatem getestetem PR" in item for item in steps["definition_of_done_before_branch"])
+    assert "keine Registry-/Modellmutation" in steps["guardrail"]
+    assert "kein Policy-Wirkungsbeweis" in steps["guardrail"]

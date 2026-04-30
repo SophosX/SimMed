@@ -2204,3 +2204,32 @@ Keine wichtige Entscheidung offen; sichere Plattformarbeit kann weitergehen.
 
 ### Verification / Git
 Gezielte Tests und Full Suite lokal grün; Commit/Push folgt nach dieser Log-Ergänzung.
+
+## 2026-04-30 03:09 Europe/Berlin — Heartbeat: Registry-Operatorfolge
+
+### Context
+Alexs Korrektur priorisiert Kernplattform vor KI/Evidence. Aktueller Branch `feat/platform-data-status-foundation`; bestehende Registry-Integrations-Statusboard/Karten waren vorhanden, aber noch keine copy-sichere Operator-Reihenfolge zwischen Status lesen, Audit prüfen, Parameter-Workflow öffnen und PR-Runbook.
+
+### Project Manager
+Priorität: Data-Readiness/Registry-Integration sicherer operationalisieren, ohne Modellwerte zu ändern. Nächste Tasks: (1) Operatorfolge auch auf der Learning Page anzeigen, (2) danach echten `main`-Sync/PR-Pfad klären, (3) weitere Daten-Gates nur mit Tests erweitern.
+
+### Designer / UX
+Mobile/operator-safe Verbesserung: statt nur Tabellen/Karten gibt es nun eine klare vierstufige Lesereihenfolge mit kopierbaren Statusrouten. Das reduziert Fehlklick-Risiko vor Registry-/Modellintegration.
+
+### Creative Agent
+Idee: diese Operatorfolge später als „Daten-Gate Wizard“ darstellen. Fit: gut für Verständnis und Motivation; aktuell bewusst read-only, kein Button/Workflow-Automatismus.
+
+### Political Health-System Strategist
+Gerade bei gesundheits- und politiksensiblen Daten muss ein auditiertes Go/Hold/Reject vor jedem PR sichtbar bleiben. Die neue Folge trennt technische Checks, menschliche Entscheidung und PR-Arbeit klar.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Die Änderung erzeugt keine neuen Sach- oder Wirkungsclaims; sie stärkt Provenienz-/Governance-Gates und hält Cache/Review/Registry/Modell separat.
+
+### Integrator Decision
+Akzeptiert: `build_data_readiness_registry_integration_operator_steps(...)` plus fokussierter API-Endpunkt `GET /data-readiness/registry-integration-operator-steps`, mit Regressionstest. Deferred: Learning-Page-Rendering und echte Registry-Modellintegration bleiben separate Slices.
+
+### Question to Alex
+Keine.
+
+### Verification / Git
+Verifiziert mit `pytest -q` (134 passed), `py_compile` für Kernmodule, kleinem Simulation-Smoke (`OK smoke (60, 30) (320, 6)`). Commit/Push folgt in diesem Heartbeat; Zip-Artefakt wird aktualisiert.
