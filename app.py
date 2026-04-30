@@ -41,6 +41,7 @@ from data_ingestion import (
     build_data_readiness_integration_preflight,
     build_data_readiness_integration_plan,
     build_data_readiness_integration_pr_brief,
+    build_data_readiness_registry_diff_preview,
     build_data_readiness_gate_plan,
     build_data_readiness_operator_handoff,
     build_data_readiness_platform_brief,
@@ -4114,8 +4115,11 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
     backlog = full_backlog[:limit]
     summary = build_data_readiness_summary(full_backlog)
     next_actions = build_next_data_readiness_actions(full_backlog, limit=3)
-    integration_preflight = build_data_readiness_integration_preflight(full_backlog, build_data_passport_rows(list_parameters()), limit=5)
+    parameters = list_parameters()
+    passport_rows = build_data_passport_rows(parameters)
+    integration_preflight = build_data_readiness_integration_preflight(full_backlog, passport_rows, limit=5)
     integration_plan = build_data_readiness_integration_plan(integration_preflight)
+    registry_diff_preview = build_data_readiness_registry_diff_preview(integration_plan, parameters)
     return {
         "title": "Nächste Daten-Schritte: erst Cache, dann Review, dann Integration",
         "plain_language_note": (
@@ -4134,6 +4138,7 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         "platform_brief": build_data_readiness_platform_brief(next_actions),
         "integration_preflight": integration_preflight,
         "integration_plan": integration_plan,
+        "registry_diff_preview": registry_diff_preview,
         "integration_pr_brief": build_data_readiness_integration_pr_brief(integration_plan),
         "rows": [
             {
@@ -4367,6 +4372,28 @@ def render_learning_data_readiness_backlog():
         else:
             st.info("Noch kein Parameter ist preflight-grün für einen separaten Integrationsplan; zuerst Snapshot/Review-Gates schließen.")
         st.caption(integration_plan["guardrail"])
+        diff_preview = backlog["registry_diff_preview"]
+        st.markdown(f"**{diff_preview['title']}**")
+        st.caption(diff_preview["plain_language_note"])
+        diff_rows = [
+            {
+                "Parameter": row["label"],
+                "Status": row["status"],
+                "Registry-Default": row["current_registry_default"],
+                "Review-Wert": row["reviewed_output_value"],
+                "Einheit passt?": row["unit_check"]["unit_matches"],
+                "Delta": row["numeric_delta_from_registry_default"],
+                "In Bounds?": row["plausibility_check"]["within_registry_bounds"],
+                "Human Decision": row["required_human_decision"],
+                "Guardrail": row["guardrail"],
+            }
+            for row in diff_preview["rows"]
+        ]
+        if diff_rows:
+            st.dataframe(pd.DataFrame(diff_rows), use_container_width=True, hide_index=True)
+        else:
+            st.caption("Noch keine Registry-Diff-Preview, weil kein geprüfter Wert preflight-grün und integrationsplanbar ist.")
+        st.caption(diff_preview["guardrail"])
         pr_brief = backlog["integration_pr_brief"]
         st.markdown(f"**{pr_brief['title']}**")
         st.caption(pr_brief["plain_language_note"])

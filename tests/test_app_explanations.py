@@ -99,6 +99,17 @@ def test_learning_data_readiness_backlog_includes_integration_preflight():
     plan = backlog["integration_plan"]
     assert plan["title"].startswith("Parameter-spezifischer Integrationsplan")
     assert "keine Registry-/Modellmutation" in plan["guardrail"]
+    diff_preview = backlog["registry_diff_preview"]
+    assert diff_preview["title"].startswith("Registry-Diff-Preview")
+    assert diff_preview["summary"]["shown_diff_previews"] == plan["summary"]["shown_plans"]
+    assert "kein Registry-Write" in diff_preview["guardrail"]
+    for row in diff_preview["rows"]:
+        assert row["status"] == "diff_preview_only_not_applied"
+        assert "current_registry_default" in row
+        assert "reviewed_output_value" in row
+        assert "unit_matches" in row["unit_check"]
+        assert "within_registry_bounds" in row["plausibility_check"]
+        assert "keine Registry-/Modellmutation" in row["guardrail"]
     pr_brief = backlog["integration_pr_brief"]
     assert pr_brief["title"].startswith("Integrations-PR-Brief")
     assert pr_brief["summary"]["shown_pr_briefs"] == plan["summary"]["shown_plans"]

@@ -1962,3 +1962,16 @@ Focused tests passed before final full verification: `tests/test_data_ingestion.
 - **Integrator Decision:** `build_data_readiness_registry_diff_preview(...)` in `data_ingestion.py` ergänzt und via `GET /data-readiness/registry-diff-preview` sowie bestehende Integrations-API-Flächen exponiert. Keine Registry-/Modellmutation.
 - **Question to Alex if needed:** Keine wichtige Entscheidung offen; nächster sicherer Schritt ist UI/Learning-Page-Sichtbarkeit oder eine echte reviewed-live Datenquelle vorbereiten.
 - **Verification/Git:** `python3 -m pytest -q tests/test_api.py tests/test_data_ingestion.py` → 45 passed; vollständige Suite + py_compile → 122 passed; Simulation-Smoke 30×3 Jahre OK.
+
+
+## 2026-04-30T00:13:19+00:00 — Heartbeat: Registry-Diff-Preview auf Learning Page sichtbar
+
+- **Context:** Alexs Priorität ist Core-Plattform. Vorhandene API/Data-Ingestion-Schicht hatte bereits eine Registry-Diff-Preview vor Datenintegration, aber die Learning Page zeigte nach Preflight/Integrationsplan direkt PR-Briefing.
+- **Project Manager:** Kleine, sichere Plattform-Scheibe gewählt: vorhandene read-only Integrationssicherheitsstufe in die Lern-/Onboarding-UX einhängen statt neue Evidenzrecherche.
+- **Designer/UX:** First-time Nutzer sehen jetzt in der Daten-Reife-Strecke explizit den Schritt „aktueller Registry-Default vs. geprüfter Review-Wert“ inklusive Einheit, Delta, Bounds und Human-Decision-Hinweis vor einem PR-Brief.
+- **Creative Agent:** Keine neue spielerische UX; bewusst konservativer Audit-/Checklisten-Schritt, weil Datenintegration Glaubwürdigkeit vor Wow-Effekt braucht.
+- **Political Health-System Strategist:** Guardrail bleibt wichtig: ein geprüfter Datenwert ist keine amtliche Prognose und kein Policy-Wirkungsbeweis; politische Interpretation darf erst nach separater Modell-/Szenarioarbeit erfolgen.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; es wurden keine neuen Quellen- oder Wirksamkeitsclaims ergänzt.
+- **Integrator Decision:** `build_learning_data_readiness_backlog()` baut nun `registry_diff_preview`; `render_learning_data_readiness_backlog()` rendert die Vorschau mobil als Tabelle; Regressionstest erweitert.
+- **Question to Alex:** Keine.
+- **Verification/Git:** Lokal grün: fokussierte Tests 23 passed; volle Suite 122 passed; py_compile; 20-run Simulation-Smoke OK. Git-Commit/Push folgt in diesem Lauf.
