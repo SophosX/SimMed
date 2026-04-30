@@ -34,6 +34,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_handoff_packet,
     build_data_readiness_registry_integration_operator_steps,
     build_data_readiness_registry_integration_safe_start_packet,
+    build_data_readiness_registry_integration_safe_start_checklist,
     build_data_readiness_registry_integration_pr_runbook,
     build_data_readiness_registry_integration_status_board,
     build_data_readiness_registry_integration_status_cards,
@@ -609,11 +610,13 @@ def get_data_readiness_registry_integration_safe_start(limit: int = 3) -> dict:
     status_board = build_data_readiness_registry_integration_status_board(decision_record, audit_checklist, pr_runbook)
     status_cards = build_data_readiness_registry_integration_status_cards(status_board)
     operator_steps = build_data_readiness_registry_integration_operator_steps(status_board, status_cards)
+    safe_start_packet = build_data_readiness_registry_integration_safe_start_packet(operator_steps, status_board)
     return {
         "status": "data_readiness_registry_integration_safe_start_not_applied",
         "guardrail": "Safe-start ist read-only/status-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
         "summary": build_data_readiness_summary(items),
-        "registry_integration_safe_start_packet": build_data_readiness_registry_integration_safe_start_packet(operator_steps, status_board),
+        "registry_integration_safe_start_packet": safe_start_packet,
+        "registry_integration_safe_start_checklist": build_data_readiness_registry_integration_safe_start_checklist(safe_start_packet),
     }
 
 

@@ -2288,3 +2288,32 @@ Keine wichtige Entscheidung offen; dies ist eine sichere, reversible UX/API-Verd
 
 ### Verification / Git
 Spezifische Tests: `tests/test_api.py::{test_api_exposes_registry_integration_operator_steps_without_apply,test_api_exposes_focused_registry_integration_safe_start_without_apply}` und `tests/test_app_explanations.py::test_learning_data_readiness_backlog_prioritizes_safe_data_gates`. Full suite/compile: 135 passed; `py_compile app.py data_ingestion.py api.py parameter_registry.py data_sources.py simulation_core.py`.
+
+## 2026-04-30 03:31 Europe/Berlin — Heartbeat: Registry Safe-start Checkliste
+
+### Context
+Core-platform heartbeat auf Branch `feat/platform-data-status-foundation`: die Registry-Integrationsstrecke hatte bereits Safe-start-Paket und Operatorfolge, aber noch keine kompakte, auditierbare Vier-Schritt-Checkliste für mobile/API-Nutzung.
+
+### Project Manager
+Priorität bleibt Daten-/Provenance-Foundation. Nächste sinnvolle Schritte: (1) Safe-start-Checkliste auf weitere Aggregate spiegeln, (2) danach echten nächsten Daten-Gate-Slice wählen, (3) keine KI/Evidence-Arbeit ohne Plattformbezug.
+
+### Designer / UX
+Die neue Checkliste übersetzt abstrakte Gate-Begriffe in vier sichtbare Schritte: Statusboard öffnen → Parameter prüfen → Audit öffnen → Stoppschild vor Codearbeit. Das hilft Erstnutzer:innen und Touch-Geräten, bevor dichte Tabellen kommen.
+
+### Creative Agent
+Idee: später könnte diese Checkliste als kleiner “Nachtwächter”-Modus erscheinen: was darf ein autonomer Operator sicher tun, was muss warten? Fit: gut für Vertrauen, aber aktuell nur als read-only Struktur umgesetzt.
+
+### Political Health-System Strategist
+Wichtig ist die klare Trennung von auditierter Datenintegration und politischer Wirkungsaussage. Der Stoppschild-Schritt verhindert, dass ein technischer grüner Status als amtliche Prognose, Wirkungsbeweis oder Lobbying-Empfehlung gelesen wird.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf; es wurden keine neuen Sach- oder Evidenzclaims eingeführt. Die Änderung ordnet bestehende Registry-/Preflight-/Audit-Routen nur neu und bleibt read-only.
+
+### Integrator Decision
+Akzeptiert: `build_data_readiness_registry_integration_safe_start_checklist(...)` in `data_ingestion.py`, API-Antwort von `/data-readiness/registry-integration-safe-start`, Learning-Page-Builder/Renderer und Regressionstests.
+
+### Question to Alex
+Keine.
+
+### Verification / Git
+Gezielt: `pytest tests/test_api.py::test_api_exposes_focused_registry_integration_safe_start_without_apply tests/test_app_explanations.py::test_learning_data_readiness_backlog_prioritizes_safe_data_gates -q` → 2 passed. Voll: `pytest -q` → 135 passed; `py_compile` für geänderte Dateien erfolgreich. Commit/Push folgen im selben Heartbeat.

@@ -1781,6 +1781,73 @@ def build_data_readiness_registry_integration_safe_start_packet(
 
 
 
+def build_data_readiness_registry_integration_safe_start_checklist(safe_start_packet: dict) -> dict:
+    """Turn the one-screen safe-start packet into a tiny no-mutation checklist.
+
+    The safe-start packet tells operators where to begin. This checklist makes the
+    order auditable for a mobile UI/API client without adding any execution, branch,
+    cache, review, or model-integration step.
+    """
+
+    primary_label = safe_start_packet.get("primary_label", "kein Parameter")
+    primary_key = safe_start_packet.get("primary_parameter_key") or "{parameter_key}"
+    rows = [
+        {
+            "rank": 1,
+            "check": "Statusboard öffnen",
+            "copyable_read_only_command": safe_start_packet.get(
+                "first_safe_command",
+                "GET /data-readiness/registry-integration-status-board",
+            ),
+            "expected_evidence": "Board-Status, offene Checks und nächste sichere Routen sichtbar machen.",
+            "operator_decision": "Nur lesen; noch kein Go/Hold/Reject ausfüllen.",
+            "guardrail": "kein execute=true, kein Netzwerkabruf, keine Daten-/Review-Aktion und kein Branch",
+        },
+        {
+            "rank": 2,
+            "check": f"Parameter einzeln prüfen: {primary_label}",
+            "copyable_read_only_command": safe_start_packet.get(
+                "inspect_next_command",
+                f"GET /data-readiness/{primary_key}",
+            ),
+            "expected_evidence": "Data-Passport, Cache, Review, Preflight, Diff und Status für genau diesen Parameter sehen.",
+            "operator_decision": safe_start_packet.get("human_decision_default", "Hold bis Audit vollständig ist."),
+            "guardrail": "Workflow lesen ist keine Registry-/Modellmutation und kein Wirkungsbeweis",
+        },
+        {
+            "rank": 3,
+            "check": "Audit-Checkliste öffnen",
+            "copyable_read_only_command": safe_start_packet.get(
+                "audit_command",
+                "GET /data-readiness/registry-integration-decision-audit-checklist",
+            ),
+            "expected_evidence": "Fehlende technische Checks und Pflichtfelder vor einem möglichen menschlichen Go sehen.",
+            "operator_decision": "Default bleibt Hold, wenn ein Check fehlt oder die Begründung nicht auditierbar ist.",
+            "guardrail": "Checkliste speichert keine Entscheidung und startet keinen PR",
+        },
+        {
+            "rank": 4,
+            "check": "Stoppschild vor Codearbeit",
+            "copyable_read_only_command": "kein Befehl: erst menschliches Go/Hold/Reject außerhalb dieses Pakets dokumentieren",
+            "expected_evidence": "Definition of done vor Branch muss erfüllt sein.",
+            "operator_decision": "Branch/PR nur in separatem, getestetem Integrations-PR nach auditiertem Go.",
+            "guardrail": "keine amtliche Prognose, kein Policy-Wirkungsbeweis und keine Lobbying-Empfehlung",
+        },
+    ]
+    return {
+        "title": "Safe-start-Checkliste: lesen, prüfen, auditieren, stoppen",
+        "plain_language_note": (
+            "Diese Checkliste macht den kürzesten Registry-Integrationsstart als vier sichtbare, "
+            "mobile Schritte auditierbar. Alle Schritte sind Lese-/Statusschritte; der letzte Schritt ist bewusst ein Stoppschild."
+        ),
+        "primary_parameter_key": safe_start_packet.get("primary_parameter_key"),
+        "primary_label": primary_label,
+        "rows": rows,
+        "definition_of_done_before_branch": safe_start_packet.get("definition_of_done_before_branch", []),
+        "guardrail": "Read-only/Checklist-only: kein Branch, kein execute=true, keine Datenaktion, keine Review-Erzeugung, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    }
+
+
 def build_data_readiness_registry_integration_handoff_packet(decision_record: dict) -> dict:
     """Create a copy-safe operator handoff from the Go/Hold/Reject decision record.
 

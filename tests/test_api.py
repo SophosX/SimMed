@@ -756,3 +756,12 @@ def test_api_exposes_focused_registry_integration_safe_start_without_apply():
     assert any("separatem getestetem PR" in item for item in packet["definition_of_done_before_branch"])
     assert "keine amtliche Prognose" in packet["guardrail"]
     assert "kein Policy-Wirkungsbeweis" in packet["guardrail"]
+    checklist = body["registry_integration_safe_start_checklist"]
+    assert checklist["title"].startswith("Safe-start-Checkliste")
+    assert checklist["primary_parameter_key"] == "bevoelkerung_mio"
+    assert [row["rank"] for row in checklist["rows"]] == [1, 2, 3, 4]
+    assert checklist["rows"][0]["copyable_read_only_command"] == "GET /data-readiness/registry-integration-status-board"
+    assert checklist["rows"][1]["copyable_read_only_command"] == "GET /data-readiness/bevoelkerung_mio"
+    assert "Stoppschild" in checklist["rows"][3]["check"]
+    assert not any("execute=true" in row["copyable_read_only_command"] for row in checklist["rows"])
+    assert "keine Registry-/Modellmutation" in checklist["guardrail"]

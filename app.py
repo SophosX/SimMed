@@ -51,6 +51,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_status_cards,
     build_data_readiness_registry_integration_operator_steps,
     build_data_readiness_registry_integration_safe_start_packet,
+    build_data_readiness_registry_integration_safe_start_checklist,
     build_data_readiness_gate_plan,
     build_data_readiness_operator_handoff,
     build_data_readiness_platform_brief,
@@ -4135,6 +4136,8 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
     pr_runbook = build_data_readiness_registry_integration_pr_runbook(decision_record)
     status_board = build_data_readiness_registry_integration_status_board(decision_record, audit_checklist, pr_runbook)
     status_cards = build_data_readiness_registry_integration_status_cards(status_board)
+    operator_steps = build_data_readiness_registry_integration_operator_steps(status_board, status_cards)
+    safe_start_packet = build_data_readiness_registry_integration_safe_start_packet(operator_steps, status_board)
     return {
         "title": "Nächste Daten-Schritte: erst Cache, dann Review, dann Integration",
         "plain_language_note": (
@@ -4160,11 +4163,9 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         "registry_integration_decision_audit_checklist": audit_checklist,
         "registry_integration_status_board": status_board,
         "registry_integration_status_cards": status_cards,
-        "registry_integration_operator_steps": build_data_readiness_registry_integration_operator_steps(status_board, status_cards),
-        "registry_integration_safe_start_packet": build_data_readiness_registry_integration_safe_start_packet(
-            build_data_readiness_registry_integration_operator_steps(status_board, status_cards),
-            status_board,
-        ),
+        "registry_integration_operator_steps": operator_steps,
+        "registry_integration_safe_start_packet": safe_start_packet,
+        "registry_integration_safe_start_checklist": build_data_readiness_registry_integration_safe_start_checklist(safe_start_packet),
         "registry_integration_handoff_packet": build_data_readiness_registry_integration_handoff_packet(decision_record),
         "registry_integration_pr_runbook": pr_runbook,
         "rows": [
@@ -4527,6 +4528,22 @@ def render_learning_data_readiness_backlog():
         )
         st.caption("Nicht tun: " + " · ".join(safe_packet["do_not_do"][:4]))
         st.caption(safe_packet["guardrail"])
+        safe_checklist = backlog["registry_integration_safe_start_checklist"]
+        st.markdown(f"**{safe_checklist['title']}**")
+        st.caption(safe_checklist["plain_language_note"])
+        safe_checklist_rows = [
+            {
+                "Rang": row["rank"],
+                "Check": row["check"],
+                "Read-only Befehl": row["copyable_read_only_command"],
+                "Erwartete Evidenz": row["expected_evidence"],
+                "Operator-Entscheidung": row["operator_decision"],
+                "Guardrail": row["guardrail"],
+            }
+            for row in safe_checklist["rows"]
+        ]
+        st.dataframe(pd.DataFrame(safe_checklist_rows), use_container_width=True, hide_index=True)
+        st.caption(safe_checklist["guardrail"])
         st.markdown(f"**{operator_steps['title']}**")
         st.caption(operator_steps["plain_language_note"])
         safe_start = operator_steps.get("safe_start", {})

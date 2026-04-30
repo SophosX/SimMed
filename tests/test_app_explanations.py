@@ -164,6 +164,15 @@ def test_learning_data_readiness_backlog_includes_integration_preflight():
     assert not any("execute=true" in command for command in safe_packet["copyable_read_only_sequence"])
     assert "Hold" in safe_packet["human_decision_default"]
     assert "kein Branch" in safe_packet["guardrail"] and "keine Registry-/Modellmutation" in safe_packet["guardrail"]
+    safe_checklist = backlog["registry_integration_safe_start_checklist"]
+    assert safe_checklist["title"].startswith("Safe-start-Checkliste")
+    assert safe_checklist["primary_parameter_key"] == safe_packet["primary_parameter_key"]
+    assert [row["rank"] for row in safe_checklist["rows"]] == [1, 2, 3, 4]
+    assert safe_checklist["rows"][0]["copyable_read_only_command"] == "GET /data-readiness/registry-integration-status-board"
+    assert safe_checklist["rows"][1]["copyable_read_only_command"].startswith("GET /data-readiness/")
+    assert "Stoppschild" in safe_checklist["rows"][3]["check"]
+    assert not any("execute=true" in row["copyable_read_only_command"] for row in safe_checklist["rows"])
+    assert "keine Registry-/Modellmutation" in safe_checklist["guardrail"]
     handoff_packet = backlog["registry_integration_handoff_packet"]
     assert handoff_packet["title"].startswith("Registry-Integrations-Handoff")
     assert handoff_packet["summary"]["handoff_rows"] == decision_record["summary"]["decision_rows"]
