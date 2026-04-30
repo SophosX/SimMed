@@ -292,6 +292,15 @@ def test_learning_data_readiness_backlog_includes_integration_preflight():
     assert export_audit["safe_route_count"] == len(export_packet["safe_routes_to_open"])
     assert len(export_audit["packet_sha256"]) == 64
     assert export_audit["unsafe_findings"] == []
+    assert export_audit["verdict_label"] == "copy-safe_status_only"
+    assert "Go/Hold/Reject" in export_audit["operator_next_step"]
+    assert [row["check"] for row in export_audit["audit_checklist"]] == [
+        "Mindestens eine Statusroute vorhanden",
+        "Alle Routen sind GET/status-only",
+        "Keine Ausführungs- oder Git-Befehle",
+        "Stop-Gate bleibt sichtbar",
+    ]
+    assert all(row["passed"] is True for row in export_audit["audit_checklist"])
     assert "keine Registry-/Modellmutation" in export_audit["guardrail"]
     handoff_packet = backlog["registry_integration_handoff_packet"]
     assert handoff_packet["title"].startswith("Registry-Integrations-Handoff")

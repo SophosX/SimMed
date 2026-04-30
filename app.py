@@ -4735,8 +4735,11 @@ def render_learning_data_readiness_backlog():
             "GET-Routen": export_audit["safe_route_count"],
             "Nur GET": "ja" if export_audit["all_routes_are_get"] else "nein",
             "Copy-safe": "ja" if export_audit["copy_safe"] else "nein",
+            "Verdikt": export_audit["verdict_label"],
             "Unsichere Treffer": ", ".join(export_audit["unsafe_findings"]) or "keine",
         }]), use_container_width=True, hide_index=True)
+        st.caption("Nächster sicherer Schritt: " + export_audit["operator_next_step"])
+        st.dataframe(pd.DataFrame(export_audit["audit_checklist"]), use_container_width=True, hide_index=True)
         st.caption(export_audit["guardrail"])
         command_palette = backlog["registry_integration_command_palette"]
         st.markdown(f"**{command_palette['title']}**")

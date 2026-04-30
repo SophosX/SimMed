@@ -2885,6 +2885,8 @@ def build_data_readiness_registry_integration_operator_export_audit(export_packe
         for token in unsafe_tokens
         if any(token in fragment for fragment in text_fragments)
     ]
+    all_routes_are_get = all(route.startswith("GET ") for route in routes)
+    copy_safe = bool(routes) and all_routes_are_get and not unsafe_findings
     return {
         "title": "Registry-Operator-Export-Audit",
         "plain_language_note": (
@@ -2894,9 +2896,21 @@ def build_data_readiness_registry_integration_operator_export_audit(export_packe
         ),
         "packet_sha256": _stable_read_only_packet_hash(export_packet),
         "safe_route_count": len(routes),
-        "all_routes_are_get": all(route.startswith("GET ") for route in routes),
+        "all_routes_are_get": all_routes_are_get,
         "unsafe_findings": unsafe_findings,
-        "copy_safe": bool(routes) and all(route.startswith("GET ") for route in routes) and not unsafe_findings,
+        "copy_safe": copy_safe,
+        "verdict_label": "copy-safe_status_only" if copy_safe else "nicht_copy_safe_stoppen",
+        "operator_next_step": (
+            "Paket darf als Status-/Handoff-Text weitergegeben werden; danach weiterhin vor Branch/PR stoppen und Go/Hold/Reject menschlich dokumentieren."
+            if copy_safe
+            else "Nicht weitergeben: erst unsichere Route/Befehlsfragmente entfernen und Audit erneut prüfen."
+        ),
+        "audit_checklist": [
+            {"check": "Mindestens eine Statusroute vorhanden", "passed": bool(routes), "detail": f"{len(routes)} GET-/Statusrouten im Paket."},
+            {"check": "Alle Routen sind GET/status-only", "passed": all_routes_are_get, "detail": "Keine POST-/execute-Route im Routenfeld."},
+            {"check": "Keine Ausführungs- oder Git-Befehle", "passed": not unsafe_findings, "detail": ", ".join(unsafe_findings) if unsafe_findings else "Keine unsafe tokens gefunden."},
+            {"check": "Stop-Gate bleibt sichtbar", "passed": bool(export_packet.get("stop_condition")), "detail": export_packet.get("stop_condition", "")},
+        ],
         "stop_condition": export_packet.get("stop_condition", ""),
         "definition_of_done_before_branch": export_packet.get("definition_of_done_before_branch", []),
         "guardrail": "Read-only/Export-Audit-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",

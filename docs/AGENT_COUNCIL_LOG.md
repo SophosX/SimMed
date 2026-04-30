@@ -2852,3 +2852,15 @@ Keine.
 ### Verification / Git
 Full tests and smoke passed locally before commit; commit/push and zip refresh follow this entry.
 
+
+## 2026-04-30T04:02:17Z – Heartbeat: Registry-Export-Audit wird operator-tauglicher
+
+- **Context:** Alex priorisiert Core-Plattform; aktueller sicherer Pfad ist Registry-Integrationshandoff ohne automatische Modellmutation.
+- **Project Manager:** Kleine Plattform-Scheibe gewählt: finalen Operator-Export nicht nur hashen, sondern mit eindeutigem Verdikt, nächstem Schritt und Checkliste prüfbar machen.
+- **Designer/UX:** Learning Page zeigt nun neben Copy-safe/SHA256 auch ein menschenlesbares Verdikt, den nächsten sicheren Schritt und eine mobile/touch-sichere Audit-Checkliste.
+- **Creative Agent:** Aus einem technischen Hash-Audit wird ein „Ampel-/Checklisten“-Moment für zukünftige Operatoren; kein zusätzlicher Simulations- oder Evidenzclaim.
+- **Political Health-System Strategist:** Vor Go/Hold/Reject bleibt die Governance-Schwelle sichtbar; keine Lobbying-, Forecast- oder politische Strategiebehauptung.
+- **Evidence/Domain:** Keine neue Recherche; Änderung betrifft Provenance/Governance-Workflow, nicht neue fachliche Parameterannahmen.
+- **Integrator Decision:** `build_data_readiness_registry_integration_operator_export_audit()` um `verdict_label`, `operator_next_step` und `audit_checklist` erweitert; API übernimmt die Felder automatisch, Streamlit rendert sie.
+- **Question to Alex if needed:** Keine.
+- **Verification/Git:** Geprüft mit fokussierten API/UI-Tests, voller Pytest-Suite, py_compile und kleiner Simulation-Smoke; Commit/Push folgt.
