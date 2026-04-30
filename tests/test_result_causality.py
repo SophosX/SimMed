@@ -99,6 +99,8 @@ def test_simplified_public_result_packet_is_short_clear_and_not_meta():
     assert "Facharzt-Wartezeit" in packet["short_answer"]
     assert "ab etwa Jahr 6" in packet["short_answer"]
     assert "nächste" in packet["short_answer"].lower()
+    assert "Das bedeutet" in packet["short_answer"]
+    assert "prüfbaren" in section_by_heading["Einordnung"]
 
 
 def test_causal_result_packet_prioritizes_relevant_kpis_and_coherent_freetext():

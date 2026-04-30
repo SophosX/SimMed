@@ -966,6 +966,7 @@ def build_causal_result_packet(
         short_answer = (
             f"Die Medizinstudienplätze wurden gesenkt; sichtbar werden vor allem {top_kpi_sentences} "
             "Der Grund ist die Ausbildungs-Pipeline, weil nicht das Startjahr die Versorgung kippt, sondern die kleinere Kohorte ab etwa Jahr 6 und der Facharztpfad Richtung Jahr 11–15. "
+            "Das bedeutet: Die erste Lesart ist ein prüfbarer Kapazitätsdruck, noch keine fertige politische Entscheidung. "
             "Der nächste Check ist, ob Telemedizin, Delegation oder Zuwanderung diesen Druck im Modell plausibel abfedern."
         )
     elif changed:

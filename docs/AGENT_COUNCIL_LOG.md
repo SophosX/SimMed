@@ -4520,3 +4520,24 @@ No important decision needed in this run; continue safely with the readable-resu
 
 ### Verification / Git
 Focused tests: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients tests/test_app_explanations.py -q` → 98 passed. Full suite: `python3 -m pytest -q` → 261 passed. Smoke: 50-run/3-year study-place-cut simulation plus causal packet build passed. Git commit `5e10f70` pushed to `origin/main`; touched `app.py`, `result_causality.py`, and `docs/AGENT_COUNCIL_LOG.md`.
+
+
+## 2026-04-30 – Ergebnis-Seite: klare erste Lesefassung
+
+**Context:** Alexs Korrektur verlangt eine neu geordnete Ergebnis-Seite: erste Ansicht beantwortet direkt Ergebnis, Eingriff, Warum, relevante Kennzahlen, Anpassungen, Einordnung und nächsten Prüfschritt; keine überlappenden Erklärungsschichten im Einstieg.
+
+**Project Manager:** Priorität bleibt Result-UX vor neuen Modellhebeln. Größtes Risiko ist erneutes Stapeln von Hilfswidgets; Details bleiben deshalb geschlossen unter der ersten Lesefassung.
+
+**Designer/UX:** Erste Ansicht nutzt eine klare Überschrift, kurze Antwort und kompakte relevante KPI-Karten; vollständige KPI-Karten, Zeitfenster, Evidenz und Qualitätschecks wandern in geschlossene Prüfbereiche.
+
+**Creative Agent:** Keine neue Show-Idee; Produktfit ist eine seriöse, lesbare Briefing-Kette statt weiterer dekorativer Karten.
+
+**Political Health-System Strategist:** Politische Deutung bleibt nachgeordnet: erst Wirkpfad, Puffer/Drucksignale und Evidenzgrenzen prüfen; keine Vote-/Lobbying-Aussage.
+
+**Evidence/Domain:** Keine neue Recherche in diesem Lauf; es wurden keine neuen Realweltbehauptungen eingeführt. Die Lesart bleibt SimMed-Modelllauf mit bestehenden Registry-/Annahmegrenzen.
+
+**Integrator Decision:** `result_causality.py` liefert nun zusätzlich den vereinfachten öffentlichen Packet-Contract (`result_headline`, `short_answer`, `result_sections`, `relevant_kpis`, `follow_up_question`) und `app.py` rendert daraus den ersten Ergebnisblock vor geschlossenen Audit-/Detailbereichen.
+
+**Question to Alex if needed:** Keine blockierende Entscheidung offen. Nächster sicherer Schritt: alte überlappende Ergebnishelfer weiter zusammenführen bzw. aus der Default-Ansicht entfernen, ohne API-Kompatibilität zu brechen.
+
+**Verification/Git:** Fokus: 35 Ergebnis/API/App-Tests grün; vollständige Suite 261 passed; py_compile und 50-run Smoke-Test grün. Git-Sync/Push folgt in diesem Lauf.
