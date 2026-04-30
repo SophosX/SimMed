@@ -3522,32 +3522,34 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
     view = packet.get("public_result_view", packet)
     card = st.container(border=True)
     with card:
-        st.markdown(f"### {view.get('headline', packet.get('result_headline', packet['title']))}")
-        st.write(view.get("short_answer", packet.get("short_answer", "Der Modelllauf wurde berechnet; die Detailprüfung steht darunter.")))
+        brief = view.get("executive_brief") or packet.get("executive_brief", {})
+        st.markdown(f"### {brief.get('title') or view.get('headline', packet.get('result_headline', packet['title']))}")
+        st.write(brief.get("lead") or view.get("short_answer", packet.get("short_answer", "Der Modelllauf wurde berechnet; die Detailprüfung steht darunter.")))
 
-        relevant_kpis = view.get("relevant_kpis", packet.get("relevant_kpis", []))
-        primary_blocks = view.get("result_sections") or packet.get("result_sections", [])
-        for section in primary_blocks:
-            heading = section["heading"]
-            if heading == "Relevante Kennzahlen":
-                st.markdown("**Relevante Kennzahlen**")
-                rows = relevant_kpis[:4]
+        blocks = brief.get("blocks") or view.get("result_sections") or packet.get("result_sections", [])
+        for block in blocks:
+            heading = block["heading"]
+            st.markdown(f"**{heading}**")
+            if block.get("kind") == "kpi_rows" or heading == "Relevante Kennzahlen":
+                rows = block.get("rows") or view.get("relevant_kpis", packet.get("relevant_kpis", []))[:4]
                 if rows:
-                    for row in rows:
-                        st.markdown(
-                            f"- **{row.get('label', 'Kennzahl')}**: {row.get('plain_change') or (str(row.get('start', '–')) + ' → ' + str(row.get('end', '–')))} "
-                            f"({row.get('direction', 'stabil')}). {row.get('reading') or row.get('meaning') or row.get('why_relevant', '')}"
-                        )
+                    kpi_df = pd.DataFrame([
+                        {
+                            "Kennzahl": row.get("label", "Kennzahl"),
+                            "Start": row.get("start", "–"),
+                            "Ende": row.get("end", "–"),
+                            "Richtung": row.get("direction", "stabil"),
+                            "Bedeutung": row.get("reading") or row.get("meaning") or row.get("why_relevant", ""),
+                        }
+                        for row in rows
+                    ])
+                    st.dataframe(kpi_df, use_container_width=True, hide_index=True)
                 else:
-                    st.write(section["body"])
+                    st.write(block["body"])
             else:
-                st.markdown(f"**{heading}**")
-                st.write(section["body"])
+                st.write(block["body"])
 
-        if view.get("follow_up_question", packet.get("follow_up_question")) and view.get("render_follow_up_after_sections", True):
-            st.markdown("**Nächster Prüfschritt**")
-            st.write(view.get("follow_up_question", packet.get("follow_up_question")))
-
+        st.caption(brief.get("audit_hint") or view.get("guardrail", packet["guardrail"]))
         st.caption(view.get("guardrail", packet["guardrail"]))
 
     audit_sections = view.get("audit_sections", [])

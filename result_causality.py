@@ -1149,6 +1149,23 @@ def build_causal_result_packet(
         },
     ]
 
+    executive_brief_blocks = []
+    for section in result_sections:
+        block = {
+            "heading": section["heading"],
+            "body": section["body"],
+            "kind": "kpi_rows" if section["heading"] == "Relevante Kennzahlen" else "text",
+        }
+        if section["heading"] == "Relevante Kennzahlen":
+            block["rows"] = relevant_kpis_public[:4]
+        executive_brief_blocks.append(block)
+    executive_brief = {
+        "title": result_headline,
+        "lead": short_answer,
+        "blocks": executive_brief_blocks,
+        "audit_hint": "Details bleiben darunter geschlossen: Zeitfenster, Evidenz, vollständige Kennzahlen und politische Einordnung.",
+    }
+
     kpi_lines = "\n".join(
         f"- **{row.get('label', 'Kennzahl')}**: {row.get('start', '–')} → {row.get('end', '–')} "
         f"({row.get('direction', 'stabil')}). {row.get('meaning') or row.get('why_relevant', '')}"
@@ -1177,6 +1194,7 @@ def build_causal_result_packet(
         "headline": result_headline,
         "short_answer": short_answer,
         "briefing_markdown": briefing_markdown,
+        "executive_brief": executive_brief,
         "result_sections": result_sections,
         "first_screen_blocks": first_screen_blocks,
         "primary_blocks": first_screen_blocks,
@@ -1200,6 +1218,7 @@ def build_causal_result_packet(
         "result_headline": result_headline,
         "short_answer": short_answer,
         "result_sections": result_sections,
+        "executive_brief": executive_brief,
         "follow_up_question": follow_up_question,
         "audit_sections": audit_sections,
         "public_result_view": public_result_view,
@@ -1225,6 +1244,7 @@ def build_causal_result_packet(
             "headline": result_headline,
             "short_answer": short_answer,
             "result_sections": result_sections,
+            "executive_brief": executive_brief,
             "first_screen_blocks": first_screen_blocks,
             "primary_blocks": first_screen_blocks,
             "relevant_kpis": relevant_kpis_public,

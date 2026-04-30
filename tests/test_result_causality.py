@@ -233,7 +233,8 @@ def test_public_result_packet_is_minimal_and_does_not_expose_legacy_layers_first
             "first_screen_policy",
             "headline",
             "briefing_markdown",
-        "short_answer",
+            "executive_brief",
+            "short_answer",
         "result_sections",
         "first_screen_blocks",
         "primary_blocks",
@@ -1469,3 +1470,39 @@ def test_public_relevant_kpis_are_compact_rows_with_plain_meaning():
     assert all(len(row["meaning"]) <= 150 for row in rows)
     assert any(row["label"] == "Facharzt-Wartezeit" for row in rows)
     assert all("Tabelle" not in row["meaning"] and "Widget" not in row["meaning"] for row in rows)
+
+
+def test_public_result_view_exposes_single_executive_brief_for_first_screen():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    brief = packet["public_result_view"]["executive_brief"]
+
+    assert brief["title"] == packet["result_headline"]
+    assert brief["lead"] == packet["short_answer"]
+    assert [block["heading"] for block in brief["blocks"]] == [
+        "Ergebnis",
+        "Eingriff",
+        "Warum es passiert",
+        "Relevante Kennzahlen",
+        "Anpassungen",
+        "Einordnung",
+        "Nächster Prüfschritt",
+    ]
+    assert len(brief["blocks"]) <= 7
+    assert all(block["kind"] in {"text", "kpi_rows"} for block in brief["blocks"])
+    assert brief["blocks"][3]["kind"] == "kpi_rows"
+    assert brief["blocks"][3]["rows"] == packet["public_result_view"]["relevant_kpis"][:4]
+    assert brief["audit_hint"] == "Details bleiben darunter geschlossen: Zeitfenster, Evidenz, vollständige Kennzahlen und politische Einordnung."
+
+    visible_text = " ".join(
+        [brief["title"], brief["lead"], brief["audit_hint"]]
+        + [block["heading"] + " " + block["body"] for block in brief["blocks"]]
+        + [row.get("label", "") + " " + row.get("meaning", "") for row in brief["blocks"][3]["rows"]]
+    )
+    for banned in ["random Internet", "Klartext", "KPI-Wand", "generated", "helper", "Meta", "Widget", "Audit-Layer"]:
+        assert banned not in visible_text
+    assert "ab etwa Jahr 6" in visible_text
+    assert "keine amtliche Prognose" in visible_text
+    assert "kein Wirksamkeitsnachweis" in visible_text

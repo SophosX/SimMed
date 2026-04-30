@@ -5340,3 +5340,32 @@ Keine wichtige Entscheidung offen. Empfehlung: weiter mit Option A — die beste
 
 ### Verification / Git
 Verifiziert: `pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 53 passed; `pytest -q` → 280 passed; `py_compile app.py result_causality.py api.py simulation_core.py`; 50-run/15-year smoke mit halbierten Medizinstudienplätzen und Causal-Packet-Build bestanden. Git-Sync/Commit/Push folgt als normaler Integrator-Schritt.
+
+## 2026-04-30 17:27 Europe/Berlin — Heartbeat: Ergebnis-Erstansicht als Executive Brief
+
+### Context
+Alexs aktuelle Korrektur: Die Ergebnisseite soll nicht noch mehr Erklärung stapeln, sondern auf dem ersten Bildschirm direkt beantworten, was herauskam, was relevant anders ist, warum und was es bedeutet. Relevante Dateien: `result_causality.py`, `app.py`, `tests/test_result_causality.py`.
+
+### Project Manager
+Priorität: Ergebnis-Erstansicht vereinfachen, ohne Modelllogik oder Evidenzbehauptungen zu ändern. Risiko: bestehende Legacy-Lesespuren bleiben nützlich, dürfen aber nicht mehr als konkurrierende erste Blöcke wirken. Nächste Schritte: API/Streamlit-Brief weiter angleichen, dann Legacy-Detailbereiche schrittweise entrümpeln.
+
+### Designer / UX
+Die erste Ansicht bekommt einen `executive_brief`: Titel, Lead, sieben klare Abschnitte und kompakte Kennzahlenzeilen. Das ist näher an einem lesbaren Briefing als an einer Sammlung einzelner Widgets.
+
+### Creative Agent
+Idee: Später könnte derselbe Executive Brief als kopierbarer „1-Minuten-Brief“ exportiert werden. Fit: gut für Teilbarkeit und Beratungskontext, aber erst nach weiterer Ergebnis-Reduktion.
+
+### Political Health-System Strategist
+Die Formulierung bleibt bewusst prüfend: kein schneller politischer Schluss aus einem Simulationslauf. Besonders bei Medizinstudienplätzen bleibt der Pipeline-Lag zentral, bevor Wartezeit, Belastung und Puffer politisch bewertet werden.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Es wurden keine neuen Sachbehauptungen oder Parameter eingeführt; die Änderung ist eine Kommunikations-/UI-Schicht über vorhandenen SimMed-Mechanismen und Registry-Caveats.
+
+### Integrator Decision
+Akzeptiert: `public_result_view.executive_brief` als saubere Quelle für die erste Ergebnisansicht; Streamlit rendert daraus eine Karte mit kompakten Kennzahlen statt Bullet-Dopplung. Deferred: tieferes Entfernen alter Ergebnis-Helfer, solange sie als geschlossene Prüfungsschicht gebraucht werden.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; sicher weiter mit Vereinfachung und Zusammenführung der Ergebnisbereiche.
+
+### Verification / Git
+Verifiziert: `pytest tests/test_result_causality.py::test_public_result_view_exposes_single_executive_brief_for_first_screen -q`; `pytest tests/test_result_causality.py tests/test_api.py -q` → 122 passed; `py_compile app.py result_causality.py api.py`; kleiner Simulation-/Packet-Smoke; `pytest -q` → 281 passed. Git-Sync/Commit/Push folgt als normaler Integrator-Schritt.
