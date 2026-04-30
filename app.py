@@ -96,6 +96,7 @@ from result_uncertainty import (
     build_uncertainty_band_summary_from_final,
     build_uncertainty_decision_checklist,
     build_uncertainty_first_contact_cards,
+    build_uncertainty_reading_storyboard,
     build_uncertainty_result_questions,
 )
 import scenario_gallery as scenario_gallery_module
@@ -3451,8 +3452,17 @@ def render_uncertainty_band_summary(agg: pd.DataFrame):
         return
     with st.expander("Unsicherheit zuerst lesen: Wie breit sind die Modell-Spannweiten?", expanded=False):
         st.caption("P5/P95 zeigen die Spannweite der Monte-Carlo-Läufe im Endjahr. Das ist Orientierung, keine amtliche Prognose.")
+        storyboard_rows = build_uncertainty_reading_storyboard(rows)
         question_rows = build_uncertainty_result_questions(rows)
         first_contact_cards = build_uncertainty_first_contact_cards(rows)
+        if storyboard_rows:
+            st.markdown("**Lesereihenfolge für Unsicherheit:**")
+            st.dataframe(
+                pd.DataFrame(storyboard_rows)[["rank", "stage", "question", "answer_first", "open_next"]],
+                use_container_width=True,
+                hide_index=True,
+            )
+            st.caption(storyboard_rows[0]["guardrail"])
         if first_contact_cards:
             st.markdown("**So startest du mit Unsicherheit (mobil lesbar):**")
             for card in first_contact_cards:

@@ -2,6 +2,7 @@ from result_uncertainty import (
     build_uncertainty_band_summary_from_final,
     build_uncertainty_decision_checklist,
     build_uncertainty_first_contact_cards,
+    build_uncertainty_reading_storyboard,
     build_uncertainty_result_questions,
 )
 
@@ -101,3 +102,34 @@ def test_uncertainty_first_contact_cards_create_mobile_reading_path():
     assert "Modellannahmen" in cards[2]["title"]
     assert "keine amtliche Prognose" in cards[0]["guardrail"]
     assert "kein Wirksamkeitsnachweis" in cards[0]["guardrail"]
+
+
+def test_uncertainty_reading_storyboard_orders_safe_result_interpretation():
+    rows = [
+        {
+            "metric_key": "gkv_saldo",
+            "label": "GKV-Saldo",
+            "mean": "10.00",
+            "p5": "-5.00",
+            "p95": "25.00",
+            "signal": "breites Band",
+        },
+        {"metric_key": "wartezeit_fa", "label": "Facharzt-Wartezeit", "signal": "enges Band"},
+    ]
+
+    storyboard = build_uncertainty_reading_storyboard(rows)
+
+    assert [step["rank"] for step in storyboard] == ["1", "2", "3", "4"]
+    assert [step["stage"] for step in storyboard] == [
+        "Orientieren",
+        "Robustheit prüfen",
+        "Wirkpfad gegenlesen",
+        "Entscheidung bremsen",
+    ]
+    assert "GKV-Saldo" in storyboard[0]["answer_first"]
+    assert "P5/P95 -5.00–25.00" in storyboard[0]["answer_first"]
+    assert "breite Bänder" in storyboard[1]["answer_first"]
+    assert "Annahmen-/Evidenzcheck" in storyboard[2]["answer_first"]
+    assert "keine amtliche Prognose" in storyboard[3]["answer_first"]
+    assert "kein Wirksamkeitsnachweis" in storyboard[3]["guardrail"]
+    assert all("execute=true" not in step.get("open_next", "") for step in storyboard)

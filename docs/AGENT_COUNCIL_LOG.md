@@ -3394,3 +3394,32 @@ Keine. Safe default remains Hold/read-only before any future deliberate Apply/Ru
 
 ### Verification / Git
 Targeted tests passed: scenario-gallery confirmation template API/helper tests. Full suite passed: `203 passed`. Compile and runtime smoke passed: `py_compile app.py api.py scenario_gallery.py simulation_core.py data_ingestion.py`; 20-run/2-year simulation smoke `df=(60, 30)`, `reg=(320, 6)`. Commit/push status follows in heartbeat output.
+
+## 2026-04-30 08:49 Europe/Berlin — Uncertainty Reading Storyboard
+
+### Context
+Alexs Priorität bleibt Core-Plattform statt reiner KI/Evidence-Intake. Dieser Lauf stärkt die Ergebnis-/Unsicherheits-UX: `result_uncertainty.py`, `/simulate` und die Streamlit-Ergebnisansicht bekommen eine explizite Lesereihenfolge für P5/P95-Spannweiten.
+
+### Project Manager
+Priorität: kleine, testbare Plattformverbesserung im bestehenden Unsicherheits-Track. Risiko: weitere Hinweise könnten fragmentieren; deshalb wurde bestehende Band-/Checklist-Logik nur zu einem Storyboard zusammengesetzt. Nächste Schritte: Unsicherheitsstoryboard mit Sensitivitäts-/Parameterhebel-Pfaden verbinden.
+
+### Designer / UX
+Die neue Reihenfolge beantwortet mobil/touch-sicher: erst P5/P95 sehen, dann Robustheit, Wirkpfad, Annahmen und politische Einordnung prüfen. Das reduziert die Gefahr, nur KPI-Punktwerte zu lesen.
+
+### Creative Agent
+Idee: später eine visuelle Ampel neben jedem KPI, die Storyboard-Stufe 1-4 direkt verlinkt. Fit: gut für Entscheidungsqualität, aber erst nach stabiler Sensitivitätslogik umsetzen.
+
+### Political Health-System Strategist
+Unsicherheitsbänder dürfen keine politischen Scheinpräzisionszahlen werden. Die neue Storyboard-Stufe bremst ausdrücklich vor Policy-Entscheidungen und verweist auf Evidenz-/Datenstatus und politische Einordnung.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf; keine neuen externen Fakten. P5/P95 bleibt als SimMed-Monte-Carlo-Spannweite beschriftet, nicht als amtliche Prognose, Wirksamkeitsnachweis oder Konfidenzgarantie.
+
+### Integrator Decision
+Akzeptiert: `build_uncertainty_reading_storyboard(...)` als zentrale API/UI-Hilfe, `/simulate`-Payload-Feld `uncertainty_reading_storyboard`, Streamlit-Rendering im Unsicherheits-Expander und Regressionstests.
+
+### Question to Alex
+Keine.
+
+### Verification / Git
+Tests: `pytest tests/test_result_uncertainty.py tests/test_api.py::test_simulate_exposes_uncertainty_band_summary_for_agents -q`; `py_compile app.py api.py result_uncertainty.py`; 20-run Simulation-Smoke; full `pytest -q` (204 passed). Git-Commit/Push folgt in diesem Lauf.

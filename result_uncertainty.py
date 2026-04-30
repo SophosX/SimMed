@@ -157,6 +157,67 @@ def build_uncertainty_decision_checklist(
 
 
 
+def build_uncertainty_reading_storyboard(
+    band_rows: Sequence[Mapping[str, str]],
+    *,
+    limit: int = 4,
+) -> list[dict[str, str]]:
+    """Build an ordered first-contact path for reading uncertainty safely.
+
+    The storyboard reassembles existing uncertainty rows into an answer-first
+    journey for mobile/API consumers. It is status/UX only: no new simulation,
+    sensitivity analysis, connector execution, or model/data mutation happens.
+    """
+
+    rows = list(band_rows)[:limit]
+    if not rows:
+        return []
+    first = rows[0]
+    first_label = first.get("label") or first.get("metric_key") or "erste Kennzahl"
+    broad_count = sum(1 for row in rows if row.get("signal") == "breites Band")
+    return [
+        {
+            "rank": "1",
+            "stage": "Orientieren",
+            "question": "Welche Unsicherheit sehe ich zuerst?",
+            "answer_first": (
+                f"Starte mit {first_label}: Mittelwert {first.get('mean', '?')} und "
+                f"P5/P95 {first.get('p5', '?')}–{first.get('p95', '?')} statt nur Punktwert lesen."
+            ),
+            "open_next": f"KPI-Detailkarte für {first_label}",
+            "guardrail": UNCERTAINTY_GUARDRAIL,
+        },
+        {
+            "rank": "2",
+            "stage": "Robustheit prüfen",
+            "question": "Ist das Ergebnis eng oder breit?",
+            "answer_first": (
+                f"Unter den ersten {len(rows)} Unsicherheits-Kennzahlen sind {broad_count} breite Bänder; "
+                "breite Bänder zuerst als Robustheitsfrage behandeln."
+            ),
+            "open_next": "Uncertainty-Entscheidungscheckliste und P5/P95-Zeilen",
+            "guardrail": UNCERTAINTY_GUARDRAIL,
+        },
+        {
+            "rank": "3",
+            "stage": "Wirkpfad gegenlesen",
+            "question": "Warum entsteht diese Spannweite im Modell?",
+            "answer_first": "Unsicherheit erst zusammen mit geändertem Hebel, Annahmen-/Evidenzcheck und Trend-Timing interpretieren.",
+            "open_next": "KPI-Detailkarte → Annahmen-Check → Trend-Timing",
+            "guardrail": UNCERTAINTY_GUARDRAIL,
+        },
+        {
+            "rank": "4",
+            "stage": "Entscheidung bremsen",
+            "question": "Darf ich daraus schon eine Policy-Entscheidung ableiten?",
+            "answer_first": "Nein: P5/P95-Bänder sind Modellspannweiten, keine amtliche Prognose und kein Wirksamkeitsnachweis.",
+            "open_next": "Politische Einordnung und Evidenz-/Datenstatus prüfen",
+            "guardrail": UNCERTAINTY_GUARDRAIL,
+        },
+    ]
+
+
+
 def build_uncertainty_band_summary_from_final(
     final_year_summary: Mapping[str, Any],
     *,
