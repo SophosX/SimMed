@@ -2690,3 +2690,33 @@ Keine.
 ### Verification / Git
 Local verification passed: `pytest -q` (161 passed), `py_compile` for touched files, and 30-run/3-year simulation smoke (`df=(120,30)`, `reg=(480,6)`). Commit/push status recorded in heartbeat.
 
+
+
+## 2026-04-30 05:26 Europe/Berlin — Heartbeat: Review-Draft Validation Packet API
+
+### Context
+Core-platform heartbeat on `feat/platform-data-status-foundation`. Added a focused API route for the manual transformation-review draft validation packet so operators/agents no longer need to parse the broader preflight response before validating a draft.
+
+### Project Manager
+Priority remains data-ingestion/provenance foundation. This slice advances the raw-cache → review-draft → validation → later explicit integration workflow without touching model defaults. Next tasks: expose the same focused packet in Learning Page/Daten-Werkbank, then design the deliberate manual record-review action separately.
+
+### Designer / UX
+The route makes the operator journey more first-contact friendly: one clear status endpoint for the copyable validation command before any write action. Mobile/UI surface should reuse this rather than adding another dense table.
+
+### Creative Agent
+Idea: later turn these focused status routes into a “Daten-Werkbank Schritt 1/2/3” checklist. Fit is good because it motivates progress while keeping every gate auditable and reversible.
+
+### Political Health-System Strategist
+No new stakeholder or policy claim. Guardrail remains important: validation of a transformation draft is not a political/policy-effect proof and not a model import.
+
+### Evidence / Domain
+No new research in this run. The change preserves separation of raw snapshot, draft validation, reviewed transformation, and explicit registry/model integration.
+
+### Integrator Decision
+Accepted a small API-only platform increment: `GET /data-snapshots/review-draft/validation-packet`, with a regression test for read-only/no-mutation guardrails. Deferred any persistence/write endpoint until the manual review creation gate is explicitly designed and tested.
+
+### Question to Alex
+Keine wichtige Entscheidung offen.
+
+### Verification / Git
+Focused API test passed locally; full verification/commit/push follows in this heartbeat.

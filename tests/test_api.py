@@ -174,6 +174,28 @@ def test_api_exposes_transformation_review_draft_example_payload_without_persist
     assert "review-draft/validate" in example["copyable_validate_command"]
     assert "keine Registry-/Modellmutation" in example["guardrail"]
 
+def test_api_exposes_transformation_review_draft_validation_packet_without_persisting():
+    client = TestClient(api)
+    response = client.get("/data-snapshots/review-draft/validation-packet")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "transformation_review_draft_validation_packet_not_persisted"
+    assert "keine Review-Erzeugung" in body["guardrail"]
+    assert "keine Registry-/Modellmutation" in body["guardrail"]
+    packet = body["transformation_review_draft_validation_packet"]
+    assert packet["validate_route"] == "POST /data-snapshots/review-draft/validate"
+    assert "curl -s" in packet["copyable_validate_command"]
+    assert "review-draft/validate" in packet["copyable_validate_command"]
+    assert packet["status"] in {
+        "draft_validation_incomplete",
+        "draft_validation_blocked_no_preflight_row",
+        "draft_validation_blocked_by_snapshot_mismatch",
+        "draft_validation_ready_for_manual_record_review",
+    }
+    assert "keine Review-Erzeugung" in packet["guardrail"]
+    assert "keine Registry-/Modellmutation" in packet["guardrail"]
+
 
 
 def test_api_validates_transformation_review_draft_without_persisting():

@@ -212,6 +212,21 @@ def get_data_snapshot_review_draft_handoff() -> dict:
     }
 
 
+@api.get("/data-snapshots/review-draft/validation-packet")
+def get_data_snapshot_review_draft_validation_packet() -> dict:
+    """Expose the focused manual draft-validation packet without persisting a review."""
+
+    integrity = build_cached_snapshot_integrity_report()
+    checklist = build_cached_snapshot_review_start_checklist(integrity)
+    preflight = build_transformation_review_draft_preflight(checklist)
+    return {
+        "status": "transformation_review_draft_validation_packet_not_persisted",
+        "guardrail": "Validation-Packet ist read-only: keine Review-Erzeugung, kein Cache-Schreiben, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+        "transformation_review_draft_preflight": preflight,
+        "transformation_review_draft_validation_packet": build_transformation_review_draft_validation_packet(preflight),
+    }
+
+
 @api.post("/data-snapshots/review-draft/validate")
 def validate_data_snapshot_review_draft(request: TransformationReviewDraftValidationRequest) -> dict:
     """Validate a manual review draft without writing a ReviewedTransformation."""
