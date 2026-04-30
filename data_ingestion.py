@@ -3343,6 +3343,46 @@ def build_data_readiness_registry_integration_operator_export_share_brief(
     }
 
 
+def build_data_readiness_registry_integration_operator_export_status_card(
+    export_share_brief: dict,
+) -> dict:
+    """Return a one-card operator status for the Registry export handoff.
+
+    The share brief is copyable text. This status card turns the same information
+    into a mobile/API-friendly object with a visible traffic-light decision, the
+    first safe GET route, and the explicit stop rule before any Registry branch.
+    It stays read-only and must never include execution, Git, branch, cache/review
+    write, or model-mutation commands.
+    """
+
+    routes = [route for route in export_share_brief.get("safe_routes_to_open", []) if str(route).startswith("GET ")]
+    copy_safe = export_share_brief.get("copy_safe") is True
+    status = "gruen_status_teilbar" if copy_safe else "rot_stoppen_nicht_teilen"
+    first_safe_route = routes[0] if routes else "keine sichere GET-Route"
+    stop_condition = export_share_brief.get("stop_condition") or "STOP: kein Branch/PR ohne dokumentierte Go/Hold/Reject-Entscheidung."
+    return {
+        "title": "Registry-Export-Statuskarte",
+        "plain_language_note": (
+            "Ein-Karten-Status für Mobil/API: Ist der Registry-Export nur als Status teilbar, "
+            "welche GET-Route öffne ich zuerst, und wo muss vor Branch/PR gestoppt werden?"
+        ),
+        "primary_parameter_key": export_share_brief.get("primary_parameter_key"),
+        "primary_label": export_share_brief.get("primary_label"),
+        "traffic_light": status,
+        "copy_safe": copy_safe,
+        "first_safe_route": first_safe_route,
+        "safe_routes_to_open": routes,
+        "failed_check_count": int(export_share_brief.get("failed_check_count", 0) or 0),
+        "operator_answer": (
+            "Ja: nur den Status teilen und danach vor jeder Branch-/PR-Arbeit stoppen."
+            if copy_safe
+            else "Nein: nicht teilen; erst Checkliste, GET-Routen und Stop-Gate reparieren."
+        ),
+        "stop_condition": stop_condition if str(stop_condition).startswith("STOP:") else f"STOP: {stop_condition}",
+        "guardrail": "Read-only/Status-card-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    }
+
+
 def _check_passed(checks: list[dict], needle: str) -> bool:
     return any(needle in check.get("check", "") and check.get("passed") is True for check in checks)
 

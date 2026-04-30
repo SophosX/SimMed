@@ -3058,3 +3058,33 @@ Keine.
 
 ### Verification / Git
 Vor Commit geprüft: fokussierte Tests für Run-Packets/API 3 passed; volle Suite 174 passed; py_compile für `app.py api.py scenario_gallery.py data_ingestion.py simulation_core.py parameter_registry.py`; Simulation-Smoke 20 runs × 2 Jahre OK `(60, 30)` / `(320, 6)`. Commit/Push folgt in diesem Heartbeat.
+
+
+## 2026-04-30 07:05 Europe/Berlin — Heartbeat: Registry-Export-Statuskarte
+
+### Context
+Alex hat den Plattform-Track priorisiert. Dieser Lauf erweitert die Data-Readiness/Registry-Integration-Kette um eine mobile/API-freundliche Statuskarte nach dem Export-Share-Brief.
+
+### Project Manager
+Priorität bleibt Daten-/Provenienz-Governance vor Modellmutation. Kleine, sichere Scheibe: bestehende Export-/Review-Kette verdichten, ohne Live-Abruf oder Branch/PR-Aktion. Nächste Tasks: Statuskarte in Learning Page spiegeln; danach echten Parameter-Workflow pro Datenpunkt besser bündeln.
+
+### Designer / UX
+Der Share-Brief war kopierbar, aber für mobile/operatorische Erstprüfung noch textlastig. Die neue Statuskarte beantwortet in einem Blick: grün/rot, erste sichere GET-Route, Stop-Regel.
+
+### Creative Agent
+Idee: später ein Ampel-Cockpit für alle Daten-Gates; passt, wenn es strikt Status/Navigation bleibt und keine Ausführung versteckt. Heute nur ein Baustein davon.
+
+### Political Health-System Strategist
+Vor Registry-/Modellintegration bleibt die Go/Hold/Reject-Entscheidung sichtbar; keine Datenänderung wird als politische Wirksamkeit oder amtliche Prognose gerahmt.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Die Änderung erzeugt keine neuen Daten- oder Wirkungsclaims; sie macht bestehende Provenienz-/Review-Stopps sichtbarer.
+
+### Integrator Decision
+Akzeptiert: `build_data_readiness_registry_integration_operator_export_status_card(...)`, Aggregat-API-Feld und fokussierter GET-Endpunkt. Deferred: Learning-Page-Rendering als nächste UX-Scheibe.
+
+### Question to Alex if needed
+Keine wichtige Entscheidung offen.
+
+### Verification / Git
+Gezielte API-Tests, volle Testsuite, py_compile und kleiner Simulation-Smoke sind grün. Commit/Push folgt in diesem Heartbeat.

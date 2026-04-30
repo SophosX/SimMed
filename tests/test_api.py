@@ -1239,6 +1239,12 @@ def test_api_exposes_registry_integration_operator_briefing_without_actions():
     assert "GET /data-readiness/bevoelkerung_mio" in share_brief["markdown"]
     assert "STOP:" in share_brief["markdown"]
     assert "execute=true" not in share_brief["markdown"]
+    status_card = body["registry_integration_operator_export_status_card"]
+    assert status_card["title"] == "Registry-Export-Statuskarte"
+    assert status_card["traffic_light"] == "gruen_status_teilbar"
+    assert status_card["first_safe_route"].startswith("GET ")
+    assert "STOP:" in status_card["stop_condition"]
+    assert "execute=true" not in " ".join(status_card["safe_routes_to_open"])
 
     export_response = client.get("/data-readiness/registry-integration-operator-export-packet?limit=3")
     assert export_response.status_code == 200
@@ -1364,4 +1370,23 @@ def test_api_exposes_registry_operator_export_share_brief_without_execution():
     assert "execute=true" not in share_brief["markdown"]
     assert "kein execute=true" in payload["guardrail"]
     assert "keine Registry-/Modellmutation" in share_brief["guardrail"]
+
+
+def test_api_exposes_registry_operator_export_status_card_without_execution():
+    client = TestClient(api)
+    response = client.get("/data-readiness/registry-integration-operator-export-status-card")
+
+    assert response.status_code == 200
+    payload = response.json()
+    status_card = payload["registry_integration_operator_export_status_card"]
+    assert payload["status"] == "data_readiness_registry_integration_operator_export_status_card_not_applied"
+    assert status_card["title"] == "Registry-Export-Statuskarte"
+    assert status_card["copy_safe"] is True
+    assert status_card["traffic_light"] == "gruen_status_teilbar"
+    assert status_card["first_safe_route"].startswith("GET ")
+    assert all(route.startswith("GET ") for route in status_card["safe_routes_to_open"])
+    assert "STOP:" in status_card["stop_condition"]
+    assert "execute=true" not in " ".join(status_card["safe_routes_to_open"])
+    assert "kein execute=true" in payload["guardrail"]
+    assert "keine Registry-/Modellmutation" in status_card["guardrail"]
 
