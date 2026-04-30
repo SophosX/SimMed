@@ -95,6 +95,7 @@ from scenario_gallery import (
     build_scenario_gallery_operator_run_packets,
     build_scenario_gallery_operator_status_cards,
     build_scenario_gallery_pre_run_audit,
+    build_scenario_gallery_run_confirmation_template,
     build_scenario_gallery_run_decision_brief,
     build_scenario_gallery_run_handoff_sheet,
     build_scenario_gallery_run_readiness_summary,
@@ -1562,6 +1563,23 @@ def get_scenario_gallery_run_decision_brief(
         status="invalid_scenario_gallery_run_decision_brief_bounds",
     )
     return build_scenario_gallery_run_decision_brief(n_runs=n_runs, n_years=n_years, seed=seed)
+
+
+@api.get("/scenario-gallery/run-confirmation-template")
+def get_scenario_gallery_run_confirmation_template(
+    n_runs: int = 100,
+    n_years: int = 15,
+    seed: int = 42,
+) -> dict:
+    """Expose a fillable, read-only confirmation template before starter runs."""
+
+    _validate_scenario_gallery_bounds(
+        n_runs,
+        n_years,
+        seed,
+        status="invalid_scenario_gallery_run_confirmation_template_bounds",
+    )
+    return build_scenario_gallery_run_confirmation_template(n_runs=n_runs, n_years=n_years, seed=seed)
 
 
 @api.get("/scenario-gallery/operator-run-packets")

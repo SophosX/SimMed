@@ -3364,3 +3364,33 @@ Gezielte Tests: `tests/test_api.py::test_api_exposes_registry_integration_operat
 - **Integrator Decision:** Implementiert `build_data_readiness_registry_integration_final_gate_issue_stub(...)`, API-Endpunkt `/data-readiness/registry-integration-final-gate-issue-stub`, Einbindung in Aggregat-/Learning-Page-Backlog und Regressionstests.
 - **Question to Alex if needed:** Keine wichtige Entscheidung offen.
 - **Verification/Git:** `pytest -q` 200 passed; `py_compile` für geänderte Dateien; API-Smoke für neuen Endpoint OK. Commit/Push wird nach finaler Zip-Aktualisierung verifiziert.
+
+
+## 2026-04-30 08:42 Europe/Berlin — Scenario-Gallery Run-Confirmation Template
+
+### Context
+Heartbeat primary track stayed on core platform UX/API. The Scenario Gallery already had guided plans, run packets, pre-run audit, and Run/Hold/Reject decision brief; this slice adds the next read-only confirmation template before a starter scenario is deliberately executed.
+
+### Project Manager
+Priority: keep moving from demo cards toward a safe, auditable guided workflow without creating an automatic Apply button. Risk: too many status layers can confuse users unless each layer has a clear purpose. Next: surface the confirmation template in the Learning/Landing UI or make a compact downloadable/copyable handoff.
+
+### Designer / UX
+The new template makes the moment before running explicit: who decided, why now, which caveat was acknowledged, and who reads results afterward. This helps first-time users understand that starter scenarios require a human confirmation, not blind one-click execution.
+
+### Creative Agent
+Idea: later turn the confirmation template into a printable “Scenario Flight Card” for workshops. Fit is good for facilitation and trust, but it must stay copy/read-only until Alex approves a deliberate Apply/Run flow.
+
+### Political Health-System Strategist
+A Run/Hold/Reject confirmation is useful for politically sensitive reforms because it separates exploratory simulation from advocacy. It prevents a starter card from being framed as a mandate, vote forecast, or lobbying recommendation.
+
+### Evidence / Domain
+No new factual claim or external evidence was added. The guardrails preserve that scenario cards and confirmation templates are not official forecasts, effectiveness proof, registry/model mutation, or policy recommendations.
+
+### Integrator Decision
+Accepted a small platform slice: `build_scenario_gallery_run_confirmation_template(...)`, Streamlit wrapper, focused API endpoint `GET /scenario-gallery/run-confirmation-template`, and API/UI-helper regression tests.
+
+### Question to Alex
+Keine. Safe default remains Hold/read-only before any future deliberate Apply/Run UI.
+
+### Verification / Git
+Targeted tests passed: scenario-gallery confirmation template API/helper tests. Full suite passed: `203 passed`. Compile and runtime smoke passed: `py_compile app.py api.py scenario_gallery.py simulation_core.py data_ingestion.py`; 20-run/2-year simulation smoke `df=(60, 30)`, `reg=(320, 6)`. Commit/push status follows in heartbeat output.

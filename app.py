@@ -1233,6 +1233,17 @@ def build_scenario_gallery_run_decision_brief(
     )
 
 
+def build_scenario_gallery_run_confirmation_template(
+    *, n_runs: int = 100, n_years: int = 15, seed: int = 42
+) -> dict[str, Any]:
+    """Return a read-only confirmation template before starter execution."""
+
+    return scenario_gallery_module.build_scenario_gallery_run_confirmation_template(
+        n_runs=n_runs,
+        n_years=n_years,
+        seed=seed,
+    )
+
 
 def sidebar_quick_start_steps() -> List[str]:
     """Kurze Orientierung, damit neue Nutzer:innen sofort wissen, was zu tun ist."""

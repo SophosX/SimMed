@@ -27,6 +27,7 @@ from app import (
     build_scenario_gallery_operator_run_packets,
     build_scenario_gallery_operator_status_cards,
     build_scenario_gallery_pre_run_audit,
+    build_scenario_gallery_run_confirmation_template,
     build_scenario_gallery_run_decision_brief,
     build_scenario_gallery_run_handoff_sheet,
     build_scenario_gallery_run_readiness_summary,
@@ -809,6 +810,35 @@ def test_scenario_gallery_run_decision_brief_keeps_run_hold_reject_auditable():
     assert "keine Lobbying-Empfehlung" in brief["guardrail"]
     assert "Run/Hold/Reject" in combined
 
+
+def test_scenario_gallery_run_confirmation_template_is_fillable_but_read_only():
+    template = build_scenario_gallery_run_confirmation_template(n_runs=100, n_years=15, seed=42)
+    combined = " ".join(str(value) for value in template.values())
+
+    assert template["status"] == "scenario_gallery_run_confirmation_template_not_executed"
+    assert template["recommended_default"].startswith("Hold")
+    medical_row = next(row for row in template["rows"] if row["card_id"] == "medical_training_pipeline")
+    assert medical_row["confirmation_status"] == "template_only_not_persisted_not_executed"
+    field_names = [field["field"] for field in medical_row["fields_to_fill_before_run"]]
+    assert field_names == [
+        "decision",
+        "decided_by",
+        "decided_at",
+        "why_this_scenario_now",
+        "evidence_caveat_acknowledged",
+        "post_run_reading_owner",
+    ]
+    decision_field = medical_row["fields_to_fill_before_run"][0]
+    assert decision_field["allowed_values"] == ["Run", "Hold", "Reject/Rework"]
+    assert decision_field["recommended_default"] == "Hold"
+    assert medical_row["copyable_payload_route_if_run"] == "POST /simulate"
+    assert any("keine amtliche Prognose" in item for item in medical_row["minimum_checks_before_run"])
+    assert "keine Entscheidungsspeicherung" in template["guardrail"]
+    assert "kein Simulationslauf" in template["guardrail"]
+    assert "keine Registry-/Modellmutation" in template["guardrail"]
+    assert "kein Policy-Wirkungsbeweis" in template["guardrail"]
+    assert "keine Lobbying-Empfehlung" in template["guardrail"]
+    assert "außerhalb dieses read-only Endpunkts" in combined
 
 
 def test_direction_word_uses_plain_language_and_preference_direction():

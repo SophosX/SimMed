@@ -376,6 +376,60 @@ def build_scenario_gallery_run_decision_brief(
 
 
 
+def build_scenario_gallery_run_confirmation_template(
+    *, n_runs: int = 100, n_years: int = 15, seed: int = 42
+) -> dict[str, Any]:
+    """Return an auditable confirmation template before a gallery run.
+
+    This converts the decision brief into fillable, copy-safe records for a
+    human/operator. It intentionally does not persist the confirmation, execute
+    a simulation, apply parameters, or create evidence/model claims.
+    """
+
+    decision_brief = build_scenario_gallery_run_decision_brief(n_runs=n_runs, n_years=n_years, seed=seed)
+    rows: list[dict[str, Any]] = []
+    for row in decision_brief["rows"]:
+        rows.append({
+            "card_id": row["card_id"],
+            "title": row["title"],
+            "recommended_default": row["recommended_default"],
+            "confirmation_status": "template_only_not_persisted_not_executed",
+            "fields_to_fill_before_run": [
+                {"field": "decision", "allowed_values": row["allowed_decisions"], "recommended_default": "Hold"},
+                {"field": "decided_by", "prompt": "Name/Rolle der verantwortlichen Person oder Agentenrolle eintragen."},
+                {"field": "decided_at", "prompt": "Zeitpunkt der Entscheidung eintragen."},
+                {"field": "why_this_scenario_now", "prompt": "Kurz begründen, warum diese Starterkarte jetzt geprüft wird."},
+                {"field": "evidence_caveat_acknowledged", "prompt": "Bestätigen, dass Evidenzgrad/Caveat je Parameter gelesen wurden."},
+                {"field": "post_run_reading_owner", "prompt": "Festlegen, wer Storyboard, KPI-Details, Annahmen-Check und Policy-Briefing liest."},
+            ],
+            "minimum_checks_before_run": row["minimum_checks_before_run"],
+            "copyable_payload_route_if_run": row["copyable_payload_route_if_run"],
+            "copyable_manifest_route_if_run": row["copyable_manifest_route_if_run"],
+            "post_run_first_three_clicks": row["post_run_first_three_clicks"],
+            "stop_rule": row["stop_rule"],
+            "guardrail": (
+                "Confirmation-Template ist read-only: keine Entscheidungsspeicherung, kein Apply-Button, "
+                "keine Session-State-Mutation, kein Simulationslauf, keine Registry-/Modellmutation, "
+                "keine amtliche Prognose, kein Policy-Wirkungsbeweis und keine Lobbying-Empfehlung."
+            ),
+        })
+    return {
+        "status": "scenario_gallery_run_confirmation_template_not_executed",
+        "title": "Scenario-Gallery Run-Confirmation: erst Hold/Run dokumentieren, dann bewusst ausführen",
+        "recommended_default": decision_brief["recommended_default"],
+        "rows": rows,
+        "definition_of_done_before_run": decision_brief["definition_of_done_before_run"] + [
+            "Die Confirmation-Felder wurden außerhalb dieses read-only Endpunkts ausgefüllt.",
+            "Falls die Entscheidung Run lautet, wird nur der copyable Payload bewusst an POST /simulate übergeben.",
+        ],
+        "guardrail": (
+            "Run-Confirmation-Template ist read-only/status-only: keine Entscheidungsspeicherung, "
+            "kein Apply-Button, keine Session-State-Mutation, kein Simulationslauf, keine Registry-/Modellmutation, "
+            "keine amtliche Prognose, kein Policy-Wirkungsbeweis und keine Lobbying-Empfehlung."
+        ),
+    }
+
+
 def build_scenario_gallery_operator_run_packets(
     *, n_runs: int = 100, n_years: int = 15, seed: int = 42
 ) -> list[dict[str, Any]]:
