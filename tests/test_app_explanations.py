@@ -24,6 +24,7 @@ from app import (
     build_landing_hero_content,
     build_scenario_gallery_cards,
     build_scenario_gallery_guided_apply_plan,
+    build_scenario_gallery_operator_run_packets,
     build_scenario_gallery_manifest_previews,
     build_political_lever_detail_sections,
     build_political_result_checkpoints,
@@ -595,6 +596,47 @@ def test_scenario_gallery_guided_apply_plan_bridges_cards_to_manual_run_without_
     assert step["parameter_key"] == "medizinstudienplaetze"
     assert "Sidebar-Regler" in step["instruction"]
     assert step["evidence_grade"] in {"A", "B", "C", "D", "E"}
+
+
+def test_scenario_gallery_operator_run_packets_are_copy_safe_and_read_only():
+    packets = build_scenario_gallery_operator_run_packets(n_runs=100, n_years=15, seed=42)
+    combined = " ".join(str(value) for packet in packets for value in packet.values())
+
+    assert len(packets) == len(build_scenario_gallery_cards())
+    first = packets[0]
+    assert {
+        "card_id",
+        "scenario_id",
+        "status",
+        "pre_run_checklist",
+        "evidence_checks",
+        "copyable_api_payload",
+        "copyable_api_route",
+        "manifest_route",
+        "post_run_reading_order",
+        "operator_stop_rule",
+        "guardrail",
+    } <= set(first)
+    assert all(packet["status"] == "run_packet_ready_but_not_executed" for packet in packets)
+    assert all(packet["copyable_api_route"] == "POST /simulate" for packet in packets)
+    assert all(packet["manifest_route"] == "POST /scenario-manifest" for packet in packets)
+    assert all(packet["evidence_checks"] for packet in packets)
+    assert "Evidenzgrad/Caveat" in combined
+    assert "Ergebnis nicht als Wirkungsbeweis" in combined
+    assert "Ergebnis-Storyboard" in combined
+    assert "STOP:" in combined
+    assert "kein automatischer Apply-Button" in combined
+    assert "keine Session-State-Mutation" in combined
+    assert "kein Simulationslauf" in combined
+    assert "keine Registry-/Modellmutation" in combined
+    assert "keine amtliche Prognose" in combined
+    assert "kein Wirksamkeitsnachweis" in combined
+    assert "keine Lobbying-Empfehlung" in combined
+
+    medical_packet = next(packet for packet in packets if packet["card_id"] == "medical_training_pipeline")
+    assert medical_packet["copyable_api_payload"]["parameter_changes"] == {"medizinstudienplaetze": 9000}
+    assert medical_packet["evidence_checks"][0]["parameter_key"] == "medizinstudienplaetze"
+    assert medical_packet["evidence_checks"][0]["evidence_grade"] in {"A", "B", "C", "D", "E"}
 
 
 def test_direction_word_uses_plain_language_and_preference_direction():

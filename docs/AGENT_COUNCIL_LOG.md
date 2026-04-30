@@ -3029,3 +3029,32 @@ Gezielte Tests und volle Suite liefen grün: 169 passed. Py-compile und 20-run S
 - **Integrator Decision:** Implemented `build_data_readiness_registry_integration_operator_export_share_brief(...)`, exposed it in aggregate/API/Learning Page, and added API/unit regression tests.
 - **Question to Alex if needed:** Keine – this is a low-risk, reversible platform governance/UX step.
 - **Verification/Git:** `pytest -q` → 171 passed; `py_compile` for touched files passed; 20-run/2-year simulation smoke passed. Commit/push pending in this heartbeat after zip refresh.
+
+## 2026-04-30 06:59 Europe/Berlin — Scenario-Gallery Run-Packets
+
+### Context
+Alexs Korrektur priorisiert wieder Core-Plattform-Arbeit. Dieser Lauf hat die MiroFish-inspirierte Scenario Gallery nicht weiter als UI-Prosa ausgebaut, sondern als agenten/API-fähige, read-only Ausführungsvorbereitung.
+
+### Project Manager
+Priorität: Starter-Szenarien müssen vom Lesen zur bewussten Ausführung führen, ohne automatische Parameteränderung. Nächste Plattformaufgaben: fokussierte Download/Copy-Fläche, später bewusst bestätigter Apply-Flow, danach Unsicherheits-/Sensitivitätsanzeige.
+
+### Designer / UX
+Run-Packets machen die erste Nutzung klarer: vor dem Lauf prüfen, Payload kopieren, nach dem Lauf Storyboard/KPI/Annahmen/Policy-Briefing lesen. Das ist mobile/touch-sicherer als nur API-Payload-Captions.
+
+### Creative Agent
+Produktidee: jede Starterkarte kann später als "Szenario-Rezept" mit QR/Copy-Block geteilt werden. Fit gut für Onboarding und Workshops; noch kein Social/Leaderboard-Schritt, damit Glaubwürdigkeit vor Gamification bleibt.
+
+### Political Health-System Strategist
+Die Stop-Regel verhindert, dass Gallery-Ergebnisse als Lobbying- oder Wirksamkeitsbeweis gelesen werden. Das ist wichtig bei politisch sensiblen Hebeln wie Studienplätzen, Telemedizin und Prävention.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Die neuen Packets verwenden bestehende Registry-Evidenzgrade/Caveats und erzeugen keine neuen Evidenz- oder Wirkungsclaims.
+
+### Integrator Decision
+Akzeptiert: `build_scenario_gallery_operator_run_packets(...)`, Streamlit-Landing-Anzeige, fokussierter API-Endpunkt `/scenario-gallery/operator-run-packets`, API/UI-Regressionstests. Alles bleibt read-only/status-only: kein Apply, kein Simulationslauf, keine Registry-/Modellmutation.
+
+### Question to Alex
+Keine.
+
+### Verification / Git
+Vor Commit geprüft: fokussierte Tests für Run-Packets/API 3 passed; volle Suite 174 passed; py_compile für `app.py api.py scenario_gallery.py data_ingestion.py simulation_core.py parameter_registry.py`; Simulation-Smoke 20 runs × 2 Jahre OK `(60, 30)` / `(320, 6)`. Commit/Push folgt in diesem Heartbeat.

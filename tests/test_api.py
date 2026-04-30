@@ -616,6 +616,37 @@ def test_api_rejects_scenario_gallery_guided_apply_plan_out_of_bounds_without_ex
     assert "kein Simulationslauf" in detail["guardrail"]
 
 
+def test_api_exposes_scenario_gallery_operator_run_packets_without_execution():
+    client = TestClient(api)
+    response = client.get("/scenario-gallery/operator-run-packets?n_runs=100&n_years=15&seed=42")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "scenario_gallery_operator_run_packets_not_executed"
+    assert "kein automatischer Apply-Button" in body["guardrail"]
+    assert "kein Simulationslauf" in body["guardrail"]
+    assert "keine Registry-/Modellmutation" in body["guardrail"]
+    packets = body["packets"]
+    assert packets
+    medical_packet = next(packet for packet in packets if packet["card_id"] == "medical_training_pipeline")
+    assert medical_packet["status"] == "run_packet_ready_but_not_executed"
+    assert medical_packet["copyable_api_route"] == "POST /simulate"
+    assert medical_packet["manifest_route"] == "POST /scenario-manifest"
+    assert medical_packet["copyable_api_payload"]["parameter_changes"] == {"medizinstudienplaetze": 9000}
+    assert "STOP:" in medical_packet["operator_stop_rule"]
+    assert "Wirksamkeitsnachweis" in medical_packet["operator_stop_rule"]
+
+
+def test_api_rejects_scenario_gallery_operator_run_packet_out_of_bounds_without_execution():
+    client = TestClient(api)
+    response = client.get("/scenario-gallery/operator-run-packets?n_years=31")
+
+    assert response.status_code == 422
+    detail = response.json()["detail"]
+    assert detail["status"] == "invalid_scenario_gallery_run_packet_bounds"
+    assert "kein Simulationslauf" in detail["guardrail"]
+
+
 def test_api_exposes_political_feasibility_endpoint():
     client = TestClient(api)
     response = client.post(

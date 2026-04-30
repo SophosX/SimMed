@@ -81,7 +81,10 @@ from data_ingestion import (
 from data_sources import list_sources
 from parameter_registry import list_parameters
 from political_feasibility import assess_political_feasibility
-from scenario_gallery import build_scenario_gallery_guided_apply_plan
+from scenario_gallery import (
+    build_scenario_gallery_guided_apply_plan,
+    build_scenario_gallery_operator_run_packets,
+)
 from simulation_core import MODEL_VERSION, build_scenario_manifest, get_default_params, run_scenario
 
 api = FastAPI(title="SimMed Deutschland 2040 API", version="0.2.0")
@@ -1392,6 +1395,30 @@ def get_scenario_gallery_guided_apply_plans(
         "status": "scenario_gallery_guided_apply_plans_not_executed",
         "guardrail": "Read-only: kein automatischer Apply-Button, keine Session-State-Mutation, kein Simulationslauf, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
         "plans": plans,
+    }
+
+
+@api.get("/scenario-gallery/operator-run-packets")
+def get_scenario_gallery_operator_run_packets(
+    n_runs: int = 100,
+    n_years: int = 15,
+    seed: int = 42,
+) -> dict:
+    """Expose read-only run packets for deliberate scenario execution without executing them."""
+
+    if not 1 <= n_runs <= 1000 or not 1 <= n_years <= 30 or not 0 <= seed <= 999999:
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "status": "invalid_scenario_gallery_run_packet_bounds",
+                "guardrail": "Nur bounded Run-Packet-/Payload-Vorschauen; kein Apply, kein Simulationslauf und keine Modellmutation.",
+            },
+        )
+    packets = build_scenario_gallery_operator_run_packets(n_runs=n_runs, n_years=n_years, seed=seed)
+    return {
+        "status": "scenario_gallery_operator_run_packets_not_executed",
+        "guardrail": "Read-only Run-Packets: kein automatischer Apply-Button, keine Session-State-Mutation, kein Simulationslauf, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+        "packets": packets,
     }
 
 

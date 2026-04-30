@@ -146,3 +146,54 @@ def build_scenario_gallery_guided_apply_plan(
             ),
         })
     return plans
+
+
+def build_scenario_gallery_operator_run_packets(
+    *, n_runs: int = 100, n_years: int = 15, seed: int = 42
+) -> list[dict[str, Any]]:
+    """Return copy-safe run packets that bridge guided cards to deliberate execution.
+
+    A packet is more concrete than a guided plan, but still read-only: it bundles
+    the exact payload, pre-run checks, and post-run reading path for an operator or
+    agent. It deliberately does not run the simulation, mutate Streamlit state, or
+    claim official forecasts/effects.
+    """
+
+    packets: list[dict[str, Any]] = []
+    for plan in build_scenario_gallery_guided_apply_plan(n_runs=n_runs, n_years=n_years, seed=seed):
+        changed_labels = [step["label"] for step in plan["manual_sidebar_steps"]]
+        evidence_checks = [
+            {
+                "parameter_key": step["parameter_key"],
+                "label": step["label"],
+                "evidence_grade": step["evidence_grade"],
+                "check": "Registry-Evidenzgrad und Caveat vor dem Lauf lesen; Ergebnis nicht als Wirkungsbeweis behandeln.",
+                "caveat": step["caveat"],
+            }
+            for step in plan["manual_sidebar_steps"]
+        ]
+        packets.append({
+            "card_id": plan["card_id"],
+            "title": plan["title"],
+            "scenario_id": plan["scenario_id"],
+            "status": "run_packet_ready_but_not_executed",
+            "changed_parameters_plain": ", ".join(changed_labels),
+            "pre_run_checklist": [
+                "Parameteränderungen bewusst prüfen; nichts wird automatisch angewendet.",
+                "Evidenzgrad/Caveat je geändertem Parameter lesen.",
+                "n_runs/n_years/seed als Reproduzierbarkeitsangaben notieren.",
+                "Nach dem Lauf zuerst Storyboard, KPI-Details, Annahmen-Check und Policy-Briefing lesen.",
+            ],
+            "evidence_checks": evidence_checks,
+            "copyable_api_payload": plan["api_payload"],
+            "copyable_api_route": "POST /simulate",
+            "manifest_route": "POST /scenario-manifest",
+            "post_run_reading_order": plan["reading_order"],
+            "operator_stop_rule": "STOP: kein Ergebnis als amtliche Prognose, Wirksamkeitsnachweis, Lobbying-Empfehlung oder automatische Modellentscheidung verwenden.",
+            "guardrail": (
+                "Operator-Run-Packet: read-only Vorbereitung; kein automatischer Apply-Button, "
+                "keine Session-State-Mutation, kein Simulationslauf, keine Registry-/Modellmutation, "
+                "keine amtliche Prognose, kein Wirksamkeitsnachweis und keine Lobbying-Empfehlung."
+            ),
+        })
+    return packets

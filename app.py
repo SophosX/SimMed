@@ -1150,6 +1150,19 @@ def build_scenario_gallery_guided_apply_plan(
         seed=seed,
     )
 
+
+def build_scenario_gallery_operator_run_packets(
+    *, n_runs: int = 100, n_years: int = 15, seed: int = 42
+) -> List[dict[str, Any]]:
+    """Return read-only operator packets for deliberate scenario execution."""
+
+    return scenario_gallery_module.build_scenario_gallery_operator_run_packets(
+        n_runs=n_runs,
+        n_years=n_years,
+        seed=seed,
+    )
+
+
 def sidebar_quick_start_steps() -> List[str]:
     """Kurze Orientierung, damit neue Nutzer:innen sofort wissen, was zu tun ist."""
     return [
@@ -1179,6 +1192,9 @@ def render_landing_hero() -> None:
         guided_plans = {
             item["card_id"]: item for item in build_scenario_gallery_guided_apply_plan()
         }
+        run_packets = {
+            item["card_id"]: item for item in build_scenario_gallery_operator_run_packets()
+        }
         for card in build_scenario_gallery_cards():
             st.markdown(f"**{card['title']}**")
             st.write(card["question"])
@@ -1195,6 +1211,9 @@ def render_landing_hero() -> None:
             st.caption("Manuell: " + " | ".join(step["instruction"] for step in plan["manual_sidebar_steps"]))
             st.caption("Lesereihenfolge: " + " → ".join(plan["reading_order"]))
             st.caption("API-Payload: " + json.dumps(plan["api_payload"], ensure_ascii=False))
+            packet = run_packets[card["id"]]
+            st.caption("Vor dem Lauf prüfen: " + " | ".join(packet["pre_run_checklist"][:2]))
+            st.caption("Run-Packet: " + packet["copyable_api_route"] + " · " + packet["operator_stop_rule"])
             st.caption("Guardrail: " + plan["guardrail"])
 
 
