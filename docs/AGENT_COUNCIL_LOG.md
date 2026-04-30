@@ -4359,4 +4359,4 @@ Akzeptiert: neues öffentliches Packet mit `result_headline`, `short_answer`, `r
 Keine wichtige Entscheidung offen; nächster sicherer Schritt ist weitere Konsolidierung der Detail-/Audit-Ebene, ohne Modellwerte zu verändern.
 
 ### Verification / Git
-Rot-Test zuerst ergänzt; fokussierte Tests grün. Vollständige Tests und Git-Sync/Push werden nach diesem Log-Eintrag ausgeführt.
+Rot-Test zuerst ergänzt; fokussierte Tests grün. Vollständige Tests: `pytest -q` → 259 passed; `py_compile app.py result_causality.py api.py simulation_core.py` → OK; 50-run Smoke → OK. GitHub Push bestätigt: `eda07dc Clarify first result briefing` auf `origin/main`; Commit enthält `app.py`, `result_causality.py`, `tests/test_result_causality.py`, `docs/AGENT_COUNCIL_LOG.md`.
