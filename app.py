@@ -46,6 +46,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_decision_record,
     build_data_readiness_registry_integration_decision_template,
     build_data_readiness_registry_integration_handoff_packet,
+    build_data_readiness_registry_integration_pr_runbook,
     build_data_readiness_gate_plan,
     build_data_readiness_operator_handoff,
     build_data_readiness_platform_brief,
@@ -4150,6 +4151,7 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         "registry_integration_decision_template": build_data_readiness_registry_integration_decision_template(decision_record),
         "registry_integration_decision_audit_checklist": build_data_readiness_registry_integration_decision_audit_checklist(decision_record),
         "registry_integration_handoff_packet": build_data_readiness_registry_integration_handoff_packet(decision_record),
+        "registry_integration_pr_runbook": build_data_readiness_registry_integration_pr_runbook(decision_record),
         "rows": [
             {
                 "Parameter": item["label"],
@@ -4504,7 +4506,28 @@ def render_learning_data_readiness_backlog():
         else:
             st.caption("Noch kein Handoff-Packet, weil kein Decision-Record vorliegt.")
         st.caption(handoff_packet["guardrail"])
-        st.caption("Diese Liste priorisiert Plattformarbeit: erst Status/Dry-run, dann Rohdaten-Cache nur bewusst, danach Review und explizite Modellintegration. Preflight/Integrationsplan/PR-Brief/Decision-Record bleiben read-only.")
+        pr_runbook = backlog["registry_integration_pr_runbook"]
+        st.markdown(f"**{pr_runbook['title']}**")
+        st.caption(pr_runbook["plain_language_note"])
+        pr_runbook_rows = [
+            {
+                "Rang": row["rank"],
+                "Parameter": row["label"],
+                "Status": row["pr_runbook_status"],
+                "Startbedingung": row["allowed_start_condition"],
+                "Branch falls Go": row["branch_name_if_go"],
+                "Sequenz": " · ".join(row["implementation_sequence_if_go"][:3]),
+                "Definition of done": " · ".join(row["definition_of_done_for_pr"][:2]),
+                "Guardrail": row["guardrail"],
+            }
+            for row in pr_runbook["rows"]
+        ]
+        if pr_runbook_rows:
+            st.dataframe(pd.DataFrame(pr_runbook_rows), use_container_width=True, hide_index=True)
+        else:
+            st.caption("Noch kein PR-Runbook, weil kein Decision-Record vorliegt.")
+        st.caption(pr_runbook["guardrail"])
+        st.caption("Diese Liste priorisiert Plattformarbeit: erst Status/Dry-run, dann Rohdaten-Cache nur bewusst, danach Review, Decision/Audit und erst danach eine separate Modellintegration. Alle Runbooks bleiben read-only.")
     with st.expander("Warum diese Reihenfolge? Daten-Gates als Arbeitsplan", expanded=False):
         for gate in backlog["gate_plan"]:
             examples = ", ".join(gate["example_parameters"]) if gate["example_parameters"] else "aktuell keine Beispiele"

@@ -134,6 +134,12 @@ def test_learning_data_readiness_backlog_includes_integration_preflight():
     assert handoff_packet["summary"]["handoff_rows"] == decision_record["summary"]["decision_rows"]
     assert all(row["copyable_status_command"].startswith("GET /data-readiness/") for row in handoff_packet["rows"])
     assert "keine Registry-/Modellmutation" in handoff_packet["guardrail"]
+    pr_runbook = backlog["registry_integration_pr_runbook"]
+    assert pr_runbook["title"].startswith("Registry-Integrations-PR-Runbook")
+    assert pr_runbook["summary"]["runbook_rows"] == decision_record["summary"]["decision_rows"]
+    assert all("GET /data-readiness/" in " ".join(row["copyable_evidence_routes"]) for row in pr_runbook["rows"])
+    assert all("parameter_registry.py" in " ".join(row["implementation_sequence_if_go"]) for row in pr_runbook["rows"])
+    assert "keine Registry-/Modellmutation" in pr_runbook["guardrail"]
     for item in plan["plans"]:
         assert item["workflow_api"].startswith("GET /data-readiness/")
         assert "parameter_registry.py" in item["proposed_files"]

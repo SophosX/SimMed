@@ -2148,3 +2148,16 @@ Keine.
 
 ### Verification / Git
 Vor Commit: 129 Tests grün, py_compile grün, Simulation-Smoke 20 Runs × 2 Jahre grün. Commit/Push folgt in diesem Lauf; Zip-Artefakt wird aktualisiert.
+
+
+## 2026-04-30 00:51 UTC — Data-readiness PR-Runbook vor Registry-Integration
+
+- **Context:** Heartbeat-Priorität bleibt Core-Plattform; nächster sicherer Gate nach Decision-Template/Audit/Handoff fehlte als expliziter PR-Ausführungsfahrplan ohne Side Effects.
+- **Project Manager:** Kleine, testbare Plattform-Scheibe: read-only Runbook ergänzen statt echte Registry-/Modellwerte autonom zu ändern.
+- **Designer/UX:** Learning Page zeigt jetzt nach Decision/Audit/Handoff auch eine mobile-safe PR-Runbook-Tabelle mit Startbedingung, Sequenz und Definition of Done.
+- **Creative Agent:** Runbook macht den Übergang von Daten-Governance zu Integrator-Arbeit konkret, ohne einen versteckten Apply-/Branch-Knopf einzuführen.
+- **Political Health-System Strategist:** Guardrail bleibt wichtig: geprüfte Datenintegration ist kein Policy-Wirkungsbeweis und keine amtliche Prognose.
+- **Evidence/Domain:** Kein neuer externer Evidence-Claim; Arbeit strukturiert vorhandene Provenienz-/Review-Gates.
+- **Integrator Decision:** `build_data_readiness_registry_integration_pr_runbook(...)` in `data_ingestion.py`, focused API `GET /data-readiness/registry-integration-pr-runbook`, aggregate Decision-Record response und Learning-Page Builder/Renderer ergänzt.
+- **Question to Alex if needed:** Keine wichtige Entscheidung offen; sichere Default-Linie bleibt Hold bis auditiertes Go.
+- **Verification/Git:** Targeted pytest, full pytest (130 passed), py_compile und kleiner Simulation-Smoke OK; Commit/Push folgt in diesem Lauf.

@@ -1432,6 +1432,83 @@ def build_data_readiness_registry_integration_decision_audit_checklist(decision_
 
 
 
+def build_data_readiness_registry_integration_pr_runbook(decision_record: dict) -> dict:
+    """Return a conservative PR runbook after an audited Go decision.
+
+    The handoff packet says what must be decided. This runbook says how a future
+    integrator should execute a *separate* Registry/model PR if and only if the
+    audited decision is Go. It remains read-only: it does not create a branch,
+    write files, run connectors, persist decisions, or change model values.
+    """
+
+    rows: list[dict] = []
+    for idx, row in enumerate(decision_record.get("rows", []), start=1):
+        parameter_key = row["parameter_key"]
+        checks = row.get("checks", {})
+        all_checks_green = all(
+            checks.get(key) is True
+            for key in [
+                "reviewed_value_present",
+                "source_snapshot_sha256_present",
+                "unit_matches_registry",
+                "within_registry_bounds",
+                "pr_brief_available",
+            ]
+        )
+        rows.append({
+            "rank": idx,
+            "parameter_key": parameter_key,
+            "label": row.get("label", parameter_key),
+            "pr_runbook_status": "pr_runbook_waits_for_audited_go" if all_checks_green else "blocked_keep_hold",
+            "allowed_start_condition": "Nur nach dokumentierter Decision=Go und bestandenem Audit; sonst Hold.",
+            "branch_name_if_go": row.get("branch_name_if_go"),
+            "copyable_evidence_routes": [
+                f"GET /data-readiness/{parameter_key}",
+                "GET /data-readiness/registry-integration-decision-record",
+                "GET /data-readiness/registry-integration-decision-audit-checklist",
+                "GET /data-readiness/registry-diff-preview",
+                "GET /data-readiness/integration-pr-brief",
+            ],
+            "implementation_sequence_if_go": [
+                "1. Separaten Branch aus aktuellem main erstellen; keine Connectoren ausführen.",
+                "2. Registry-Diff-Preview, ReviewedTransformation und SHA256-Manifest in der PR-Beschreibung zitieren.",
+                "3. parameter_registry.py nur für den auditierten Parameter und mit Quelle/Version/Caveat aktualisieren.",
+                "4. simulation_core.py nur ändern, wenn der Parameter dort explizit aus dem Registry-Default übernommen werden muss.",
+                "5. API/UI-Labels prüfen: aus Daten, Rohcache, Transformationsreview und Modellintegration bleiben getrennt.",
+                "6. Fokussierte Registry/API/UI-Tests, py_compile und einen kleinen Simulation-Smoke ausführen.",
+            ],
+            "files_to_consider": [
+                "parameter_registry.py",
+                "simulation_core.py (nur falls Modell-Default tatsächlich betroffen ist)",
+                "tests/test_registries.py",
+                "tests/test_api.py",
+                "tests/test_app_explanations.py",
+                "docs/AGENT_COUNCIL_LOG.md",
+            ],
+            "definition_of_done_for_pr": [
+                "Nur ein auditiert freigegebener Parameter wurde integriert",
+                "Registry/default, Quelle, Version, Datenlinie und Caveat sind konsistent",
+                "Data-Passport/Readiness-Labels zeigen Modellintegration separat von Cache/Review",
+                "Tests und Smoke laufen; PR-Text enthält Guardrails und keine Wirkungsbehauptung",
+            ],
+            "guardrail": "PR-Runbook ist read-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+        })
+    return {
+        "title": "Registry-Integrations-PR-Runbook nach Audit-Go",
+        "plain_language_note": (
+            "Dieses Runbook ist die letzte Status-Schiene vor echter Codearbeit: Es erklärt, wie ein separater PR "
+            "aussehen müsste, startet ihn aber nicht. Ohne auditiertes Go bleibt der sichere Default Hold."
+        ),
+        "summary": {
+            "decision_rows_seen": len(decision_record.get("rows", [])),
+            "runbook_rows": len(rows),
+            "rows_blocked_or_waiting_for_go": sum(1 for row in rows if row["pr_runbook_status"] != "pr_runbook_waits_for_audited_go"),
+        },
+        "rows": rows,
+        "guardrail": "Read-only/Runbook-only: kein Branch, kein execute=true, keine Datenaktion, keine Review-Erzeugung, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+    }
+
+
 def build_data_readiness_registry_integration_handoff_packet(decision_record: dict) -> dict:
     """Create a copy-safe operator handoff from the Go/Hold/Reject decision record.
 

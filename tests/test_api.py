@@ -612,3 +612,27 @@ def test_api_exposes_focused_registry_integration_handoff_without_apply():
     assert any("separat" in item.lower() for item in population["definition_of_done_before_branch"])
     assert "kein Branch" in handoff["guardrail"]
     assert "execute=true" in handoff["guardrail"]
+
+
+def test_api_exposes_focused_registry_integration_pr_runbook_without_apply():
+    client = TestClient(api)
+    seed_response = client.post("/data-fixtures/seed-reference-review-demo")
+    assert seed_response.status_code == 200
+
+    response = client.get("/data-readiness/registry-integration-pr-runbook?limit=3")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "data_readiness_registry_integration_pr_runbook_not_applied"
+    assert "kein Branch" in body["guardrail"]
+    assert "keine Registry-/Modellmutation" in body["guardrail"]
+    runbook = body["registry_integration_pr_runbook"]
+    assert runbook["title"].startswith("Registry-Integrations-PR-Runbook")
+    population = next(row for row in runbook["rows"] if row["parameter_key"] == "bevoelkerung_mio")
+    assert population["pr_runbook_status"] == "pr_runbook_waits_for_audited_go"
+    assert population["branch_name_if_go"] == "feat/integrate-reviewed-bevoelkerung_mio"
+    assert "GET /data-readiness/bevoelkerung_mio" in population["copyable_evidence_routes"]
+    assert any("parameter_registry.py" in step for step in population["implementation_sequence_if_go"])
+    assert any("Data-Passport" in item for item in population["definition_of_done_for_pr"])
+    assert "kein Branch" in runbook["guardrail"]
+    assert "execute=true" in runbook["guardrail"]
