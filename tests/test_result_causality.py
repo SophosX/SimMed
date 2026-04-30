@@ -545,6 +545,54 @@ def test_result_quality_check_uses_public_language_not_internal_process_words():
     assert "Prozessfloskeln" in quality_text
 
 
+def test_public_causal_packet_is_lean_plain_german_briefing_without_banned_terms():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+
+    public_text = _public_text(packet)
+    for forbidden in [
+        "random Internet",
+        "Klartext",
+        "KPI-Wand",
+        "generated",
+        "helper",
+        "Meta",
+        "Widget",
+        "erste Ansicht",
+        "Audit-Layer",
+    ]:
+        assert forbidden not in public_text
+    assert 1 <= len(packet["result_sections"]) <= 7
+    assert [section["heading"] for section in packet["result_sections"]] == [
+        "Ergebnis",
+        "Eingriff",
+        "Warum es passiert",
+        "Relevante Kennzahlen",
+        "Anpassungen",
+        "Einordnung",
+        "Nächster Prüfschritt",
+    ]
+    assert all(len(section["body"].split()) <= 32 for section in packet["result_sections"])
+    assert len(packet["short_answer"].split()) <= 72
+    assert len(packet["public_result_view"]["briefing"].keys()) <= 6
+
+
+def test_short_answer_names_change_kpi_movement_why_and_next_check():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    short_answer = packet["short_answer"]
+
+    assert "Medizinstudienplätze" in short_answer
+    assert any(row["label"] in short_answer for row in packet["public_result_view"]["briefing"]["relevant_kpis"][:2])
+    assert "Jahr 6" in short_answer
+    assert "nächste" in short_answer.lower() or "prüfen" in short_answer.lower()
+    assert "amtliche Prognose" not in short_answer
+
+
 def test_causal_result_packet_prioritizes_relevant_kpis_and_coherent_freetext():
     params = get_default_params()
     params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5

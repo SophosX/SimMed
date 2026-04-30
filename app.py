@@ -3554,9 +3554,9 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
         st.caption(view.get("executive_brief", {}).get("audit_hint") or briefing.get("guardrail") or view.get("guardrail", packet["guardrail"]))
 
     audit_sections = view.get("audit_sections", [])
-    audit_label = "Vertiefung: Wirkpfad, Evidenz und Details"
+    audit_label = "Prüfung darunter: Zeitverlauf, Evidenz und Detailzahlen"
     if audit_sections:
-        audit_label = "Vertiefung: " + " · ".join(section.get("title", "Details") for section in audit_sections[:2])
+        audit_label = "Prüfung darunter: " + " · ".join(section.get("title", "Details") for section in audit_sections[:2])
 
     with st.expander(audit_label, expanded=view.get("deeper_review_default_expanded", False)):
         if audit_sections:

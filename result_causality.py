@@ -1052,9 +1052,9 @@ def build_causal_result_packet(
     ) or "keine priorisierten Kennzahlen verfügbar"
     if study_places_changed:
         short_answer = (
-            f"Das Ergebnis: Weniger Medizinstudienplätze wirken später: {top_kpi_sentences}. "
-            "Das passiert, weil ab etwa Jahr 6 weniger Nachwuchs ankommt; Richtung Jahr 11–15 zählt der Facharztpfad. "
-            "Das bedeutet: nächste Prüfung: Wartezeit, Belastung und sichtbare Puffer prüfen."
+            f"Das Ergebnis: Gesenkte Medizinstudienplätze erzeugen Druck: {top_kpi_sentences}. "
+            "Weil ab etwa Jahr 6 weniger Nachwuchs ankommt, wird in Jahr 11–15 der Facharztpfad wichtig. "
+            "Das bedeutet: nächste Prüfung sind Wartezeit, Belastung und Puffer prüfen; dann politisch bewerten."
         )
     elif changed:
         short_answer = (
@@ -1121,7 +1121,7 @@ def build_causal_result_packet(
     kpi_body = "; ".join(kpi_items) + "." if kpi_items else "Keine priorisierten Kennzahlen verfügbar."
     if study_places_changed:
         result_body = (
-            "Heraus kommt verzögerter Kapazitätsdruck: zuerst wenig Änderung, später weniger Ärzt:innen, längere Wartezeiten und mehr Belastung."
+            "Heraus kommt verzögerter Kapazitätsdruck: anfangs wenig Effekt, später weniger Ärzt:innen, längere Wartezeiten und mehr Belastung."
         )
     elif changed:
         result_body = (
@@ -1170,7 +1170,7 @@ def build_causal_result_packet(
     observed_text = "; ".join(observed_signals) or "kein starkes Puffersignal sichtbar"
     adaptation_body = (
         f"Puffer wie Telemedizin prüfen; beobachtet: {observed_text}. "
-        "Sinkt Belastung trotz Mangel, bleibt das ein Plausibilitätscheck."
+        "Sinkt Belastung trotz Mangel, ist das ein Plausibilitätscheck."
     )
     result_sections = [
         {"heading": "Ergebnis", "body": result_body},

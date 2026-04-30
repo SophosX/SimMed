@@ -6293,3 +6293,24 @@ Keine wichtige Entscheidung offen; weiter sicher am Ergebnisbriefing und an der 
 
 ### Verification / Git
 Verifiziert: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` (70 passed), `python3 -m pytest -q` (298 passed), `py_compile result_causality.py app.py api.py`, 50-run/15-year smoke test OK. Commit `d9414c9` wurde nach `origin/main` gepusht; Zip-Artefakt aktualisiert.
+
+
+## 2026-04-30 — Result first-screen briefing simplification
+
+**Context:** Alex corrected that the result page still felt unclear and overloaded; the first screen must answer what happened, what changed, why, and what it means in one serious German briefing.
+
+**Project Manager:** Prioritized a coherent result-page slice over adding another widget: compact causal packet, focused UI wording, API-compatible packet, tests.
+
+**Designer/UX:** Kept the first result card in the sequence Ergebnis → Eingriff → Warum es passiert → Relevante Kennzahlen → Anpassungen → Einordnung → Nächster Prüfschritt; moved detail language below as closed Prüfung.
+
+**Creative Agent:** Recommended fewer moving parts and a more human wording: no process jargon, no stacked explanation tools, no dense KPI-first framing.
+
+**Political Health-System Strategist:** Preserved the guardrail that a study-place cut is politically interpretable only after checking delayed capacity, waiting-time, burnout and buffer mechanisms.
+
+**Evidence/Domain:** No new factual claim or external research in this run; this is communication-layer cleanup around existing model/provenance assumptions.
+
+**Integrator Decision:** Simplified public result wording in `result_causality.py`, kept API `causal_result_packet` fields compatible, and softened the Streamlit collapsed detail label in `app.py`.
+
+**Question to Alex if needed:** No blocking decision; next safe step is a stronger visual first-screen card/layout and hiding legacy detail blocks further down.
+
+**Verification/Git:** Focused result/API tests and full suite passed locally; smoke simulation passed. Git sync/push handled in following verification step.
