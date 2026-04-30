@@ -708,6 +708,42 @@ def test_api_rejects_scenario_gallery_operator_status_card_out_of_bounds_without
     assert "kein Simulationslauf" in detail["guardrail"]
 
 
+def test_api_exposes_scenario_gallery_pre_run_audit_without_execution():
+    client = TestClient(api)
+    response = client.get("/scenario-gallery/pre-run-audit?n_runs=100&n_years=15&seed=42")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "scenario_gallery_pre_run_audit_not_executed"
+    assert "kein Apply-Button" in body["guardrail"]
+    assert "kein Simulationslauf" in body["guardrail"]
+    assert "keine Registry-/Modellmutation" in body["guardrail"]
+    assert "keine amtliche Prognose" in body["guardrail"]
+    rows = body["rows"]
+    assert rows
+    medical_row = next(row for row in rows if row["card_id"] == "medical_training_pipeline")
+    assert medical_row["audit_status"] == "bereit_zur_manuellen_pruefung_nicht_ausgefuehrt"
+    assert medical_row["payload_route"] == "POST /simulate"
+    assert medical_row["manifest_route"] == "POST /scenario-manifest"
+    assert medical_row["evidence_checks_required"] == 1
+    assert "Medizinstudienplätze" in medical_row["changed_parameters_plain"]
+    assert any("nichts wird automatisch angewendet" in item for item in medical_row["must_confirm_before_run"])
+    assert any("keine amtliche Prognose" in item for item in medical_row["must_confirm_before_run"])
+    assert any("Ergebnis-Storyboard" in item for item in medical_row["after_run_first_three_clicks"])
+    assert "Wirksamkeitsnachweis" in medical_row["stop_rule"]
+
+
+def test_api_rejects_scenario_gallery_pre_run_audit_out_of_bounds_without_execution():
+    client = TestClient(api)
+    response = client.get("/scenario-gallery/pre-run-audit?n_runs=1001")
+
+    assert response.status_code == 422
+    detail = response.json()["detail"]
+    assert detail["status"] == "invalid_scenario_gallery_pre_run_audit_bounds"
+    assert "kein Simulationslauf" in detail["guardrail"]
+
+
+
 def test_api_exposes_scenario_gallery_operator_run_packets_without_execution():
     client = TestClient(api)
     response = client.get("/scenario-gallery/operator-run-packets?n_runs=100&n_years=15&seed=42")

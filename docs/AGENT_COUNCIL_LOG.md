@@ -3185,3 +3185,32 @@ Keine wichtige Entscheidung offen.
 
 ### Verification / Git
 Focused tests passed for new helper/API route, full suite passed (`185 passed`), py_compile passed, and API/helper smoke passed. Git commit `802f2a0` was pushed to `feat/platform-data-status-foundation`; updated zip artifact: `/opt/data/cache/documents/health_simulation_app_updated.zip`.
+
+## 2026-04-30 07:43 Europe/Berlin — Scenario Gallery Pre-Run-Audit
+
+### Context
+Alex priorisiert wieder Core-Plattform-Implementierung. Dieser Lauf blieb auf der Plattform-Schiene und ergänzte vor einer Scenario-Gallery-Ausführung einen letzten read-only Prüfpunkt.
+
+### Project Manager
+Priorität: Guided Workflow sicherer und konkreter machen, ohne einen voreiligen Apply-Button einzubauen. Nächste Aufgaben: fokussierte Download/API-Handoffs oder echtes Confirm-before-Apply erst nach UX-Entscheidung.
+
+### Designer / UX
+Die Landing-Page-Galerie zeigt jetzt vor einem Lauf explizit, was bestätigt werden muss und welche ersten Ergebnisbereiche danach geöffnet werden sollen. Das ist mobile/touch-sicherer als nur verstreute Captions.
+
+### Creative Agent
+Idee: später eine druck-/teilbare “Starter-Szenario Karte” erzeugen. Fit: gut für Workshops, aber erst nach stabiler Pre-Run-Audit-Struktur.
+
+### Political Health-System Strategist
+Der Audit stoppt Überdeutung: Szenarioergebnisse bleiben SimMed-Szenarien, keine amtliche Prognose, kein Wirksamkeitsnachweis und keine Lobbying-Empfehlung.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf; es wurden keine neuen realweltlichen Modell- oder Evidenzclaims eingeführt. Die Änderung setzt bestehende Registry-/Caveat-Checks nur strukturierter vor den Lauf.
+
+### Integrator Decision
+Akzeptiert: `build_scenario_gallery_pre_run_audit(...)`, fokussierter API-Endpunkt `/scenario-gallery/pre-run-audit`, Landing-Page-Surfacing und Regressionstests.
+
+### Question to Alex
+Keine.
+
+### Verification / Git
+Verifiziert mit `pytest tests/test_api.py tests/test_app_explanations.py -q` (121 passed), `py_compile app.py api.py scenario_gallery.py`, und 20-run Simulation-Smoke. Commit/Push folgt im Integrator-Schritt; Zip-Artefakt wird aktualisiert.

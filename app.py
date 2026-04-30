@@ -1200,6 +1200,19 @@ def build_scenario_gallery_run_handoff_sheet(
     )
 
 
+def build_scenario_gallery_pre_run_audit(
+    *, n_runs: int = 100, n_years: int = 15, seed: int = 42
+) -> dict[str, Any]:
+    """Return the final read-only audit before starter-scenario execution."""
+
+    return scenario_gallery_module.build_scenario_gallery_pre_run_audit(
+        n_runs=n_runs,
+        n_years=n_years,
+        seed=seed,
+    )
+
+
+
 def sidebar_quick_start_steps() -> List[str]:
     """Kurze Orientierung, damit neue Nutzer:innen sofort wissen, was zu tun ist."""
     return [
@@ -1236,6 +1249,10 @@ def render_landing_hero() -> None:
         st.caption("Run-Handoff: " + handoff["first_safe_step"])
         st.caption("Nach dem Lauf lesen: " + " → ".join(handoff["post_run_reading_order"][:3]))
         st.caption("Guardrail: " + handoff["guardrail"])
+        pre_run_audit = build_scenario_gallery_pre_run_audit()
+        st.caption("Pre-Run-Audit: " + pre_run_audit["title"])
+        st.caption("Audit-Guardrail: " + pre_run_audit["guardrail"])
+        audit_rows = {item["card_id"]: item for item in pre_run_audit["rows"]}
         guided_plans = {
             item["card_id"]: item for item in build_scenario_gallery_guided_apply_plan()
         }
@@ -1271,6 +1288,14 @@ def render_landing_hero() -> None:
             )
             st.caption("Vor dem Lauf prüfen: " + " | ".join(packet["pre_run_checklist"][:2]))
             st.caption("Run-Packet: " + packet["copyable_api_route"] + " · " + packet["operator_stop_rule"])
+            audit_row = audit_rows[card["id"]]
+            st.caption(
+                "Pre-Run-Audit: "
+                + audit_row["audit_status"]
+                + " · vor Start bestätigen: "
+                + " | ".join(audit_row["must_confirm_before_run"])
+            )
+            st.caption("Nach Start zuerst öffnen: " + " → ".join(audit_row["after_run_first_three_clicks"]))
             st.caption("Guardrail: " + plan["guardrail"])
 
 

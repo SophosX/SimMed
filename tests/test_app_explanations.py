@@ -26,6 +26,7 @@ from app import (
     build_scenario_gallery_guided_apply_plan,
     build_scenario_gallery_operator_run_packets,
     build_scenario_gallery_operator_status_cards,
+    build_scenario_gallery_pre_run_audit,
     build_scenario_gallery_run_handoff_sheet,
     build_scenario_gallery_run_readiness_summary,
     build_scenario_gallery_manifest_previews,
@@ -740,6 +741,30 @@ def test_scenario_gallery_run_handoff_sheet_orients_operator_before_and_after_ru
     assert "keine amtliche Prognose" in handoff["guardrail"]
     assert "kein Policy-Wirkungsbeweis" in handoff["guardrail"]
     assert "keine Lobbying-Empfehlung" in handoff["guardrail"]
+
+
+def test_scenario_gallery_pre_run_audit_makes_last_safe_checks_explicit():
+    audit = build_scenario_gallery_pre_run_audit(n_runs=100, n_years=15, seed=42)
+    combined = " ".join(str(value) for value in audit.values())
+
+    assert audit["status"] == "scenario_gallery_pre_run_audit_not_executed"
+    assert audit["rows"]
+    medical_row = next(row for row in audit["rows"] if row["card_id"] == "medical_training_pipeline")
+    assert medical_row["audit_status"] == "bereit_zur_manuellen_pruefung_nicht_ausgefuehrt"
+    assert medical_row["payload_route"] == "POST /simulate"
+    assert medical_row["manifest_route"] == "POST /scenario-manifest"
+    assert medical_row["evidence_checks_required"] == 1
+    assert "Medizinstudienplätze" in medical_row["changed_parameters_plain"]
+    assert any("nichts wird automatisch angewendet" in item for item in medical_row["must_confirm_before_run"])
+    assert any("keine amtliche Prognose" in item for item in medical_row["must_confirm_before_run"])
+    assert any("Ergebnis-Storyboard" in item for item in medical_row["after_run_first_three_clicks"])
+    assert "Wirksamkeitsnachweis" in medical_row["stop_rule"]
+    assert "kein Apply-Button" in audit["guardrail"]
+    assert "kein Simulationslauf" in audit["guardrail"]
+    assert "keine Registry-/Modellmutation" in audit["guardrail"]
+    assert "keine Lobbying-Empfehlung" in audit["guardrail"]
+    assert "Policy-Briefing" in combined
+
 
 
 def test_direction_word_uses_plain_language_and_preference_direction():

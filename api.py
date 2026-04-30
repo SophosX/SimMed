@@ -86,6 +86,7 @@ from scenario_gallery import (
     build_scenario_gallery_guided_apply_plan,
     build_scenario_gallery_operator_run_packets,
     build_scenario_gallery_operator_status_cards,
+    build_scenario_gallery_pre_run_audit,
     build_scenario_gallery_run_handoff_sheet,
     build_scenario_gallery_run_readiness_summary,
 )
@@ -1485,6 +1486,23 @@ def get_scenario_gallery_operator_status_cards(
         "guardrail": "Read-only Statuskarten: kein automatischer Apply-Button, keine Session-State-Mutation, kein Simulationslauf, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
         "status_cards": status_cards,
     }
+
+
+@api.get("/scenario-gallery/pre-run-audit")
+def get_scenario_gallery_pre_run_audit(
+    n_runs: int = 100,
+    n_years: int = 15,
+    seed: int = 42,
+) -> dict:
+    """Expose the final read-only checklist before a starter scenario run."""
+
+    _validate_scenario_gallery_bounds(
+        n_runs,
+        n_years,
+        seed,
+        status="invalid_scenario_gallery_pre_run_audit_bounds",
+    )
+    return build_scenario_gallery_pre_run_audit(n_runs=n_runs, n_years=n_years, seed=seed)
 
 
 @api.get("/scenario-gallery/operator-run-packets")

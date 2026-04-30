@@ -278,6 +278,52 @@ def build_scenario_gallery_run_handoff_sheet(
     }
 
 
+def build_scenario_gallery_pre_run_audit(
+    *, n_runs: int = 100, n_years: int = 15, seed: int = 42
+) -> dict[str, Any]:
+    """Return a final read-only audit before a starter scenario is executed.
+
+    This is the last safe checkpoint between a newcomer-friendly gallery card and
+    a deliberate simulation/API call. It makes hidden overclaim risks explicit,
+    but still does not apply parameters, run the model, persist state, or create
+    a forecast/effect claim.
+    """
+
+    handoff = build_scenario_gallery_run_handoff_sheet(n_runs=n_runs, n_years=n_years, seed=seed)
+    packets = build_scenario_gallery_operator_run_packets(n_runs=n_runs, n_years=n_years, seed=seed)
+    rows: list[dict[str, Any]] = []
+    for packet in packets:
+        rows.append({
+            "card_id": packet["card_id"],
+            "title": packet["title"],
+            "audit_status": "bereit_zur_manuellen_pruefung_nicht_ausgefuehrt",
+            "payload_route": packet["copyable_api_route"],
+            "manifest_route": packet["manifest_route"],
+            "changed_parameters_plain": packet["changed_parameters_plain"],
+            "evidence_checks_required": len(packet["evidence_checks"]),
+            "must_confirm_before_run": [
+                packet["pre_run_checklist"][0],
+                packet["pre_run_checklist"][1],
+                "Ergebnis danach nur als SimMed-Szenario lesen: keine amtliche Prognose, kein Wirkungsbeweis.",
+            ],
+            "after_run_first_three_clicks": packet["post_run_reading_order"][:3],
+            "stop_rule": packet["operator_stop_rule"],
+        })
+    return {
+        "status": "scenario_gallery_pre_run_audit_not_executed",
+        "title": "Scenario-Gallery Pre-Run-Audit: erst prüfen, dann bewusst simulieren",
+        "first_safe_step": handoff["first_safe_step"],
+        "rows": rows,
+        "definition_of_done_before_run": handoff["definition_of_done_before_run"],
+        "guardrail": (
+            "Pre-Run-Audit ist read-only/status-only: kein Apply-Button, keine Session-State-Mutation, "
+            "kein Simulationslauf, keine Registry-/Modellmutation, keine amtliche Prognose, "
+            "kein Policy-Wirkungsbeweis und keine Lobbying-Empfehlung."
+        ),
+    }
+
+
+
 def build_scenario_gallery_operator_run_packets(
     *, n_runs: int = 100, n_years: int = 15, seed: int = 42
 ) -> list[dict[str, Any]]:
