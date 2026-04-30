@@ -3527,7 +3527,7 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
         st.write(brief.get("lead") or view.get("short_answer", packet.get("short_answer", "Der Modelllauf wurde berechnet; die Detailprüfung steht darunter.")))
 
         answer_rows = brief.get("answer_rows") or view.get("answer_rows", [])
-        if answer_rows:
+        if answer_rows and "answer_rows" not in view.get("suppressed_overlapping_widgets", []):
             st.markdown("**Auf einen Blick**")
             for row in answer_rows:
                 st.markdown(f"- **{row.get('question', 'Frage')}** {row.get('answer', '')}")

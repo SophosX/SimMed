@@ -5545,3 +5545,33 @@ No important decision is open; continue safely with first-screen simplification 
 
 ### Verification / Git
 Focused tests passed: `tests/test_result_causality.py` (56 passed) and result/API/app explanation focus set (121 passed). Full verification passed: `python3 -m pytest -q` (284 passed), `py_compile`, and 50-run simulation smoke with causal packet assertion. Git sync/commit/push recorded by this heartbeat after verification.
+
+
+## 2026-04-30 18:24 Europe/Berlin — Result first-screen hierarchy cleanup
+
+### Context
+Alex' latest correction: result page must read as one clear briefing, not as overlapping helper widgets. This slice touched `result_causality.py`, `app.py`, and `tests/test_result_causality.py`.
+
+### Project Manager
+Priority: reduce first-screen duplication while keeping API/audit data available. Risk: older helpers still exist below the first view, so the render contract must explicitly suppress overlapping widgets. Next: move dense KPI/detail sections fully behind clearer collapsed labels.
+
+### Designer / UX
+The four-question summary remains available as structured data, but the Streamlit first screen now follows one hierarchy: headline, short answer, sections, compact KPI cards, then collapsed audit. This should feel less like repeated explanations.
+
+### Creative Agent
+Product-fit idea: later turn the briefing into a printable one-page “Ergebnisnotiz” with exactly the same packet fields. Good fit for shareability; defer until the first screen is stable.
+
+### Political Health-System Strategist
+No new political claims. The page still says to check timing, capacity pressure and buffers before political interpretation, which is appropriate for study-place scenarios.
+
+### Evidence / Domain
+No new research in this run. Model dynamics and evidence claims were not changed; this is a communication/rendering layer change. Existing guardrails remain: no official forecast, no effectiveness proof.
+
+### Integrator Decision
+Accepted: add explicit `first_screen_render_blocks` and `suppressed_overlapping_widgets` to the public packet; Streamlit suppresses the extra answer-row widget on the first screen while keeping the data for API/audit clients.
+
+### Question to Alex
+No important decision open; continue safely with result-page simplification and collapsed audit cleanup.
+
+### Verification / Git
+Local verification before sync: `pytest tests/test_result_causality.py` (57 passed), focused result/API/app suite (122 passed), full suite (285 passed), py_compile, and 50-run simulation smoke passed. Git commit/push status to be recorded by the final heartbeat after sync.

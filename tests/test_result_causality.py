@@ -163,6 +163,26 @@ def test_public_result_view_answers_four_first_screen_questions_before_audit():
     assert view["executive_brief"]["answer_rows"] == rows
 
 
+def test_public_result_view_keeps_four_question_summary_as_data_not_extra_first_screen_widget():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    view = packet["public_result_view"]
+
+    assert view["answer_rows"]
+    assert view["executive_brief"]["answer_rows"] == view["answer_rows"]
+    assert view["first_screen_render_blocks"] == [
+        "headline",
+        "short_answer",
+        "result_sections",
+        "compact_relevant_kpis",
+        "collapsed_audit",
+    ]
+    assert "answer_rows" in view["suppressed_overlapping_widgets"]
+    assert "legacy_narrative_widgets" in view["suppressed_overlapping_widgets"]
+
+
 def test_public_result_view_has_single_follow_up_rendering_instruction():
     params = get_default_params()
     params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
@@ -312,13 +332,15 @@ def test_public_result_packet_is_minimal_and_does_not_expose_legacy_layers_first
 
     allowed_public_keys = {
         "briefing_style",
-            "render_order",
-            "first_screen_policy",
-            "headline",
-            "briefing_markdown",
-            "executive_brief",
-            "answer_rows",
-            "short_answer",
+        "render_order",
+        "first_screen_render_blocks",
+        "suppressed_overlapping_widgets",
+        "first_screen_policy",
+        "headline",
+        "briefing_markdown",
+        "executive_brief",
+        "answer_rows",
+        "short_answer",
         "result_sections",
         "first_screen_blocks",
         "primary_blocks",
