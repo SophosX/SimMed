@@ -539,6 +539,65 @@ def build_causal_result_packet(
         },
     ]
 
+    professional_sections = [
+        {
+            "heading": "Ausgangslage",
+            "body": (
+                "SimMed liest diesen Lauf als Deutschland-Referenzpfad mit veränderten Stellschrauben. "
+                "Die erste Ansicht zeigt bewusst nur die Kennzahlen, die den zentralen Wirkpfad erklären, statt den Raum mit Zahlen zu tapezieren."
+            ),
+        },
+        {
+            "heading": "Eingriff",
+            "body": changed_text,
+        },
+        {
+            "heading": "Berechnete Wirkpfade",
+            "body": (
+                "Der Eingriff läuft im Modell über Kapazität, Nachfrage, Finanzierung und Zeitverzug. "
+                "Bei weniger Medizinstudienplätzen ist der entscheidende Punkt die Ausbildungs-Pipeline: "
+                "in Jahr 0–5 passiert noch wenig an der ärztlichen Versorgung, ab Jahr 6 erreicht die kleinere Kohorte den Arbeitsmarkt, "
+                "und Richtung Jahr 11–15 wird der Facharzt- und Kapazitätseffekt deutlich prüfpflichtig. "
+                f"{timeline_text}"
+            ),
+        },
+        {
+            "heading": "Relevante KPIs",
+            "body": kpi_text,
+        },
+        {
+            "heading": "Anpassungsreaktionen",
+            "body": (
+                f"{mechanism_text} Beobachtete Signale: {adaptation_trace_text} "
+                "Wichtig: Wenn unter Ärztemangel Burnout oder Wartezeit überraschend sinken, braucht der Bericht einen sichtbaren Puffer — etwa Telemedizin, Delegation, Zuwanderung oder Nachfrageverzicht. Sonst ist das kein stiller Triumph, sondern ein Prüfhinweis."
+            ),
+        },
+        {
+            "heading": "Einordnung und Belastbarkeit",
+            "body": (
+                f"{evidence_text} Die Berechnung basiert auf dem SimMed-Modelllauf mit dokumentierten Parametern, Annahmen und Monte-Carlo-Spannweiten. "
+                "Sie ist eine belastbare Modell-Einordnung innerhalb dieser Annahmen, aber keine amtliche Prognose und kein Nachweis, dass eine politische Maßnahme real so wirkt."
+            ),
+        },
+        {
+            "heading": "Nächste Prüfentscheidung",
+            "body": (
+                "Als nächste fachliche Prüfung sollte zuerst geklärt werden, ob die Anpassungsreaktionen den Kapazitätsdruck plausibel erklären: "
+                "Telemedizin/Delegation/Zuwanderung als Puffer, Burnout als Drucksignal und Wartezeit als Patient:innen-Signal. "
+                "Erst danach lohnt die politische Bewertung; vorher würde man elegant rechnen, aber möglicherweise am Kern vorbeisegeln."
+            ),
+        },
+    ]
+    professional_briefing = {
+        "title": "Ergebnisbericht",
+        "sections": professional_sections,
+        "sequential_text": "\n\n".join(
+            ["Ergebnisbericht"]
+            + [f"{section['heading']}\n{section['body']}" for section in professional_sections]
+        ),
+        "guardrail": RESULT_CAUSALITY_GUARDRAIL,
+    }
+
     coherent_story = (
         f"Ausgangspunkt: {changed_text} Ergebnis: {kpi_text} "
         f"Warum: Die Simulation liest Änderungen nicht als Einzelzahl, sondern als Wirkpfad über Kapazität, Nachfrage, Finanzierung und Zeitverzug. "
@@ -571,6 +630,7 @@ def build_causal_result_packet(
             "headline": "Ergebnisbericht und anschließende Detailprüfung",
             "main_blocks": free_text_blocks,
             "sequential_plain_text": sequential_plain_text,
+            "professional_briefing": professional_briefing,
             "cleartext_reading_cards": cleartext_reading_cards,
             "relevant_kpis": kpis,
             "relevant_kpi_summary": kpi_summary,
@@ -581,6 +641,7 @@ def build_causal_result_packet(
             "optional_details_after": ["KPI-Drilldowns", "Trend", "Policy-Briefing", "Politik/Stakeholder"],
         },
         "story_sections": story_sections,
+        "professional_briefing": professional_briefing,
         "sequential_plain_text": sequential_plain_text,
         "coherent_story": coherent_story,
         "method_note": RESULT_CAUSALITY_GUARDRAIL,

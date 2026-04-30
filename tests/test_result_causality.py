@@ -296,3 +296,38 @@ def test_causal_result_layout_keeps_dense_kpis_optional_after_cleartext():
     assert "keine zweite erste Ergebnisansicht" in layout["optional_interpretation_layers"]["reason"]
     assert "Klartext" not in layout["optional_interpretation_layers"]["reason"]
     assert layout["guardrail"] == packet["guardrail"]
+
+
+def test_causal_result_packet_reads_like_professional_sequential_briefing():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+
+    briefing = packet["professional_briefing"]
+    headings = [section["heading"] for section in briefing["sections"]]
+    assert headings == [
+        "Ausgangslage",
+        "Eingriff",
+        "Berechnete Wirkpfade",
+        "Relevante KPIs",
+        "Anpassungsreaktionen",
+        "Einordnung und Belastbarkeit",
+        "Nächste Prüfentscheidung",
+    ]
+    text = briefing["sequential_text"]
+    assert text.startswith("Ergebnisbericht\n\nAusgangslage")
+    assert text.index("Ausgangslage") < text.index("Eingriff") < text.index("Berechnete Wirkpfade")
+    assert text.index("Berechnete Wirkpfade") < text.index("Relevante KPIs") < text.index("Anpassungsreaktionen")
+    assert text.index("Anpassungsreaktionen") < text.index("Einordnung und Belastbarkeit") < text.index("Nächste Prüfentscheidung")
+    assert "Medizinstudienplätze" in text
+    assert "Jahr 6" in text
+    assert "Jahr 11" in text
+    assert "Telemedizin" in text
+    assert "Burnout" in text
+    assert "Modelllauf" in text
+    assert "nächste" in briefing["sections"][-1]["body"].lower()
+    assert "random Internet" not in text
+    assert "Klartext" not in text
+    assert "KPI-Wand" not in text
+    assert packet["primary_result_view"]["professional_briefing"] == briefing

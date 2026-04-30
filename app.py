@@ -3522,11 +3522,18 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
     st.markdown(f"### {packet['title']}")
     st.caption(packet["subtitle"])
     primary_view = packet.get("primary_result_view", {})
-    if primary_view:
-        st.markdown(f"**{primary_view['headline']}**")
-    for block in packet.get("free_text_blocks", []):
-        st.markdown(f"**{block['step']}**")
-        st.write(block["text"])
+    professional = packet.get("professional_briefing", {})
+    if professional:
+        st.markdown(f"**{primary_view.get('headline', 'Ergebnisbericht')}**")
+        for section in professional.get("sections", []):
+            st.markdown(f"**{section['heading']}**")
+            st.write(section["body"])
+    else:
+        if primary_view:
+            st.markdown(f"**{primary_view['headline']}**")
+        for block in packet.get("free_text_blocks", []):
+            st.markdown(f"**{block['step']}**")
+            st.write(block["text"])
 
     reading_cards = primary_view.get("cleartext_reading_cards", []) if primary_view else []
     if reading_cards:

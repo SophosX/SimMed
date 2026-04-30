@@ -3787,3 +3787,32 @@ No important decision open; continue safely with professional result-briefing st
 
 ### Verification / Git
 RED observed: updated causal/API wording tests failed against old `Simulationsergebnis in Klartext` / `random Internet` wording. GREEN observed in GitHub clone using project venv: `python -m pytest -q` → 239 passed; `python -m py_compile app.py data_sources.py parameter_registry.py provenance.py api.py simulation_core.py result_causality.py tests/test_result_causality.py tests/test_api.py`; smoke test `run_simulation(... n_runs=50, n_years=3)` plus `build_causal_result_packet(...)` passed (`Ergebnisbericht`, no `Klartext`, no `random Internet`). Git commit/push pending.
+
+## 2026-04-30 10:40 Europe/Berlin — Ergebnisbericht als professionelle Sequenz
+
+### Context
+Alex hat die Ergebnisansicht klar in Richtung eines ernsten, menschlich lesbaren Ergebnisberichts korrigiert: zuerst eine zusammenhängende Simulationserzählung, danach erst Detailkarten. Dieser Lauf erweitert `result_causality.py`, `app.py` und `tests/test_result_causality.py`.
+
+### Project Manager
+Priorität: den bestehenden causal-result-packet-Ansatz nicht weiter mit kleinen Zusatzschnipseln überladen, sondern als primäre Berichtsschicht stabilisieren. Risiko: doppelte Narrative könnten wieder wie eine KPI-/Textwand wirken; daher bleibt die alte Detailwelt nachgeordnet.
+
+### Designer / UX
+Die erste Ergebnisansicht bekommt eine klare Reihenfolge: Ausgangslage → Eingriff → berechnete Wirkpfade → relevante KPIs → Anpassungsreaktionen → Einordnung/Belastbarkeit → nächste Prüfentscheidung. Das wirkt weniger wie ein Dashboard, mehr wie ein lesbarer Simulationsbefund.
+
+### Creative Agent
+Kleine, passende Tonalitätsidee: Der Bericht darf fachlich bleiben und trotzdem menschlich klingen. Die Formulierung „Zahlen tapezieren“/„elegant rechnen, aber am Kern vorbeisegeln“ wurde sparsam eingesetzt, um trockenes Boilerplate zu vermeiden, ohne die Seriosität zu beschädigen.
+
+### Political Health-System Strategist
+Politische Bewertung bleibt bewusst nachgelagert. Vor Stakeholder-/Machbarkeitsdeutung muss geprüft werden, ob Kapazitätsdruck, Wartezeit, Burnout und Anpassungspuffer plausibel zusammenspielen; sonst wird politisch über einen möglicherweise falsch verstandenen Modellmechanismus diskutiert.
+
+### Evidence / Domain
+Keine neue externe Recherche in diesem Lauf. Es wurden keine neuen Quellen- oder Wirksamkeitsclaims eingeführt. Der Bericht trennt weiterhin SimMed-Modelllauf, dokumentierte Parameter/Annahmen, Monte-Carlo-Spannweiten und den Hinweis, dass dies keine amtliche Prognose oder Policy-Wirksamkeitsnachweis ist.
+
+### Integrator Decision
+Akzeptiert: `professional_briefing` als neue strukturierte Schicht im causal result packet und Rendering dieser Schicht in `render_result_causal_overview()` vor den alten Detail-/Audit-Layern. Deferred: echte freie Szenario-Texteingabe und neue Politikhebel wie DRG-/Leistungskatalogreformen bleiben Proposal-/Review-first.
+
+### Question to Alex
+Keine wichtige Entscheidung offen. Sicher weiter: nächste Scheibe sollte die relevanten KPI-Zeilen visuell stärker als Briefing-Bestandteil gestalten und die alten Detailkarten weiter nach unten sortieren, ohne Inhalt zu verlieren.
+
+### Verification / Git
+RED-Test zuerst: `tests/test_result_causality.py::test_causal_result_packet_reads_like_professional_sequential_briefing` schlug erwartungsgemäß mit `KeyError: 'professional_briefing'` fehl. Danach grün: gezielter Result-/API-Testblock 14 passed, Full Suite 240 passed, py_compile und Simulation-Smoke 50 Runs × 3 Jahre OK. Git-Sync/Commit/Push folgt im Anschluss an diesen Logeintrag.
