@@ -6077,3 +6077,5 @@ Keine wichtige Entscheidung offen; sicher weiter mit visueller Prüfung und weit
 
 ### Verification / Git
 TDD: neuer Test zunächst rot wegen altem `single_markdown_briefing`, danach grün. Verifiziert: fokussierte Result/API/UI-Tests → 66 passed; `python3 -m pytest -q` → 292 passed; `py_compile` zentrale Module; Smoke-Test 50 Runs × 3 Jahre mit halbierten Medizinstudienplätzen → OK. Git-Sync/Commit/Push folgt nach dieser Log-Aktualisierung.
+
+Nachtrag Verification/Git: Commit `30b2c87` (`Clarify result briefing render flow`) wurde auf `origin/main` gepusht. `git show --name-only --oneline -1` bestätigt: `app.py`, `result_causality.py`, `tests/test_result_causality.py`, `docs/AGENT_COUNCIL_LOG.md`.
