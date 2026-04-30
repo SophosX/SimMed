@@ -70,6 +70,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_operator_export_bundle_walkthrough,
     build_data_readiness_registry_integration_operator_export_next_review,
     build_data_readiness_registry_integration_operator_export_review_stoplight,
+    build_data_readiness_registry_integration_operator_export_review_checklist,
     build_data_readiness_registry_integration_pr_runbook,
     build_data_readiness_registry_integration_progress_timeline,
     build_data_readiness_registry_integration_status_board,
@@ -4266,6 +4267,9 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
     operator_export_review_stoplight = build_data_readiness_registry_integration_operator_export_review_stoplight(
         operator_export_next_review, operator_export_audit
     )
+    operator_export_review_checklist = build_data_readiness_registry_integration_operator_export_review_checklist(
+        operator_export_review_stoplight
+    )
     return {
         "title": "Nächste Daten-Schritte: erst Cache, dann Review, dann Integration",
         "plain_language_note": (
@@ -4308,6 +4312,7 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         "registry_integration_operator_export_bundle_walkthrough": operator_export_bundle_walkthrough,
         "registry_integration_operator_export_next_review": operator_export_next_review,
         "registry_integration_operator_export_review_stoplight": operator_export_review_stoplight,
+        "registry_integration_operator_export_review_checklist": operator_export_review_checklist,
         "registry_integration_handoff_packet": build_data_readiness_registry_integration_handoff_packet(decision_record),
         "registry_integration_pr_runbook": pr_runbook,
         "rows": [
@@ -4834,6 +4839,20 @@ def render_learning_data_readiness_backlog():
         st.dataframe(pd.DataFrame(export_review_stoplight["checks"]), use_container_width=True, hide_index=True)
         st.caption("Routen in Reihenfolge: " + " → ".join(export_review_stoplight["routes_to_open_in_order"]))
         st.caption(export_review_stoplight["guardrail"])
+        export_review_checklist = backlog["registry_integration_operator_export_review_checklist"]
+        st.markdown(f"**{export_review_checklist['title']}**")
+        st.caption(export_review_checklist["plain_language_note"])
+        st.dataframe(pd.DataFrame([
+            {
+                "Rang": item["rank"],
+                "Check": item["label"],
+                "Status": item["status"],
+                "Operator-Hinweis": item["operator_instruction"],
+            }
+            for item in export_review_checklist["checklist_items"]
+        ]), use_container_width=True, hide_index=True)
+        st.caption("Sichere Routen: " + " → ".join(export_review_checklist["safe_routes_to_open"]))
+        st.caption(export_review_checklist["guardrail"])
         command_palette = backlog["registry_integration_command_palette"]
         st.markdown(f"**{command_palette['title']}**")
         st.caption(command_palette["plain_language_note"])

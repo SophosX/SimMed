@@ -1296,3 +1296,18 @@ def test_api_exposes_registry_operator_export_review_stoplight_without_execution
     assert all(route.startswith("GET ") for route in stoplight["routes_to_open_in_order"])
     assert "kein execute=true" in payload["guardrail"]
     assert "keine Registry-/Modellmutation" in stoplight["guardrail"]
+
+
+def test_api_exposes_registry_operator_export_review_checklist_without_execution():
+    client = TestClient(api)
+    response = client.get("/data-readiness/registry-integration-operator-export-review-checklist")
+
+    assert response.status_code == 200
+    payload = response.json()
+    checklist = payload["registry_integration_operator_export_review_checklist"]
+    assert payload["status"] == "data_readiness_registry_integration_operator_export_review_checklist_not_applied"
+    assert checklist["title"] == "Registry-Export-Review-Checkliste"
+    assert checklist["checklist_items"]
+    assert all(route.startswith("GET ") for route in checklist["safe_routes_to_open"])
+    assert "kein execute=true" in payload["guardrail"]
+    assert "keine Registry-/Modellmutation" in checklist["guardrail"]

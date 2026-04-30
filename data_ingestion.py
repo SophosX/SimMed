@@ -3232,6 +3232,69 @@ def build_data_readiness_registry_integration_operator_export_review_stoplight(
     }
 
 
+def build_data_readiness_registry_integration_operator_export_review_checklist(
+    export_review_stoplight: dict,
+) -> dict:
+    """Return a human-readable checklist for the green/blocked export stoplight.
+
+    The stoplight is compact but still machine-shaped. This helper turns it into
+    explicit operator checks that can be rendered in the Learning Page or fetched
+    by agents before a handoff. It remains read-only and status-only: a green
+    checklist only permits sharing the status handoff, never starting a branch or
+    mutating Registry/model values.
+    """
+
+    routes = [route for route in export_review_stoplight.get("routes_to_open_in_order", []) if str(route).startswith("GET ")]
+    checks = export_review_stoplight.get("checks", [])
+    failed_checks = [check for check in checks if not check.get("passed")]
+    may_share = export_review_stoplight.get("may_share_status_handoff") is True and not failed_checks
+    return {
+        "title": "Registry-Export-Review-Checkliste",
+        "plain_language_note": (
+            "Eine letzte, mobile/touch-sichere Prüfliste vor dem Teilen des Registry-Export-Handoffs: "
+            "nur wenn Copy-Safety, GET-Routen und Stop-Gate grün sind, darf der Status geteilt werden."
+        ),
+        "primary_parameter_key": export_review_stoplight.get("primary_parameter_key"),
+        "primary_label": export_review_stoplight.get("primary_label"),
+        "overall_status": export_review_stoplight.get("overall_status"),
+        "may_share_status_handoff": may_share,
+        "failed_check_count": len(failed_checks),
+        "checklist_items": [
+            {
+                "rank": 1,
+                "label": "Copy-Safety/Audit grün?",
+                "status": "ok" if _check_passed(checks, "Export-Audit") else "stoppen",
+                "operator_instruction": "Audit öffnen und SHA256/unsafe findings prüfen; bei Rot nicht teilen.",
+            },
+            {
+                "rank": 2,
+                "label": "Nur GET-/Statusrouten?",
+                "status": "ok" if routes and len(routes) == len(export_review_stoplight.get("routes_to_open_in_order", [])) else "stoppen",
+                "operator_instruction": "Nur die gelisteten GET-Routen öffnen; keine POST-, execute=true- oder Git-Kommandos ergänzen.",
+            },
+            {
+                "rank": 3,
+                "label": "Stop-Gate vor Branch/PR sichtbar?",
+                "status": "ok" if bool(export_review_stoplight.get("stop_condition")) else "stoppen",
+                "operator_instruction": export_review_stoplight.get("stop_condition") or "STOP: erst Stop-Gate ergänzen.",
+            },
+            {
+                "rank": 4,
+                "label": "Definition of Done vor Codearbeit bekannt?",
+                "status": "ok" if export_review_stoplight.get("definition_of_done_before_branch") else "stoppen",
+                "operator_instruction": "Vor jeder separaten Branch/PR-Arbeit müssen Go/Hold/Reject, Evidenz, Grenzen, UI/API-Labels und Tests dokumentiert sein.",
+            },
+        ],
+        "safe_routes_to_open": routes,
+        "stop_condition": export_review_stoplight.get("stop_condition") or "STOP: kein Branch/PR ohne dokumentierte Go/Hold/Reject-Entscheidung.",
+        "guardrail": "Read-only/Review-checklist-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    }
+
+
+def _check_passed(checks: list[dict], needle: str) -> bool:
+    return any(needle in check.get("check", "") and check.get("passed") is True for check in checks)
+
+
 def build_data_readiness_registry_integration_handoff_packet(decision_record: dict) -> dict:
     """Create a copy-safe operator handoff from the Go/Hold/Reject decision record.
 

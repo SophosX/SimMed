@@ -2987,3 +2987,33 @@ Gezielte Tests bestanden; Full Suite läuft/folgt. Commit/Push und Zip-Refresh n
 - **Integrator Decision:** `build_data_readiness_registry_integration_operator_export_review_stoplight(...)` in `data_ingestion.py` ergänzt, in API und Learning Page verdrahtet, fokussierter GET-Endpunkt hinzugefügt.
 - **Question to Alex if needed:** Keine; nächster sinnvoller Plattform-Schritt ist die gleiche Ampellogik für echte Pre-Review/Cache-Start-Übergaben oder ein klarerer Daten-Werkbank-Einstieg.
 - **Verification/Git:** `pytest -q` → 167 passed; `py_compile` für `app.py`, `api.py`, `data_ingestion.py`, relevante Tests; Smoke `build_learning_data_readiness_backlog(limit=2)` → Stoplight grün/status-only. Commit/Push folgt in diesem Lauf.
+
+
+## 2026-04-30 06:47 Europe/Berlin — Heartbeat: Registry-Export-Review-Checkliste
+
+### Context
+Alex hat den Plattform-Track priorisiert. Dieser Lauf erweitert den Data-Readiness/Registry-Integrationspfad um eine letzte mobile/touch-sichere Review-Checkliste nach dem Export-Stoplight.
+
+### Project Manager
+Priorität: Core-Plattform statt KI-Recherche. Nächste Aufgaben: (1) Data-Readiness-Handoffs weiter in echte Datenintegration überführen, (2) Learning-Page-Pfade kürzen, (3) danach vorsichtig Registry-Integration nur nach Go/Hold/Reject.
+
+### Designer / UX
+Das Stoplight war technisch korrekt, aber noch zu dicht. Die neue Checkliste übersetzt es in vier konkrete Operator-Fragen: Copy-Safety, GET-Routen, Stop-Gate, Definition of Done.
+
+### Creative Agent
+Idee: später aus diesen Checklisten einen "Daten-Werkbank Assistent" machen. Fit: gut für Orientierung, aber erst nach stabilen read-only Gates und ohne Auto-Apply.
+
+### Political Health-System Strategist
+Vor politisch sensiblen Modelländerungen bleibt das explizite Stop-Gate wichtig: selbst grüner Status erlaubt nur Handoff, keine Registry-/Modellmutation oder Policy-Wirkungsbehauptung.
+
+### Evidence / Domain
+Keine neue externe Recherche. Änderung betrifft Prozess-/Provenance-Governance, nicht neue medizinische oder politische Fakten.
+
+### Integrator Decision
+Akzeptiert: `build_data_readiness_registry_integration_operator_export_review_checklist(...)`, API-Endpunkt `/data-readiness/registry-integration-operator-export-review-checklist`, Learning-Page-Surfacing und Tests.
+
+### Question to Alex
+Keine wichtige Entscheidung offen.
+
+### Verification / Git
+Gezielte Tests und volle Suite liefen grün: 169 passed. Py-compile und 20-run Simulation-Smoke OK. Commit/Push folgt in diesem Heartbeat; Zip-Artefakt wird aktualisiert.

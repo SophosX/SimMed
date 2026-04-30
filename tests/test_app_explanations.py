@@ -349,6 +349,17 @@ def test_learning_data_readiness_backlog_includes_integration_preflight():
     assert "Decision-Template" in " ".join(export_next_review["operator_checks"])
     assert "execute=true" not in export_next_review["copyable_status_route"]
     assert "keine Registry-/Modellmutation" in export_next_review["guardrail"]
+    export_review_stoplight = backlog["registry_integration_operator_export_review_stoplight"]
+    assert export_review_stoplight["title"] == "Registry-Export-Review-Stoplight"
+    assert export_review_stoplight["may_share_status_handoff"] is True
+    assert all(route.startswith("GET ") for route in export_review_stoplight["routes_to_open_in_order"])
+    export_review_checklist = backlog["registry_integration_operator_export_review_checklist"]
+    assert export_review_checklist["title"] == "Registry-Export-Review-Checkliste"
+    assert export_review_checklist["may_share_status_handoff"] is True
+    assert [item["rank"] for item in export_review_checklist["checklist_items"]] == [1, 2, 3, 4]
+    assert all(item["status"] == "ok" for item in export_review_checklist["checklist_items"])
+    assert "execute=true" not in " ".join(export_review_checklist["safe_routes_to_open"])
+    assert "keine Registry-/Modellmutation" in export_review_checklist["guardrail"]
     handoff_packet = backlog["registry_integration_handoff_packet"]
     assert handoff_packet["title"].startswith("Registry-Integrations-Handoff")
     assert handoff_packet["summary"]["handoff_rows"] == decision_record["summary"]["decision_rows"]

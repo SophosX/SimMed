@@ -35,6 +35,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_operator_briefing_handoff_sheet,
     build_data_readiness_registry_integration_operator_export_share_cards,
     build_data_readiness_registry_integration_operator_export_review_stoplight,
+    build_data_readiness_registry_integration_operator_export_review_checklist,
     build_data_readiness_registry_integration_operator_steps,
     build_data_readiness_registry_integration_pr_runbook,
     build_data_readiness_registry_integration_progress_timeline,
@@ -1678,3 +1679,48 @@ def test_registry_operator_export_review_stoplight_blocks_before_branch_and_mode
     )
     assert blocked["overall_status"] == "rot_stoppen_und_bundle_pruefen"
     assert blocked["may_share_status_handoff"] is False
+
+
+def test_registry_operator_export_review_checklist_is_mobile_safe_and_read_only():
+    stoplight = {
+        "primary_parameter_key": "bevoelkerung_mio",
+        "primary_label": "Bevölkerung",
+        "overall_status": "gruen_nur_status_handoff",
+        "may_share_status_handoff": True,
+        "routes_to_open_in_order": [
+            "GET /data-readiness/registry-integration-operator-export-audit",
+            "GET /data-readiness/bevoelkerung_mio",
+            "GET /data-readiness/registry-integration-decision-template",
+        ],
+        "checks": [
+            {"check": "Export-Audit ist copy-safe", "passed": True, "detail": "copy-safe_status_only"},
+            {"check": "Nächste Route ist GET/status-only", "passed": True, "detail": "GET /data-readiness/registry-integration-operator-export-audit"},
+            {"check": "Parameterroute ist GET/status-only", "passed": True, "detail": "GET /data-readiness/bevoelkerung_mio"},
+            {"check": "Stop-Gate vor Branch/PR sichtbar", "passed": True, "detail": "STOP: vor Branch/PR menschliches Go/Hold/Reject dokumentieren."},
+        ],
+        "stop_condition": "STOP: vor Branch/PR menschliches Go/Hold/Reject dokumentieren.",
+        "definition_of_done_before_branch": ["Go/Hold/Reject dokumentiert"],
+    }
+
+    checklist = build_data_readiness_registry_integration_operator_export_review_checklist(stoplight)
+
+    assert checklist["title"] == "Registry-Export-Review-Checkliste"
+    assert checklist["may_share_status_handoff"] is True
+    assert checklist["failed_check_count"] == 0
+    assert [item["label"] for item in checklist["checklist_items"]] == [
+        "Copy-Safety/Audit grün?",
+        "Nur GET-/Statusrouten?",
+        "Stop-Gate vor Branch/PR sichtbar?",
+        "Definition of Done vor Codearbeit bekannt?",
+    ]
+    assert all(item["status"] == "ok" for item in checklist["checklist_items"])
+    assert all(route.startswith("GET ") for route in checklist["safe_routes_to_open"])
+    assert "kein execute=true" in checklist["guardrail"]
+    assert "keine Registry-/Modellmutation" in checklist["guardrail"]
+
+    blocked = build_data_readiness_registry_integration_operator_export_review_checklist(
+        {**stoplight, "may_share_status_handoff": False, "routes_to_open_in_order": ["POST /bad"], "checks": [{"check": "Export-Audit ist copy-safe", "passed": False}]}
+    )
+    assert blocked["may_share_status_handoff"] is False
+    assert blocked["failed_check_count"] == 1
+    assert any(item["status"] == "stoppen" for item in blocked["checklist_items"])
