@@ -4571,3 +4571,32 @@ No important decision open. Continue safely with clearer first-screen result UX.
 
 ### Verification / Git
 Focused result/API/app tests passed: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients tests/test_app_explanations.py -q` → 99 passed. Full suite passed: `python3 -m pytest -q` → 262 passed. Runtime smoke passed: 50 runs × 3 years with causal packet assertion.
+
+## 2026-04-30 13:55 Europe/Berlin — Heartbeat: klare Ergebnis-Erstansicht
+
+### Context
+Alexs jüngste Korrektur war eindeutig: Die Resultatseite soll nicht noch mehr Erklär-Widgets stapeln, sondern zuerst als ein lesbares deutsches Ergebnis-Briefing funktionieren. Relevante Dateien: `result_causality.py`, `app.py`, `api.py`, `tests/test_result_causality.py`, `tests/test_api.py`.
+
+### Project Manager
+Priorität: erste Ergebnisansicht verschlanken und messbar kürzer machen, ohne Modelllogik zu ändern. Risiko: bestehende Legacy-Helfer bleiben für Audit/Details nötig, dürfen aber nicht wieder die erste Sicht dominieren. Nächste Schritte: Renderer visuell weiter auf eine echte Briefing-Karte verdichten und danach Screenshots/Streamlit-Smoke prüfen.
+
+### Designer / UX
+Die erste Sicht braucht eine klare Reihenfolge: Ergebnis → Eingriff → Warum es passiert → Relevante Kennzahlen → Anpassungen → Einordnung → Nächster Prüfschritt. Wenige relevante Kennzahlen reichen; Tabellen und alte Storyboards gehören in geschlossene Prüfbereiche.
+
+### Creative Agent
+Idee: später eine druckbare „1-Minuten-Lesefassung“ direkt aus `public_result_view` erzeugen. Fit: hilfreich für Policy-Briefing/Telegram/Sharing, aber erst nach visueller Stabilisierung der Resultatseite.
+
+### Political Health-System Strategist
+Die Formulierung bleibt bewusst nüchtern: Bei weniger Studienplätzen wird Kapazitätsdruck als prüfbarer Wirkpfad gezeigt, nicht als automatische politische Handlungsanweisung. Anpassungen wie Telemedizin/Delegation/Zuwanderung werden als zu prüfende Puffer benannt, nicht als behauptete Lösung.
+
+### Evidence / Domain
+Keine neuen externen Fakten oder Modellannahmen wurden eingeführt. Die Änderung betrifft die Kommunikationsschicht des bestehenden kausalen Resultatpakets. Evidenz-/Annahmegrenzen bleiben sichtbar, aber nicht mehr im ersten Bildschirm als Textdump.
+
+### Integrator Decision
+Akzeptiert: `short_answer` und `result_sections` werden knapper; Tests erzwingen maximal sieben öffentliche Abschnitte, kurze Bodies und keine internen/metaartigen Begriffe. Modellmechanik bleibt unverändert.
+
+### Question to Alex
+Keine wichtige Entscheidung offen. Sicher weiterarbeiten: visuelle Verdichtung der Streamlit-Ergebnis-Karte und ggf. API-/Download-Briefing aus demselben Paket.
+
+### Verification / Git
+Vor Commit: fokussierte Tests grün: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 35 passed. Commit/Push wird nach Full-Suite und Sync ergänzt.

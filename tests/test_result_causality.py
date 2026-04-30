@@ -82,8 +82,8 @@ def test_simplified_public_result_packet_is_short_clear_and_not_meta():
         "Nächster Prüfschritt",
     ]
     assert len(packet["result_sections"]) <= 7
-    assert all(len(section["body"]) <= 360 for section in packet["result_sections"])
-    assert len(packet["short_answer"]) <= 650
+    assert all(len(section["body"]) <= 260 for section in packet["result_sections"])
+    assert len(packet["short_answer"]) <= 520
     section_by_heading = {section["heading"]: section["body"] for section in packet["result_sections"]}
     assert section_by_heading["Ergebnis"] != packet["result_headline"]
     assert "Ärzte pro 100k" in section_by_heading["Ergebnis"]

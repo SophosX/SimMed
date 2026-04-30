@@ -961,13 +961,15 @@ def build_causal_result_packet(
         if study_places_changed
         else "Ergebnis: die wichtigsten Veränderungen im Modelllauf"
     )
-    top_kpi_sentences = " ".join(item["sentence"] for item in kpis[:3]) or "Es liegen keine priorisierten Kennzahlen vor."
+    top_kpi_sentences = " ".join(
+        f"{item['label']} {item['direction']} ({item['start']} → {item['end']})." for item in kpis[:3]
+    ) or "Es liegen keine priorisierten Kennzahlen vor."
     if study_places_changed:
         short_answer = (
             f"Die Medizinstudienplätze wurden gesenkt; sichtbar werden vor allem {top_kpi_sentences} "
-            "Der Grund ist die Ausbildungs-Pipeline, weil nicht das Startjahr die Versorgung kippt, sondern die kleinere Kohorte ab etwa Jahr 6 und der Facharztpfad Richtung Jahr 11–15. "
-            "Das bedeutet: Die erste Lesart ist ein prüfbarer Kapazitätsdruck, noch keine fertige politische Entscheidung. "
-            "Der nächste Check ist, ob Telemedizin, Delegation oder Zuwanderung diesen Druck im Modell plausibel abfedern."
+            "Der Grund ist die Ausbildungs-Pipeline, weil ab etwa Jahr 6 die kleinere Kohorte im Arbeitsmarkt ankommt und Richtung Jahr 11–15 der Facharztpfad wichtig wird. "
+            "Das bedeutet: prüfbarer Kapazitätsdruck, keine fertige politische Entscheidung. "
+            "Der nächste Check ist, ob Telemedizin, Delegation oder Zuwanderung den Druck plausibel abfedern."
         )
     elif changed:
         short_answer = (
@@ -1006,9 +1008,9 @@ def build_causal_result_packet(
     else:
         why_body = pathway_body[:340]
     adaptation_body = (
-        "Das Modell sucht nach Puffern: Telemedizin, Delegation, Zuwanderung oder veränderte Nutzung. "
-        f"Beobachtet: {adaptation_trace_text[:190]} "
-        "Sinken Burnout oder Wartezeit trotz Ärztemangel, ist das ein Prüfpunkt, solange kein Puffer sichtbar trägt."
+        "Das Modell prüft Puffer wie Telemedizin, Delegation oder Zuwanderung. "
+        f"Beobachtet: {adaptation_trace_text[:75]} "
+        "Fällt Burnout trotz Ärztemangel, ist das ein Prüfhinweis, solange kein Puffer sichtbar trägt."
     )
     result_sections = [
         {"heading": "Ergebnis", "body": result_body},
