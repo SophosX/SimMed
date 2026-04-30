@@ -32,6 +32,26 @@ def test_simulate_embeds_causal_result_packet_for_answer_first_clients():
     assert "dokumentierten Parametern" in packet["guardrail"]
     assert "random Internet" not in packet["guardrail"]
     assert "Klartext" not in packet["sequential_plain_text"]
+    briefing = packet["professional_briefing"]
+    assert briefing["title"] == "Ergebnisbericht"
+    assert briefing["sequential_text"].startswith("Ergebnisbericht\n\nAusgangslage")
+    assert [section["heading"] for section in briefing["sections"]] == [
+        "Ausgangslage",
+        "Eingriff",
+        "Berechnete Wirkpfade",
+        "Relevante KPIs",
+        "Anpassungsreaktionen",
+        "Einordnung und Belastbarkeit",
+        "Was daraus folgt",
+        "Nächste Prüfentscheidung",
+    ]
+    assert len(briefing["first_view_kpi_cards"]) <= 4
+    assert packet["primary_result_view"]["render_sequence"] == [
+        "professional_briefing",
+        "first_view_kpi_cards",
+        "next_check",
+        "optional_audit_layers",
+    ]
 
 
 def test_api_exposes_data_snapshot_status_guardrail():

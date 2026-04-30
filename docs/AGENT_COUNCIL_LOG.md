@@ -4006,3 +4006,33 @@ Keine Entscheidung nötig. Das ist eine sichere, reversible Präsentationsverbes
 
 ### Verification / Git
 Spezifischer Red-Test wurde gesehen und anschließend grün gemacht. Vollständige Verifikation und Git-Sync folgen in diesem Heartbeat nach dem Source-Commit-Stand.
+
+
+## 2026-04-30 11:36 Europe/Berlin — Heartbeat: API-first Ergebnisbericht begrenzt relevante KPIs
+
+### Context
+Alexs Ergebnis-UX-Korrektur wurde in diesem Lauf am API-Rand nachgezogen: Wenn Agenten oder externe Clients `/simulate` nutzen, sollen sie denselben ruhigen ersten Ergebnisbericht bekommen wie die Streamlit-Oberfläche — mit professioneller Sequenz und maximal vier relevanten KPI-Karten statt einer faktischen Rückkehr zur Kennzahlenwand.
+
+### Project Manager
+Priorität: End-to-end-Kohärenz zwischen `result_causality.py`, Streamlit und FastAPI. Risiko: Die UI kann gut wirken, während API-Clients noch zu viele Kennzahlen als Erstansicht erhalten. Nächster Schritt: die Zeitfenster und Anpassungsreaktionen noch stärker mit tatsächlichen Jahreswerten verbinden.
+
+### Designer / UX
+Die erste Ergebnisansicht bleibt jetzt auch über die API lesbar: Ergebnisbericht zuerst, wenige relevante Kennzahlen, danach Detail-/Audit-Layer. Das reduziert visuelles und kognitives Rauschen, ohne Details zu verstecken.
+
+### Creative Agent
+Produktfit: Externe Agenten können den Ergebnisbericht direkt als zusammenhängendes Briefing verwenden, statt aus Rohfeldern selbst eine Story zu basteln. Das macht SimMed eher zu einem ernsthaften Simulationsbriefing als zu einer losen KPI-Ausgabe.
+
+### Political Health-System Strategist
+Die politische Einordnung bleibt nachgeordnet. Der API-Pfad liefert bewusst keine Stimmenprognose, kein Lobbying und keine Wirksamkeitsbehauptung, sondern eine fachlich prüfbare Wirkungskette mit Belastbarkeitsgrenze.
+
+### Evidence / Domain
+Keine neue externe Recherche in diesem Lauf. Keine neuen Realweltclaims, Parameterwerte oder Modellmechaniken. Die Änderung begrenzt die Ergebnisdarstellung und stärkt bestehende Guardrails: dokumentierte Parameter, Annahmen, Monte-Carlo-Spannweiten, keine amtliche Prognose.
+
+### Integrator Decision
+Akzeptiert: `/simulate` erzeugt `causal_result_packet` nun mit `max_kpis=4`, passend zur ersten Streamlit-Ergebnisansicht. Der API-Test prüft zusätzlich `professional_briefing`, die vollständige Sequenz Ausgangslage → Eingriff → Wirkpfad → KPIs → Anpassung → Einordnung → Folge → Prüfentscheidung und die Render-Reihenfolge des `primary_result_view`.
+
+### Question to Alex
+Keine wichtige Entscheidung offen. Sicher weiter: nächster kohärenter Chunk sollte die Zeitfenster 0–5 / 6–10 / 11–15 mit beobachteten KPI-Jahreswerten koppeln, damit der Bericht weniger statisch und noch stärker wie ein Simulationsbriefing liest.
+
+### Verification / Git
+TDD: neuer API-Assertion-Test war zuerst rot (`len(first_view_kpi_cards) == 5`), danach grün nach API-Anpassung. Verifikation: `python3 -m pytest -q` → 248 passed; `py_compile` für Kernmodule/Tests OK; 50-run/15-Jahre Simulation-Smoke mit `build_causal_result_packet` → OK. Git-Sync/Commit/Push folgt direkt anschließend.

@@ -1647,7 +1647,7 @@ def simulate(req: ScenarioRequest) -> dict:
     result["causal_result_packet"] = build_causal_result_packet(
         pd.DataFrame(result.get("annual_summary", [])),
         {**get_default_params(), **req.parameter_changes},
-        max_kpis=5,
+        max_kpis=4,
     )
     result["political_feasibility"] = assess_political_feasibility(req.parameter_changes)
     result["uncertainty_band_summary"] = build_uncertainty_band_summary_from_final(result["final_year_summary"])
