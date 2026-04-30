@@ -2317,3 +2317,16 @@ Keine.
 
 ### Verification / Git
 Gezielt: `pytest tests/test_api.py::test_api_exposes_focused_registry_integration_safe_start_without_apply tests/test_app_explanations.py::test_learning_data_readiness_backlog_prioritizes_safe_data_gates -q` → 2 passed. Voll: `pytest -q` → 135 passed; `py_compile` für geänderte Dateien erfolgreich. Commit/Push folgen im selben Heartbeat.
+
+
+## 2026-04-30T01:37:35Z — Rohcache-Integritätscheck für Datenpass
+
+- **Context:** Alex priorisiert Core-Plattform vor KI/Evidence. Nächster sicherer Datenfundament-Schritt: Rohdaten-Cache nicht nur listen, sondern SHA256-Unverändertheit vor Transformation sichtbar machen.
+- **Project Manager:** Kleine, testbare Plattform-Scheibe ohne Live-Fetch/Mutation; ergänzt bestehende Data-Passport/API-Oberflächen.
+- **Designer/UX:** Learning Page zeigt jetzt eine kurze Rohcache-Integritätszeile (ok/abweichend/fehlend), bevor Nutzer Modellreife annehmen.
+- **Creative Agent:** Keine neue Spielmechanik; bewusst nüchterner Sicherheitsgurt statt weiterer Status-Prosa.
+- **Political Health-System Strategist:** Guardrail bleibt wichtig: Cache-Integrität ist kein Policy-Wirkungsbeweis und keine amtliche Prognose.
+- **Evidence/Domain:** Keine neue externe Recherche; keine neuen Sachbehauptungen. Integritätscheck verifiziert nur lokale Bytes gegen Manifest-SHA256.
+- **Integrator Decision:** `verify_cached_snapshot_integrity()` und `build_cached_snapshot_integrity_report()` in `data_ingestion.py`; `/data-snapshots` erweitert und fokussiertes `GET /data-snapshots/integrity`; Learning-Data-Passport mit mobiler Integritäts-Zusammenfassung.
+- **Question to Alex:** Keine.
+- **Verification/Git:** 137 Pytest-Tests, py_compile und 50x3 Simulation-Smoke bestanden; Commit/Push folgt.

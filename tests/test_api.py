@@ -12,6 +12,8 @@ def test_api_exposes_data_snapshot_status_guardrail():
     assert body["status"] == "raw_snapshot_status_not_model_integration"
     assert "Modellparameter ändern sich erst" in body["guardrail"]
     assert isinstance(body["snapshots"], list)
+    assert body["snapshot_integrity"]["summary"]["snapshots_seen"] == len(body["snapshots"])
+    assert "kein Netzwerkabruf" in body["snapshot_integrity"]["guardrail"]
     population = next(row for row in body["parameters"] if row["parameter_key"] == "bevoelkerung_mio")
     assert set(population) == {
         "parameter_key",
@@ -28,6 +30,21 @@ def test_api_exposes_data_snapshot_status_guardrail():
         "Snapshot" in passport_population["passport_note"]
         or "Transformationsreview" in passport_population["passport_note"]
     )
+
+
+def test_api_exposes_focused_snapshot_integrity_without_fetch_or_import():
+    client = TestClient(api)
+    response = client.get("/data-snapshots/integrity")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "raw_snapshot_integrity_not_model_integration"
+    assert "kein Registry-/Modellimport" in body["guardrail"]
+    integrity = body["snapshot_integrity"]
+    assert integrity["summary"]["snapshots_seen"] >= 0
+    assert {"sha256_match", "sha256_mismatch", "raw_file_missing"} <= set(integrity["summary"])
+    assert all("integrity_status" in row for row in integrity["rows"])
+    assert "kein Netzwerkabruf" in integrity["guardrail"]
 
 
 def test_api_exposes_data_passport_for_registry_and_cache_status():

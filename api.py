@@ -13,6 +13,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
 from data_ingestion import (
+    build_cached_snapshot_integrity_report,
     build_connector_execution_plan,
     build_connector_execution_workbench,
     build_connector_snapshot_requests,
@@ -94,9 +95,21 @@ def get_data_snapshots() -> dict:
         "status": "raw_snapshot_status_not_model_integration",
         "guardrail": "Rohdaten-Snapshots zeigen Cache/Provenienz; Modellparameter ändern sich erst nach geprüfter Transformation.",
         "snapshots": [snapshot.to_dict() for snapshot in list_cached_snapshots()],
+        "snapshot_integrity": build_cached_snapshot_integrity_report(),
         "transformation_reviews": [review.to_dict() for review in list_reviewed_transformations()],
         "parameters": build_parameter_snapshot_status(parameter_keys),
         "data_passport": build_data_passport_rows(parameters),
+    }
+
+
+@api.get("/data-snapshots/integrity")
+def get_data_snapshot_integrity() -> dict:
+    """Recompute raw-cache SHA256 status without fetching or integrating data."""
+
+    return {
+        "status": "raw_snapshot_integrity_not_model_integration",
+        "guardrail": "SHA256-Integrität prüft nur unveränderte Rohdateien; sie ist keine Transformation, kein Registry-/Modellimport und kein Wirkungsbeweis.",
+        "snapshot_integrity": build_cached_snapshot_integrity_report(),
     }
 
 

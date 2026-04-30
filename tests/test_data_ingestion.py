@@ -3,6 +3,7 @@ import json
 from data_ingestion import (
     ReviewedTransformation,
     build_connector_execution_workbench,
+    build_cached_snapshot_integrity_report,
     build_connector_snapshot_requests,
     build_data_connector_queue,
     build_data_passport_rows,
@@ -38,6 +39,7 @@ from data_ingestion import (
     seed_reference_fixture_reviewed_transformations,
     seed_reference_fixture_snapshots,
     snapshot_payload_hash,
+    verify_cached_snapshot_integrity,
 )
 
 
@@ -70,6 +72,42 @@ def test_cache_source_payload_writes_raw_file_and_manifest(tmp_path):
 
     restored = read_snapshot_manifest(manifest_path)
     assert restored == snapshot
+
+
+def test_cached_snapshot_integrity_report_recomputes_sha_without_model_import(tmp_path):
+    snapshot = cache_source_payload(
+        source_id="destatis_genesis",
+        source_url="https://www-genesis.destatis.de/genesis/online",
+        payload=b"year,value\n2024,84.4\n",
+        filename="population.csv",
+        cache_root=tmp_path,
+        source_period="2024",
+        output_parameter_keys=("bevoelkerung_mio",),
+        transformation_note="raw fixture only; no model mutation",
+        retrieved_at="2026-04-29T20:00:00+00:00",
+    )
+
+    integrity = verify_cached_snapshot_integrity(snapshot)
+    assert integrity["integrity_status"] == "sha256_match"
+    assert integrity["expected_sha256"] == snapshot.sha256
+    assert integrity["actual_sha256"] == snapshot.sha256
+    assert "Registry-/Modellintegration" in integrity["guardrail"]
+
+    report = build_cached_snapshot_integrity_report(cache_root=tmp_path)
+    assert report["summary"] == {
+        "snapshots_seen": 1,
+        "sha256_match": 1,
+        "sha256_mismatch": 0,
+        "raw_file_missing": 0,
+    }
+    assert report["rows"][0]["integrity_status"] == "sha256_match"
+    assert "kein Netzwerkabruf" in report["guardrail"]
+
+    raw_path = tmp_path / "destatis_genesis" / "raw" / "population.csv"
+    raw_path.write_bytes(b"tampered")
+    tampered = build_cached_snapshot_integrity_report(cache_root=tmp_path)
+    assert tampered["summary"]["sha256_mismatch"] == 1
+    assert tampered["rows"][0]["integrity_status"] == "sha256_mismatch"
 
 
 def test_snapshot_status_is_read_only_and_conservative(tmp_path):

@@ -30,6 +30,7 @@ import warnings
 from political_feasibility import assess_political_feasibility
 from expert_council import plain_language_workflow_summary
 from data_ingestion import (
+    build_cached_snapshot_integrity_report,
     build_connector_execution_plan,
     build_connector_snapshot_requests,
     build_data_connector_queue,
@@ -4087,6 +4088,7 @@ def build_learning_data_passport_overview(limit: int = 8) -> dict[str, Any]:
             "cached_raw_snapshots": len(cached_rows),
             "reviewed_transformations": len(reviewed_rows),
         },
+        "snapshot_integrity": build_cached_snapshot_integrity_report(),
         "rows": [
             {
                 "Parameter": row["label"],
@@ -4113,6 +4115,13 @@ def render_learning_data_passport_overview():
     col2.metric("Source-backed", counts["source_backed_registry"])
     col3.metric("Rohdaten-Snapshots", counts["cached_raw_snapshots"])
     col4.metric("Transformationsreviews", counts["reviewed_transformations"])
+    integrity = overview["snapshot_integrity"]
+    integrity_summary = integrity["summary"]
+    st.caption(
+        f"Rohcache-Integrität: {integrity_summary['sha256_match']} SHA256 ok, "
+        f"{integrity_summary['sha256_mismatch']} abweichend, {integrity_summary['raw_file_missing']} Rohdatei fehlt. "
+        "Das prüft nur Cache-Unverändertheit, nicht Modellreife."
+    )
     st.dataframe(pd.DataFrame(overview["rows"]), use_container_width=True, hide_index=True)
     st.caption("Guardrail: Rohdaten-Snapshot ≠ geprüfter Modelleffekt. Annahmen bleiben sichtbar, bis eine Transformation geprüft und dokumentiert wurde.")
 

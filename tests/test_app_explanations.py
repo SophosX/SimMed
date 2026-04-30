@@ -77,6 +77,9 @@ def test_learning_data_passport_overview_separates_registry_cache_and_transforma
     assert overview["counts"]["total_parameters"] >= overview["counts"]["source_backed_registry"]
     assert overview["counts"]["assumption_registry"] >= 1
     assert "reviewed_transformations" in overview["counts"]
+    assert overview["snapshot_integrity"]["title"].startswith("Rohdaten-Cache-Integrität")
+    assert {"sha256_match", "sha256_mismatch", "raw_file_missing"} <= set(overview["snapshot_integrity"]["summary"])
+    assert "keine Registry-/Modellmutation" in overview["snapshot_integrity"]["guardrail"]
     assert 1 <= len(overview["rows"]) <= 6
     first_row = overview["rows"][0]
     assert {"Parameter", "Register", "Evidenz", "Rohdaten-Cache", "Geprüfte Transformation", "Hinweis"} <= set(first_row)

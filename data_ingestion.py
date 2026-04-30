@@ -536,6 +536,60 @@ def read_snapshot_manifest(path: Path | str) -> CachedSourceSnapshot:
     return CachedSourceSnapshot(**data)
 
 
+def verify_cached_snapshot_integrity(snapshot: CachedSourceSnapshot | dict) -> dict:
+    """Recompute the raw file SHA256 for a cached snapshot manifest.
+
+    This is a provenance safety check only. A matching hash proves that the cached
+    raw bytes still match the manifest; it does not validate source semantics,
+    transformation correctness, Registry integration, or policy effects.
+    """
+
+    snapshot_data = snapshot.to_dict() if isinstance(snapshot, CachedSourceSnapshot) else dict(snapshot)
+    raw_path = Path(snapshot_data.get("raw_path", ""))
+    expected_sha = snapshot_data.get("sha256", "")
+    if not raw_path.exists() or not raw_path.is_file():
+        return {
+            "source_id": snapshot_data.get("source_id", ""),
+            "raw_path": str(raw_path),
+            "expected_sha256": expected_sha,
+            "actual_sha256": None,
+            "integrity_status": "raw_file_missing",
+            "guardrail": "Integrity-Check ist read-only: fehlende oder passende Rohdateien sind keine Transformation, keine Registry-/Modellintegration und kein Wirkungsbeweis.",
+        }
+
+    actual_sha = snapshot_payload_hash(raw_path.read_bytes())
+    return {
+        "source_id": snapshot_data.get("source_id", ""),
+        "raw_path": str(raw_path),
+        "expected_sha256": expected_sha,
+        "actual_sha256": actual_sha,
+        "integrity_status": "sha256_match" if expected_sha == actual_sha else "sha256_mismatch",
+        "guardrail": "Integrity-Check ist read-only: SHA256-Abgleich beweist nur Cache-Unverändertheit, nicht Transformation, Registry-/Modellintegration oder Policy-Wirkung.",
+    }
+
+
+def build_cached_snapshot_integrity_report(cache_root: Path | str = CACHE_ROOT) -> dict:
+    """Return a read-only integrity report for all cached raw snapshot manifests."""
+
+    snapshots = list_cached_snapshots(cache_root=cache_root)
+    rows = [verify_cached_snapshot_integrity(snapshot) for snapshot in snapshots]
+    return {
+        "title": "Rohdaten-Cache-Integrität vor Transformation",
+        "plain_language_note": (
+            "Dieser Check vergleicht jedes Rohdaten-Artefakt erneut mit dem SHA256 im Manifest. "
+            "Er beantwortet nur: Ist der Cache unverändert? Er beantwortet nicht: Ist der Wert schon modellreif?"
+        ),
+        "summary": {
+            "snapshots_seen": len(rows),
+            "sha256_match": sum(1 for row in rows if row["integrity_status"] == "sha256_match"),
+            "sha256_mismatch": sum(1 for row in rows if row["integrity_status"] == "sha256_mismatch"),
+            "raw_file_missing": sum(1 for row in rows if row["integrity_status"] == "raw_file_missing"),
+        },
+        "rows": rows,
+        "guardrail": "Read-only/Integrität-only: kein Netzwerkabruf, kein Cache-Schreiben, keine Transformation, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+    }
+
+
 def record_reviewed_transformation(
     transformation: ReviewedTransformation,
     *,
