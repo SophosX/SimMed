@@ -419,7 +419,15 @@ def _briefing_quality_checks(
         f"{row.get('label', row.get('parameter_key', 'Parameter'))}: Evidenzgrad {row.get('evidence_grade', '?')}"
         for row in evidence_rows
     ) or "keine geänderte Registry-Zeile"
-    banned_terms = ("random Internet", "Klartext", "KPI-Wand", "keine freie Web-Recherche")
+    banned_terms = (
+        "random Internet",
+        "Klartext",
+        "KPI-Wand",
+        "keine freie Web-Recherche",
+        "generated",
+        "helper",
+        "Zahlenwand",
+    )
     professional_language_ok = not any(term in sequential_text for term in banned_terms)
     bounded = "keine amtliche Prognose" in sequential_text or "keine amtliche Prognose" in RESULT_CAUSALITY_GUARDRAIL
 
@@ -445,7 +453,7 @@ def _briefing_quality_checks(
         {
             "check": "Professionelle Sprache",
             "status": "erfüllt" if professional_language_ok else "prüfen",
-            "evidence": "Der erste Ergebnistext vermeidet interne Meta-Floskeln und bleibt bei fachlicher Sprache.",
+            "evidence": "Der erste Ergebnistext vermeidet interne Prozessfloskeln und bleibt bei fachlicher Sprache.",
             "why_it_matters": "Der Bericht soll wie eine ernsthafte Simulationseinordnung wirken, nicht wie zusammengeklebte Systemnotizen.",
         },
         {

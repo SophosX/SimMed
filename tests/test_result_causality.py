@@ -241,6 +241,22 @@ def test_public_result_packet_is_minimal_and_does_not_expose_legacy_layers_first
         assert forbidden not in public_text
 
 
+def test_result_quality_check_uses_public_language_not_internal_process_words():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    quality_text = "\n".join(
+        f"{row.get('check', '')} {row.get('evidence', '')} {row.get('why_it_matters', '')}"
+        for row in packet.get("briefing_quality_checks", [])
+    )
+
+    assert "Professionelle Sprache" in quality_text
+    for forbidden in ["Meta", "generated", "helper", "random Internet", "KPI-Wand", "Klartext"]:
+        assert forbidden not in quality_text
+    assert "Prozessfloskeln" in quality_text
+
+
 def test_causal_result_packet_prioritizes_relevant_kpis_and_coherent_freetext():
     params = get_default_params()
     params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5

@@ -3568,6 +3568,35 @@ Keine wichtige Entscheidung offen; sicher weiter mit der nächsten kleinen Schei
 ### Verification / Git
 Vor Commit: neuer Test rot (`KeyError: free_text_blocks`), dann grün. Finale Tests/Git werden nach Suite und Push ergänzt.
 
+## 2026-04-30 14:46 UTC — Heartbeat: Ergebnisbericht Sprache entmetaisieren
+
+### Context
+Alexs jüngste Korrektur bleibt maßgeblich: Ergebnis zuerst als ernstes, gut lesbares deutsches Briefing; keine internen Prozessbegriffe in der öffentlichen Ergebnislesart.
+
+### Project Manager
+Kleiner, sicherer Cleanup im Result-Track: vorhandenes Causal Packet bleibt source of truth; keine neue Funktion, kein Modellumbau, aber strengere Regression gegen interne/sterile Begriffe.
+
+### Designer / UX
+Die erste Ergebnisansicht soll nicht nach Baukasten klingen. Deshalb wurde der Qualitätscheck sprachlich neutraler formuliert und der öffentliche Sprachfilter um weitere verbotene Prozesswörter ergänzt.
+
+### Creative Agent
+Fit: weniger Werkstattgeruch, mehr Briefing. Größere visuelle Neustrukturierung bleibt der nächste sinnvolle Schritt; heute nur ein klarer Guardrail-Cleanup.
+
+### Political Health-System Strategist
+Keine neue politische Behauptung. Die Einordnung bleibt fachlich begrenzt: Modelllauf, keine amtliche Prognose, kein Wirksamkeitsnachweis.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Änderung betrifft öffentliche Sprache und Test-Guardrails; Evidenzgrade/Parameter/Modellmechanik unverändert.
+
+### Integrator Decision
+Akzeptiert: `briefing_quality_checks` vermeidet nun „Meta“-Sprache und testet zusätzlich gegen interne Begriffe wie generated/helper/Zahlenwand im Ergebnis-Qualitätscheck.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; sicher weiter mit der nächsten großen Ergebnisseite-Scheibe: weniger Alt-Blöcke, stärkerer einzelner Briefing-Fluss.
+
+### Verification / Git
+Vorläufig: Fokustest ergänzt; finale Suite/Commit/Push folgt unten im Heartbeat-Verifikationsschritt.
+
 ## 2026-04-30 09:45 Europe/Berlin — Heartbeat: Klartext-first result layout
 
 ### Context
