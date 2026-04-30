@@ -1237,6 +1237,7 @@ def build_causal_result_packet(
         "briefing": lean_public_briefing,
         "briefing_style": "single_readable_briefing",
         "first_screen_policy": "one_briefing_then_collapsed_audit",
+        "primary_render_mode": "single_markdown_briefing",
         "render_order": [
             "result_headline",
             "short_answer",
@@ -1246,9 +1247,7 @@ def build_causal_result_packet(
             "collapsed_audit_sections",
         ],
         "first_screen_render_blocks": [
-            "headline",
-            "short_answer",
-            "result_sections",
+            "briefing_markdown",
             "compact_relevant_kpis",
             "collapsed_audit",
         ],

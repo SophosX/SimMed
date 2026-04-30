@@ -209,13 +209,13 @@ def test_public_result_view_keeps_only_one_first_screen_briefing_before_audit():
 
     assert view["answer_rows"] == []
     assert view["executive_brief"]["answer_rows"] == []
+    assert view["primary_render_mode"] == "single_markdown_briefing"
     assert view["first_screen_render_blocks"] == [
-        "headline",
-        "short_answer",
-        "result_sections",
+        "briefing_markdown",
         "compact_relevant_kpis",
         "collapsed_audit",
     ]
+    assert view["briefing_markdown"].count("#### Relevante Kennzahlen") == 1
     assert "answer_rows" in view["suppressed_overlapping_widgets"]
     assert "legacy_narrative_widgets" in view["suppressed_overlapping_widgets"]
 
@@ -410,6 +410,7 @@ def test_public_result_packet_is_minimal_and_does_not_expose_legacy_layers_first
         "first_screen_render_blocks",
         "suppressed_overlapping_widgets",
         "first_screen_policy",
+        "primary_render_mode",
         "headline",
         "briefing_markdown",
         "executive_brief",
