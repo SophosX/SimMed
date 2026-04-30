@@ -937,3 +937,31 @@ def test_api_exposes_focused_registry_integration_safe_start_without_apply():
     assert "Stoppschild" in checklist["rows"][3]["check"]
     assert not any("execute=true" in row["copyable_read_only_command"] for row in checklist["rows"])
     assert "keine Registry-/Modellmutation" in checklist["guardrail"]
+
+
+def test_api_exposes_focused_registry_integration_safe_start_checklist_without_apply():
+    client = TestClient(api)
+    seed_response = client.post("/data-fixtures/seed-reference-review-demo")
+    assert seed_response.status_code == 200
+
+    response = client.get("/data-readiness/registry-integration-safe-start-checklist?limit=3")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "data_readiness_registry_integration_safe_start_checklist_not_applied"
+    assert "kein Branch" in body["guardrail"]
+    assert "kein execute=true" in body["guardrail"]
+    checklist = body["registry_integration_safe_start_checklist"]
+    assert checklist["primary_parameter_key"] == "bevoelkerung_mio"
+    assert [row["rank"] for row in checklist["rows"]] == [1, 2, 3, 4]
+    assert checklist["rows"][0]["copyable_read_only_command"] == "GET /data-readiness/registry-integration-status-board"
+    assert checklist["rows"][1]["copyable_read_only_command"] == "GET /data-readiness/bevoelkerung_mio"
+    assert "Stoppschild" in checklist["rows"][3]["check"]
+    commands = [row["copyable_read_only_command"] for row in checklist["rows"]]
+    assert not any("execute=true" in command for command in commands)
+    assert "keine Registry-/Modellmutation" in checklist["guardrail"]
+    assert "kein Policy-Wirkungsbeweis" in checklist["guardrail"]
+
+    invalid = client.get("/data-readiness/registry-integration-safe-start-checklist?limit=0")
+    assert invalid.status_code == 422
+    assert invalid.json()["detail"]["status"] == "invalid_data_readiness_registry_integration_safe_start_checklist_limit"

@@ -2522,3 +2522,32 @@ Keine.
 
 ### Verification / Git
 Verifiziert mit gezielten Tests, voller Suite (`152 passed`), `py_compile` und 20x2-Simulation-Smoke (`df=(60,30)`, `reg=(320,6)`). Commit/Push folgt in diesem Heartbeat.
+
+## 2026-04-30 04:38 Europe/Berlin — Focused Safe-start Checklist API
+
+### Context
+Alex corrected the heartbeat priority toward core platform work. This run stayed on the data-readiness / Registry-integration governance track and added a focused API surface for the already structured Safe-start checklist.
+
+### Project Manager
+Priority: make data-governance operator steps easier for agents/mobile clients to consume without parsing a larger aggregate response. Risk remains endpoint sprawl; keep surfaces read-only and tested. Next tasks: add first-contact UI placement only if it clarifies the operator path, then continue toward real-data connector execution controls with dry-run defaults.
+
+### Designer / UX
+The focused checklist endpoint supports a simple four-step mobile reading path: Statusboard öffnen → Parameter prüfen → Audit-Checkliste öffnen → Stoppschild vor Codearbeit. This is clearer than burying checklist rows in a broader response.
+
+### Creative Agent
+Idea: later turn these read-only checklist rows into a “mission card” for data operators. Product fit is good for onboarding, but only after status/API behavior remains stable.
+
+### Political Health-System Strategist
+The stop-sign framing is important: politically sensitive model defaults must not be changed because a technical endpoint exists. Human audit and separate tested PR remain the governance boundary.
+
+### Evidence / Domain
+No new research claims or source facts were added. The change only exposes existing provenance/readiness guardrails and preserves separation of raw cache, transformation review, and model integration.
+
+### Integrator Decision
+Accepted: add `GET /data-readiness/registry-integration-safe-start-checklist` as a focused read-only/status-only API response with limit validation and regression coverage. Deferred: any branch creation, execute=true action, or Registry/model mutation.
+
+### Question to Alex
+Keine wichtige Entscheidung offen.
+
+### Verification / Git
+Verified focused API regression (`1 passed`), full suite (`153 passed`), `py_compile`, and 20x2 simulation smoke (`df=(60,30)`, `reg=(320,6)`). Commit/push and zip refresh follow in this heartbeat.
