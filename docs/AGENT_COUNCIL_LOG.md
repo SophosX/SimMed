@@ -4153,4 +4153,4 @@ Akzeptiert: `policy_readiness_summary` als strukturierter Bestandteil des causal
 Keine wichtige Entscheidung offen; sicherer nächster Schritt ist weitere Konsolidierung des Ergebnisberichts statt neuer isolierter Widgets.
 
 ### Verification / Git
-Gezielte Tests grün: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 25 passed. Full verification/Git folgt in diesem Heartbeat.
+Gezielte Tests grün: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 25 passed. Full verification grün: `python3 -m pytest -q` → 252 passed; `py_compile` für zentrale Module grün; Smoke-Test 30 Läufe × 3 Jahre grün (`df=(120, 30)`, `reg=(480, 6)`). Git: Commit `848c024` auf `main` gepusht; Follow-up-Log-Commit folgt separat ohne Force-Push.
