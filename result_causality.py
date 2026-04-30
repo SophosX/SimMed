@@ -1237,7 +1237,9 @@ def build_causal_result_packet(
         "briefing": lean_public_briefing,
         "briefing_style": "single_readable_briefing",
         "first_screen_policy": "one_briefing_then_collapsed_audit",
-        "primary_render_mode": "single_markdown_briefing",
+        "primary_render_mode": "structured_sections_with_single_kpi_rows",
+        "section_render_mode": "text_sections_kpi_rows_once",
+        "render_relevant_kpis_separately": False,
         "render_order": [
             "result_headline",
             "short_answer",
@@ -1247,8 +1249,8 @@ def build_causal_result_packet(
             "collapsed_audit_sections",
         ],
         "first_screen_render_blocks": [
-            "briefing_markdown",
-            "compact_relevant_kpis",
+            "headline_and_short_answer",
+            "result_sections_with_single_relevant_kpi_rows",
             "collapsed_audit",
         ],
         "suppressed_overlapping_widgets": [

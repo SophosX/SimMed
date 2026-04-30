@@ -3529,20 +3529,27 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
             "relevant_kpis": view.get("relevant_kpis", packet.get("relevant_kpis", [])),
             "guardrail": view.get("guardrail", packet.get("guardrail", "")),
         }
-        st.markdown(view.get("briefing_markdown") or f"### {briefing['headline']}\n\n{briefing['short_answer']}")
+        st.markdown(f"### {briefing['headline']}")
+        st.markdown(briefing["short_answer"])
 
         relevant_kpis = briefing.get("relevant_kpis", [])
-        if relevant_kpis:
-            st.markdown("**Kurz sichtbar in den Kennzahlen:**")
-            columns = st.columns(min(len(relevant_kpis), 4))
-            for col, row in zip(columns, relevant_kpis[:4]):
-                with col:
-                    st.markdown(f"**{row.get('label', 'Kennzahl')}**")
-                    st.markdown(f"{row.get('display_value') or (str(row.get('start', '–')) + ' → ' + str(row.get('end', '–')))}")
-                    st.caption(row.get("reading") or row.get("meaning") or row.get("why_relevant", ""))
+        for section in briefing.get("sections", []):
+            heading = section.get("heading", "Abschnitt")
+            st.markdown(f"#### {heading}")
+            if heading == "Relevante Kennzahlen" and relevant_kpis:
+                columns = st.columns(min(len(relevant_kpis), 4))
+                for col, row in zip(columns, relevant_kpis[:4]):
+                    with col:
+                        st.markdown(f"**{row.get('label', 'Kennzahl')}**")
+                        st.markdown(
+                            f"{row.get('display_value') or (str(row.get('start', '–')) + ' → ' + str(row.get('end', '–')))}"
+                        )
+                        st.caption(row.get("reading") or row.get("meaning") or row.get("why_relevant", ""))
+            else:
+                st.markdown(section.get("body", ""))
 
         next_check = briefing.get("next_check") or view.get("follow_up_question") or packet.get("follow_up_question")
-        if next_check and view.get("render_follow_up_after_sections", False):
+        if next_check:
             st.info(next_check)
         st.caption(view.get("executive_brief", {}).get("audit_hint") or briefing.get("guardrail") or view.get("guardrail", packet["guardrail"]))
 

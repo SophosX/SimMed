@@ -209,15 +209,34 @@ def test_public_result_view_keeps_only_one_first_screen_briefing_before_audit():
 
     assert view["answer_rows"] == []
     assert view["executive_brief"]["answer_rows"] == []
-    assert view["primary_render_mode"] == "single_markdown_briefing"
+    assert view["primary_render_mode"] == "structured_sections_with_single_kpi_rows"
     assert view["first_screen_render_blocks"] == [
-        "briefing_markdown",
-        "compact_relevant_kpis",
+        "headline_and_short_answer",
+        "result_sections_with_single_relevant_kpi_rows",
         "collapsed_audit",
     ]
     assert view["briefing_markdown"].count("#### Relevante Kennzahlen") == 1
     assert "answer_rows" in view["suppressed_overlapping_widgets"]
     assert "legacy_narrative_widgets" in view["suppressed_overlapping_widgets"]
+
+
+def test_public_result_view_instructs_ui_to_render_sections_once_with_single_kpi_rows():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    view = packet["public_result_view"]
+
+    assert view["primary_render_mode"] == "structured_sections_with_single_kpi_rows"
+    assert view["section_render_mode"] == "text_sections_kpi_rows_once"
+    assert view["first_screen_render_blocks"] == [
+        "headline_and_short_answer",
+        "result_sections_with_single_relevant_kpi_rows",
+        "collapsed_audit",
+    ]
+    assert "briefing_markdown" not in view["first_screen_render_blocks"]
+    assert view["briefing_markdown"]  # API/export clients still get one readable markdown briefing.
+    assert view["render_relevant_kpis_separately"] is False
 
 
 def test_public_result_view_has_single_follow_up_rendering_instruction():
@@ -411,6 +430,8 @@ def test_public_result_packet_is_minimal_and_does_not_expose_legacy_layers_first
         "suppressed_overlapping_widgets",
         "first_screen_policy",
         "primary_render_mode",
+        "section_render_mode",
+        "render_relevant_kpis_separately",
         "headline",
         "briefing_markdown",
         "executive_brief",

@@ -6047,3 +6047,33 @@ Keine wichtige Entscheidung offen; sicher weiter mit visueller Qualitätsprüfun
 
 ### Verification / Git
 TDD: neuer Test zunächst rot wegen fehlendem `primary_render_mode`, danach grün. Verifiziert: `pytest tests/test_result_causality.py ... tests/test_app_explanations.py::test_result_causal_overview_exposes_briefing_quality_checks_for_first_view -q` → 65 passed; `pytest -q` → 291 passed; `py_compile` zentrale Module; 50-run Smoke-Test mit halbierten Medizinstudienplätzen → OK. Commit `d87a1eb` (`Clarify result first screen rendering`) wurde auf `origin/main` gepusht.
+
+
+## 2026-04-30 20:21 Europe/Berlin — Heartbeat: Ergebnisabschnitte nur einmal rendern
+
+### Context
+Alexs Korrektur bleibt der Maßstab: erste Ergebnisansicht als lesbares Briefing, nicht als gestapelte Helfer. Dieser Lauf hat eine konkrete Redundanz entfernt: die UI soll Headline, Kurzantwort und Abschnitte strukturiert rendern und die relevanten Kennzahlen genau an ihrer Stelle zeigen — nicht zusätzlich dieselben Inhalte als separaten Markdown-Block plus Kennzahlkarten wiederholen.
+
+### Project Manager
+Priorität: visuelle Klarheit im ersten Screen, ohne API-Vertrag und Auditfähigkeit zu verlieren. Risiko: ältere Detailfelder werden weiter gebraucht; deshalb bleibt `briefing_markdown` für API/Export erhalten, aber die Streamlit-Renderanweisung ist jetzt eindeutig auf strukturierte Abschnitte mit einmaligen KPI-Zeilen gestellt.
+
+### Designer / UX
+Die erste Ansicht liest sich ruhiger: Ergebnis → Eingriff → Warum → relevante Kennzahlen → Anpassungen → Einordnung → nächster Prüfschritt. Die relevanten Kennzahlen erscheinen nur im Abschnitt „Relevante Kennzahlen“; darunter bleibt die Vertiefung geschlossen.
+
+### Creative Agent
+Spätere Idee: ein echter „Briefing lesen“-Modus mit Druck-/Share-Ausgabe kann direkt denselben Packet-Vertrag nutzen. Fit: gut, aber erst nach visueller Live-Prüfung, damit nicht wieder neue Flächen entstehen.
+
+### Political Health-System Strategist
+Die politische Bewertung bleibt nachgelagert. Besonders beim Studienplätze-Szenario verhindert die neue Reihenfolge, dass Stakeholder-/Strategiefragen vor dem fachlichen Pipeline- und Kapazitätspfad gelesen werden.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Keine neuen Fakten, Parameter oder Modellmechanismen; nur Kommunikations- und Renderstruktur. Evidenz-/Annahmenprüfung bleibt in der geschlossenen Vertiefung verfügbar.
+
+### Integrator Decision
+Akzeptiert: `public_result_view.primary_render_mode` heißt jetzt `structured_sections_with_single_kpi_rows`; `section_render_mode` und `render_relevant_kpis_separately=False` machen die UI-Absicht explizit. `render_result_causal_overview(...)` rendert Abschnitte einzeln und zeigt KPI-Karten nur im Kennzahlenabschnitt. Modell-Dynamik unverändert.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; sicher weiter mit visueller Prüfung und weiterer Reduktion der alten Detail-Dichte.
+
+### Verification / Git
+TDD: neuer Test zunächst rot wegen altem `single_markdown_briefing`, danach grün. Verifiziert: fokussierte Result/API/UI-Tests → 66 passed; `python3 -m pytest -q` → 292 passed; `py_compile` zentrale Module; Smoke-Test 50 Runs × 3 Jahre mit halbierten Medizinstudienplätzen → OK. Git-Sync/Commit/Push folgt nach dieser Log-Aktualisierung.
