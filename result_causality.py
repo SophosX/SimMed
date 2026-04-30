@@ -992,10 +992,14 @@ def build_causal_result_packet(
         f"{row['label']}: {row['start']} → {row['end']} ({row['direction']})."
         for row in relevant_kpis_public[:4]
     ) or "Keine priorisierten Kennzahlen verfügbar."
+    result_body = (
+        f"Relevant verändert haben sich vor allem: {kpi_body} "
+        "Das ist der erste Befund; die Ursache steht im nächsten Abschnitt."
+    )[:360]
     if study_places_changed:
         why_body = (
             "Der Eingriff wirkt verzögert. In Jahr 0–5 ändert sich die Versorgung kaum. "
-            "Ab etwa Jahr 6 kommt die kleinere Kohorte näher an den Arbeitsmarkt; Richtung Jahr 11–15 wird der Facharzt- und Kapazitätspfad entscheidend."
+            "ab etwa Jahr 6 kommt die kleinere Kohorte näher an den Arbeitsmarkt; Richtung Jahr 11–15 wird der Facharzt- und Kapazitätspfad entscheidend."
         )
     else:
         why_body = pathway_body[:340]
@@ -1005,7 +1009,7 @@ def build_causal_result_packet(
         "Sinken Burnout oder Wartezeit trotz Ärztemangel, ist das ein Prüfpunkt, solange kein Puffer sichtbar trägt."
     )
     result_sections = [
-        {"heading": "Ergebnis", "body": result_headline},
+        {"heading": "Ergebnis", "body": result_body},
         {"heading": "Eingriff", "body": changed_text[:340]},
         {"heading": "Warum es passiert", "body": why_body},
         {"heading": "Relevante Kennzahlen", "body": kpi_body[:340]},
@@ -1013,8 +1017,8 @@ def build_causal_result_packet(
         {
             "heading": "Einordnung",
             "body": (
-                "Das ist eine SimMed-Modellrechnung mit dokumentierten Parametern und Annahmen. "
-                "Sie erklärt einen Wirkpfad; sie ist keine amtliche Prognose und kein Nachweis realer politischer Wirkung."
+                "Das bedeutet: Der Lauf zeigt einen prüfbaren SimMed-Wirkpfad, keine fertige politische Entscheidung. "
+                "Die Aussage gilt innerhalb der dokumentierten Parameter, Annahmen und Spannweiten; sie ist keine amtliche Prognose und kein Wirksamkeitsnachweis."
             ),
         },
         {

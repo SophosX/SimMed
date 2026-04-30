@@ -4419,3 +4419,32 @@ No immediate product decision required; continue safely toward a cleaner single-
 
 ### Verification / Git
 Verified locally and in the GitHub clone: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients tests/test_app_explanations.py -q` (98 passed), full `python3 -m pytest -q` (261 passed), `py_compile`, and a 50-run simulation/result-packet smoke test. Pushed commit `2f057db` to `origin/main`; follow-up council-log verification note pending.
+
+## 2026-04-30 13:17 Europe/Berlin — Heartbeat: Ergebnis-Erstansicht gestrafft
+
+### Context
+Alexs jüngste Korrektur: Die Resultatseite soll nicht noch mehr Erklärungsschichten stapeln, sondern sofort beantworten: Was ist rausgekommen, was hat sich relevant verändert, warum und was bedeutet das? Fokus in diesem Lauf: `result_causality.py`, `app.py`-Erstansicht und Regressionstests.
+
+### Project Manager
+Priorität: die öffentliche Ergebnis-Erstansicht klarer machen, ohne Modelllogik oder Datenbehauptungen zu ändern. Risiko: alte Detailhelfer bleiben nützlich, dürfen aber nicht die erste Seite dominieren. Nächster Schritt: die verbleibenden Audit-Expander weiter entschlacken und ggf. alte Storyboard-/Checklist-Duplikate aus der Default-Leseführung entfernen.
+
+### Designer / UX
+Die erste Ergebnis-Sektion darf nicht bloß die Überschrift wiederholen. Sie muss direkt die wichtigsten Bewegungen nennen. Deshalb wurde der öffentliche Abschnitt `Ergebnis` auf konkrete relevante Kennzahlen umgestellt; Detail-/Audit-Material bleibt nachgelagert.
+
+### Creative Agent
+Idee: später eine einseitige “Policy-Briefing-Karte” als druck-/teilbare Kurzfassung erzeugen. Fit: gut für Entscheider:innen, aber erst nach weiterer Straffung der Bildschirmseite.
+
+### Political Health-System Strategist
+Die Formulierung bleibt nüchtern: keine amtliche Prognose, kein Wirksamkeitsnachweis, keine Lobbying-Empfehlung. Der nächste politische Schritt bleibt bewusst nach fachlicher Prüfung von Wirkpfad, Zeitfenster und Puffern.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Es wurden keine neuen realweltlichen Wirkbehauptungen eingeführt und keine Modellparameter geändert. Die Änderung betrifft Kommunikation/Leseführung; Evidenz- und Annahmengrenzen bleiben sichtbar.
+
+### Integrator Decision
+Akzeptiert: Der öffentliche Ergebnis-Packet-Abschnitt `Ergebnis` wiederholt nicht mehr die Headline, sondern nennt direkt die relevantesten KPI-Bewegungen. Die Einordnung sagt explizit, was das bedeutet: prüfbarer SimMed-Wirkpfad, keine fertige politische Entscheidung.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; sicherer nächster Schritt ist weitere Reduktion der alten Ergebnis-Audit-Schichten unterhalb der neuen Erstansicht.
+
+### Verification / Git
+Vor Commit grün: `python3 -m pytest tests/test_result_causality.py::test_simplified_public_result_packet_is_short_clear_and_not_meta -q`; `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q`; `python3 -m pytest -q` (261 passed). Git-Sync/Commit/Push folgt nach Spiegelung in den GitHub-Clone.

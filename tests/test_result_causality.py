@@ -71,6 +71,13 @@ def test_simplified_public_result_packet_is_short_clear_and_not_meta():
     assert len(packet["result_sections"]) <= 7
     assert all(len(section["body"]) <= 360 for section in packet["result_sections"])
     assert len(packet["short_answer"]) <= 650
+    section_by_heading = {section["heading"]: section["body"] for section in packet["result_sections"]}
+    assert section_by_heading["Ergebnis"] != packet["result_headline"]
+    assert "Ärzte pro 100k" in section_by_heading["Ergebnis"]
+    assert "Facharzt-Wartezeit" in section_by_heading["Ergebnis"]
+    assert "ab etwa Jahr 6" in section_by_heading["Warum es passiert"]
+    assert "bedeutet" in section_by_heading["Einordnung"].lower()
+    assert "Detailkarten" not in packet["short_answer"]
     text = _public_text(packet)
     for banned in ["random Internet", "Klartext", "KPI-Wand", "generated", "helper", "Meta", "Zahlenwand"]:
         assert banned not in text
