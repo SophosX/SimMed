@@ -16,8 +16,9 @@ from simulation_core import get_default_params
 from parameter_registry import PARAMETER_REGISTRY
 
 RESULT_CAUSALITY_GUARDRAIL = (
-    "Klartext-Erklärung eines SimMed-Modelllaufs: keine random Internet-Suche, "
-    "keine amtliche Prognose und kein Wirksamkeitsnachweis."
+    "Die Berechnung basiert auf dem SimMed-Modelllauf mit dokumentierten Parametern, "
+    "Annahmen und Monte-Carlo-Spannweiten; sie ist als Modell-Einordnung zu lesen, "
+    "nicht als amtliche Prognose oder Wirksamkeitsnachweis."
 )
 
 KPI_SPECS: dict[str, dict[str, Any]] = {
@@ -230,7 +231,7 @@ def _relevant_kpi_summary(
                 "answer_signal": str(row.get("sentence", "")),
                 "why_selected": why_selected,
                 "mechanism_link": mechanism,
-                "next_check": "Als Teil der Klartext-Geschichte lesen, nicht als KPI-Wand; danach Detailkarte/Trend öffnen.",
+                "next_check": "Im Ergebnisbericht lesen; anschließend Detailkarte und Trend zur fachlichen Prüfung öffnen.",
             }
         )
     return rows
@@ -279,7 +280,7 @@ def _adaptation_signal_trace(kpis: Sequence[Mapping[str, Any]], params: Mapping[
                 "observed_change": str(row.get("sentence", "")),
                 "role": config["role"],
                 "plain_interpretation": interpretation,
-                "guardrail": f"{RESULT_CAUSALITY_GUARDRAIL} Das Signal beschreibt Modellverhalten, keine amtliche Prognose.",
+                "guardrail": f"{RESULT_CAUSALITY_GUARDRAIL} Das Signal beschreibt Modellverhalten, nicht eine amtliche Prognose.",
             }
         )
     return trace
@@ -309,7 +310,7 @@ def _timeline_windows(params: Mapping[str, Any]) -> list[dict[str, str]]:
     study_places_cut = float(params.get("medizinstudienplaetze", defaults["medizinstudienplaetze"])) < float(defaults["medizinstudienplaetze"])
     if not study_places_cut:
         return []
-    guardrail = f"{RESULT_CAUSALITY_GUARDRAIL} Zeitfenster sind SimMed-Annahmen/Prüfpunkte, keine amtliche Prognose."
+    guardrail = f"{RESULT_CAUSALITY_GUARDRAIL} Zeitfenster sind SimMed-Annahmen und Prüfpunkte, nicht amtliche Prognosen."
     return [
         {
             "window": "Jahr 0–5",
@@ -343,7 +344,7 @@ def build_causal_result_layout(packet: Mapping[str, Any]) -> dict[str, Any]:
     """
 
     return {
-        "first_view": str(packet.get("title", "Simulationsergebnis in Klartext")),
+        "first_view": str(packet.get("title", "Ergebnisbericht")),
         "primary_sequence": [
             "coherent_free_text",
             "relevant_kpis",
@@ -352,16 +353,16 @@ def build_causal_result_layout(packet: Mapping[str, Any]) -> dict[str, Any]:
             "evidence_assumptions",
         ],
         "dense_kpi_wall": {
-            "label": "Optionale KPI-Wand / Detailkarten erst nach dem Klartext",
+            "label": "Optionale Detailkarten nach dem Ergebnisbericht",
             "mode": "optional_expander_after_causal_story",
             "default_expanded": False,
             "reason": (
-                "Die KPI-Wand ist nicht die erste Ansicht, weil Alex zuerst Output, Änderung, "
-                "Wirkpfad, Anpassung und Caveat als zusammenhängende Geschichte lesen soll."
+                "Die vollständigen Kennzahlen stehen nachgeordnet, weil die erste Ansicht zunächst "
+                "Ausgangslage, Eingriff, Wirkpfad, Anpassung und Einordnung zusammenhängend erklärt."
             ),
         },
         "optional_interpretation_layers": {
-            "label": "Optionale Vertiefungen erst nach dem Klartext",
+            "label": "Optionale Vertiefungen nach dem Ergebnisbericht",
             "mode": "collapsed_after_primary_causal_packet",
             "default_expanded": False,
             "sections": [
@@ -423,7 +424,7 @@ def build_causal_result_packet(
     free_text_blocks = [
         {
             "step": "1. Ergebnis",
-            "text": f"Der Lauf wird zuerst über wenige relevante KPIs gelesen: {kpi_text}",
+            "text": f"Der Lauf wird zuerst über wenige relevante Kennzahlen gelesen: {kpi_text}",
         },
         {
             "step": "2. Änderung",
@@ -443,20 +444,20 @@ def build_causal_result_packet(
             "text": f"{mechanism_text} Beobachtete Signale: {adaptation_trace_text}",
         },
         {
-            "step": "5. Gegencheck",
+            "step": "5. Plausibilitätsprüfung",
             "text": counter_text,
         },
         {
-            "step": "6. Evidenzgrenze",
+            "step": "6. Einordnung und Belastbarkeit",
             "text": (
-                f"{evidence_text} {RESULT_CAUSALITY_GUARDRAIL} Evidenzgrade und Registry-Caveats begrenzen die Interpretation; "
-                "diese Erklärung ist ein lokaler Modelllauf, keine freie Web-Recherche und keine automatische Parameterintegration."
+                f"Datenlage und Belastbarkeit: {evidence_text} {RESULT_CAUSALITY_GUARDRAIL} "
+                "Evidenzgrade, Registry-Caveats und Modellannahmen begrenzen die Interpretation."
             ),
         },
     ]
 
     sequential_plain_text = "\n\n".join(
-        ["Simulationsergebnis in Klartext"]
+        ["Ergebnisbericht"]
         + [f"{block['step']}\n{block['text']}" for block in free_text_blocks]
     )
 
@@ -465,7 +466,7 @@ def build_causal_result_packet(
             "stage": "Ergebnis",
             "answer_first": free_text_blocks[0]["text"],
             "audit_focus": "nur die priorisierten relevanten KPIs lesen",
-            "next_step": "Danach Änderung und Wirkpfad öffnen, nicht die KPI-Wand zuerst.",
+            "next_step": "Danach Änderung und Wirkpfad öffnen; Detailkarten erst anschließend nutzen.",
             "guardrail": RESULT_CAUSALITY_GUARDRAIL,
         },
         {
@@ -501,7 +502,7 @@ def build_causal_result_packet(
             "answer_first": free_text_blocks[5]["text"],
             "audit_focus": "Evidenzgrade, Quellen und SimMed-Annahmen trennen",
             "next_step": "Erst nach dieser Grenze Detailkarten, Trend und Policy-Briefing als Audit-Layer öffnen.",
-            "guardrail": f"{RESULT_CAUSALITY_GUARDRAIL} Keine amtliche Prognose und kein Policy-Wirksamkeitsnachweis.",
+            "guardrail": f"{RESULT_CAUSALITY_GUARDRAIL} Nicht als amtliche Prognose oder Policy-Wirksamkeitsnachweis zu lesen.",
         },
     ]
 
@@ -533,7 +534,7 @@ def build_causal_result_packet(
         },
         {
             "id": "evidence_assumptions",
-            "heading": "Welche Evidenz-/Annahmegrenze gilt?",
+            "heading": "Welche Einordnung und Belastbarkeit gilt?",
             "text": free_text_blocks[5]["text"],
         },
     ]
@@ -548,8 +549,8 @@ def build_causal_result_packet(
     )
 
     return {
-        "title": "Simulationsergebnis in Klartext",
-        "subtitle": "Wenige relevante KPIs plus ein zusammenhängender Wirkpfad von Eingabe zu Output.",
+        "title": "Ergebnisbericht",
+        "subtitle": "Relevante Kennzahlen und ein zusammenhängender Wirkpfad von Ausgangslage bis Einordnung.",
         "reading_order": [
             "1 · geänderte Eingriffe",
             "2 · relevante KPIs",
@@ -567,7 +568,7 @@ def build_causal_result_packet(
         "counterintuitive_findings": counter,
         "free_text_blocks": free_text_blocks,
         "primary_result_view": {
-            "headline": "Erst Klartext, dann Details",
+            "headline": "Ergebnisbericht und anschließende Detailprüfung",
             "main_blocks": free_text_blocks,
             "sequential_plain_text": sequential_plain_text,
             "cleartext_reading_cards": cleartext_reading_cards,

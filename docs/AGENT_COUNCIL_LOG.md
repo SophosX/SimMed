@@ -3757,3 +3757,33 @@ No blocking product decision. Continue safely toward observed timeline traces an
 
 ### Verification / Git
 Focused causal/API tests run before full verification. Commit/push status recorded in heartbeat response.
+
+
+## 2026-04-30 10:31 Europe/Berlin — Professional Ergebnisbericht wording
+
+### Context
+Alex corrected the result style: the first simulation output should read like a serious briefing, not like AI/meta commentary. Focus files: `result_causality.py`, `app.py`, `tests/test_result_causality.py`, `tests/test_api.py`.
+
+### Project Manager
+Priority: remove casual/meta wording from the causal result packet while preserving the existing answer-first sequence and relevant-KPI reduction. Risk: breaking API/UI clients that rely on packet fields; mitigated by keeping field names stable and changing wording only.
+
+### Designer / UX
+The first result view now uses `Ergebnisbericht`, `relevante Kennzahlen`, `Einordnung`, and a professional method note. The dense KPI/detail layer remains after the briefing instead of being framed as a KPI wall.
+
+### Creative Agent
+Product-fit idea: later render the same packet as a printable one-page briefing with sections Ausgangslage, Eingriff, Wirkpfad, Kennzahlen, Anpassung, Belastbarkeit, Entscheidung. Fit is high, but should reuse the packet rather than introduce new prose.
+
+### Political Health-System Strategist
+The wording keeps policy interpretation sober: no lobbying language, no implied official forecast, and no internal-process disclaimers in the main result. Political reading remains an optional later layer.
+
+### Evidence / Domain
+No new empirical claim or source was added. Evidence/assumption limits are still sourced from `PARAMETER_REGISTRY` and framed as `Datenlage`, `Belastbarkeit`, and `Modell-Einordnung`.
+
+### Integrator Decision
+Accepted this heartbeat: professional wording/TDD regression tests for the causal packet/API and Streamlit causal overview labels. Deferred: deeper model mechanism changes and printable briefing layout.
+
+### Question to Alex
+No important decision open; continue safely with professional result-briefing structure and relevant-KPI first view.
+
+### Verification / Git
+RED observed: updated causal/API wording tests failed against old `Simulationsergebnis in Klartext` / `random Internet` wording. GREEN observed in GitHub clone using project venv: `python -m pytest -q` → 239 passed; `python -m py_compile app.py data_sources.py parameter_registry.py provenance.py api.py simulation_core.py result_causality.py tests/test_result_causality.py tests/test_api.py`; smoke test `run_simulation(... n_runs=50, n_years=3)` plus `build_causal_result_packet(...)` passed (`Ergebnisbericht`, no `Klartext`, no `random Internet`). Git commit/push pending.

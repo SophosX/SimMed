@@ -1006,7 +1006,8 @@ def test_sidebar_quick_start_steps_make_first_action_clear():
     assert "Simulation" in combined
     assert "Was hat sich verändert" in combined
     assert "Wer unterstützt? Wer bremst?" in combined
-    assert "Klartext-Erklärung" in combined
+    assert "Ergebnisbericht" in combined
+    assert "Klartext" not in combined
 
 
 def test_learning_page_next_actions_are_concrete_for_newcomers():

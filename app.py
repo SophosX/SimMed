@@ -1120,7 +1120,7 @@ def build_landing_hero_content() -> Dict[str, Any]:
             },
             {
                 "label": "Ergebnis lesen lernen",
-                "description": "Nach einer Simulation zuerst Klartext, KPIs und Annahmen einordnen.",
+                "description": "Nach einer Simulation zuerst Ergebnisbericht, Kennzahlen und Annahmen einordnen.",
                 "hint": "ergebnis",
             },
         ],
@@ -1250,7 +1250,7 @@ def sidebar_quick_start_steps() -> List[str]:
     """Kurze Orientierung, damit neue Nutzer:innen sofort wissen, was zu tun ist."""
     return [
         "1. Stell links ein konkretes Szenario ein, zum Beispiel mehr Telemedizin oder weniger Studienplätze.",
-        "2. Starte die Simulation und lies zuerst: Was hat sich verändert? Dort steht die Klartext-Erklärung.",
+        "2. Starte die Simulation und lies zuerst: Was hat sich verändert? Dort steht der Ergebnisbericht.",
         "3. Öffne danach Wer unterstützt? Wer bremst?, um politische Machbarkeit und Konflikte einzuordnen.",
     ]
 
@@ -1686,7 +1686,7 @@ def build_political_lever_detail_sections(political_assessment: Dict[str, Any]) 
         label = note.get("label", "geänderter Hebel")
         lag = note.get("implementation_lag", "unklar")
         friction = note.get("political_friction", "unklar")
-        effect = note.get("why_it_matters", "Für diesen Hebel ist noch keine Klartextwirkung hinterlegt.")
+        effect = note.get("why_it_matters", "Für diesen Hebel ist noch keine fachliche Wirkungsbeschreibung hinterlegt.")
 
         def stakeholder_rows(role: str, people: List[str]) -> List[Dict[str, str]]:
             return [
@@ -3530,7 +3530,7 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
 
     reading_cards = primary_view.get("cleartext_reading_cards", []) if primary_view else []
     if reading_cards:
-        st.markdown("**Klartext-Lesekarten: Antwort zuerst, Audit danach**")
+        st.markdown("**Lesekarten: Ergebnis zuerst, Prüfung danach**")
         st.dataframe(
             pd.DataFrame(reading_cards)[["stage", "answer_first", "audit_focus", "next_step"]],
             use_container_width=True,
@@ -3549,11 +3549,11 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
         for step in packet["reading_order"]:
             st.markdown(f"- {step}")
     with cols[1]:
-        st.markdown("**Guardrail**")
+        st.markdown("**Einordnung**")
         st.caption(packet["guardrail"])
 
     if packet["relevant_kpis"]:
-        st.markdown("**Relevante KPI-Auswahl statt KPI-Wand**")
+        st.markdown("**Relevante Kennzahlen für die erste Einordnung**")
         kpi_summary = packet.get("relevant_kpi_summary") or packet["relevant_kpis"]
         summary_columns = [
             column
@@ -3801,7 +3801,7 @@ def render_dashboard(agg: pd.DataFrame, params: dict):
                 st.caption(f"Unsicherheit: {row['caveat']}")
 
     if lever_notes:
-        with st.expander("Geänderte Hebel im Klartext anzeigen", expanded=False):
+        with st.expander("Geänderte Hebel fachlich einordnen", expanded=False):
             for note in lever_notes:
                 st.markdown(f"**{note['label']}**")
                 st.write(note["why_it_matters"])

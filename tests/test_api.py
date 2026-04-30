@@ -20,7 +20,7 @@ def test_simulate_embeds_causal_result_packet_for_answer_first_clients():
     assert response.status_code == 200
     body = response.json()
     packet = body["causal_result_packet"]
-    assert packet["title"] == "Simulationsergebnis in Klartext"
+    assert packet["title"] == "Ergebnisbericht"
     assert len(packet["relevant_kpis"]) <= 5
     assert "Medizinstudienplätze" in packet["coherent_story"]
     assert "ab etwa Jahr 6" in packet["coherent_story"]
@@ -29,7 +29,9 @@ def test_simulate_embeds_causal_result_packet_for_answer_first_clients():
         "changed_inputs",
         "mechanisms",
     ]
-    assert "keine random Internet-Suche" in packet["guardrail"]
+    assert "dokumentierten Parametern" in packet["guardrail"]
+    assert "random Internet" not in packet["guardrail"]
+    assert "Klartext" not in packet["sequential_plain_text"]
 
 
 def test_api_exposes_data_snapshot_status_guardrail():
