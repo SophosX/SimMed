@@ -80,6 +80,13 @@ def test_learning_data_passport_overview_separates_registry_cache_and_transforma
     assert overview["snapshot_integrity"]["title"].startswith("Rohdaten-Cache-Integrität")
     assert {"sha256_match", "sha256_mismatch", "raw_file_missing"} <= set(overview["snapshot_integrity"]["summary"])
     assert "keine Registry-/Modellmutation" in overview["snapshot_integrity"]["guardrail"]
+    assert overview["snapshot_integrity_action_plan"]["overall_status"] in {
+        "integrity_blocker_before_review",
+        "integrity_ok_but_not_reviewed",
+        "no_cached_snapshots_yet",
+    }
+    assert "first_safe_action" in overview["snapshot_integrity_action_plan"]
+    assert "keine Registry-/Modellmutation" in overview["snapshot_integrity_action_plan"]["guardrail"]
     assert 1 <= len(overview["rows"]) <= 6
     first_row = overview["rows"][0]
     assert {"Parameter", "Register", "Evidenz", "Rohdaten-Cache", "Geprüfte Transformation", "Hinweis"} <= set(first_row)

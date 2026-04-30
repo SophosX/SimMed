@@ -3,6 +3,7 @@ import json
 from data_ingestion import (
     ReviewedTransformation,
     build_connector_execution_workbench,
+    build_cached_snapshot_integrity_action_plan,
     build_cached_snapshot_integrity_report,
     build_connector_snapshot_requests,
     build_data_connector_queue,
@@ -108,6 +109,35 @@ def test_cached_snapshot_integrity_report_recomputes_sha_without_model_import(tm
     tampered = build_cached_snapshot_integrity_report(cache_root=tmp_path)
     assert tampered["summary"]["sha256_mismatch"] == 1
     assert tampered["rows"][0]["integrity_status"] == "sha256_mismatch"
+
+
+def test_cached_snapshot_integrity_action_plan_blocks_bad_cache_before_review(tmp_path):
+    cache_source_payload(
+        source_id="destatis_genesis",
+        source_url="https://www-genesis.destatis.de/genesis/online",
+        payload=b"year,value\n2024,84.4\n",
+        filename="population.csv",
+        cache_root=tmp_path,
+        source_period="2024",
+        output_parameter_keys=("bevoelkerung_mio",),
+        transformation_note="raw fixture only; no model mutation",
+        retrieved_at="2026-04-29T20:00:00+00:00",
+    )
+    report = build_cached_snapshot_integrity_report(cache_root=tmp_path)
+    ok_plan = build_cached_snapshot_integrity_action_plan(report)
+    assert ok_plan["overall_status"] == "integrity_ok_but_not_reviewed"
+    assert ok_plan["summary"]["ready_for_transformation_review_only"] == 1
+    assert ok_plan["rows"][0]["may_start_transformation_review"] is True
+    assert "nicht Modellintegration" in ok_plan["rows"][0]["guardrail"]
+
+    (tmp_path / "destatis_genesis" / "raw" / "population.csv").write_bytes(b"tampered")
+    bad_report = build_cached_snapshot_integrity_report(cache_root=tmp_path)
+    bad_plan = build_cached_snapshot_integrity_action_plan(bad_report)
+    assert bad_plan["overall_status"] == "integrity_blocker_before_review"
+    assert bad_plan["summary"]["integrity_blockers"] == 1
+    assert bad_plan["rows"][0]["may_start_transformation_review"] is False
+    assert "blockiert Review" in bad_plan["rows"][0]["guardrail"]
+    assert "kein Netzwerkabruf" in bad_plan["guardrail"]
 
 
 def test_snapshot_status_is_read_only_and_conservative(tmp_path):

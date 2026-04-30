@@ -590,6 +590,68 @@ def build_cached_snapshot_integrity_report(cache_root: Path | str = CACHE_ROOT) 
     }
 
 
+def build_cached_snapshot_integrity_action_plan(integrity_report: dict) -> dict:
+    """Turn raw-cache integrity status into safe operator next actions.
+
+    This is intentionally before transformation review and model integration: a
+    mismatch or missing raw file must block downstream review; a matching hash only
+    permits opening the separate transformation-review checklist.
+    """
+
+    summary = integrity_report.get("summary", {})
+    rows = integrity_report.get("rows", [])
+    problem_rows = [row for row in rows if row.get("integrity_status") in {"sha256_mismatch", "raw_file_missing"}]
+    ready_rows = [row for row in rows if row.get("integrity_status") == "sha256_match"]
+    if problem_rows:
+        overall_status = "integrity_blocker_before_review"
+        first_safe_action = "Rohdatei/Manifest manuell prüfen; Transformation-Review und Modellintegration pausieren."
+    elif ready_rows:
+        overall_status = "integrity_ok_but_not_reviewed"
+        first_safe_action = "Passende Roh-Snapshots dürfen nur in den separaten Transformation-Review geführt werden."
+    else:
+        overall_status = "no_cached_snapshots_yet"
+        first_safe_action = "Erst geplante Connector-Snapshot-Requests im Dry-run prüfen; kein Live-Fetch aus diesem Plan."
+
+    action_rows = []
+    for row in problem_rows[:5]:
+        status = row.get("integrity_status", "unknown")
+        action_rows.append({
+            "source_id": row.get("source_id", ""),
+            "raw_path": row.get("raw_path", ""),
+            "integrity_status": status,
+            "operator_action": "Cache-Artefakt stoppen und Quelle/Manifest neu prüfen" if status == "sha256_mismatch" else "Fehlende Rohdatei vor jeder Review rekonstruieren oder Snapshot neu planen",
+            "may_start_transformation_review": False,
+            "guardrail": "Integritätsproblem blockiert Review/Registry-/Modellintegration; kein execute=true und keine Policy-Wirkung ableiten.",
+        })
+    for row in ready_rows[: max(0, 5 - len(action_rows))]:
+        action_rows.append({
+            "source_id": row.get("source_id", ""),
+            "raw_path": row.get("raw_path", ""),
+            "integrity_status": row.get("integrity_status", "unknown"),
+            "operator_action": "Nur Transformation-Review-Template öffnen; Wert/Einheit/Denominator separat prüfen",
+            "may_start_transformation_review": True,
+            "guardrail": "SHA256 ok heißt nur unveränderter Cache, nicht geprüfter Datenwert, nicht Modellintegration, nicht amtliche Prognose.",
+        })
+
+    return {
+        "title": "Rohcache-Integrität: sichere nächste Aktionen",
+        "overall_status": overall_status,
+        "first_safe_action": first_safe_action,
+        "summary": {
+            "snapshots_seen": summary.get("snapshots_seen", 0),
+            "integrity_blockers": len(problem_rows),
+            "ready_for_transformation_review_only": len(ready_rows),
+        },
+        "rows": action_rows,
+        "definition_of_done_before_review": [
+            "SHA256 passt zum Manifest und Rohdatei existiert",
+            "Quelle/Periode/Lizenzhinweis im Manifest gelesen",
+            "Transformation-Review prüft Tabelle, Filter, Jahr, Einheit, Denominator und Plausibilität separat",
+        ],
+        "guardrail": "Read-only/Action-plan-only: kein Netzwerkabruf, kein Cache-Schreiben, keine Review-Erzeugung, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    }
+
+
 def record_reviewed_transformation(
     transformation: ReviewedTransformation,
     *,

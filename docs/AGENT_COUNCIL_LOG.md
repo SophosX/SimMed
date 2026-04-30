@@ -2330,3 +2330,16 @@ Gezielt: `pytest tests/test_api.py::test_api_exposes_focused_registry_integratio
 - **Integrator Decision:** `verify_cached_snapshot_integrity()` und `build_cached_snapshot_integrity_report()` in `data_ingestion.py`; `/data-snapshots` erweitert und fokussiertes `GET /data-snapshots/integrity`; Learning-Data-Passport mit mobiler Integritäts-Zusammenfassung.
 - **Question to Alex:** Keine.
 - **Verification/Git:** 137 Pytest-Tests, py_compile und 50x3 Simulation-Smoke bestanden; Commit/Push folgt.
+
+
+## 2026-04-30 01:43 UTC — Rohcache-Integritäts-Aktionsplan
+
+- **Context:** Alex priorisiert Core-Plattform/Data-Ingestion. Vor Transformation/Registry-Integration fehlte ein kompakter Schritt, der SHA256-Integrität in konkrete sichere Operator-Aktionen übersetzt.
+- **Project Manager:** Kleine reversible Plattform-Scheibe: Rohcache-Integrität nicht nur zählen, sondern Blocker/Review-Ready-Only als nächsten Gate sichtbar machen.
+- **Designer/UX:** Learning Page zeigt jetzt nach der Integritätszeile eine mobile/touch-sichere nächste Aktion und optional eine Tabelle „was darf als Nächstes passieren?“.
+- **Creative Agent:** Keine neue Spiel-/Showcase-Idee; Fokus auf Vertrauen durch klare Stoppschilder vor Datenintegration.
+- **Political/System Strategist:** Guardrail bleibt wichtig: ein unveränderter Rohcache ist keine amtliche Prognose und kein Policy-Wirkungsbeweis.
+- **Evidence/Domain:** Keine neue externe Recherche; keine neuen Fakten/Parameter. Nur Provenance-/Governance-Gate für bestehende Rohsnapshot-Manifeste.
+- **Integrator Decision:** `build_cached_snapshot_integrity_action_plan(...)` hinzugefügt, API `/data-snapshots/integrity-action-plan` plus Integration in `/data-snapshots/integrity` und Learning-Page-Datenpass.
+- **Question to Alex if needed:** Keine; sicherer, read-only Plattform-Fortschritt.
+- **Verification/Git:** Fokus-Tests 4 passed; Full suite/py_compile 139 passed. Commit/Push folgt in diesem Lauf.

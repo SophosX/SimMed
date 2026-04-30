@@ -30,6 +30,7 @@ import warnings
 from political_feasibility import assess_political_feasibility
 from expert_council import plain_language_workflow_summary
 from data_ingestion import (
+    build_cached_snapshot_integrity_action_plan,
     build_cached_snapshot_integrity_report,
     build_connector_execution_plan,
     build_connector_snapshot_requests,
@@ -4075,6 +4076,7 @@ def build_learning_data_passport_overview(limit: int = 8) -> dict[str, Any]:
             row["label"],
         ),
     )[:limit]
+    snapshot_integrity = build_cached_snapshot_integrity_report()
     return {
         "title": "Datenpass: Was ist gemessen, was ist Annahme?",
         "plain_language_note": (
@@ -4088,7 +4090,8 @@ def build_learning_data_passport_overview(limit: int = 8) -> dict[str, Any]:
             "cached_raw_snapshots": len(cached_rows),
             "reviewed_transformations": len(reviewed_rows),
         },
-        "snapshot_integrity": build_cached_snapshot_integrity_report(),
+        "snapshot_integrity": snapshot_integrity,
+        "snapshot_integrity_action_plan": build_cached_snapshot_integrity_action_plan(snapshot_integrity),
         "rows": [
             {
                 "Parameter": row["label"],
@@ -4122,6 +4125,12 @@ def render_learning_data_passport_overview():
         f"{integrity_summary['sha256_mismatch']} abweichend, {integrity_summary['raw_file_missing']} Rohdatei fehlt. "
         "Das prüft nur Cache-Unverändertheit, nicht Modellreife."
     )
+    action_plan = overview["snapshot_integrity_action_plan"]
+    st.caption(f"Nächste sichere Rohcache-Aktion: {action_plan['first_safe_action']}")
+    if action_plan["rows"]:
+        with st.expander("Rohcache: was darf als Nächstes passieren?", expanded=False):
+            st.dataframe(pd.DataFrame(action_plan["rows"]), use_container_width=True, hide_index=True)
+            st.caption(action_plan["guardrail"])
     st.dataframe(pd.DataFrame(overview["rows"]), use_container_width=True, hide_index=True)
     st.caption("Guardrail: Rohdaten-Snapshot ≠ geprüfter Modelleffekt. Annahmen bleiben sichtbar, bis eine Transformation geprüft und dokumentiert wurde.")
 

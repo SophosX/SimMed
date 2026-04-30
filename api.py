@@ -13,6 +13,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
 from data_ingestion import (
+    build_cached_snapshot_integrity_action_plan,
     build_cached_snapshot_integrity_report,
     build_connector_execution_plan,
     build_connector_execution_workbench,
@@ -106,10 +107,25 @@ def get_data_snapshots() -> dict:
 def get_data_snapshot_integrity() -> dict:
     """Recompute raw-cache SHA256 status without fetching or integrating data."""
 
+    integrity = build_cached_snapshot_integrity_report()
     return {
         "status": "raw_snapshot_integrity_not_model_integration",
         "guardrail": "SHA256-Integrität prüft nur unveränderte Rohdateien; sie ist keine Transformation, kein Registry-/Modellimport und kein Wirkungsbeweis.",
-        "snapshot_integrity": build_cached_snapshot_integrity_report(),
+        "snapshot_integrity": integrity,
+        "integrity_action_plan": build_cached_snapshot_integrity_action_plan(integrity),
+    }
+
+
+@api.get("/data-snapshots/integrity-action-plan")
+def get_data_snapshot_integrity_action_plan() -> dict:
+    """Expose safe next actions from raw-cache integrity without executing them."""
+
+    integrity = build_cached_snapshot_integrity_report()
+    return {
+        "status": "raw_snapshot_integrity_action_plan_not_model_integration",
+        "guardrail": "Action-Plan ist read-only: kein Netzwerkabruf, kein Cache-Schreiben, keine Review-Erzeugung und keine Registry-/Modellmutation.",
+        "snapshot_integrity": integrity,
+        "integrity_action_plan": build_cached_snapshot_integrity_action_plan(integrity),
     }
 
 

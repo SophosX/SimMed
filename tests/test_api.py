@@ -45,6 +45,27 @@ def test_api_exposes_focused_snapshot_integrity_without_fetch_or_import():
     assert {"sha256_match", "sha256_mismatch", "raw_file_missing"} <= set(integrity["summary"])
     assert all("integrity_status" in row for row in integrity["rows"])
     assert "kein Netzwerkabruf" in integrity["guardrail"]
+    assert body["integrity_action_plan"]["overall_status"] in {
+        "integrity_blocker_before_review",
+        "integrity_ok_but_not_reviewed",
+        "no_cached_snapshots_yet",
+    }
+    assert "keine Registry-/Modellmutation" in body["integrity_action_plan"]["guardrail"]
+
+
+def test_api_exposes_focused_snapshot_integrity_action_plan_without_execution():
+    client = TestClient(api)
+    response = client.get("/data-snapshots/integrity-action-plan")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "raw_snapshot_integrity_action_plan_not_model_integration"
+    assert "kein Netzwerkabruf" in body["guardrail"]
+    plan = body["integrity_action_plan"]
+    assert "first_safe_action" in plan
+    assert "definition_of_done_before_review" in plan
+    assert all("operator_action" in row for row in plan["rows"])
+    assert "keine Registry-/Modellmutation" in plan["guardrail"]
 
 
 def test_api_exposes_data_passport_for_registry_and_cache_status():
