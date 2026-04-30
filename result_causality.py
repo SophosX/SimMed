@@ -506,8 +506,8 @@ def build_causal_result_layout(packet: Mapping[str, Any]) -> dict[str, Any]:
                 "Unsicherheitsband",
             ],
             "reason": (
-                "Diese bestehenden Hilfen bleiben als Audit-Layer erhalten, sind aber keine zweite erste Ergebnisansicht; "
-                "die primäre Interpretation kommt aus dem causal_result_packet."
+                "Diese bestehenden Hilfen bleiben als vertiefende Prüfung erhalten, sind aber keine zweite erste Ergebnisansicht; "
+                "die primäre Interpretation kommt aus dem Ergebnisbericht."
             ),
         },
         "optional_details_after": packet.get("primary_result_view", {}).get(
@@ -805,10 +805,10 @@ def build_causal_result_packet(
             [
                 "Danach den Eingriff lesen.",
                 "Danach den berechneten Wirkpfad und die Zeitfenster prüfen.",
-                "Danach nur die relevanten KPI-Signale lesen, nicht die ganze KPI-Wand.",
+                "Danach nur die relevanten KPI-Signale lesen; die vollständigen Detailkarten kommen erst danach.",
                 "Danach Anpassungsreaktionen und Gegenintuitionen prüfen.",
                 "Danach Belastbarkeit und Registry-Caveats prüfen.",
-                "Danach Detailkarten, Trend und Policy-Briefing als Audit-Layer öffnen.",
+                "Danach Detailkarten, Trend und Policy-Briefing als vertiefende Prüfung öffnen.",
                 "Danach die nächste fachliche Prüfentscheidung bewusst setzen.",
                 "Danach entscheiden, ob weitere Modell-/Annahmenprüfung nötig ist.",
             ],

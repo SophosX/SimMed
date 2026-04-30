@@ -530,3 +530,30 @@ def test_causal_result_packet_exposes_compact_briefing_cards_for_first_view():
     assert "keine amtliche Prognose" in combined
     assert "random Internet" not in combined
     assert "Klartext" not in combined
+
+
+def test_first_view_public_copy_avoids_internal_packet_and_wall_jargon():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    layout = build_causal_result_layout(packet)
+
+    public_fragments = [
+        packet["professional_briefing"]["lead_paragraph"],
+        packet["primary_result_view"]["headline"],
+        packet["primary_result_view"]["optional_audit_layers"]["reason"],
+        layout["dense_kpi_wall"]["label"],
+        layout["dense_kpi_wall"]["reason"],
+        layout["optional_interpretation_layers"]["label"],
+        layout["optional_interpretation_layers"]["reason"],
+    ]
+    public_fragments.extend(card["next_step"] for card in packet["first_view_briefing_cards"])
+    public_text = " ".join(public_fragments)
+
+    assert "causal_result_packet" not in public_text
+    assert "KPI-Wand" not in public_text
+    assert "answer_first" not in public_text
+    assert "Audit-Layer" not in public_text
+    assert "Ergebnisbericht" in public_text
+    assert "Detailprüfung" in public_text

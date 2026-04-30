@@ -4095,3 +4095,32 @@ No important decision required now; continue safely with result-briefing clarity
 
 ### Verification / Git
 Targeted RED/GREEN test added for compact briefing cards, API expectation updated, UI rendering wired. Verification run: `python3 -m pytest -q` → 249 passed; `py_compile` for `app.py result_causality.py api.py simulation_core.py`; 50-run simulation smoke with causal packet check passed. Commit/push status is reported in the heartbeat after GitHub confirmation.
+
+## 2026-04-30 11:56 Europe/Berlin — Heartbeat: Ergebnisbericht-Sprachhygiene
+
+### Context
+Alex wants the first result view to feel like a serious human-written simulation briefing, not like internal packet jargon or a KPI wall. This slice tightened the public wording around the causal result packet after the larger Ergebnisbericht restructuring was already present.
+
+### Project Manager
+Priority: keep the result-experience track coherent and avoid another scattered helper layer. Risk: internal implementation labels can leak into UI/API copy and make the otherwise strong briefing feel machine-generated. Next: continue consolidating dashboard first-view rendering around one Ergebnisbericht, then move detailed KPI/trend/report sections further into deliberate drilldown.
+
+### Designer / UX
+The first view now keeps “Ergebnisbericht” and “Detailprüfung” as the public vocabulary. It avoids “KPI-Wand”, “Audit-Layer”, and `causal_result_packet` in user-facing copy, which should make the page read less like a developer console and more like a policy briefing.
+
+### Creative Agent
+Small fit idea: later turn the result view into a calm “Briefing sheet” layout with one narrative column and one compact signal column. Good fit for comprehension; defer until the text structure is stable.
+
+### Political Health-System Strategist
+For politically sensitive scenarios, language matters: users should not see internal mechanics as authority. “Vertiefende Prüfung” is safer than “Audit-Layer” because it invites scrutiny without pretending legal/audit certification.
+
+### Evidence / Domain
+No new factual claims or external evidence were added. The change is presentation-only; evidence grades, Registry caveats, Monte-Carlo boundaries, and no-official-forecast guardrails remain intact.
+
+### Integrator Decision
+Accepted: add a regression test preventing internal packet/KPI-wall jargon from leaking into public first-view copy, then update `result_causality.py` wording. Deferred: visual layout changes beyond the current Streamlit first-view structure.
+
+### Question to Alex
+No decision needed; this is a safe wording and first-view coherence improvement.
+
+### Verification / Git
+Targeted result-causality tests passed locally before full verification. Commit/push status will be recorded by the final heartbeat report after sync to GitHub clone.
