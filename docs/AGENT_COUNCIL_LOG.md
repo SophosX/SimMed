@@ -3596,3 +3596,15 @@ Keine wichtige Entscheidung offen; wir können sicher weiter an Modellregression
 
 ### Verification / Git
 Fokustests bestanden: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 8 passed. Full suite bestanden: `python3 -m pytest -q` → 215 passed. Compile/Smoke bestanden: `py_compile result_causality.py app.py api.py simulation_core.py` plus 50-run Simulation/Klartext-Layout-Smoke. Commit/Push folgen im Verifikationsschritt dieses Heartbeats.
+
+## 2026-04-30 07:50 UTC — Causal plain-text packet bridge
+
+- Context: Alex wants one coherent sequential German result explanation, not more scattered snippets or a KPI wall.
+- Project Manager: Safe small platform slice; keep model dynamics unchanged until regression test drives the next model change.
+- Designer/UX: API/UI now have one `sequential_plain_text` field that can be shown/copy-pasted as the first result narrative before detail cards.
+- Creative Agent: Treat this as a shareable/citable "Klartext" layer, but still auditable through structured blocks and KPIs.
+- Political Health-System Strategist: No new stakeholder or policy claims; guardrail remains no official forecast, no vote forecast, no lobbying recommendation.
+- Evidence/Domain: Keine neue Recherche in diesem Lauf; no evidence grades or assumptions were changed.
+- Integrator Decision: Added packet field only, preserving `free_text_blocks`, `story_sections`, relevant KPIs, timeline windows, and optional dense details.
+- Question to Alex if needed: Keine wichtige Entscheidung offen; continue with safe causal-output/model-regression slices.
+- Verification/Git: Focused result/API tests run locally; full verification before commit/push.

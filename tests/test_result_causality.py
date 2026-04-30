@@ -152,9 +152,29 @@ def test_causal_result_packet_has_sequential_free_text_blocks_before_optional_de
     assert packet["primary_result_view"] == {
         "headline": "Erst Klartext, dann Details",
         "main_blocks": blocks,
+        "sequential_plain_text": packet["sequential_plain_text"],
         "relevant_kpis": packet["relevant_kpis"],
         "optional_details_after": ["KPI-Drilldowns", "Trend", "Policy-Briefing", "Politik/Stakeholder"],
     }
+
+
+def test_causal_result_packet_exposes_one_sequential_plain_text_story_for_api_clients():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+
+    story = packet["sequential_plain_text"]
+    assert story.startswith("Simulationsergebnis in Klartext")
+    assert story.count("\n\n") >= 5
+    assert story.index("1. Ergebnis") < story.index("2. Änderung") < story.index("3. Wirkmechanismus")
+    assert story.index("3. Wirkmechanismus") < story.index("4. Anpassung") < story.index("5. Gegencheck")
+    assert "Medizinstudienplätze" in story
+    assert "ab etwa Jahr 6" in story
+    assert "Jahr 11–15" in story
+    assert "keine random Internet-Suche" in story
+    assert "KPI-Wand" not in story
+    assert packet["primary_result_view"]["sequential_plain_text"] == story
 
 
 def test_causal_result_layout_keeps_dense_kpis_optional_after_cleartext():

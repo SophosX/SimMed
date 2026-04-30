@@ -587,3 +587,9 @@ The causal packet now includes a structured `timeline_windows` list for the medi
 - `Jahr 11–15`: specialist/capacity pressure becomes the main crash-or-compensation window; burnout, waiting time, and rural access are the key signals.
 
 Guardrail: these timeline rows are SimMed model assumptions/checkpoints, not an official forecast or evidence of policy effectiveness. Next model slice should derive observed values per window from `annual_summary` rather than only explaining the expected timing.
+
+### Heartbeat implementation note — 2026-04-30 07:50 UTC
+
+- Added `sequential_plain_text` to the causal result packet so UI/API clients can consume one coherent German story from headline through result, change, mechanism, adaptation, countercheck, and evidence guardrail.
+- This is output restructuring only: no simulation dynamics, data cache, Registry value, or evidence grade changed.
+- Next implementation slice should either render/copy this single story more prominently in Streamlit or add the next model regression around the year-6-to-15 medical-study-place pressure path before changing dynamics.

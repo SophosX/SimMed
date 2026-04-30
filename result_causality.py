@@ -308,6 +308,11 @@ def build_causal_result_packet(
         },
     ]
 
+    sequential_plain_text = "\n\n".join(
+        ["Simulationsergebnis in Klartext"]
+        + [f"{block['step']}\n{block['text']}" for block in free_text_blocks]
+    )
+
     story_sections = [
         {
             "id": "output",
@@ -369,10 +374,12 @@ def build_causal_result_packet(
         "primary_result_view": {
             "headline": "Erst Klartext, dann Details",
             "main_blocks": free_text_blocks,
+            "sequential_plain_text": sequential_plain_text,
             "relevant_kpis": kpis,
             "optional_details_after": ["KPI-Drilldowns", "Trend", "Policy-Briefing", "Politik/Stakeholder"],
         },
         "story_sections": story_sections,
+        "sequential_plain_text": sequential_plain_text,
         "coherent_story": coherent_story,
         "method_note": RESULT_CAUSALITY_GUARDRAIL,
         "guardrail": RESULT_CAUSALITY_GUARDRAIL,
