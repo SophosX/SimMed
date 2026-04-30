@@ -72,6 +72,7 @@ def test_app_causal_overview_reuses_packet_before_dense_kpi_wall():
     assert len(overview["relevant_kpis"]) <= 5
     assert "KPI-Wand" not in overview["coherent_story"]
     assert "keine amtliche Prognose" in overview["guardrail"]
+    assert overview["timeline_windows"][0]["window"] == "Jahr 0–5"
 
 
 def test_causal_result_packet_flags_counterintuitive_burnout_drop_under_physician_shortage():
@@ -107,3 +108,20 @@ def test_causal_result_packet_contains_structured_story_sections_for_api_and_ui(
     assert "Medizinstudienplätze" in section_text
     assert "ab etwa Jahr 6" in section_text
     assert "keine amtliche Prognose" in packet["story_sections"][-1]["text"]
+
+
+def test_causal_result_packet_exposes_delayed_timeline_windows_for_study_place_cut():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+
+    windows = packet["timeline_windows"]
+    assert [row["window"] for row in windows] == ["Jahr 0–5", "Jahr 6–10", "Jahr 11–15"]
+    assert "kein unmittelbarer Kapazitäts-Crash" in windows[0]["expected_signal"]
+    assert "weniger Absolvent" in windows[1]["expected_signal"]
+    assert "Facharzt" in windows[2]["expected_signal"]
+    assert "Burnout" in windows[2]["pressure_check"]
+    assert "Telemedizin" in windows[1]["adaptation_to_check"]
+    assert "keine amtliche Prognose" in windows[0]["guardrail"]
+    assert "Jahr 6–10" in packet["coherent_story"]

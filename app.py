@@ -3556,6 +3556,20 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
         with st.expander("Gegenintuition prüfen", expanded=True):
             st.dataframe(pd.DataFrame(packet["counterintuitive_findings"]), use_container_width=True, hide_index=True)
 
+    if packet.get("timeline_windows"):
+        with st.expander("Zeitfenster des Wirkpfads: wann sollte ich hinschauen?", expanded=True):
+            st.dataframe(
+                pd.DataFrame(packet["timeline_windows"])[[
+                    "window",
+                    "expected_signal",
+                    "adaptation_to_check",
+                    "pressure_check",
+                ]],
+                use_container_width=True,
+                hide_index=True,
+            )
+            st.caption(packet["timeline_windows"][0]["guardrail"])
+
 
 def render_dashboard(agg: pd.DataFrame, params: dict):
     """Zeigt Dashboard-Karten mit Trend-Pfeilen."""

@@ -181,6 +181,38 @@ def _counterintuitive_findings(kpis: Sequence[Mapping[str, Any]], params: Mappin
     return findings
 
 
+def _timeline_windows(params: Mapping[str, Any]) -> list[dict[str, str]]:
+    """Return human-readable timing checkpoints for delayed policy effects."""
+    defaults = get_default_params()
+    study_places_cut = float(params.get("medizinstudienplaetze", defaults["medizinstudienplaetze"])) < float(defaults["medizinstudienplaetze"])
+    if not study_places_cut:
+        return []
+    guardrail = f"{RESULT_CAUSALITY_GUARDRAIL} Zeitfenster sind SimMed-Annahmen/Prüfpunkte, keine amtliche Prognose."
+    return [
+        {
+            "window": "Jahr 0–5",
+            "expected_signal": "kein unmittelbarer Kapazitäts-Crash: weniger Studienplätze sind noch überwiegend in der Ausbildungspipeline gebunden",
+            "adaptation_to_check": "kurzfristig eher Mehrarbeit, Terminsteuerung, Telemedizin- und Delegationsausbau prüfen",
+            "pressure_check": "Wartezeit/Burnout dürfen nicht als endgültige Entwarnung gelesen werden, weil der Hauptlag noch nicht angekommen ist",
+            "guardrail": guardrail,
+        },
+        {
+            "window": "Jahr 6–10",
+            "expected_signal": "weniger Absolvent:innen erreichen den Arbeitsmarkt; Kapazitätsreserve und Wartezeit sollten sichtbar unter Druck geraten",
+            "adaptation_to_check": "Telemedizin, Delegation, Zuwanderung und Produktivität müssen als dämpfende Mechanismen sichtbar benannt werden",
+            "pressure_check": "Burnout oder Arbeitsdruck sollten ohne klare Entlastung nicht still fallen",
+            "guardrail": guardrail,
+        },
+        {
+            "window": "Jahr 11–15",
+            "expected_signal": "Facharzt- und Versorgungskapazität geraten stärker unter Druck, wenn frühere Kohortenlücken nicht kompensiert wurden",
+            "adaptation_to_check": "dauerhafte Substitution/Delegation, regionale Umverteilung und internationale Rekrutierung als mögliche, aber begrenzte Puffer prüfen",
+            "pressure_check": "Burnout, Wartezeit und ländliche Versorgung sind die zentralen Crash-/Kompensationssignale",
+            "guardrail": guardrail,
+        },
+    ]
+
+
 def build_causal_result_packet(
     agg: pd.DataFrame,
     params: Mapping[str, Any],
@@ -196,12 +228,16 @@ def build_causal_result_packet(
     changed = _changed_inputs(params)
     kpis = _relevant_kpis(agg, max_kpis=max_kpis)
     mechanisms = _adaptation_mechanisms(params, kpis)
+    timeline_windows = _timeline_windows(params)
     counter = _counterintuitive_findings(kpis, params)
     changed_text = " ".join(item["change"] for item in changed) or "Keine zentrale Stellschraube wurde gegenüber dem Standardpfad verändert."
     kpi_text = " ".join(item["sentence"] for item in kpis) or "Keine priorisierten KPI-Bewegungen verfügbar."
     mechanism_text = " ".join(
         f"{item['mechanism']}: {item['expected_effect']} Timing: {item['timing']}." for item in mechanisms
     ) or "Keine spezifischen Anpassungsmechanismen wurden aus den geänderten Haupthebeln abgeleitet."
+    timeline_text = " ".join(
+        f"{item['window']}: {item['expected_signal']} ({item['pressure_check']})." for item in timeline_windows
+    ) or "Kein spezifisches verzögertes Zeitfenster aus den geänderten Haupthebeln abgeleitet."
     counter_text = " ".join(item["finding"] + " " + item["operator_action"] for item in counter) or "Keine harte Gegenintuition im kompakten KPI-Set erkannt."
 
     story_sections = [
@@ -221,7 +257,8 @@ def build_causal_result_packet(
             "text": (
                 "SimMed verbindet Eingriffe über Kapazität, Nachfrage, Finanzierung und Zeitverzug. "
                 "Bei Medizinstudienplätzen ist der zentrale Mechanismus die Ausbildungs-Pipeline: "
-                "ab etwa Jahr 6 kommen weniger Absolvent:innen an, danach steigt der Facharzt-/Kapazitätsdruck."
+                "ab etwa Jahr 6 kommen weniger Absolvent:innen an, danach steigt der Facharzt-/Kapazitätsdruck. "
+                f"Zeitfenster: {timeline_text}"
             ),
         },
         {
@@ -249,6 +286,7 @@ def build_causal_result_packet(
         f"Warum: Die Simulation liest Änderungen nicht als Einzelzahl, sondern als Wirkpfad über Kapazität, Nachfrage, Finanzierung und Zeitverzug. "
         f"Bei Medizinstudienplätzen ist der zentrale Punkt der Ausbildungs-Lag: ab etwa Jahr 6 kommen weniger Absolvent:innen an; "
         f"im 15-Jahres-Horizont sollte sich das in Ärzte pro 100k, Wartezeit und Burnout zeigen, sofern Anpassungsmechanismen es nicht sichtbar dämpfen. "
+        f"Zeitverlauf: {timeline_text} "
         f"Anpassungsmechanismen: {mechanism_text} Gegencheck: {counter_text}"
     )
 
@@ -265,6 +303,7 @@ def build_causal_result_packet(
         "changed_inputs": changed,
         "relevant_kpis": kpis,
         "adaptation_mechanisms": mechanisms,
+        "timeline_windows": timeline_windows,
         "counterintuitive_findings": counter,
         "story_sections": story_sections,
         "coherent_story": coherent_story,

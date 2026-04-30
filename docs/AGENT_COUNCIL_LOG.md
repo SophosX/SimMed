@@ -3509,3 +3509,32 @@ No blocking decision now; continue safely with reducing KPI clutter and adding y
 
 ### Verification / Git
 Pending full-suite verification, commit, and push at time of entry.
+
+## 2026-04-30 07:32 UTC — Heartbeat: Causal timeline windows
+
+### Context
+Continued Alex's causal-output direction around `result_causality.py`, `app.py`, API packet reuse, and the 15-year medical-study-place-halving expectation. Baseline focused tests already passed for the existing causal packet/API/model regression.
+
+### Project Manager
+Priority: make the first result view less vague by turning the delayed pipeline story into structured packet data, not another separate prose snippet. Risk: this heartbeat did not change model equations; it made the expected windows auditable first. Next tasks: derive observed per-window KPI traces from `annual_summary`, then tighten model/adaptation dynamics if the trace contradicts the desired crash/compensation behavior.
+
+### Designer / UX
+The first result view now has an explicit “Zeitfenster des Wirkpfads” table after the coherent Klartext story, so users can see when to inspect the scenario rather than staring at a KPI wall.
+
+### Creative Agent
+Idea: later turn the three windows into a compact “Crash oder Kompensation?” timeline with colored status chips. Fit: useful and vivid, but should wait until observed per-window signals are computed from the actual run.
+
+### Political Health-System Strategist
+For medical-study-place cuts, the politically relevant story is delayed: early calm can be misleading, while years 6–15 create capacity, access, and workforce-pressure conflict. The new windows help avoid premature policy interpretation.
+
+### Evidence / Domain
+No new external research in this heartbeat. The window text is labelled as SimMed assumptions/checkpoints, not official forecast or evidence. Existing evidence grades/registry caveats remain the source layer.
+
+### Integrator Decision
+Accepted a small TDD slice: add `timeline_windows` to the causal packet and render it in Streamlit. Deferred model-equation changes until a regression can compare observed annual/window traces.
+
+### Question to Alex
+No blocking decision. Recommendation: continue safely with observed year-window traces before adding new broad policy levers.
+
+### Verification / Git
+Focused causal/API/model tests passed, full pytest passed, py_compile passed, and a 30-run/15-year smoke test built the causal packet with `Jahr 6–10` timeline window. Commit/push status recorded in the heartbeat message.

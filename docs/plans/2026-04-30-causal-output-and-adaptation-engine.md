@@ -577,3 +577,13 @@ Next safe slices:
 1. Replace the large KPI grid with a compact relevant-KPI renderer driven only by `causal_result_packet['relevant_kpis']`, leaving old KPI details behind an expander.
 2. Expand the causal packet with year-window traces (`0–5`, `6–10`, `11–15`) so the free-text story can say exactly when the delayed crash begins and worsens.
 3. Extract adaptation mechanisms into a small registry rather than keeping all mechanism text inside `result_causality.py` and `simulation_core.py`.
+
+## 8. Implementation note — causal timeline windows (2026-04-30 heartbeat)
+
+The causal packet now includes a structured `timeline_windows` list for the medical-study-place cut path. This keeps Alex's delayed-crash expectation visible in both API/UI packet data without changing model equations in this slice:
+
+- `Jahr 0–5`: no immediate capacity crash; watch early adaptation/Mehrarbeit/Telemedizin but do not treat calm early KPIs as final reassurance.
+- `Jahr 6–10`: fewer graduates begin to reach the labour market; capacity reserve, waiting time, and burnout/pressure must be inspected.
+- `Jahr 11–15`: specialist/capacity pressure becomes the main crash-or-compensation window; burnout, waiting time, and rural access are the key signals.
+
+Guardrail: these timeline rows are SimMed model assumptions/checkpoints, not an official forecast or evidence of policy effectiveness. Next model slice should derive observed values per window from `annual_summary` rather than only explaining the expected timing.
