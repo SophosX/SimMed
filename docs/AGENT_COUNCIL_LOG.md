@@ -4630,3 +4630,33 @@ No important product decision required in this heartbeat; continue safely toward
 
 ### Verification / Git
 Focused tests passed: `tests/test_result_causality.py` plus API causal packet test. Full suite passed: 263 tests. Runtime smoke passed: 50 runs × 3 years with simplified causal packet. GitHub push confirmed: `4594e03 Clarify result page as single briefing` on `origin/main` with `app.py`, `result_causality.py`, `tests/test_result_causality.py`, and this council log.
+
+
+## 2026-04-30 14:15 Europe/Berlin — Public result packet tightened again
+
+### Context
+Alex's correction remains the active priority: the first result screen must answer “Was ist rausgekommen, was hat sich verändert, warum, was bedeutet das?” without another layer of overlapping helper text. This run tightened the public packet copy and regression tests after the previous first-view restructuring.
+
+### Project Manager
+Priority stays result-page clarity. This was a safe communication-layer slice: no model parameters, no simulation dynamics, no data-ingestion path changed. Next useful step is visual cleanup of the Streamlit result block so the seven-heading briefing feels like one polished memo on screen.
+
+### Designer / UX
+The public packet now enforces a shorter `short_answer`, seven predictable headings, concise section bodies, and compact relevant-KPI wording. This reduces reading friction before users open deeper checks.
+
+### Creative Agent
+A future “one-page briefing” treatment still fits: headline, three-sentence answer, 3–4 KPI rows, then the seven sections. Do not add decorative widgets before the hierarchy is stable.
+
+### Political Health-System Strategist
+The result text keeps the sensitive medical-study-place scenario in a professional lane: delayed capacity pressure is explained, but the wording still says fachliche Prüfung before political interpretation.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. No new factual claim or evidence source was introduced; the change only edits the public communication layer of the existing causal result packet.
+
+### Integrator Decision
+Accepted: add a stricter clarity regression test and shorten the public packet text. Keep detailed evidence, timelines, quality checks, and legacy sections available below the first screen rather than mixing them into the main answer.
+
+### Question to Alex
+No important decision open. Continue safely with the visual Streamlit result-card cleanup next.
+
+### Verification / Git
+Pre-push verification in source tree: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 37 passed; `python3 -m pytest -q` → 264 passed; `python3 -m py_compile app.py result_causality.py api.py simulation_core.py` passed; 20-run simulation/packet smoke passed. Git commit/push pending at time of this entry.

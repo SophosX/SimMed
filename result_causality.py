@@ -961,25 +961,24 @@ def build_causal_result_packet(
         if study_places_changed
         else "Ergebnis: die wichtigsten Veränderungen im Modelllauf"
     )
-    top_kpi_sentences = " ".join(
-        f"{item['label']} {item['direction']} ({item['start']} → {item['end']})." for item in kpis[:3]
-    ) or "Es liegen keine priorisierten Kennzahlen vor."
+    top_kpi_sentences = "; ".join(
+        f"{item['label']} {item['direction']} ({item['start']} → {item['end']})" for item in kpis[:3]
+    ) or "keine priorisierten Kennzahlen verfügbar"
     if study_places_changed:
         short_answer = (
-            f"Die Medizinstudienplätze wurden gesenkt; sichtbar werden vor allem {top_kpi_sentences} "
-            "Der Grund ist die Ausbildungs-Pipeline, weil ab etwa Jahr 6 die kleinere Kohorte im Arbeitsmarkt ankommt und Richtung Jahr 11–15 der Facharztpfad wichtig wird. "
-            "Das bedeutet: prüfbarer Kapazitätsdruck, keine fertige politische Entscheidung. "
-            "Der nächste Check ist, ob Telemedizin, Delegation oder Zuwanderung den Druck plausibel abfedern."
+            f"Die Medizinstudienplätze wurden gesenkt; relevant sind vor allem: {top_kpi_sentences}. "
+            "Warum: Der Eingriff wirkt verzögert über die Pipeline — ab etwa Jahr 6 kommt die kleinere Kohorte im Arbeitsmarkt an, Richtung Jahr 11–15 wird der Facharztpfad wichtig. "
+            "Das bedeutet prüfbaren Kapazitätsdruck, aber noch keine fertige politische Entscheidung; nächster Check sind Puffer wie Telemedizin, Delegation oder Zuwanderung."
         )
     elif changed:
         short_answer = (
-            f"Geändert wurde: {changed_text} {top_kpi_sentences} "
-            "Die Bewegung entsteht über die dokumentierten SimMed-Pfade für Kapazität, Nachfrage, Finanzierung und regionale Verteilung. "
+            f"Geändert wurde: {changed_text} Relevant sind vor allem: {top_kpi_sentences}. "
+            "Die Bewegung läuft über die dokumentierten SimMed-Pfade für Kapazität, Nachfrage, Finanzierung und regionale Verteilung. "
             "Als Nächstes sollten die stärkste Kennzahl und ihre Annahmengrenze geprüft werden."
         )
     else:
         short_answer = (
-            f"Es wurde kein zusätzlicher Hebel verändert. {top_kpi_sentences} "
+            f"Es wurde kein zusätzlicher Hebel verändert; relevant sind vor allem: {top_kpi_sentences}. "
             "Der Lauf zeigt den Referenzpfad selbst; als Nächstes sollten die stärkste Kennzahl und ihre Annahmengrenze geprüft werden."
         )
 
@@ -996,7 +995,7 @@ def build_causal_result_packet(
         for row in relevant_kpis_public[:4]
     ) or "Keine priorisierten Kennzahlen verfügbar."
     result_body = (
-        f"Relevant verändert haben sich vor allem: {kpi_body}"
+        f"Relevant sind vor allem: {kpi_body[:205]}"
         if kpi_body != "Keine priorisierten Kennzahlen verfügbar."
         else kpi_body
     )
@@ -1009,8 +1008,8 @@ def build_causal_result_packet(
         why_body = pathway_body[:340]
     adaptation_body = (
         "Das Modell prüft Puffer wie Telemedizin, Delegation oder Zuwanderung. "
-        f"Beobachtet: {adaptation_trace_text[:75]} "
-        "Fällt Burnout trotz Ärztemangel, ist das ein Prüfhinweis, solange kein Puffer sichtbar trägt."
+        f"Beobachtet: {adaptation_trace_text[:55]} "
+        "Fällt Burnout trotz Ärztemangel, ist das ein Plausibilitätscheck."
     )
     result_sections = [
         {"heading": "Ergebnis", "body": result_body},
@@ -1021,14 +1020,14 @@ def build_causal_result_packet(
         {
             "heading": "Einordnung",
             "body": (
-                "Das bedeutet: Der Lauf zeigt einen prüfbaren SimMed-Wirkpfad, keine fertige politische Entscheidung. "
-                "Die Aussage gilt innerhalb der dokumentierten Parameter, Annahmen und Spannweiten; sie ist keine amtliche Prognose und kein Wirksamkeitsnachweis."
+                "Das bedeutet: einen prüfbaren SimMed-Wirkpfad, keine fertige politische Entscheidung. "
+                "Die Aussage gilt innerhalb der dokumentierten Parameter und Spannweiten; keine amtliche Prognose, kein Wirksamkeitsnachweis."
             ),
         },
         {
             "heading": "Nächster Prüfschritt",
             "body": (
-                "Zuerst Zeitfenster, relevante KPI-Details und Evidenzgrenzen prüfen. Danach erst politisch bewerten."
+                "Zuerst Zeitfenster, relevante KPI-Details und Evidenzgrenzen prüfen; danach erst politisch bewerten."
             ),
         },
     ]
@@ -1042,7 +1041,7 @@ def build_causal_result_packet(
     for section in result_sections:
         block = {
             "heading": section["heading"],
-            "body": section["body"][:320],
+            "body": section["body"][:240],
             "display": "kpi_rows" if section["heading"] == "Relevante Kennzahlen" else "text",
             "primary_answer": section["heading"] == "Ergebnis",
         }

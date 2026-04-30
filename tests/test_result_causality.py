@@ -961,3 +961,48 @@ def test_result_layout_uses_human_first_view_names_not_internal_widget_language(
     banned = ["KPI-Wand", "Widget", "generated", "helper", "Audit-Layer", "render", "causal_result_packet"]
     assert not any(term in public_layout_text for term in banned)
     assert "Weitere Prüfung" in layout["optional_interpretation_layers"]["label"]
+
+
+def test_public_result_packet_is_short_clear_and_not_meta_language():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+
+    assert packet["result_headline"]
+    assert "Medizinstudienplätze" in packet["short_answer"]
+    assert "Jahr 6" in packet["short_answer"]
+    assert any(kpi["label"] in packet["short_answer"] for kpi in packet["relevant_kpis"][:2])
+    assert packet["short_answer"].count(". ") <= 3
+
+    assert [section["heading"] for section in packet["result_sections"]] == [
+        "Ergebnis",
+        "Eingriff",
+        "Warum es passiert",
+        "Relevante Kennzahlen",
+        "Anpassungen",
+        "Einordnung",
+        "Nächster Prüfschritt",
+    ]
+    assert len(packet["result_sections"]) <= 7
+    assert all(len(section["body"]) <= 240 for section in packet["result_sections"])
+
+    public_text = " ".join(
+        [packet["result_headline"], packet["short_answer"], packet["follow_up_question"]]
+        + [section["heading"] + " " + section["body"] for section in packet["result_sections"]]
+        + [kpi.get("label", "") + " " + kpi.get("meaning", "") for kpi in packet["relevant_kpis"]]
+    )
+    banned = [
+        "random Internet",
+        "Klartext",
+        "KPI-Wand",
+        "generated",
+        "helper",
+        "Widget",
+        "Audit-Layer",
+        "render",
+        "causal_result_packet",
+    ]
+    assert not any(term in public_text for term in banned)
+    assert "keine amtliche Prognose" in public_text
+    assert "kein Wirksamkeitsnachweis" in public_text
