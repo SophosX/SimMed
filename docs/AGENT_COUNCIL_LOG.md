@@ -6176,3 +6176,32 @@ Keine wichtige Entscheidung offen. Ich gehe weiter sicher in Richtung: ein Ergeb
 TDD: neuer Test `test_relevant_kpis_show_units_and_one_sentence_meaning_for_first_screen` lief zuerst rot (`KeyError: 'unit_label'`), danach grün. Fokussierte Tests: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients tests/test_app_explanations.py::test_result_causal_overview_declares_one_clean_first_view_before_audit_details -q` → 68 passed. Full Suite: `python3 -m pytest -q` → 295 passed. `py_compile` zentrale Module → OK. Runtime-Smoke 50 Runs × 3 Jahre inklusive Causal Packet → OK. Git-Commit/Push folgt nach Source→GitHub-Sync.
 
 Nachtrag Verification/Git: Commit `bf383f3` (`Clarify result KPI units`) wurde auf `origin/main` gepusht. `git show --name-only --oneline -1` bestätigt: `app.py`, `docs/AGENT_COUNCIL_LOG.md`, `result_causality.py`, `tests/test_result_causality.py`.
+
+## 2026-04-30 20:49 Europe/Berlin — Heartbeat: klare Ergebnis-Erstansicht
+
+### Context
+Alexs Korrektur war eindeutig: die Ergebnisse sollen nicht als Stapel von Hilfsboxen erscheinen, sondern als eine lesbare deutsche Ergebnisantwort. Fokus dieses Laufs: `result_causality.py`, die erste Ergebnisansicht in `app.py` und API-kompatible Paketfelder.
+
+### Project Manager
+Priorität: erste Ergebnisansicht schlanker machen und per Tests gegen Meta-/Generator-Sprache absichern. Risiko: ältere UI/API-Tests erwarten weiterhin einige Diagnosefelder; deshalb bleibt Rückwärtskompatibilität erhalten, aber der öffentliche Briefing-Text wird geprüft. Nächster Schritt: die noch vorhandenen dichten Detailabschnitte unterhalb weiter zu einem einzigen Audit-Bereich konsolidieren.
+
+### Designer / UX
+Die erste Ansicht folgt jetzt klarer der Reihenfolge Ergebnis → Eingriff → Warum es passiert → Relevante Kennzahlen → Anpassungen → Einordnung → Nächster Prüfschritt. Die relevanten KPIs bleiben auf wenige Zeilen begrenzt; vollständige Kennzahlen bleiben darunter als Vertiefung.
+
+### Creative Agent
+Produktidee für später: aus der ersten Ergebnisantwort eine druckbare „1-Minuten-Lesefassung“ für Telegram/PDF erzeugen. Fit: gut für Entscheider:innen, aber erst sinnvoll, wenn die Bildschirmfassung stabil ist.
+
+### Political Health-System Strategist
+Die Ergebnisantwort bleibt bewusst vorpolitisch: erst Wirkpfad, Zeitfenster und Plausibilität prüfen, dann politische Bewertung. Das verhindert, dass eine medizinische Ausbildungshebel-Simulation sofort als einfache Pro-/Contra-Position gelesen wird.
+
+### Evidence / Domain
+Keine neue externe Recherche in diesem Lauf. Es wurden keine neuen Modell- oder Evidenzbehauptungen eingeführt; die Änderung betrifft die Kommunikationsschicht. Guardrails bleiben: keine amtliche Prognose, kein Wirksamkeitsnachweis, keine direkte politische Empfehlung.
+
+### Integrator Decision
+Akzeptiert: neue Tests für klare öffentliche Ergebnisantwort, weniger Meta-Sprache im öffentlichen Briefing und präzisere Formulierungen für den Medizinstudienplätze-Lag. Modellmechanik unverändert.
+
+### Question to Alex
+Keine wichtige Entscheidung offen. Sicher weiter: die Detail-/Audit-Ebene weiter reduzieren, ohne Evidenz und Annahmen zu verstecken.
+
+### Verification / Git
+Verifiziert lokal: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q`, `python3 -m py_compile result_causality.py app.py api.py`, kleiner Simulation/Packet-Smoke-Test, und `python3 -m pytest -q` mit 297 passed. Commit/Push folgt im GitHub-Sync-Schritt.

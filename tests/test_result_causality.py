@@ -1896,3 +1896,74 @@ def test_simplified_public_packet_is_concise_and_free_of_meta_language():
     )
     banned = ["random Internet", "Klartext", "KPI-Wand", "generated", "helper", "Widget", "Legacy"]
     assert all(term not in public_text for term in banned)
+
+
+def test_public_causal_packet_is_lean_clear_and_not_meta_language():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    public_view = packet["public_result_view"]
+    briefing = public_view["briefing"]
+    public_text = " ".join(
+        [
+            public_view.get("headline", ""),
+            public_view.get("short_answer", ""),
+            briefing.get("headline", ""),
+            briefing.get("short_answer", ""),
+            *[section["heading"] + " " + section["body"] for section in briefing["sections"]],
+            *[row.get("label", "") + " " + row.get("reading", "") + " " + row.get("meaning", "") for row in briefing["relevant_kpis"]],
+            public_view.get("follow_up_question", ""),
+        ]
+    )
+
+    assert briefing["headline"] == packet["result_headline"]
+    assert 2 <= len(briefing["short_answer"].split(". ")) <= 4
+    assert [section["heading"] for section in briefing["sections"]] == [
+        "Ergebnis",
+        "Eingriff",
+        "Warum es passiert",
+        "Relevante Kennzahlen",
+        "Anpassungen",
+        "Einordnung",
+        "Nächster Prüfschritt",
+    ]
+    assert len(briefing["sections"]) <= 7
+    assert all(len(section["body"]) <= 280 for section in briefing["sections"])
+    assert len(briefing["relevant_kpis"]) <= 3
+    assert "Medizinstudienplätze" in briefing["short_answer"]
+    assert "Wartezeit" in public_text or "Ärzte" in public_text
+    assert "ab etwa Jahr 6" in public_text
+    assert "Nächster Check" in public_view["follow_up_question"]
+    banned = [
+        "random Internet",
+        "Klartext",
+        "KPI-Wand",
+        "generated",
+        "helper",
+        "widget",
+        "Legacy",
+        "legacy",
+        "internal",
+        "prozess-talk",
+    ]
+    assert not any(term in public_text for term in banned)
+
+
+def test_public_causal_packet_short_answer_answers_result_why_meaning_next_check():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    short_answer = packet["short_answer"]
+    sections = {section["heading"]: section["body"] for section in packet["result_sections"]}
+
+    assert "Medizinstudienplätze" in short_answer
+    assert "ab etwa Jahr 6" in short_answer
+    assert "Jahr 11–15" in short_answer
+    assert "Wartezeit" in short_answer or "Ärzte" in short_answer
+    assert "prüfen" in short_answer
+    assert sections["Ergebnis"].startswith("Heraus kommt")
+    assert "Ausbildungs-Pipeline" in sections["Warum es passiert"]
+    assert "keine amtliche Prognose" in sections["Einordnung"]
+    assert "politisch bewerten" in sections["Nächster Prüfschritt"]

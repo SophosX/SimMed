@@ -1054,7 +1054,7 @@ def build_causal_result_packet(
         short_answer = (
             f"Das Ergebnis: Weniger Medizinstudienplätze wirken später: {top_kpi_sentences}. "
             "Das passiert, weil ab etwa Jahr 6 weniger Nachwuchs ankommt; Richtung Jahr 11–15 zählt der Facharztpfad. "
-            "Das bedeutet: nächste Prüfung sind Wartezeit, Belastung und sichtbare Puffer."
+            "Das bedeutet: nächste Prüfung: Wartezeit, Belastung und sichtbare Puffer prüfen."
         )
     elif changed:
         short_answer = (
@@ -1157,7 +1157,7 @@ def build_causal_result_packet(
     ]
     if study_places_changed:
         why_body = (
-            "Der Eingriff wirkt verzögert: In Jahr 0–5 ändert sich wenig; Ab etwa Jahr 6 kommt weniger Nachwuchs an, Richtung Jahr 11–15 zählt der Facharztpfad."
+            "Der Eingriff wirkt verzögert: In Jahr 0–5 ändert sich wenig. Ausbildungs-Pipeline: Ab etwa Jahr 6 kommt weniger Nachwuchs an; Richtung Jahr 11–15 zählt der Facharztpfad."
         )
     else:
         why_body = pathway_body[:180]
