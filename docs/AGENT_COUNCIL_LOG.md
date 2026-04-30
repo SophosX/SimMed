@@ -3874,4 +3874,4 @@ Akzeptiert: `packet["sequential_plain_text"]` und `primary_result_view["sequenti
 Keine wichtige Entscheidung offen. Sicher weiter: als nächstes echte Zeitfenster-KPI-Spuren 0–5/6–10/11–15 in den Bericht integrieren.
 
 ### Verification / Git
-RED beobachtet: `test_packet_primary_plain_text_is_the_professional_briefing_not_legacy_numbered_blocks` scheiterte erwartungsgemäß, weil `sequential_plain_text` noch die nummerierten Blöcke enthielt. Zieltests danach grün: `tests/test_result_causality.py` + API-Causal-Test → 17 passed. Full Suite/Git folgt nach Abschluss dieses Laufs.
+RED beobachtet: `test_packet_primary_plain_text_is_the_professional_briefing_not_legacy_numbered_blocks` scheiterte erwartungsgemäß, weil `sequential_plain_text` noch die nummerierten Blöcke enthielt. Zieltests danach grün: `tests/test_result_causality.py` + API-Causal-Test → 17 passed; Full Suite im Source-Tree → 243 passed; py_compile OK; Smoke `run_simulation(... n_runs=50, n_years=3)` + Causal Packet OK. Commit `7a3667f` wurde nach `origin/main` gepusht; erwartete Dateien im Commit verifiziert: `result_causality.py`, `tests/test_result_causality.py`, `docs/AGENT_COUNCIL_LOG.md`.
