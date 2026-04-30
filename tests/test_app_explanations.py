@@ -135,6 +135,17 @@ def test_learning_data_readiness_backlog_includes_integration_preflight():
     assert all(row["status_route"].startswith("GET /data-readiness/") for row in status_board["rows"])
     assert all(row["audit_route"] == "GET /data-readiness/registry-integration-decision-audit-checklist" for row in status_board["rows"])
     assert "keine Registry-/Modellmutation" in status_board["guardrail"]
+    status_cards = backlog["registry_integration_status_cards"]
+    assert status_cards["title"].startswith("Registry-Integrationskarten")
+    assert [card["id"] for card in status_cards["cards"]] == [
+        "overall_registry_gate",
+        "waiting_or_hold",
+        "ready_for_human_audit",
+        "first_safe_route",
+    ]
+    assert any(card["next_click"].startswith("GET /data-readiness/") for card in status_cards["cards"])
+    assert "kein execute=true" in status_cards["guardrail"]
+    assert "keine Registry-/Modellmutation" in " ".join(card["guardrail"] for card in status_cards["cards"])
     handoff_packet = backlog["registry_integration_handoff_packet"]
     assert handoff_packet["title"].startswith("Registry-Integrations-Handoff")
     assert handoff_packet["summary"]["handoff_rows"] == decision_record["summary"]["decision_rows"]

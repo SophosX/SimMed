@@ -48,6 +48,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_handoff_packet,
     build_data_readiness_registry_integration_pr_runbook,
     build_data_readiness_registry_integration_status_board,
+    build_data_readiness_registry_integration_status_cards,
     build_data_readiness_gate_plan,
     build_data_readiness_operator_handoff,
     build_data_readiness_platform_brief,
@@ -4130,6 +4131,7 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
     decision_record = build_data_readiness_registry_integration_decision_record(registry_diff_preview, integration_pr_brief)
     audit_checklist = build_data_readiness_registry_integration_decision_audit_checklist(decision_record)
     pr_runbook = build_data_readiness_registry_integration_pr_runbook(decision_record)
+    status_board = build_data_readiness_registry_integration_status_board(decision_record, audit_checklist, pr_runbook)
     return {
         "title": "Nächste Daten-Schritte: erst Cache, dann Review, dann Integration",
         "plain_language_note": (
@@ -4153,7 +4155,8 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         "registry_integration_decision_record": decision_record,
         "registry_integration_decision_template": build_data_readiness_registry_integration_decision_template(decision_record),
         "registry_integration_decision_audit_checklist": audit_checklist,
-        "registry_integration_status_board": build_data_readiness_registry_integration_status_board(decision_record, audit_checklist, pr_runbook),
+        "registry_integration_status_board": status_board,
+        "registry_integration_status_cards": build_data_readiness_registry_integration_status_cards(status_board),
         "registry_integration_handoff_packet": build_data_readiness_registry_integration_handoff_packet(decision_record),
         "registry_integration_pr_runbook": pr_runbook,
         "rows": [
@@ -4470,6 +4473,21 @@ def render_learning_data_readiness_backlog():
         else:
             st.caption("Noch keine Ausfüllvorlage, weil kein Decision-Record vorliegt.")
         st.caption(decision_template["guardrail"])
+        status_cards = backlog["registry_integration_status_cards"]
+        st.markdown(f"**{status_cards['title']}**")
+        st.caption(status_cards["plain_language_note"])
+        status_card_rows = [
+            {
+                "Frage": card["title"],
+                "Antwort": card["answer"],
+                "Wert": card["value"],
+                "Nächster sicherer Klick": card["next_click"],
+                "Guardrail": card["guardrail"],
+            }
+            for card in status_cards["cards"]
+        ]
+        st.dataframe(pd.DataFrame(status_card_rows), use_container_width=True, hide_index=True)
+        st.caption(status_cards["guardrail"])
         status_board = backlog["registry_integration_status_board"]
         st.markdown(f"**{status_board['title']}**")
         st.caption(status_board["plain_language_note"])

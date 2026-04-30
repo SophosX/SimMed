@@ -2174,3 +2174,33 @@ Vor Commit: 129 Tests grün, py_compile grün, Simulation-Smoke 20 Runs × 2 Jah
 - **Integrator Decision:** Implementiert `build_data_readiness_registry_integration_status_board(...)`, API `GET /data-readiness/registry-integration-status-board`, Learning-Page-Surfacing und Regressionstests.
 - **Question to Alex if needed:** Keine wichtige Entscheidung offen; sicherer Default bleibt Hold bis dokumentiertes menschliches Go.
 - **Verification/Git:** 132 pytest passed, py_compile passed, 20-run/2-year smoke OK; Commit/Push folgt.
+
+
+## 2026-04-30 03:04 Europe/Berlin — Heartbeat: Registry-Integrationskarten
+
+### Context
+Alex priorisiert Core-Plattformarbeit. Dieser Lauf ergänzt die Datenreife-/Registry-Integrationsstrecke um eine mobile, answer-first Kartenansicht vor dem detaillierten Statusboard.
+
+### Project Manager
+Priorität: Data-Ingestion/Provenance-Foundation weiter operationalisieren. Risiko: zu viele Tabellen überfordern neue Operatoren; nächster Schritt sollte wieder Plattform sein, z.B. gezielte Parameterkarte oder echter Review-/Cache-Gate-Workflow ohne Modellmutation.
+
+### Designer / UX
+Statusboard bleibt für Audit gut, ist aber auf Mobile schwer. Neue Statuskarten beantworten zuerst: wie viel steht an, was blockiert, was ist nur menschlich entscheidungsreif, wo sicher starten.
+
+### Creative Agent
+Idee: später eine "Integrations-Ampel" als Startkachel in der Daten-Werkbank. Fit: gut für Orientierung, aber nur wenn Guardrails sichtbar bleiben; noch kein Ausführen-/Apply-Button.
+
+### Political Health-System Strategist
+Registry-Integration ist governance-relevant: ein grüner technischer Check darf nicht als politischer Wirkungsnachweis gelesen werden. Karten behalten Hold/Go/Reject und Audit vor PR im Vordergrund.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf; keine neuen fachlichen Realwelt-Claims. Änderung betrifft nur read-only Status-/UX-Schicht über bestehenden Data-Readiness-Gates.
+
+### Integrator Decision
+Akzeptiert: `build_data_readiness_registry_integration_status_cards(...)`, API-Fokusroute `/data-readiness/registry-integration-status-cards`, Einbettung in Learning Page und Aggregatantworten. Zurückgestellt: echte Decision-Persistenz, Branch-Erstellung, Modellintegration.
+
+### Question to Alex if needed
+Keine wichtige Entscheidung offen; sichere Plattformarbeit kann weitergehen.
+
+### Verification / Git
+Gezielte Tests und Full Suite lokal grün; Commit/Push folgt nach dieser Log-Ergänzung.

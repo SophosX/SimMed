@@ -1572,6 +1572,67 @@ def build_data_readiness_registry_integration_status_board(
     }
 
 
+def build_data_readiness_registry_integration_status_cards(status_board: dict) -> dict:
+    """Return touch-friendly summary cards for the final Registry integration board.
+
+    The status board is accurate but table-heavy. These cards give first-time users
+    and mobile operators a short answer-first view before they inspect the detailed
+    Decision-Record/Audit/Runbook layers. They remain read-only and never turn a
+    green status into an automatic branch or Registry/model mutation.
+    """
+
+    rows = status_board.get("rows", [])
+    waiting_rows = [row for row in rows if row.get("board_status") != "bereit_fuer_menschliches_go_audit"]
+    ready_rows = [row for row in rows if row.get("board_status") == "bereit_fuer_menschliches_go_audit"]
+    first_row = rows[0] if rows else {}
+    first_waiting = waiting_rows[0] if waiting_rows else None
+    first_ready = ready_rows[0] if ready_rows else None
+    cards = [
+        {
+            "id": "overall_registry_gate",
+            "title": "Wie viele Registry-Integrationszeilen stehen an?",
+            "value": str(len(rows)),
+            "answer": "Das sind Kandidaten nach Preflight/Diff/Decision-Record; noch keine Modelländerungen.",
+            "next_click": "GET /data-readiness/registry-integration-status-board",
+            "guardrail": "Statuskarte ist read-only: kein Branch, kein execute=true, keine Registry-/Modellmutation.",
+        },
+        {
+            "id": "waiting_or_hold",
+            "title": "Was blockiert vor einem Go?",
+            "value": str(len(waiting_rows)),
+            "answer": first_waiting.get("next_gate", "Keine blockierende Zeile im aktuellen Statusboard.") if first_waiting else "Keine blockierende Zeile im aktuellen Statusboard.",
+            "next_click": "GET /data-readiness/registry-integration-decision-audit-checklist",
+            "guardrail": "Fehlende Checks bedeuten Hold: erst Audit/Review klären, keine automatische Integration.",
+        },
+        {
+            "id": "ready_for_human_audit",
+            "title": "Was ist nur menschlich entscheidungsreif?",
+            "value": str(len(ready_rows)),
+            "answer": first_ready.get("label", "Keine Zeile ist aktuell menschlich Go/Hold/Reject-reif."),
+            "next_click": "GET /data-readiness/registry-integration-decision-template",
+            "guardrail": "Auch grün heißt nur: Menschliches Go/Hold/Reject auditieren; kein Wirkungsbeweis und kein PR-Start.",
+        },
+        {
+            "id": "first_safe_route",
+            "title": "Wo fange ich sicher an?",
+            "value": first_row.get("label", "keine Zeile"),
+            "answer": first_row.get("next_gate", "Erst Statusboard öffnen und prüfen, ob ein Decision-Record existiert."),
+            "next_click": first_row.get("status_route", "GET /data-readiness/registry-integration-status-board"),
+            "guardrail": "Der nächste Klick ist Status/Lesen, nicht Ausführen, nicht Cachen, nicht Modellintegration.",
+        },
+    ]
+    return {
+        "title": "Registry-Integrationskarten: zuerst verstehen, dann entscheiden",
+        "plain_language_note": (
+            "Diese Karten übersetzen das letzte Statusboard in eine mobile Erstansicht: "
+            "Wie viel ist offen, was blockiert, was ist nur menschlich entscheidungsreif, und welche Statusroute ist der sichere Start?"
+        ),
+        "cards": cards,
+        "guardrail": "Read-only/Karten-only: kein Branch, kein execute=true, keine Datenaktion, keine Review-Erzeugung, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    }
+
+
+
 def build_data_readiness_registry_integration_handoff_packet(decision_record: dict) -> dict:
     """Create a copy-safe operator handoff from the Go/Hold/Reject decision record.
 

@@ -657,5 +657,34 @@ def test_api_exposes_focused_registry_integration_status_board_without_apply():
     assert population["status_route"] == "GET /data-readiness/bevoelkerung_mio"
     assert population["audit_route"] == "GET /data-readiness/registry-integration-decision-audit-checklist"
     assert population["runbook_route"] == "GET /data-readiness/registry-integration-pr-runbook"
+    cards = body["registry_integration_status_cards"]
+    assert cards["title"].startswith("Registry-Integrationskarten")
+    assert cards["cards"][0]["id"] == "overall_registry_gate"
+    assert cards["cards"][2]["id"] == "ready_for_human_audit"
+    assert "kein execute=true" in cards["guardrail"]
+    assert "keine Registry-/Modellmutation" in cards["cards"][0]["guardrail"]
     assert "kein Branch" in board["guardrail"]
     assert "execute=true" in board["guardrail"]
+
+
+def test_api_exposes_focused_registry_integration_status_cards_without_apply():
+    client = TestClient(api)
+    seed_response = client.post("/data-fixtures/seed-reference-review-demo")
+    assert seed_response.status_code == 200
+
+    response = client.get("/data-readiness/registry-integration-status-cards?limit=3")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "data_readiness_registry_integration_status_cards_not_applied"
+    assert "kein Branch" in body["guardrail"]
+    assert "keine Registry-/Modellmutation" in body["guardrail"]
+    cards = body["registry_integration_status_cards"]
+    assert [card["id"] for card in cards["cards"]] == [
+        "overall_registry_gate",
+        "waiting_or_hold",
+        "ready_for_human_audit",
+        "first_safe_route",
+    ]
+    assert any(card["next_click"] == "GET /data-readiness/bevoelkerung_mio" for card in cards["cards"])
+    assert "kein execute=true" in cards["guardrail"]

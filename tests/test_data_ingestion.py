@@ -20,6 +20,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_handoff_packet,
     build_data_readiness_registry_integration_pr_runbook,
     build_data_readiness_registry_integration_status_board,
+    build_data_readiness_registry_integration_status_cards,
     build_data_readiness_registry_integration_decision_audit_checklist,
     build_data_readiness_summary,
     build_next_data_readiness_actions,
@@ -1027,5 +1028,21 @@ def test_registry_integration_status_board_compacts_final_gates_without_actions(
     blocked = board["rows"][1]
     assert blocked["board_status"] == "hold_bis_technical_checks_gruen"
     assert "reviewed_value_present" in blocked["missing_checks_before_go"]
+
+    cards = build_data_readiness_registry_integration_status_cards(board)
+    assert cards["title"].startswith("Registry-Integrationskarten")
+    assert [card["id"] for card in cards["cards"]] == [
+        "overall_registry_gate",
+        "waiting_or_hold",
+        "ready_for_human_audit",
+        "first_safe_route",
+    ]
+    assert cards["cards"][0]["value"] == "2"
+    assert cards["cards"][1]["value"] == "1"
+    assert "Fehlende technische Checks" in cards["cards"][1]["answer"]
+    assert cards["cards"][2]["value"] == "1"
+    assert cards["cards"][3]["next_click"] == "GET /data-readiness/bevoelkerung_mio"
+    assert "kein execute=true" in cards["guardrail"]
+    assert "keine Registry-/Modellmutation" in cards["cards"][0]["guardrail"]
     assert "kein Branch" in board["guardrail"]
     assert "keine Registry-/Modellmutation" in ready["guardrail"]
