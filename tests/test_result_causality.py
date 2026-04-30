@@ -1841,3 +1841,40 @@ def test_build_result_causal_overview_exposes_same_lean_public_packet_for_stream
     assert public["briefing"]["next_check"] == overview["follow_up_question"]
     assert public["deeper_review_default_expanded"] is False
     assert public["dense_kpi_default_expanded"] is False
+
+
+def test_simplified_public_packet_is_concise_and_free_of_meta_language():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    briefing = packet["public_result_view"]["briefing"]
+
+    assert briefing["headline"] == "Weniger Medizinstudienplätze: der relevante Druck kommt verzögert"
+    assert len(briefing["short_answer"].split(".")) <= 5
+    assert "Medizinstudienplätze" in briefing["short_answer"]
+    assert "Jahr 6" in briefing["short_answer"]
+    assert "Wartezeit" in briefing["short_answer"] or "Ärzte" in briefing["short_answer"]
+    assert "nächste Prüfung" in briefing["short_answer"]
+
+    headings = [section["heading"] for section in briefing["sections"]]
+    assert headings == [
+        "Ergebnis",
+        "Eingriff",
+        "Warum es passiert",
+        "Relevante Kennzahlen",
+        "Anpassungen",
+        "Einordnung",
+        "Nächster Prüfschritt",
+    ]
+    assert len(briefing["sections"]) <= 7
+    assert all(len(section["body"]) <= 180 for section in briefing["sections"])
+    assert 1 <= len(briefing["relevant_kpis"]) <= 3
+
+    public_text = " ".join(
+        [briefing["headline"], briefing["short_answer"], briefing["next_check"], briefing["guardrail"]]
+        + [section["heading"] + " " + section["body"] for section in briefing["sections"]]
+        + [row["label"] + " " + row.get("meaning", "") + " " + row.get("reading", "") for row in briefing["relevant_kpis"]]
+    )
+    banned = ["random Internet", "Klartext", "KPI-Wand", "generated", "helper", "Widget", "Legacy"]
+    assert all(term not in public_text for term in banned)

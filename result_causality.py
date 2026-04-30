@@ -1062,6 +1062,7 @@ def build_causal_result_packet(
             "Der Lauf zeigt den Referenzpfad selbst; als Nächstes sollten die stärkste Kennzahl und ihre Annahmengrenze geprüft werden."
         )
 
+    public_kpi_limit = min(max_kpis, 3)
     relevant_kpis_public = [
         {
             **row,
@@ -1081,11 +1082,28 @@ def build_causal_result_packet(
             ),
             "meaning": row.get("meaning") or row.get("why_relevant", "Diese Kennzahl ordnet den Modelllauf ein."),
         }
+        for row in kpis[:public_kpi_limit]
+    ]
+    relevant_kpis_all = [
+        {
+            **row,
+            "start": _fmt_de_fixed(row.get("start"), decimals=2),
+            "end": _fmt_de_fixed(row.get("end"), decimals=2),
+            "abs_delta": _fmt_de_fixed(row.get("abs_delta"), decimals=2),
+            "pct_delta": _fmt_de_fixed(row.get("pct_delta"), decimals=2),
+            "direction": "stabil" if row.get("direction") == "bleibt stabil" else row.get("direction", "stabil"),
+            "display_value": f"{_fmt_de_fixed(row.get('start'), decimals=2)} → {_fmt_de_fixed(row.get('end'), decimals=2)}",
+            "reading": _public_kpi_reading(
+                str(row.get("metric_key", "")),
+                "stabil" if row.get("direction") == "bleibt stabil" else str(row.get("direction", "stabil")),
+            ),
+            "meaning": row.get("meaning") or row.get("why_relevant", "Diese Kennzahl ordnet den Modelllauf ein."),
+        }
         for row in kpis
     ]
     kpi_items = [
         f"{row['label']}: {row['start']} → {row['end']} ({row['direction']})"
-        for row in relevant_kpis_public[:4]
+        for row in relevant_kpis_public
     ]
     kpi_body = "; ".join(kpi_items) + "." if kpi_items else "Keine priorisierten Kennzahlen verfügbar."
     if study_places_changed:
@@ -1301,7 +1319,7 @@ def build_causal_result_packet(
         ],
         "changed_inputs": changed,
         "evidence_assumption_rows": evidence_rows,
-        "relevant_kpis": relevant_kpis_public,
+        "relevant_kpis": relevant_kpis_all,
         "relevant_kpi_summary": kpi_summary,
         "adaptation_mechanisms": mechanisms,
         "adaptation_signal_trace": adaptation_trace,
@@ -1316,7 +1334,7 @@ def build_causal_result_packet(
             "executive_brief": executive_brief,
             "first_screen_blocks": first_screen_blocks,
             "primary_blocks": first_screen_blocks,
-            "relevant_kpis": relevant_kpis_public,
+            "relevant_kpis": relevant_kpis_all,
             "follow_up_question": follow_up_question,
             "audit_sections": audit_sections,
             "deeper_review_default_expanded": False,

@@ -6079,3 +6079,33 @@ Keine wichtige Entscheidung offen; sicher weiter mit visueller Prüfung und weit
 TDD: neuer Test zunächst rot wegen altem `single_markdown_briefing`, danach grün. Verifiziert: fokussierte Result/API/UI-Tests → 66 passed; `python3 -m pytest -q` → 292 passed; `py_compile` zentrale Module; Smoke-Test 50 Runs × 3 Jahre mit halbierten Medizinstudienplätzen → OK. Git-Sync/Commit/Push folgt nach dieser Log-Aktualisierung.
 
 Nachtrag Verification/Git: Commit `30b2c87` (`Clarify result briefing render flow`) wurde auf `origin/main` gepusht. `git show --name-only --oneline -1` bestätigt: `app.py`, `result_causality.py`, `tests/test_result_causality.py`, `docs/AGENT_COUNCIL_LOG.md`.
+
+
+## 2026-04-30 20:28 Europe/Berlin — Heartbeat: Ergebnis-Erstansicht weiter entschlackt
+
+### Context
+Alexs aktuelle Korrektur: Die Ergebnisseite soll nicht wie mehrere überlagerte Erklärwidgets wirken, sondern wie ein ernstes, kurzes deutsches Briefing. Dieser Lauf fokussierte deshalb den öffentlichen Causal-Result-Packet-Vertrag: weniger Kennzahlen in der ersten Ansicht, knappe Abschnitte und klare Überschriften Ergebnis → Eingriff → Warum es passiert → Relevante Kennzahlen → Anpassungen → Einordnung → Nächster Prüfschritt.
+
+### Project Manager
+Priorität bleibt die Ergebnis-Kommunikation. Risiko: alte Audit-/Legacy-Felder sind für API- und Regressionstests weiterhin vorhanden und können die Produktwahrnehmung wieder überladen, wenn sie im UI zu früh geöffnet werden. Nächste Tasks: Renderer weiter visuell vereinfachen, vollständige KPI-Grid-/Policy-/Politiklayer konsequent unter eine Audit-Ebene ziehen, danach Screenshot-/Browser-Check.
+
+### Designer / UX
+Die erste Ansicht zeigt jetzt maximal drei relevante Kennzahlen statt vier. Das ist kein kosmetischer Schnitt: drei Signale sind auf Mobilgeräten lesbarer und zwingen die Seite, zuerst die Geschichte zu erzählen, nicht die Tabelle.
+
+### Creative Agent
+Idee: Die erste Ergebnis-Karte könnte später wie ein ärztlicher Kurzbefund funktionieren: Befund, Ursache, Relevanz, nächster Test. Fit: sehr gut für Verständlichkeit; Umsetzung erst nach dem nächsten Renderer-Schnitt, damit es nicht wieder ein zusätzlicher Block wird.
+
+### Political Health-System Strategist
+Für politisch heikle Szenarien ist die Reihenfolge wichtig: erst Ergebnis und Wirkpfad, dann Belastbarkeit, dann politische Bewertung. Die gekürzte erste Ansicht reduziert das Risiko, einzelne Zahlen als fertige politische Empfehlung zu lesen.
+
+### Evidence / Domain
+Keine neue externe Recherche in diesem Lauf. Es wurden keine neuen Realwelt- oder Wirksamkeitsbehauptungen ergänzt; die Änderung betrifft Kommunikation/Packet-Struktur. Guardrails zu amtlicher Prognose, Wirksamkeitsnachweis und Evidenzgrenzen bleiben sichtbar.
+
+### Integrator Decision
+Akzeptiert: `public_result_view.briefing` zeigt im ersten Ergebnis maximal drei relevante Kennzahlen; Top-Level-/Legacy-Auditdaten bleiben verfügbar, damit bestehende API-/Testnutzer nicht brechen. Neue Regression schützt knappe öffentliche Texte, verbotene Meta-Begriffe und die klare Abschnittsfolge.
+
+### Question to Alex
+Keine wichtige Entscheidung offen. Ich gehe weiter mit der empfohlenen Richtung: erste Ergebnisansicht radikal lesbar machen, Audit-Details darunter erhalten.
+
+### Verification / Git
+Lokal grün: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 66 passed; `python3 -m pytest -q` → 293 passed; Runtime-Smoke 50 Runs × 3 Jahre inklusive Causal Packet erfolgreich. Git-Commit/Push wird nach Source→GitHub-Sync verifiziert.
