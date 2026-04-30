@@ -2750,3 +2750,32 @@ Keine.
 
 ### Verification / Git
 Verified locally: focused API/data tests and `py_compile`; full suite `162 passed`; simulation smoke `20 runs × 3 years` OK with shapes `(80, 30)` and `(320, 6)`. Commit/push pending in this heartbeat.
+
+## 2026-04-30 05:38 Europe/Berlin — Heartbeat: mobile Operator-Briefing-Karten
+
+### Context
+Alex priorisiert Core-Plattform statt reiner KI/Evidence-Recherche. Dieser Lauf erweitert die Data-Readiness/Registry-Integrationsstrecke nach dem Operator-Briefing.
+
+### Project Manager
+Priorität: den letzten sicheren Schritt vor Registry-Codearbeit für Operatoren verständlicher und testbar machen. Risiko: zu viele Tabellen/Copy-Paletten können auf Mobile wieder unklar wirken. Nächstes: aus den Karten ggf. eine echte Status-/Download-Handoff-Oberfläche ableiten, weiterhin read-only.
+
+### Designer / UX
+Das Operator-Briefing wird jetzt zusätzlich als vier tap-freundliche Karten lesbar: Status lesen → Parameter öffnen → Entscheidung auditieren → vor Codearbeit stoppen. Das verbessert First-contact und Mobile, ohne neue Tabellenlogik zu erfinden.
+
+### Creative Agent
+Idee: später eine kleine “Ampel vor Codearbeit” aus denselben Karten bauen. Fit: motivierend und verständlich, aber erst nach weiteren Guardrail-Tests; aktuell bleibt es Status/Read-only.
+
+### Political Health-System Strategist
+Die Stop-Karte ist wichtig: gerade bei politisch sensiblen Daten darf ein grüner technischer Status nicht als Mandat für Modellmutation, offizielle Prognose oder Policy-Wirkungsbeweis gelesen werden.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Es wurden keine neuen Daten-, Quellen- oder Wirkungsclaims eingeführt; die Karten reassemblieren bestehende read-only Statusbefehle und Guardrails.
+
+### Integrator Decision
+Akzeptiert: `build_data_readiness_registry_integration_operator_briefing_cards(...)`, API-Surfacing im Operator-Briefing plus fokussierter Kartenroute, Learning-Page-Rendering und Regressionstests. Kein Branch/PR-/Daten-/Review-/Registry-Mutationspfad wurde ergänzt.
+
+### Question to Alex
+Keine.
+
+### Verification / Git
+Lokal verifiziert: gezielte Tests für Data-Ingestion/API/App, danach `python3 -m pytest -q`, `python3 -m py_compile app.py api.py data_ingestion.py`, und Smoke `build_learning_data_readiness_backlog()` mit 4 Karten. Commit/Push folgt in diesem Heartbeat.

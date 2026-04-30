@@ -60,6 +60,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_decision_template,
     build_data_readiness_registry_integration_handoff_packet,
     build_data_readiness_registry_integration_operator_briefing,
+    build_data_readiness_registry_integration_operator_briefing_cards,
     build_data_readiness_registry_integration_pr_runbook,
     build_data_readiness_registry_integration_progress_timeline,
     build_data_readiness_registry_integration_status_board,
@@ -4264,6 +4265,7 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         "registry_integration_progress_timeline": progress_timeline,
         "registry_integration_command_palette": command_palette,
         "registry_integration_operator_briefing": operator_briefing,
+        "registry_integration_operator_briefing_cards": build_data_readiness_registry_integration_operator_briefing_cards(operator_briefing),
         "registry_integration_handoff_packet": build_data_readiness_registry_integration_handoff_packet(decision_record),
         "registry_integration_pr_runbook": pr_runbook,
         "rows": [
@@ -4664,6 +4666,21 @@ def render_learning_data_readiness_backlog():
         st.caption("Operator-Fragen: " + " · ".join(operator_briefing["operator_questions"]))
         st.caption("Definition of done vor Branch: " + " · ".join(operator_briefing["definition_of_done_before_branch"]))
         st.caption(operator_briefing["guardrail"])
+        briefing_cards = backlog["registry_integration_operator_briefing_cards"]
+        st.markdown(f"**{briefing_cards['title']}**")
+        st.caption(briefing_cards["plain_language_note"])
+        briefing_card_rows = [
+            {
+                "Karte": card["title"],
+                "Befehl/Stop": card["copyable_command"],
+                "Operator-Frage": card["operator_question"],
+                "Stop-Gate": "ja" if card["is_stop_gate"] else "nein",
+                "Guardrail": card["guardrail"],
+            }
+            for card in briefing_cards["cards"]
+        ]
+        st.dataframe(pd.DataFrame(briefing_card_rows), use_container_width=True, hide_index=True)
+        st.caption(briefing_cards["guardrail"])
         command_palette = backlog["registry_integration_command_palette"]
         st.markdown(f"**{command_palette['title']}**")
         st.caption(command_palette["plain_language_note"])

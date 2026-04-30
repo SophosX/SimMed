@@ -265,6 +265,13 @@ def test_learning_data_readiness_backlog_includes_integration_preflight():
     assert "execute=true" not in operator_briefing["human_decision_command"]
     assert "kein Branch" in operator_briefing["guardrail"]
     assert "keine Registry-/Modellmutation" in operator_briefing["guardrail"]
+    briefing_cards = backlog["registry_integration_operator_briefing_cards"]
+    assert briefing_cards["title"].startswith("Operator-Briefing als mobile")
+    assert briefing_cards["cards"][0]["copyable_command"] == operator_briefing["first_safe_command"]
+    assert briefing_cards["cards"][1]["copyable_command"] == operator_briefing["next_parameter_command"]
+    assert briefing_cards["cards"][-1]["is_stop_gate"] is True
+    assert "kein execute=true" in briefing_cards["guardrail"]
+    assert "keine Registry-/Modellmutation" in briefing_cards["guardrail"]
     handoff_packet = backlog["registry_integration_handoff_packet"]
     assert handoff_packet["title"].startswith("Registry-Integrations-Handoff")
     assert handoff_packet["summary"]["handoff_rows"] == decision_record["summary"]["decision_rows"]

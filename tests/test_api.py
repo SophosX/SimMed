@@ -1143,6 +1143,17 @@ def test_api_exposes_registry_integration_operator_briefing_without_actions():
     assert not any("execute=true" in briefing[key] for key in ["first_safe_command", "next_parameter_command", "human_decision_command", "stop_before_code"])
     assert "kein Branch" in briefing["guardrail"]
     assert "kein Policy-Wirkungsbeweis" in briefing["guardrail"]
+    cards = body["registry_integration_operator_briefing_cards"]
+    assert cards["cards"][0]["copyable_command"] == briefing["first_safe_command"]
+    assert cards["cards"][-1]["is_stop_gate"] is True
+    assert "kein execute=true" in cards["guardrail"]
+
+    cards_response = client.get("/data-readiness/registry-integration-operator-briefing-cards?limit=3")
+    assert cards_response.status_code == 200
+    cards_body = cards_response.json()
+    assert cards_body["status"] == "data_readiness_registry_integration_operator_briefing_cards_not_applied"
+    assert cards_body["registry_integration_operator_briefing_cards"]["cards"][1]["copyable_command"] == "GET /data-readiness/bevoelkerung_mio"
+    assert "keine Registry-/Modellmutation" in cards_body["guardrail"]
 
     invalid = client.get("/data-readiness/registry-integration-operator-briefing?limit=0")
     assert invalid.status_code == 422

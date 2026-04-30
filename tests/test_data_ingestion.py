@@ -31,6 +31,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_command_palette,
     build_data_readiness_registry_integration_decision_template,
     build_data_readiness_registry_integration_handoff_packet,
+    build_data_readiness_registry_integration_operator_briefing_cards,
     build_data_readiness_registry_integration_operator_steps,
     build_data_readiness_registry_integration_pr_runbook,
     build_data_readiness_registry_integration_progress_timeline,
@@ -1553,3 +1554,31 @@ def test_registry_integration_progress_timeline_shows_safe_sequence_without_acti
     assert "kein Branch" in palette["guardrail"]
     assert "keine Registry-/Modellmutation" in palette["guardrail"]
     assert "kein Policy-Wirkungsbeweis" in palette["guardrail"]
+
+
+def test_registry_operator_briefing_cards_make_safe_route_touch_friendly():
+    operator_briefing = {
+        "primary_parameter_key": "bevoelkerung_mio",
+        "primary_label": "Bevölkerung",
+        "first_safe_command": "GET /data-readiness/registry-integration-status-board",
+        "next_parameter_command": "GET /data-readiness/bevoelkerung_mio",
+        "human_decision_command": "GET /data-readiness/registry-integration-decision-audit-checklist",
+        "stop_before_code": "STOP: erst menschliches Go außerhalb dieses Pakets dokumentieren",
+        "definition_of_done_before_branch": ["Go/Hold/Reject dokumentiert"],
+    }
+
+    cards = build_data_readiness_registry_integration_operator_briefing_cards(operator_briefing)
+
+    assert cards["title"].startswith("Operator-Briefing als mobile")
+    assert cards["primary_parameter_key"] == "bevoelkerung_mio"
+    assert [card["id"] for card in cards["cards"]] == [
+        "start_status",
+        "parameter_workflow",
+        "human_decision",
+        "stop_before_code",
+    ]
+    assert cards["cards"][1]["copyable_command"] == "GET /data-readiness/bevoelkerung_mio"
+    assert cards["cards"][-1]["is_stop_gate"] is True
+    assert "kein Branch" in cards["guardrail"]
+    assert "kein execute=true" in cards["guardrail"]
+    assert "keine Registry-/Modellmutation" in cards["guardrail"]

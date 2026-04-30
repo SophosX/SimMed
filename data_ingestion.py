@@ -2700,6 +2700,70 @@ def build_data_readiness_registry_integration_operator_briefing(
 
 
 
+def build_data_readiness_registry_integration_operator_briefing_cards(operator_briefing: dict) -> dict:
+    """Turn the operator briefing into tap-friendly action cards.
+
+    The one-screen briefing is compact, but mobile users still need clear cards for
+    the safe route sequence. These cards repeat only existing read-only commands and
+    insert an explicit stop card before any branch/PR or Registry/model mutation.
+    """
+
+    card_specs = [
+        (
+            "start_status",
+            "1. Status lesen",
+            operator_briefing.get("first_safe_command", "GET /data-readiness/registry-integration-status-board"),
+            "Welche Kandidaten sind überhaupt auditierbar?",
+            "Nur Status lesen; kein execute=true und keine Datenaktion.",
+        ),
+        (
+            "parameter_workflow",
+            "2. Parameter einzeln öffnen",
+            operator_briefing.get("next_parameter_command", "GET /data-readiness/{parameter_key}"),
+            "Data-Passport, Cache, Review, Diff und Caveats für den ersten Parameter prüfen.",
+            "Ein Workflow-Status ist noch keine Registry-/Modellintegration.",
+        ),
+        (
+            "human_decision",
+            "3. Entscheidung auditieren",
+            operator_briefing.get("human_decision_command", "GET /data-readiness/registry-integration-decision-audit-checklist"),
+            "Go/Hold/Reject nur mit Rationale, Entscheider und Zeitpunkt vorbereiten.",
+            "Audit-Vorbereitung speichert keine Entscheidung und startet keinen PR.",
+        ),
+        (
+            "stop_before_code",
+            "4. Vor Codearbeit stoppen",
+            operator_briefing.get("stop_before_code", "STOP: erst menschliches Go außerhalb dieses Pakets dokumentieren"),
+            "Branch/PR erst nach separatem dokumentiertem Go planen.",
+            "Stop-Karte: kein Branch, keine Modellmutation, keine Prognose und kein Wirkungsbeweis.",
+        ),
+    ]
+    cards = [
+        {
+            "id": card_id,
+            "title": title,
+            "copyable_command": command,
+            "operator_question": question,
+            "is_stop_gate": command.startswith("STOP"),
+            "guardrail": guardrail,
+        }
+        for card_id, title, command, question, guardrail in card_specs
+    ]
+    return {
+        "title": "Operator-Briefing als mobile Aktionskarten",
+        "plain_language_note": (
+            "Dieselbe sichere Route als vier Karten: Status lesen, Parameter prüfen, "
+            "Entscheidung auditieren, dann vor Codearbeit stoppen."
+        ),
+        "primary_parameter_key": operator_briefing.get("primary_parameter_key"),
+        "primary_label": operator_briefing.get("primary_label"),
+        "cards": cards,
+        "definition_of_done_before_branch": operator_briefing.get("definition_of_done_before_branch", []),
+        "guardrail": "Read-only/Action-cards-only: kein Branch, kein execute=true, keine Datenaktion, keine Review-Erzeugung, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    }
+
+
+
 def build_data_readiness_registry_integration_handoff_packet(decision_record: dict) -> dict:
     """Create a copy-safe operator handoff from the Go/Hold/Reject decision record.
 

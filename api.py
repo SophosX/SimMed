@@ -46,6 +46,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_decision_template,
     build_data_readiness_registry_integration_handoff_packet,
     build_data_readiness_registry_integration_operator_briefing,
+    build_data_readiness_registry_integration_operator_briefing_cards,
     build_data_readiness_registry_integration_operator_steps,
     build_data_readiness_registry_integration_safe_start_packet,
     build_data_readiness_registry_integration_safe_start_checklist,
@@ -977,11 +978,26 @@ def get_data_readiness_registry_integration_operator_briefing(limit: int = 3) ->
     safe_start_cards = build_data_readiness_registry_integration_safe_start_cards(safe_start_checklist)
     timeline = build_data_readiness_registry_integration_progress_timeline(safe_start_cards, status_board)
     palette = build_data_readiness_registry_integration_command_palette(timeline)
+    operator_briefing = build_data_readiness_registry_integration_operator_briefing(timeline, palette)
     return {
         "status": "data_readiness_registry_integration_operator_briefing_not_applied",
         "guardrail": "Operator-Briefing ist read-only/status-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
         "summary": build_data_readiness_summary(items),
-        "registry_integration_operator_briefing": build_data_readiness_registry_integration_operator_briefing(timeline, palette),
+        "registry_integration_operator_briefing": operator_briefing,
+        "registry_integration_operator_briefing_cards": build_data_readiness_registry_integration_operator_briefing_cards(operator_briefing),
+    }
+
+
+@api.get("/data-readiness/registry-integration-operator-briefing-cards")
+def get_data_readiness_registry_integration_operator_briefing_cards(limit: int = 3) -> dict:
+    """Return mobile/tap-safe read-only cards for the Registry operator briefing."""
+
+    response = get_data_readiness_registry_integration_operator_briefing(limit=limit)
+    return {
+        "status": "data_readiness_registry_integration_operator_briefing_cards_not_applied",
+        "guardrail": "Operator-Briefing-Karten sind read-only/status-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+        "summary": response["summary"],
+        "registry_integration_operator_briefing_cards": response["registry_integration_operator_briefing_cards"],
     }
 
 
