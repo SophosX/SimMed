@@ -4519,4 +4519,4 @@ Accepted: remove remaining user-visible/internal banned phrasing (`Klartext`, `Z
 No important decision needed in this run; continue safely with the readable-result-page consolidation.
 
 ### Verification / Git
-Focused tests: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients tests/test_app_explanations.py -q` → 98 passed. Full suite: `python3 -m pytest -q` → 261 passed. Smoke: 50-run/3-year study-place-cut simulation plus causal packet build passed. Git commit/push status to be recorded after sync.
+Focused tests: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients tests/test_app_explanations.py -q` → 98 passed. Full suite: `python3 -m pytest -q` → 261 passed. Smoke: 50-run/3-year study-place-cut simulation plus causal packet build passed. Git commit `5e10f70` pushed to `origin/main`; touched `app.py`, `result_causality.py`, and `docs/AGENT_COUNCIL_LOG.md`.
