@@ -451,6 +451,23 @@ def test_professional_briefing_does_not_invent_study_place_path_when_no_lever_ch
     assert packet["primary_result_view"]["next_check"]["label"] == "Was daraus folgt"
 
 
+def test_financing_scenario_prioritizes_finance_kpis_without_pipeline_language():
+    params = get_default_params()
+    params["gkv_beitragssatz"] = params["gkv_beitragssatz"] + 1.0
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    kpi_keys = [row["metric_key"] for row in packet["relevant_kpis"]]
+    briefing_text = packet["professional_briefing"]["sequential_text"]
+
+    assert kpi_keys[0] == "gkv_saldo"
+    assert "GKV-Saldo" in packet["relevant_kpis"][0]["label"]
+    assert "Medizinstudienplätze" not in briefing_text
+    assert "Ausbildungs-Pipeline" not in briefing_text
+    assert "Finanzierung" in briefing_text
+    assert packet["timeline_windows"] == []
+    assert packet["adaptation_signal_trace"] == []
+
+
 def test_result_briefing_quality_check_guards_first_view_style_and_sequence():
     params = get_default_params()
     params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5

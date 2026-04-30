@@ -3977,3 +3977,32 @@ Keine wichtige Entscheidung offen. Sicher weiter: als nächstes die Zeitfenster 
 
 ### Verification / Git
 TDD: neuer Test war zuerst rot (`KeyError: 'briefing_quality_checks'`), danach grün. Verifikation: `tests/test_result_causality.py tests/test_app_explanations.py::test_result_causal_overview_exposes_briefing_quality_checks_for_first_view tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients` → 21 passed; Full Suite → 247 passed; py_compile Kernmodule/Tests OK; 50-run/15-Jahre Simulation + `build_causal_result_packet` Smoke OK. Git-Commit/Push folgt nach Sync in die GitHub-Clone und `git show`-Prüfung.
+
+## 2026-04-30 11:30 Europe/Berlin — Heartbeat: Ergebnisbericht-KPI-Auswahl nach Szenariofamilie
+
+### Context
+Alexs aktuelle Korrektur ist klar: der erste Ergebnisblick soll wie ein ernsthafter, menschlich lesbarer Ergebnisbericht funktionieren, nicht wie eine Kennzahlenwand. In diesem Lauf wurde der bereits vorhandene `result_causality.py`-Pfad weiter geschärft: Die erste KPI-Auswahl richtet sich nun nach der geänderten Hebelfamilie, damit ein Finanzierungsszenario nicht automatisch mit Ärzte-/Pipeline-Karten beginnt.
+
+### Project Manager
+Priorität: den Ergebnisbericht end-to-end kohärent halten und nicht wieder kleine, isolierte Textschnipsel anhängen. Risiko: Wenn alle Szenarien dieselben Start-KPIs zeigen, wirkt der Bericht trotz guter Sprache fachlich generisch. Nächste Aufgaben: weitere Hebelfamilien (Digitalisierung/Prävention/regionale Versorgung) gegen echte Simulationsoutputs prüfen, danach die erste Ergebnisansicht visuell weiter beruhigen.
+
+### Designer / UX
+Die wichtigste UX-Verbesserung ist Relevanz: Nutzer:innen sollen sofort sehen, welche Kennzahlen für genau ihren Eingriff zählen. Eine GKV-Beitragssatz-Änderung beginnt deshalb mit Finanzierungssignal, nicht mit Ausbildungs-Pipeline. Die Detailkarten bleiben als Audit-Layer erhalten.
+
+### Creative Agent
+Idee: später könnte der Ergebnisbericht oben eine kleine „Warum gerade diese Kennzahlen?“-Zeile bekommen, die pro Szenariofamilie erklärt, warum SimMed diese erste Auswahl getroffen hat. Fit: sehr gut für Vertrauen, aber nur wenn aus strukturierten Feldern generiert, nicht als neue Prosa-Schicht.
+
+### Political Health-System Strategist
+Für politische Lesbarkeit ist die Szenariofamilie entscheidend: Finanzierungshebel erzeugen andere Konflikte als Ausbildungshebel. Der Bericht sollte diese Differenz schon in der ersten KPI-Reihenfolge spüren lassen, ohne daraus eine Prognose über konkrete Gesetze, Mehrheiten oder Lobbystrategien zu machen.
+
+### Evidence / Domain
+Keine neue externe Recherche in diesem Lauf. Es wurden keine neuen Realwelt-Behauptungen oder Parameterwerte eingeführt. Die Änderung betrifft die Präsentationslogik des Modelloutputs; Evidenz-/Annahmegrenzen bleiben über Registry-Felder und Guardrails sichtbar.
+
+### Integrator Decision
+Akzeptiert: `result_causality.py` bekommt eine szenariofamilienbasierte Priorisierung der relevanten KPIs. Dazu ein Regressionstest, der für ein GKV-Beitragssatz-Szenario `GKV-Saldo` zuerst erwartet und prüft, dass keine Ausbildungs-Pipeline-Sprache in den Finanzierungsbericht rutscht.
+
+### Question to Alex
+Keine Entscheidung nötig. Das ist eine sichere, reversible Präsentationsverbesserung und verändert keine Modellmechanik.
+
+### Verification / Git
+Spezifischer Red-Test wurde gesehen und anschließend grün gemacht. Vollständige Verifikation und Git-Sync folgen in diesem Heartbeat nach dem Source-Commit-Stand.

@@ -147,9 +147,83 @@ def _metric_movement(agg: pd.DataFrame, key: str) -> dict[str, Any] | None:
     }
 
 
-def _relevant_kpis(agg: pd.DataFrame, *, max_kpis: int) -> list[dict[str, Any]]:
+def _changed_key_set(params: Mapping[str, Any]) -> set[str]:
+    defaults = get_default_params()
+    return {key for key, value in params.items() if key in defaults and value != defaults[key]}
+
+
+def _scenario_kpi_priority(params: Mapping[str, Any]) -> dict[str, int]:
+    """Choose the first-view KPI order from the changed lever family.
+
+    The first result view should not always start with the same health-system
+    capacity cards. A financing scenario should first show financing pressure;
+    a medical-training scenario should first show pipeline/capacity/access; a
+    digital scenario should first show the visible adaptation signal. This is a
+    presentation rule only — it does not alter the simulation output.
+    """
+
+    changed_keys = _changed_key_set(params)
+    financing_keys = {
+        "gkv_beitragssatz",
+        "gkv_zusatzbeitrag",
+        "gkv_anteil",
+        "pkv_beitrag_durchschnitt",
+        "zuzahlungen_gkv",
+        "staatliche_subventionen",
+    }
+    digital_keys = {"telemedizin_rate", "digitalisierung_epa"}
+    prevention_keys = {"praeventionsbudget"}
+    study_place_keys = {"medizinstudienplaetze"}
+
+    if changed_keys & financing_keys:
+        return {
+            "gkv_saldo": 0,
+            "wartezeit_fa": 1,
+            "versorgungsindex_rural": 2,
+            "aerzte_pro_100k": 3,
+            "burnout_rate": 4,
+            "telemedizin_rate": 5,
+        }
+    if changed_keys & digital_keys:
+        return {
+            "telemedizin_rate": 0,
+            "wartezeit_fa": 1,
+            "burnout_rate": 2,
+            "versorgungsindex_rural": 3,
+            "gkv_saldo": 4,
+            "aerzte_pro_100k": 5,
+        }
+    if changed_keys & prevention_keys:
+        return {
+            "gkv_saldo": 0,
+            "wartezeit_fa": 1,
+            "versorgungsindex_rural": 2,
+            "burnout_rate": 3,
+            "aerzte_pro_100k": 4,
+            "telemedizin_rate": 5,
+        }
+    if changed_keys & study_place_keys:
+        return {
+            "aerzte_pro_100k": 0,
+            "wartezeit_fa": 1,
+            "burnout_rate": 2,
+            "telemedizin_rate": 3,
+            "versorgungsindex_rural": 4,
+            "gkv_saldo": 5,
+        }
+    return {
+        "aerzte_pro_100k": 0,
+        "wartezeit_fa": 1,
+        "burnout_rate": 2,
+        "telemedizin_rate": 3,
+        "versorgungsindex_rural": 4,
+        "gkv_saldo": 5,
+    }
+
+
+def _relevant_kpis(agg: pd.DataFrame, params: Mapping[str, Any], *, max_kpis: int) -> list[dict[str, Any]]:
     rows = [row for key in KPI_SPECS if (row := _metric_movement(agg, key)) is not None]
-    priority = {"aerzte_pro_100k": 0, "wartezeit_fa": 1, "burnout_rate": 2, "telemedizin_rate": 3}
+    priority = _scenario_kpi_priority(params)
     rows.sort(key=lambda row: (priority.get(row["metric_key"], 9), -row["sort_strength"]))
     return [
         {key: value for key, value in row.items() if key != "sort_strength"}
@@ -458,7 +532,7 @@ def build_causal_result_packet(
 
     changed = _changed_inputs(params)
     evidence_rows = _evidence_assumption_rows(changed)
-    kpis = _relevant_kpis(agg, max_kpis=max_kpis)
+    kpis = _relevant_kpis(agg, params, max_kpis=max_kpis)
     kpi_summary = _relevant_kpi_summary(kpis, changed)
     mechanisms = _adaptation_mechanisms(params, kpis)
     adaptation_trace = _adaptation_signal_trace(kpis, params)
@@ -482,6 +556,25 @@ def build_causal_result_packet(
         for row in evidence_rows
     ) or "Keine geänderte Stellschraube mit Registry-Evidenzzeile im aktuellen Lauf."
 
+    if study_places_changed:
+        mechanism_block_text = (
+            "SimMed verbindet Eingriffe über Kapazität, Nachfrage, Finanzierung und Zeitverzug. "
+            "Bei Medizinstudienplätzen ist der zentrale Mechanismus die Ausbildungs-Pipeline: "
+            "ab etwa Jahr 6 kommen weniger Absolvent:innen an, danach steigt der Facharzt-/Kapazitätsdruck. "
+            f"Zeitfenster: {timeline_text}"
+        )
+    elif changed:
+        mechanism_block_text = (
+            "SimMed verbindet die geänderten Stellschrauben mit den dazu passenden Modellpfaden: Finanzierung, Nachfrage, Versorgungskapazität, regionale Verteilung und Zeitverzug. "
+            "Für diesen Lauf wird kein spezieller Ausbildungs-Lag behauptet; der Bericht bleibt bei den tatsächlich veränderten Hebeln und ihren beobachteten Kennzahlen. "
+            f"Zeitfenster: {timeline_text}"
+        )
+    else:
+        mechanism_block_text = (
+            "SimMed liest hier den Referenzpfad ohne zusätzlichen Eingriff: Welche Kennzahlen bewegen sich im Modelllauf, "
+            "welche Mechanismen könnten dahinterliegen, und welche davon sind vor einer fachlichen Deutung prüfpflichtig?"
+        )
+
     free_text_blocks = [
         {
             "step": "1. Ergebnis",
@@ -493,12 +586,7 @@ def build_causal_result_packet(
         },
         {
             "step": "3. Wirkmechanismus",
-            "text": (
-                "SimMed verbindet Eingriffe über Kapazität, Nachfrage, Finanzierung und Zeitverzug. "
-                "Bei Medizinstudienplätzen ist der zentrale Mechanismus die Ausbildungs-Pipeline: "
-                "ab etwa Jahr 6 kommen weniger Absolvent:innen an, danach steigt der Facharzt-/Kapazitätsdruck. "
-                f"Zeitfenster: {timeline_text}"
-            ),
+            "text": mechanism_block_text,
         },
         {
             "step": "4. Anpassung",
@@ -623,7 +711,7 @@ def build_causal_result_packet(
     elif changed:
         pathway_body = (
             "Der Eingriff läuft im Modell über die jeweils dokumentierten SimMed-Pfade — Kapazität, Nachfrage, Finanzierung, regionale Verteilung und Zeitverzug. "
-            "Für diesen Lauf wird kein spezieller Ausbildungs-Pipeline-Lag abgeleitet; der Bericht prüft deshalb die tatsächlich veränderten Hebel und die dazu passenden Kennzahlen. "
+            "Für diesen Lauf wird kein Ausbildungs-Lag behauptet; der Bericht prüft deshalb die tatsächlich veränderten Hebel und die dazu passenden Kennzahlen. "
             f"{timeline_text}"
         )
     else:
