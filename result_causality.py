@@ -1034,14 +1034,14 @@ def build_causal_result_packet(
         else "Ergebnis: die wichtigsten Veränderungen im Modelllauf"
     )
     top_kpi_sentences = "; ".join(
-        f"{item['label']} {item['direction']} ({str(item['start']).replace('.', ',')} → {str(item['end']).replace('.', ',')})"
+        f"{item['label']} {item['direction']}"
         for item in kpis[:2]
     ) or "keine priorisierten Kennzahlen verfügbar"
     if study_places_changed:
         short_answer = (
-            f"Das Ergebnis: Weniger Medizinstudienplätze erzeugen verzögerten Kapazitätsdruck; sichtbar bei {top_kpi_sentences}. "
+            f"Das Ergebnis: Weniger Medizinstudienplätze wirken nicht sofort, sondern später als Druck auf die Versorgung; sichtbar bei {top_kpi_sentences}. "
             "Das passiert, weil ab etwa Jahr 6 weniger Nachwuchs ankommt; Richtung Jahr 11–15 zählt der Facharztpfad. "
-            "Das bedeutet: nächste Prüfung sind Wartezeit, Belastung und Puffer; erst danach politisch bewerten."
+            "Das bedeutet: nächste Prüfung sind Wartezeit, Belastung und Puffer; es ist kein Beweis realer politischer Wirkung."
         )
     elif changed:
         short_answer = (
@@ -1083,7 +1083,7 @@ def build_causal_result_packet(
     kpi_body = "; ".join(kpi_items) + "." if kpi_items else "Keine priorisierten Kennzahlen verfügbar."
     if study_places_changed:
         result_body = (
-            "Heraus kommt späterer Kapazitätsdruck: anfangs kaum Versorgungsänderung, später weniger Ärzt:innen, längere Wartezeiten und mehr Belastung."
+            "Heraus kommt verzögerter Kapazitätsdruck: zuerst wenig Änderung, später weniger Ärzt:innen, längere Wartezeiten und mehr Belastung."
         )
     elif changed:
         result_body = (
@@ -1131,7 +1131,7 @@ def build_causal_result_packet(
         observed_signals.append(f"{label} {direction}")
     observed_text = "; ".join(observed_signals) or "kein starkes Puffersignal sichtbar"
     adaptation_body = (
-        f"Puffer wie Telemedizin werden geprüft; beobachtet: {observed_text}. "
+        f"Das Modell sucht nach Puffern wie Telemedizin; beobachtet: {observed_text}. "
         "Sinkt Belastung trotz Mangel, ist das ein Plausibilitätscheck."
     )
     result_sections = [
@@ -1143,13 +1143,13 @@ def build_causal_result_packet(
         {
             "heading": "Einordnung",
             "body": (
-                "Das bedeutet: einen prüfbaren SimMed-Wirkpfad, keine fertige politische Entscheidung; "
-                "keine amtliche Prognose, kein Wirksamkeitsnachweis."
+                "Das bedeutet: eine prüfbare Wirkungskette, aber noch keine fertige Entscheidung; "
+                "keine amtliche Prognose, kein Wirksamkeitsnachweis und kein Beweis realer Wirkung."
             ),
         },
         {
             "heading": "Nächster Prüfschritt",
-            "body": "Zuerst Zeitfenster, relevante Kennzahlen und Evidenzgrenzen prüfen; danach politisch bewerten.",
+            "body": "Zuerst Zeitfenster, relevante Kennzahlen und Evidenzgrenzen anschauen; danach politisch bewerten.",
         }
     ]
     follow_up_question = (
@@ -1173,7 +1173,7 @@ def build_causal_result_packet(
     audit_sections = [
         {
             "id": "mechanism_audit",
-            "title": "Wirkpfad und Plausibilität prüfen",
+            "title": "Wirkpfad und Plausibilität vertiefen",
             "contains": "Zeitfenster, Anpassungsreaktionen und gegenintuitive Signale",
             "default_expanded": False,
         },

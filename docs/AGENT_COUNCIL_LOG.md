@@ -5838,3 +5838,32 @@ No important decision is open; continue safely toward a calmer first-screen brie
 
 ### Verification / Git
 Focused tests passed: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q`. Full suite passed: `python3 -m pytest -q` (287 passed). Smoke passed: 50 runs × 3 years with causal packet assertion. Git sync/commit follows in this heartbeat.
+
+## 2026-04-30 17:32 UTC — Heartbeat: Result page first-screen rebuild
+
+### Context
+Alex corrected that the result page still felt unclear and overloaded. This heartbeat tightened the public causal result packet and first-view wording around one readable German briefing.
+
+### Project Manager
+Priority: make the first result screen answer outcome, relevant movement, cause, meaning, and next check before dense KPI/detail layers. Risk: existing helper layers can creep back into the first screen if API/UI clients render legacy fields by default. Next: turn the Streamlit result card visually into an even cleaner briefing layout and keep dense KPI grids collapsed.
+
+### Designer / UX
+The first screen now has a simpler hierarchy: headline, 2-4 sentence answer, seven short sections, compact relevant KPI rows, and collapsed depth below. Wording avoids process/meta terms in the public briefing and keeps the evidence warning short rather than dumping registry detail into the opening screen.
+
+### Creative Agent
+Idea: next pass could make the first card feel like a one-page medical-policy memo with a left accent and three compact KPI chips. Fit: useful for readability; safe if it reuses existing packet fields and does not add new claims.
+
+### Political Health-System Strategist
+The public first view now says the scenario is not a decision or proof of real-world political effectiveness. This is important for sensitive levers like medical study places: delayed capacity pressure should be interpreted only after checking timing, buffers, and workload signals.
+
+### Evidence / Domain
+No new factual claims or external research were added. This run only changed the communication layer around existing SimMed outputs, evidence guardrails, and registry-backed assumptions.
+
+### Integrator Decision
+Accepted: simplify first-screen language in `result_causality.py`, add a clarity regression test, and keep API output aligned through the same `causal_result_packet`. Deferred: broader visual redesign of the Streamlit card styling.
+
+### Question to Alex
+No important decision is blocked. Continue with safe UI/briefing cleanup.
+
+### Verification / Git
+Focused tests currently passing before full-suite run: `pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients tests/test_app_explanations.py -q` → 125 passed. Full verification/git status to be updated after final test/sync/push.

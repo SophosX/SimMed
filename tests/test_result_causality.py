@@ -103,7 +103,7 @@ def test_simplified_public_result_packet_is_short_clear_and_not_meta():
     assert "ab etwa Jahr 6" in packet["short_answer"]
     assert "nächste" in packet["short_answer"].lower()
     assert "Das bedeutet" in packet["short_answer"]
-    assert "prüfbaren" in section_by_heading["Einordnung"]
+    assert "prüfbare" in section_by_heading["Einordnung"]
 
 
 def test_short_answer_reads_like_plain_first_screen_result_not_helper_text():
@@ -235,6 +235,42 @@ def test_relevant_kpis_are_public_rows_with_plain_change_and_reading():
     assert all(len(row["reading"].split()) <= 18 for row in rows)
     assert rows[0]["plain_change"].startswith("430,00 auf 360,00")
     assert rows[0]["reading"] == "Weniger Kapazität: Zugang und Belastung danach gemeinsam prüfen."
+
+
+def test_public_briefing_uses_plain_serious_german_without_process_jargon():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    public = packet["public_result_view"]
+    briefing = public["briefing_markdown"]
+
+    assert "### Weniger Medizinstudienplätze" in briefing
+    for heading in [
+        "#### Ergebnis",
+        "#### Eingriff",
+        "#### Warum es passiert",
+        "#### Relevante Kennzahlen",
+        "#### Anpassungen",
+        "#### Einordnung",
+        "#### Nächster Prüfschritt",
+    ]:
+        assert heading in briefing
+    for jargon in [
+        "prüfpflichtig",
+        "Stellschraube",
+        "Detailkarten",
+        "Audit",
+        "helper",
+        "Legacy",
+        "Policy-Wirksamkeitsnachweis",
+    ]:
+        assert jargon not in briefing
+    assert "weniger Ärzt:innen" in briefing
+    assert "längere Wartezeiten" in briefing
+    assert "ab etwa Jahr 6" in briefing
+    assert "kein Beweis" in briefing
+    assert packet["public_result_view"]["audit_sections"][0]["title"] == "Wirkpfad und Plausibilität vertiefen"
 
 
 def test_public_adaptation_section_is_not_truncated_mid_sentence():
