@@ -12,6 +12,7 @@ from data_ingestion import (
     build_transformation_review_draft_handoff_packet,
     build_transformation_review_draft_preflight,
     build_transformation_review_draft_status_cards,
+    validate_transformation_review_draft_payload,
     build_connector_snapshot_requests,
     build_data_connector_queue,
     build_data_passport_rows,
@@ -353,6 +354,74 @@ def test_transformation_review_draft_status_cards_explain_manual_gate_without_wr
     assert "keine Review-Erzeugung" in cards[1]["guardrail"]
     assert "separater Integrationspfad" == cards[2]["status"]
     assert "keine automatische Modellmutation" in cards[2]["guardrail"]
+
+
+def test_transformation_review_draft_payload_validation_is_read_only_gate(tmp_path):
+    snapshot = cache_source_payload(
+        source_id="destatis_genesis",
+        source_url="https://www-genesis.destatis.de/genesis/online",
+        payload=b"year,value\n2024,84.4\n",
+        filename="population.csv",
+        cache_root=tmp_path,
+        source_period="2024",
+        output_parameter_keys=("bevoelkerung_mio",),
+        transformation_note="raw fixture only; no model mutation",
+        retrieved_at="2026-04-29T20:00:00+00:00",
+    )
+    checklist = build_cached_snapshot_review_start_checklist(
+        build_cached_snapshot_integrity_report(cache_root=tmp_path)
+    )
+    preflight = build_transformation_review_draft_preflight(checklist)
+
+    incomplete = validate_transformation_review_draft_payload(
+        preflight,
+        {
+            "parameter_key": "bevoelkerung_mio",
+            "source_snapshot_sha256": snapshot.sha256,
+            "reviewer": "",
+            "method_note": "GENESIS fixture row 2024 checked manually",
+            "output_value": 84.4,
+            "output_unit": "Mio. Personen",
+            "caveat": "Fixture-only; no live import and no model integration.",
+        },
+    )
+    assert incomplete["status"] == "draft_validation_incomplete"
+    assert incomplete["matched_preflight_row"] is True
+    assert "reviewer" in incomplete["missing_fields"]
+    assert "keine Review-Erzeugung" in incomplete["guardrail"]
+
+    ready = validate_transformation_review_draft_payload(
+        preflight,
+        {
+            "parameter_key": "bevoelkerung_mio",
+            "source_snapshot_sha256": snapshot.sha256,
+            "reviewer": "Evidence Agent",
+            "method_note": "GENESIS fixture row 2024 checked manually",
+            "output_value": 84.4,
+            "output_unit": "Mio. Personen",
+            "caveat": "Fixture-only; no live import and no model integration.",
+        },
+    )
+    assert ready["status"] == "draft_validation_ready_for_manual_record_review"
+    assert ready["missing_fields"] == []
+    assert ready["matched_review_template_route"] == "GET /data-connectors/transformation-review-template/bevoelkerung_mio"
+    assert "separat erfasst" in ready["next_safe_step"]
+    assert "keine Registry-/Modellmutation" in ready["guardrail"]
+
+    mismatch = validate_transformation_review_draft_payload(
+        preflight,
+        {
+            "parameter_key": "bevoelkerung_mio",
+            "source_snapshot_sha256": "wrong-sha",
+            "reviewer": "Evidence Agent",
+            "method_note": "checked",
+            "output_value": 84.4,
+            "output_unit": "Mio. Personen",
+            "caveat": "Fixture-only.",
+        },
+    )
+    assert mismatch["status"] == "draft_validation_blocked_by_snapshot_mismatch"
+    assert mismatch["matched_preflight_row"] is False
 
 
 def test_snapshot_status_is_read_only_and_conservative(tmp_path):

@@ -2493,3 +2493,32 @@ Keine.
 
 ### Verification / Git
 Verified locally with focused tests, full pytest, py_compile, and 20-run simulation smoke. Commit/push status follows in heartbeat report.
+
+## 2026-04-30 04:34 Europe/Berlin — Heartbeat: Review-Draft-Validierung
+
+### Context
+Alexs Korrektur priorisiert Kernplattform statt reiner KI/Evidence-Arbeit. Dieser Lauf erweitert den Dateningestion-/Provenienzpfad nach Review-Draft-Preflight/Handoff um eine read-only Validierung für manuelle ReviewedTransformation-Drafts.
+
+### Project Manager
+Priorität: Rohdaten → Review → Registry/Modell weiter in kleine sichere Gates zerlegen. Risiko: ein Operator könnte aus einem unvollständigen Draft zu schnell einen Review oder Modellwert ableiten. Nächste Aufgaben: Validierung auf Learning Page/API weiter nutzbar machen; danach kontrollierten Review-Persistenzpfad nur mit explizitem Schreibmodus planen.
+
+### Designer / UX
+Die Learning Page zeigt jetzt zusätzlich den Draft-Validierungsstatus und fehlende Pflichtfelder. Das hilft Erstnutzer:innen zu verstehen, dass selbst ein vorhandener Rohsnapshot noch manuell geprüft und validiert werden muss.
+
+### Creative Agent
+Idee: später ein visuelles Ampelband „Cache → Integrität → Draft → Review → Modell-PR“ ergänzen. Fit: gut für Orientierung; noch nicht umgesetzt, weil strukturierte API/Helper wichtiger waren.
+
+### Political Health-System Strategist
+Die Validierung reduziert Governance-Risiko: Datenwerte können nicht als politischer Wirkungsbeweis oder amtliche Prognose erscheinen, bevor Review und separater Integrations-PR erfolgt sind.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Es wurden keine neuen realweltlichen Evidenzclaims eingeführt; die Änderung validiert nur Pflichtfelder, Parameter/SHA256-Match und Guardrails.
+
+### Integrator Decision
+Akzeptiert: `validate_transformation_review_draft_payload(...)`, API `POST /data-snapshots/review-draft/validate`, Learning-Page-Status und Regressionstests. Weiterhin read-only: keine Review-Erzeugung, kein Cache-Schreiben, keine Registry-/Modellmutation.
+
+### Question to Alex
+Keine.
+
+### Verification / Git
+Verifiziert mit gezielten Tests, voller Suite (`152 passed`), `py_compile` und 20x2-Simulation-Smoke (`df=(60,30)`, `reg=(320,6)`). Commit/Push folgt in diesem Heartbeat.

@@ -39,6 +39,7 @@ from data_ingestion import (
     build_transformation_review_draft_handoff_packet,
     build_transformation_review_draft_preflight,
     build_transformation_review_draft_status_cards,
+    validate_transformation_review_draft_payload,
     build_connector_execution_plan,
     build_connector_snapshot_requests,
     build_data_connector_queue,
@@ -4108,6 +4109,18 @@ def build_learning_data_passport_overview(limit: int = 8) -> dict[str, Any]:
         "snapshot_review_draft_preflight": draft_preflight,
         "snapshot_review_draft_status_cards": build_transformation_review_draft_status_cards(draft_preflight),
         "snapshot_review_draft_handoff_packet": build_transformation_review_draft_handoff_packet(draft_preflight),
+        "snapshot_review_draft_validation_example": validate_transformation_review_draft_payload(
+            draft_preflight,
+            {
+                "parameter_key": (draft_preflight.get("rows") or [{}])[0].get("parameter_key", ""),
+                "source_snapshot_sha256": (draft_preflight.get("rows") or [{}])[0].get("source_snapshot_sha256", ""),
+                "reviewer": "",
+                "method_note": "",
+                "output_value": None,
+                "output_unit": "",
+                "caveat": "",
+            },
+        ),
         "rows": [
             {
                 "Parameter": row["label"],
@@ -4162,6 +4175,12 @@ def render_learning_data_passport_overview():
             st.markdown(f"**Review-Draft-Preflight:** {draft_preflight['first_safe_step']}")
             st.dataframe(pd.DataFrame(overview["snapshot_review_draft_status_cards"]), use_container_width=True, hide_index=True)
             st.markdown(f"**Review-Draft-Handoff:** {draft_handoff['first_safe_step']}")
+            validation_example = overview["snapshot_review_draft_validation_example"]
+            st.caption(
+                f"Draft-Validierung (read-only): {validation_example['status']} – "
+                f"fehlende Felder: {', '.join(validation_example['missing_fields']) or 'keine'}. "
+                "API: POST /data-snapshots/review-draft/validate"
+            )
             st.code(draft_handoff["copyable_preflight_command"], language="bash")
             if draft_preflight["rows"]:
                 st.dataframe(pd.DataFrame(draft_preflight["rows"]), use_container_width=True, hide_index=True)

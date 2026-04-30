@@ -145,6 +145,33 @@ def test_api_exposes_focused_transformation_review_draft_handoff_without_executi
     assert "keine Registry-/Modellmutation" in packet["guardrail"]
 
 
+def test_api_validates_transformation_review_draft_without_persisting():
+    client = TestClient(api)
+    response = client.post(
+        "/data-snapshots/review-draft/validate",
+        json={
+            "parameter_key": "bevoelkerung_mio",
+            "source_snapshot_sha256": "wrong-sha",
+            "reviewer": "Evidence Agent",
+            "method_note": "Manual table/year/denominator check",
+            "output_value": 84.4,
+            "output_unit": "Mio. Personen",
+            "caveat": "Fixture/status validation only; no model integration.",
+        },
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "transformation_review_draft_validation_not_persisted"
+    validation = body["transformation_review_draft_validation"]
+    assert validation["parameter_key"] == "bevoelkerung_mio"
+    assert validation["status"] in {
+        "draft_validation_blocked_by_snapshot_mismatch",
+        "draft_validation_blocked_no_preflight_row",
+    }
+    assert "keine Review-Erzeugung" in validation["guardrail"]
+    assert "keine Registry-/Modellmutation" in body["guardrail"]
+
 
 def test_api_exposes_focused_snapshot_integrity_handoff_without_execution():
     client = TestClient(api)

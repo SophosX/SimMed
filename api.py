@@ -22,6 +22,7 @@ from data_ingestion import (
     build_transformation_review_draft_handoff_packet,
     build_transformation_review_draft_preflight,
     build_transformation_review_draft_status_cards,
+    validate_transformation_review_draft_payload,
     build_connector_execution_plan,
     build_connector_execution_workbench,
     build_connector_snapshot_requests,
@@ -81,6 +82,16 @@ class ConnectorExecutionRequest(BaseModel):
         default=False,
         description="False returns the safe planned request only; True fetches and caches raw bytes without model integration.",
     )
+
+
+class TransformationReviewDraftValidationRequest(BaseModel):
+    parameter_key: str = Field(description="Parameter key from the draft preflight row")
+    source_snapshot_sha256: str = Field(description="SHA256 from the raw snapshot manifest")
+    reviewer: str = Field(default="", description="Manual reviewer identity/role; required before review persistence")
+    method_note: str = Field(default="", description="Manual table/filter/year/denominator/method note")
+    output_value: float | int | str | None = Field(default=None, description="Manually checked output value")
+    output_unit: str = Field(default="", description="Manually checked output unit")
+    caveat: str = Field(default="", description="Manual caveat; no model integration claim")
 
 
 @api.get("/sources")
@@ -173,6 +184,22 @@ def get_data_snapshot_review_draft_handoff() -> dict:
         "guardrail": "Handoff ist read-only/draft-only: kein execute=true, kein Netzwerkabruf, kein Cache-Schreiben, keine Review-Erzeugung und keine Registry-/Modellmutation.",
         "transformation_review_draft_status_cards": build_transformation_review_draft_status_cards(preflight),
         "transformation_review_draft_handoff_packet": build_transformation_review_draft_handoff_packet(preflight),
+    }
+
+
+@api.post("/data-snapshots/review-draft/validate")
+def validate_data_snapshot_review_draft(request: TransformationReviewDraftValidationRequest) -> dict:
+    """Validate a manual review draft without writing a ReviewedTransformation."""
+
+    integrity = build_cached_snapshot_integrity_report()
+    checklist = build_cached_snapshot_review_start_checklist(integrity)
+    preflight = build_transformation_review_draft_preflight(checklist)
+    validation = validate_transformation_review_draft_payload(preflight, request.model_dump())
+    return {
+        "status": "transformation_review_draft_validation_not_persisted",
+        "guardrail": "Validierung ist read-only: keine Review-Erzeugung, kein Cache-Schreiben, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+        "transformation_review_draft_validation": validation,
+        "transformation_review_draft_preflight": preflight,
     }
 
 

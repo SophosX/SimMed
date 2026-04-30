@@ -111,6 +111,9 @@ def test_learning_data_passport_overview_separates_registry_cache_and_transforma
     assert "definition_of_done_before_record_review" in draft_preflight
     draft_handoff = overview["snapshot_review_draft_handoff_packet"]
     assert draft_handoff["preflight_route"] == "GET /data-snapshots/review-draft-preflight"
+    draft_validation = overview["snapshot_review_draft_validation_example"]
+    assert draft_validation["status"].startswith("draft_validation_")
+    assert "keine Review-Erzeugung" in draft_validation["guardrail"]
     assert "curl -s" in draft_handoff["copyable_preflight_command"]
     assert "kein execute=true" in draft_handoff["guardrail"]
     assert "keine Review-Erzeugung" in draft_handoff["guardrail"]

@@ -762,6 +762,61 @@ def build_transformation_review_draft_preflight(review_start_checklist: dict) ->
 
 
 
+def validate_transformation_review_draft_payload(draft_preflight: dict, payload: dict) -> dict:
+    """Validate a manual ReviewedTransformation draft without persisting it.
+
+    This is the last read-only guard before an operator records a
+    ReviewedTransformation. It checks required fields and whether the submitted
+    parameter/SHA256 pair matches the current draft preflight rows, but it never
+    writes a review file or mutates registry/model values.
+    """
+
+    required_fields = [
+        "parameter_key",
+        "source_snapshot_sha256",
+        "reviewer",
+        "method_note",
+        "output_value",
+        "output_unit",
+        "caveat",
+    ]
+    missing_fields = [field for field in required_fields if payload.get(field) in (None, "", [])]
+
+    rows = draft_preflight.get("rows", [])
+    matching_row = next(
+        (
+            row
+            for row in rows
+            if row.get("parameter_key") == payload.get("parameter_key")
+            and row.get("source_snapshot_sha256") == payload.get("source_snapshot_sha256")
+        ),
+        None,
+    )
+    if not rows:
+        status = "draft_validation_blocked_no_preflight_row"
+    elif matching_row is None:
+        status = "draft_validation_blocked_by_snapshot_mismatch"
+    elif missing_fields:
+        status = "draft_validation_incomplete"
+    else:
+        status = "draft_validation_ready_for_manual_record_review"
+
+    return {
+        "status": status,
+        "parameter_key": payload.get("parameter_key", ""),
+        "matched_preflight_row": matching_row is not None,
+        "missing_fields": missing_fields,
+        "matched_review_template_route": (matching_row or {}).get("review_template_route", ""),
+        "required_fields": required_fields,
+        "next_safe_step": (
+            "Erst fehlende Felder und SHA256-/Parameter-Match klären."
+            if status != "draft_validation_ready_for_manual_record_review"
+            else "Manuelle ReviewedTransformation kann separat erfasst werden; Registry-/Modellintegration bleibt danach ein eigener getesteter PR."
+        ),
+        "guardrail": "Validierung ist read-only: keine Review-Erzeugung, kein Cache-Schreiben, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    }
+
+
 def build_transformation_review_draft_status_cards(draft_preflight: dict) -> list[dict]:
     """Return mobile-safe cards for the manual transformation-review draft gate.
 
