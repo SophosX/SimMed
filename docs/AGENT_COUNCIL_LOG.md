@@ -4389,4 +4389,4 @@ Akzeptiert: `public_result_view` als klare öffentliche Rendering-Schicht im cau
 Keine neue Entscheidung nötig; die sichere Richtung ist weiter: weniger erste Screens, mehr zusammenhängendes Briefing.
 
 ### Verification / Git
-Verifiziert lokal: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 33 passed; `python3 -m pytest -q` → 260 passed; `py_compile` für `app.py`, `result_causality.py`, `api.py`, `simulation_core.py`; 50-run Simulation-Smoke mit causal packet OK. Git-Sync/Commit/Push folgt im selben Heartbeat.
+Verifiziert lokal: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 33 passed; `python3 -m pytest -q` → 260 passed; `py_compile` für `app.py`, `result_causality.py`, `api.py`, `simulation_core.py`; 50-run Simulation-Smoke mit causal packet OK. GitHub Push bestätigt: `74ee1d9 Clarify result page first view` auf `origin/main`; Commit enthält `app.py`, `result_causality.py`, `tests/test_result_causality.py`, `docs/AGENT_COUNCIL_LOG.md`.
