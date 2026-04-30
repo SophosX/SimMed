@@ -1088,11 +1088,27 @@ def build_causal_result_packet(
         },
     ]
 
+    kpi_lines = "\n".join(
+        f"- **{row.get('label', 'Kennzahl')}**: {row.get('start', '–')} → {row.get('end', '–')} "
+        f"({row.get('direction', 'stabil')}). {row.get('meaning') or row.get('why_relevant', '')}"
+        for row in relevant_kpis_public[:4]
+    ) or "- Keine priorisierten Kennzahlen verfügbar."
+    briefing_parts = [f"### {result_headline}", short_answer]
+    for section in result_sections:
+        briefing_parts.append(f"#### {section['heading']}")
+        if section["heading"] == "Relevante Kennzahlen":
+            briefing_parts.append(kpi_lines)
+        else:
+            briefing_parts.append(section["body"])
+    briefing_markdown = "\n\n".join(briefing_parts)
+
     public_result_view = {
         "briefing_style": "single_readable_briefing",
+        "first_screen_policy": "one_briefing_then_collapsed_audit",
         "render_order": [
             "result_headline",
             "short_answer",
+            "briefing_markdown",
             "result_sections",
             "relevant_kpis",
             "follow_up_question",
@@ -1100,6 +1116,7 @@ def build_causal_result_packet(
         ],
         "headline": result_headline,
         "short_answer": short_answer,
+        "briefing_markdown": briefing_markdown,
         "result_sections": result_sections,
         "first_screen_blocks": first_screen_blocks,
         "primary_blocks": first_screen_blocks,

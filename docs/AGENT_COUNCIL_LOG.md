@@ -4899,3 +4899,32 @@ No important product decision is blocked. Continue safely with result-page conso
 ### Verification / Git
 Verified locally: `pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 42 passed; full `pytest -q` → 269 passed; `py_compile` for app/result/API/simulation/test files passed; 50-run simulation smoke test passed with simplified causal packet. Commit/push confirmed: `5210ddd` (`Clarify result briefing outcome section`) on `origin/main`; touched `result_causality.py`, `tests/test_result_causality.py`, and this council log.
 
+
+## 2026-04-30 15:21 Europe/Berlin — Result first-view rebuild
+
+### Context
+Alex corrected that the result page still felt fragmented. This heartbeat rebuilt the public causal result packet toward one readable first screen and moved dense detail/audit material below collapsed sections.
+
+### Project Manager
+Priority: make the first result screen answer what happened, what changed, why, what it means, and what to check next. Risk: adding another helper would worsen overload; therefore the accepted slice uses one `briefing_markdown` source for the opening view.
+
+### Designer / UX
+The result opening now renders as one sequential German briefing with the requested headings: Ergebnis → Eingriff → Warum es passiert → Relevante Kennzahlen → Anpassungen → Einordnung → Nächster Prüfschritt. Relevant KPIs remain compact inside the briefing; legacy/detail views stay collapsed.
+
+### Creative Agent
+Product-fit idea accepted: treat the first result as a short serious briefing, not a dashboard preface. This improves newcomer comprehension without adding claims or model effects.
+
+### Political Health-System Strategist
+The page still avoids policy overclaiming: it says the study-place cut is a delayed capacity-pressure signal and asks for a fachlicher Prüfschritt before political interpretation. No lobbying recommendation or vote forecast was added.
+
+### Evidence / Domain
+No new external factual claim was introduced; keine neue Recherche in diesem Lauf. The change is a communication/UI layer over existing model outputs, evidence rows, time windows, and guardrails.
+
+### Integrator Decision
+Accepted: `public_result_view.briefing_markdown`, a `first_screen_policy` marker, Streamlit rendering through one briefing block, and regression tests for no banned/meta wording and no duplicate first-view layers. Deferred: broader policy levers/free-text proposal workflow.
+
+### Question to Alex
+Keine wichtige Entscheidung offen. Safe next step: reduce or reorganize the remaining legacy result expanders so the page below the first briefing also feels intentional rather than historical.
+
+### Verification / Git
+Local verification before sync: `pytest -q` → 270 passed; `py_compile app.py result_causality.py api.py simulation_core.py` passed; 50-run simulation smoke passed and produced a `briefing_markdown` public result view. Git commit/push verification follows in the heartbeat status.

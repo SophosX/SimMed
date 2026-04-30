@@ -67,6 +67,7 @@ def test_simplified_public_result_packet_is_short_clear_and_not_meta():
     assert packet["public_result_view"]["render_order"] == [
         "result_headline",
         "short_answer",
+        "briefing_markdown",
         "result_sections",
         "relevant_kpis",
         "follow_up_question",
@@ -182,8 +183,10 @@ def test_public_result_packet_is_minimal_and_does_not_expose_legacy_layers_first
 
     allowed_public_keys = {
         "briefing_style",
-        "render_order",
-        "headline",
+            "render_order",
+            "first_screen_policy",
+            "headline",
+            "briefing_markdown",
         "short_answer",
         "result_sections",
         "first_screen_blocks",
@@ -625,6 +628,34 @@ def test_professional_briefing_exposes_human_reader_brief_without_table_first_la
     assert packet["primary_result_view"]["professional_briefing_text"] == briefing["reader_brief"]
 
 
+def test_public_result_view_provides_one_readable_briefing_markdown_without_duplicate_first_views():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    view = packet["public_result_view"]
+    briefing = view["briefing_markdown"]
+
+    assert briefing.startswith("### Weniger Medizinstudienplätze")
+    assert briefing.count("#### Ergebnis") == 1
+    assert briefing.count("#### Eingriff") == 1
+    assert briefing.count("#### Warum es passiert") == 1
+    assert briefing.count("#### Relevante Kennzahlen") == 1
+    assert briefing.count("#### Anpassungen") == 1
+    assert briefing.count("#### Einordnung") == 1
+    assert briefing.count("#### Nächster Prüfschritt") == 1
+    assert "Medizinstudienplätze" in briefing
+    assert "ab etwa Jahr 6" in briefing
+    assert "Ärzte pro 100k" in briefing
+    assert "Facharzt-Wartezeit" in briefing
+    assert "Vertiefung" not in briefing
+    assert "Audit" not in briefing
+    assert "helper" not in briefing.lower()
+    assert view["first_screen_policy"] == "one_briefing_then_collapsed_audit"
+    assert view["legacy_detail_default_expanded"] is False
+    assert view["dense_kpi_default_expanded"] is False
+
+
 def test_public_result_packet_is_short_clear_and_not_a_legacy_helper_dump():
     params = get_default_params()
     params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
@@ -654,6 +685,7 @@ def test_public_result_packet_is_short_clear_and_not_a_legacy_helper_dump():
     assert public_view["render_order"] == [
         "result_headline",
         "short_answer",
+        "briefing_markdown",
         "result_sections",
         "relevant_kpis",
         "follow_up_question",
@@ -862,6 +894,7 @@ def test_public_result_view_is_one_short_briefing_without_duplicate_opening_widg
     assert public["render_order"] == [
         "result_headline",
         "short_answer",
+        "briefing_markdown",
         "result_sections",
         "relevant_kpis",
         "follow_up_question",
@@ -1145,6 +1178,7 @@ def test_result_layout_uses_human_first_view_names_not_internal_widget_language(
     assert view["render_order"] == [
         "result_headline",
         "short_answer",
+        "briefing_markdown",
         "result_sections",
         "relevant_kpis",
         "follow_up_question",
