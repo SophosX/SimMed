@@ -4035,4 +4035,4 @@ Akzeptiert: `/simulate` erzeugt `causal_result_packet` nun mit `max_kpis=4`, pas
 Keine wichtige Entscheidung offen. Sicher weiter: nächster kohärenter Chunk sollte die Zeitfenster 0–5 / 6–10 / 11–15 mit beobachteten KPI-Jahreswerten koppeln, damit der Bericht weniger statisch und noch stärker wie ein Simulationsbriefing liest.
 
 ### Verification / Git
-TDD: neuer API-Assertion-Test war zuerst rot (`len(first_view_kpi_cards) == 5`), danach grün nach API-Anpassung. Verifikation: `python3 -m pytest -q` → 248 passed; `py_compile` für Kernmodule/Tests OK; 50-run/15-Jahre Simulation-Smoke mit `build_causal_result_packet` → OK. Git-Sync/Commit/Push folgt direkt anschließend.
+TDD: neuer API-Assertion-Test war zuerst rot (`len(first_view_kpi_cards) == 5`), danach grün nach API-Anpassung. Verifikation: `python3 -m pytest -q` → 248 passed; `py_compile` für Kernmodule/Tests OK; 50-run/15-Jahre Simulation-Smoke mit `build_causal_result_packet` → OK. Git: Commit `2a71a58` (`Align API causal briefing KPI limit`) wurde nach `origin/main` gepusht und per `git show --name-only --oneline -1` geprüft.
