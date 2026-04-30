@@ -4868,4 +4868,4 @@ Akzeptiert: public packet verschlankt (`result_headline`, `short_answer`, `resul
 Keine neue Entscheidung nötig. Ich gehe sicher weiter mit UI-Konsolidierung und Browser-Sinncheck.
 
 ### Verification / Git
-Vor Commit geprüft: `python3 -m pytest -q` → 269 passed; `python3 -m py_compile app.py result_causality.py api.py simulation_core.py tests/test_result_causality.py`; 50-run/15-year Simulation-Smoke mit halbierten Medizinstudienplätzen → OK. Git-Sync/Commit folgt in diesem Heartbeat.
+Geprüft: `python3 -m pytest -q` → 269 passed; `python3 -m py_compile app.py result_causality.py api.py simulation_core.py tests/test_result_causality.py`; 50-run/15-year Simulation-Smoke mit halbierten Medizinstudienplätzen → OK. Commit/Push: `852b972` (`Clarify result briefing first view`) auf `origin/main` bestätigt.
