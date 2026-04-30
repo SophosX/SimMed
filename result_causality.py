@@ -456,7 +456,7 @@ def build_causal_result_packet(
         },
     ]
 
-    sequential_plain_text = "\n\n".join(
+    legacy_numbered_story = "\n\n".join(
         ["Ergebnisbericht"]
         + [f"{block['step']}\n{block['text']}" for block in free_text_blocks]
     )
@@ -610,6 +610,7 @@ def build_causal_result_packet(
         ),
         "guardrail": RESULT_CAUSALITY_GUARDRAIL,
     }
+    sequential_plain_text = professional_briefing["sequential_text"]
 
     coherent_story = (
         f"Ausgangspunkt: {changed_text} Ergebnis: {kpi_text} "
@@ -648,6 +649,7 @@ def build_causal_result_packet(
                 "optional_audit_layers",
             ],
             "main_blocks": free_text_blocks,
+            "legacy_numbered_story": legacy_numbered_story,
             "sequential_plain_text": sequential_plain_text,
             "professional_briefing": professional_briefing,
             "first_view_kpi_cards": first_view_kpi_cards,
@@ -677,6 +679,7 @@ def build_causal_result_packet(
         },
         "story_sections": story_sections,
         "professional_briefing": professional_briefing,
+        "legacy_numbered_story": legacy_numbered_story,
         "sequential_plain_text": sequential_plain_text,
         "coherent_story": coherent_story,
         "method_note": RESULT_CAUSALITY_GUARDRAIL,

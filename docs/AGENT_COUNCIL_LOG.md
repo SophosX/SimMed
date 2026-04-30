@@ -3846,3 +3846,32 @@ Keine wichtige Entscheidung offen. Sicher weiter: als nächstes die tatsächlich
 
 ### Verification / Git
 RED beobachtet: zwei neue Tests in `tests/test_result_causality.py` scheiterten erwartungsgemäß mit fehlenden Feldern `first_view_kpi_cards` und `render_sequence`. Vollständige Verifikation/Git folgt im Heartbeat-Status.
+
+## 2026-04-30 08:54 UTC — Ergebnisbericht als einzige Primärgeschichte
+
+### Context
+Die Ergebnisansicht hatte bereits einen professionellen Briefing-Block, aber `sequential_plain_text` zeigte für API/Agenten noch die ältere nummerierte 1–6-Erzählung. Dieser Lauf macht die professionelle Sequenz selbst zur primären Textausgabe und bewahrt die alte nummerierte Fassung nur als Legacy-/Audit-Feld.
+
+### Project Manager
+Priorität: die API- und UI-Quelle der Wahrheit weiter vereinheitlichen, statt parallel zwei erste Ergebnisgeschichten zu pflegen. Risiko: doppelte Plain-Text-Pfade würden bei Agenten wieder zu uneinheitlichen Ausgaben führen.
+
+### Designer / UX
+Die Hauptgeschichte folgt jetzt direkt dem menschlichen Ergebnisbericht: Ausgangslage → Eingriff → berechnete Wirkpfade → relevante KPIs → Anpassungsreaktionen → Einordnung/Belastbarkeit → nächste Prüfentscheidung. Die nummerierte technische Vorversion bleibt nachgeordnet.
+
+### Creative Agent
+Produktfit: derselbe professionelle `sequential_plain_text` kann später als Telegram-/PDF-Kurzbericht dienen. Das ist besser als weitere Textvarianten — eine gute Geschichte, nicht sieben halb gute.
+
+### Political Health-System Strategist
+Die politische Einordnung bleibt erst nach der Plausibilitätsprüfung. Gerade bei weniger Medizinstudienplätzen muss erst sichtbar sein, ob Telemedizin/Delegation/Zuwanderung den Druck erklären oder ob Burnout/Wartezeit eine Modellkopplung prüfen lassen.
+
+### Evidence / Domain
+Keine neue externe Recherche in diesem Lauf. Keine neuen Fakten- oder Wirksamkeitsclaims; geändert wurde die Ergebnisstruktur. Evidenz-/Annahmegrenzen bleiben aus Registry und Guardrails gespeist.
+
+### Integrator Decision
+Akzeptiert: `packet["sequential_plain_text"]` und `primary_result_view["sequential_plain_text"]` zeigen jetzt den professionellen Ergebnisbericht; die frühere nummerierte Geschichte ist als `legacy_numbered_story` explizit verfügbar.
+
+### Question to Alex
+Keine wichtige Entscheidung offen. Sicher weiter: als nächstes echte Zeitfenster-KPI-Spuren 0–5/6–10/11–15 in den Bericht integrieren.
+
+### Verification / Git
+RED beobachtet: `test_packet_primary_plain_text_is_the_professional_briefing_not_legacy_numbered_blocks` scheiterte erwartungsgemäß, weil `sequential_plain_text` noch die nummerierten Blöcke enthielt. Zieltests danach grün: `tests/test_result_causality.py` + API-Causal-Test → 17 passed. Full Suite/Git folgt nach Abschluss dieses Laufs.

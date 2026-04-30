@@ -174,12 +174,13 @@ def test_causal_result_packet_exposes_one_sequential_plain_text_story_for_api_cl
     story = packet["sequential_plain_text"]
     assert story.startswith("Ergebnisbericht")
     assert story.count("\n\n") >= 5
-    assert story.index("1. Ergebnis") < story.index("2. Änderung") < story.index("3. Wirkmechanismus")
-    assert story.index("3. Wirkmechanismus") < story.index("4. Anpassung") < story.index("5. Plausibilitätsprüfung")
+    assert story.index("Ausgangslage") < story.index("Eingriff") < story.index("Berechnete Wirkpfade")
+    assert story.index("Berechnete Wirkpfade") < story.index("Relevante KPIs") < story.index("Anpassungsreaktionen")
+    assert story.index("Anpassungsreaktionen") < story.index("Einordnung und Belastbarkeit") < story.index("Nächste Prüfentscheidung")
     assert "Medizinstudienplätze" in story
-    assert "ab etwa Jahr 6" in story
+    assert "ab Jahr 6" in story
     assert "Jahr 11–15" in story
-    assert "Datenlage" in story
+    assert "Datenlage" in packet["legacy_numbered_story"]
     assert "random Internet" not in story
     assert "Klartext" not in story
     assert "keine freie Web-Recherche" not in story
@@ -375,3 +376,19 @@ def test_primary_result_view_declares_single_sequential_briefing_before_optional
     assert first_view["optional_audit_layers"]["expanded_by_default"] is False
     assert first_view["optional_audit_layers"]["reason"].startswith("Detailprüfungen bleiben verfügbar")
     assert "keine zweite erste Ergebnisansicht" not in first_view["optional_audit_layers"]["reason"]
+
+
+def test_packet_primary_plain_text_is_the_professional_briefing_not_legacy_numbered_blocks():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+
+    assert packet["sequential_plain_text"] == packet["professional_briefing"]["sequential_text"]
+    assert packet["primary_result_view"]["sequential_plain_text"] == packet["professional_briefing"]["sequential_text"]
+    assert packet["legacy_numbered_story"] != packet["sequential_plain_text"]
+    assert "Ausgangslage\n" in packet["sequential_plain_text"]
+    assert "Eingriff\n" in packet["sequential_plain_text"]
+    assert "Berechnete Wirkpfade\n" in packet["sequential_plain_text"]
+    assert "1. Ergebnis" not in packet["sequential_plain_text"]
+    assert "2. Änderung" not in packet["sequential_plain_text"]
