@@ -324,6 +324,58 @@ def build_scenario_gallery_pre_run_audit(
 
 
 
+def build_scenario_gallery_run_decision_brief(
+    *, n_runs: int = 100, n_years: int = 15, seed: int = 42
+) -> dict[str, Any]:
+    """Return a copy-safe human decision brief before any gallery run.
+
+    This is intentionally one step more explicit than the pre-run audit: it tells
+    an operator what a safe "Run now" decision must mean, which evidence checks
+    remain manual, and what must *not* be inferred after the simulation. It does
+    not store a decision, execute a run, apply parameters, or mutate model state.
+    """
+
+    audit = build_scenario_gallery_pre_run_audit(n_runs=n_runs, n_years=n_years, seed=seed)
+    rows: list[dict[str, Any]] = []
+    for row in audit["rows"]:
+        rows.append({
+            "card_id": row["card_id"],
+            "title": row["title"],
+            "recommended_default": "Hold bis Parameter/Evidenz bewusst geprüft wurden",
+            "allowed_decisions": ["Run", "Hold", "Reject/Rework"],
+            "decision_fields_to_fill": [
+                "decision",
+                "decided_by",
+                "decided_at",
+                "why_this_scenario_now",
+                "evidence_caveat_acknowledged",
+                "post_run_reading_owner",
+            ],
+            "minimum_checks_before_run": row["must_confirm_before_run"],
+            "copyable_payload_route_if_run": row["payload_route"],
+            "copyable_manifest_route_if_run": row["manifest_route"],
+            "post_run_first_three_clicks": row["after_run_first_three_clicks"],
+            "stop_rule": row["stop_rule"],
+        })
+    return {
+        "status": "scenario_gallery_run_decision_brief_not_executed",
+        "title": "Scenario-Gallery Run-Entscheidung: Run/Hold/Reject vor dem Start dokumentieren",
+        "recommended_default": "Hold, solange Evidenz-/Caveat-Checks nicht bewusst gelesen sind",
+        "rows": rows,
+        "definition_of_done_before_run": audit["definition_of_done_before_run"] + [
+            "Eine menschliche Run/Hold/Reject-Entscheidung ist außerhalb des Systems dokumentiert.",
+            "Der erste Lesepfad nach dem Lauf ist zugewiesen; Resultate werden nicht als Prognose oder Wirksamkeitsbeweis gelesen.",
+        ],
+        "guardrail": (
+            "Run-Decision-Brief ist read-only/status-only: keine Entscheidungsspeicherung, "
+            "kein Apply-Button, keine Session-State-Mutation, kein Simulationslauf, "
+            "keine Registry-/Modellmutation, keine amtliche Prognose, kein Policy-Wirkungsbeweis "
+            "und keine Lobbying-Empfehlung."
+        ),
+    }
+
+
+
 def build_scenario_gallery_operator_run_packets(
     *, n_runs: int = 100, n_years: int = 15, seed: int = 42
 ) -> list[dict[str, Any]]:

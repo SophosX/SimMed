@@ -1213,6 +1213,19 @@ def build_scenario_gallery_pre_run_audit(
 
 
 
+def build_scenario_gallery_run_decision_brief(
+    *, n_runs: int = 100, n_years: int = 15, seed: int = 42
+) -> dict[str, Any]:
+    """Return read-only Run/Hold/Reject guidance before starter execution."""
+
+    return scenario_gallery_module.build_scenario_gallery_run_decision_brief(
+        n_runs=n_runs,
+        n_years=n_years,
+        seed=seed,
+    )
+
+
+
 def sidebar_quick_start_steps() -> List[str]:
     """Kurze Orientierung, damit neue Nutzer:innen sofort wissen, was zu tun ist."""
     return [
@@ -1252,7 +1265,11 @@ def render_landing_hero() -> None:
         pre_run_audit = build_scenario_gallery_pre_run_audit()
         st.caption("Pre-Run-Audit: " + pre_run_audit["title"])
         st.caption("Audit-Guardrail: " + pre_run_audit["guardrail"])
+        run_decision_brief = build_scenario_gallery_run_decision_brief()
+        st.caption("Run/Hold/Reject: " + run_decision_brief["recommended_default"])
+        st.caption("Decision-Guardrail: " + run_decision_brief["guardrail"])
         audit_rows = {item["card_id"]: item for item in pre_run_audit["rows"]}
+        decision_rows = {item["card_id"]: item for item in run_decision_brief["rows"]}
         guided_plans = {
             item["card_id"]: item for item in build_scenario_gallery_guided_apply_plan()
         }
@@ -1296,6 +1313,15 @@ def render_landing_hero() -> None:
                 + " | ".join(audit_row["must_confirm_before_run"])
             )
             st.caption("Nach Start zuerst öffnen: " + " → ".join(audit_row["after_run_first_three_clicks"]))
+            decision_row = decision_rows[card["id"]]
+            st.caption(
+                "Run-Entscheidung dokumentieren: "
+                + "/".join(decision_row["allowed_decisions"])
+                + " · Default: "
+                + decision_row["recommended_default"]
+                + " · Felder: "
+                + ", ".join(decision_row["decision_fields_to_fill"][:3])
+            )
             st.caption("Guardrail: " + plan["guardrail"])
 
 

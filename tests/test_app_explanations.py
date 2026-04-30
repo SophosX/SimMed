@@ -27,6 +27,7 @@ from app import (
     build_scenario_gallery_operator_run_packets,
     build_scenario_gallery_operator_status_cards,
     build_scenario_gallery_pre_run_audit,
+    build_scenario_gallery_run_decision_brief,
     build_scenario_gallery_run_handoff_sheet,
     build_scenario_gallery_run_readiness_summary,
     build_scenario_gallery_manifest_previews,
@@ -764,6 +765,33 @@ def test_scenario_gallery_pre_run_audit_makes_last_safe_checks_explicit():
     assert "keine Registry-/Modellmutation" in audit["guardrail"]
     assert "keine Lobbying-Empfehlung" in audit["guardrail"]
     assert "Policy-Briefing" in combined
+
+
+
+def test_scenario_gallery_run_decision_brief_keeps_run_hold_reject_auditable():
+    brief = build_scenario_gallery_run_decision_brief(n_runs=100, n_years=15, seed=42)
+    combined = " ".join(str(value) for value in brief.values())
+
+    assert brief["status"] == "scenario_gallery_run_decision_brief_not_executed"
+    assert brief["recommended_default"].startswith("Hold")
+    assert brief["rows"]
+    medical_row = next(row for row in brief["rows"] if row["card_id"] == "medical_training_pipeline")
+    assert medical_row["allowed_decisions"] == ["Run", "Hold", "Reject/Rework"]
+    assert "decided_by" in medical_row["decision_fields_to_fill"]
+    assert "evidence_caveat_acknowledged" in medical_row["decision_fields_to_fill"]
+    assert medical_row["copyable_payload_route_if_run"] == "POST /simulate"
+    assert medical_row["copyable_manifest_route_if_run"] == "POST /scenario-manifest"
+    assert any("keine amtliche Prognose" in item for item in medical_row["minimum_checks_before_run"])
+    assert any("Ergebnis-Storyboard" in item for item in medical_row["post_run_first_three_clicks"])
+    assert "Wirksamkeitsnachweis" in medical_row["stop_rule"]
+    assert "keine Entscheidungsspeicherung" in brief["guardrail"]
+    assert "kein Apply-Button" in brief["guardrail"]
+    assert "kein Simulationslauf" in brief["guardrail"]
+    assert "keine Registry-/Modellmutation" in brief["guardrail"]
+    assert "keine amtliche Prognose" in brief["guardrail"]
+    assert "kein Policy-Wirkungsbeweis" in brief["guardrail"]
+    assert "keine Lobbying-Empfehlung" in brief["guardrail"]
+    assert "Run/Hold/Reject" in combined
 
 
 

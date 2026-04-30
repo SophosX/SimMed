@@ -744,6 +744,39 @@ def test_api_rejects_scenario_gallery_pre_run_audit_out_of_bounds_without_execut
 
 
 
+def test_api_exposes_scenario_gallery_run_decision_brief_without_execution():
+    client = TestClient(api)
+    response = client.get("/scenario-gallery/run-decision-brief?n_runs=100&n_years=15&seed=42")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "scenario_gallery_run_decision_brief_not_executed"
+    assert body["recommended_default"].startswith("Hold")
+    assert "keine Entscheidungsspeicherung" in body["guardrail"]
+    assert "kein Simulationslauf" in body["guardrail"]
+    assert "keine Registry-/Modellmutation" in body["guardrail"]
+    rows = body["rows"]
+    medical_row = next(row for row in rows if row["card_id"] == "medical_training_pipeline")
+    assert medical_row["allowed_decisions"] == ["Run", "Hold", "Reject/Rework"]
+    assert "evidence_caveat_acknowledged" in medical_row["decision_fields_to_fill"]
+    assert medical_row["copyable_payload_route_if_run"] == "POST /simulate"
+    assert medical_row["copyable_manifest_route_if_run"] == "POST /scenario-manifest"
+    assert any("keine amtliche Prognose" in item for item in medical_row["minimum_checks_before_run"])
+    assert "Wirksamkeitsnachweis" in medical_row["stop_rule"]
+
+
+
+def test_api_rejects_scenario_gallery_run_decision_brief_out_of_bounds_without_execution():
+    client = TestClient(api)
+    response = client.get("/scenario-gallery/run-decision-brief?seed=1000000")
+
+    assert response.status_code == 422
+    detail = response.json()["detail"]
+    assert detail["status"] == "invalid_scenario_gallery_run_decision_brief_bounds"
+    assert "kein Simulationslauf" in detail["guardrail"]
+
+
+
 def test_api_exposes_scenario_gallery_operator_run_packets_without_execution():
     client = TestClient(api)
     response = client.get("/scenario-gallery/operator-run-packets?n_runs=100&n_years=15&seed=42")

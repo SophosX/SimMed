@@ -3214,3 +3214,32 @@ Keine.
 
 ### Verification / Git
 Verifiziert mit `pytest tests/test_api.py tests/test_app_explanations.py -q` (121 passed), `py_compile app.py api.py scenario_gallery.py`, und 20-run Simulation-Smoke. Commit/Push folgt im Integrator-Schritt; Zip-Artefakt wird aktualisiert.
+
+## 2026-04-30 07:50 Europe/Berlin — Scenario Gallery Run-Decision Brief
+
+### Context
+Alexs Korrektur priorisiert Core-Plattform statt KI/Evidence. Dieser Lauf erweitert den Scenario-Gallery-Pfad nach Pre-Run-Audit um einen read-only Run/Hold/Reject-Decision-Brief vor jedem bewussten Starter-Szenario.
+
+### Project Manager
+Priorität: sichere, testbare Plattformbrücke von Demo-Karte zu bewusstem Simulationsstart. Risiko: ein zu früher Apply/Run könnte als Prognose oder Wirkungsbeweis missverstanden werden. Nächste Aufgaben: fokussierte Decision-Brief-API in UI/Docs besser sichtbar machen; danach Confirm-before-Apply-Konzept planen.
+
+### Designer / UX
+Die Gallery hat jetzt eine klarere Stufe: nicht nur „prüfen“, sondern „Run/Hold/Reject bewusst dokumentieren“. Das hilft mobilen/erstmaligen Nutzer:innen, vor dem Start den sicheren Default Hold und die Pflichtfelder zu sehen.
+
+### Creative Agent
+Idee: später könnte jede Starterkarte eine kleine „Entscheidungsampel“ zeigen: Hold = grau, Run = bewusst bestätigt, Reject/Rework = Annahmen überarbeiten. Fit: nützlich für Verständnis und Moderation, aber erst nach getesteter, absichtlicher UI-Interaktion.
+
+### Political Health-System Strategist
+Politisch sensible Szenarien dürfen nicht wie Kampagnen- oder Lobbying-Empfehlungen wirken. Der Decision-Brief hält fest, dass selbst ein Run nur ein SimMed-Szenario startet und Ergebnisinterpretation danach Storyboard/KPI/Annahmen/Policy-Briefing folgen muss.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Die Änderung erzeugt keine neuen Fakten oder Effekte; sie verstärkt bestehende Evidenz-/Caveat-Checks je geändertem Parameter.
+
+### Integrator Decision
+Akzeptiert: `build_scenario_gallery_run_decision_brief(...)`, Streamlit-Wrapper/Rendering in der Landing-Page-Gallery, API `GET /scenario-gallery/run-decision-brief`, Tests für App/API/Bounds. Kein Apply-Button, keine Simulation, keine Modellmutation.
+
+### Question to Alex
+Keine.
+
+### Verification / Git
+Lokal verifiziert: gezielte 3 Tests passed; vollständige Suite `191 passed`; `py_compile` für app/api/scenario_gallery/simulation_core/data_ingestion/parameter_registry; Simulation-Smoke `OK smoke (60, 30) (320, 6)`. Commit/Push folgt in diesem Lauf.
