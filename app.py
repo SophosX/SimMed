@@ -3622,23 +3622,30 @@ def render_dashboard(agg: pd.DataFrame, params: dict):
 
     render_result_causal_overview(agg, params)
     causal_layout = build_causal_result_layout(build_result_causal_overview(agg, params))
-    optional_layers = causal_layout["optional_interpretation_layers"]
-    with st.expander(optional_layers["label"], expanded=optional_layers["default_expanded"]):
-        st.caption(optional_layers["reason"])
+
+    def delta_pct(col: str) -> float:
+        v0, v1 = first[f"{col}_mean"], last[f"{col}_mean"]
+        return ((v1 / v0) - 1) * 100 if v0 != 0 else 0
+
+    secondary = causal_layout.get("secondary_detail_layers", {})
+    with st.expander(
+        secondary.get("label", "Detailprüfung nach dem Ergebnisbericht"),
+        expanded=secondary.get("default_expanded", False),
+    ):
+        st.caption(
+            secondary.get(
+                "reason",
+                "Einzelne Kennzahlen, Zeitverlauf, Annahmen und politische Einordnung folgen als Prüfung nach der ersten Ergebnisantwort.",
+            )
+        )
+        st.markdown("#### Orientierung vor der Detailprüfung")
         render_result_narrative_summary(agg, params)
         render_result_decision_checkpoints(agg, params)
         render_result_storyboard(agg, params)
         render_uncertainty_band_summary(agg)
 
-    dense = causal_layout["dense_kpi_wall"]
-    with st.expander(dense["label"], expanded=dense["default_expanded"]):
-        st.caption(dense["reason"])
-        st.markdown(f"### Kernkennzahlen {endjahr} (Mittelwerte über alle Runs)")
-        st.caption("Desktop: ⓘ/Hover erklärt jede Karte. Mobil/Tablet: dieselben Erklärungen stehen direkt darunter in den aufklappbaren KPI-Details. P5/P95-Spannweiten stehen oben im Unsicherheits-Check.")
-
-        def delta_pct(col: str) -> float:
-            v0, v1 = first[f"{col}_mean"], last[f"{col}_mean"]
-            return ((v1 / v0) - 1) * 100 if v0 != 0 else 0
+        st.markdown(f"#### Vollständige Kennzahlen {endjahr} (Mittelwerte über alle Runs)")
+        st.caption("Die vollständigen Kennzahlen sind bewusst nach dem Ergebnisbericht platziert. Die erste Antwort oben bleibt die Lesefassung; diese Karten sind die Detailprüfung.")
 
         # Zeile 1: Kosten & Finanzen
         c1, c2, c3, c4 = st.columns(4)
@@ -3710,17 +3717,7 @@ def render_dashboard(agg: pd.DataFrame, params: dict):
             cls = "mc-green" if v > 60 else "mc-orange"
             render_metric_card_with_details("Patientenzufr.", f"{v:.0f} / 100", "zufriedenheit_patienten", d, True, cls)
 
-    secondary = causal_layout.get("secondary_detail_layers", {})
-    with st.expander(
-        secondary.get("label", "Detailprüfung nach dem Ergebnisbericht"),
-        expanded=secondary.get("default_expanded", False),
-    ):
-        st.caption(
-            secondary.get(
-                "reason",
-                "Einzelne Kennzahlen, Zeitverlauf, Annahmen und politische Einordnung folgen als Prüfung nach der ersten Ergebnisantwort.",
-            )
-        )
+        st.markdown("#### Kennzahlen, Zeitverlauf und Bericht im Detail")
         render_kpi_deep_dive(agg, params)
         render_main_trend_chart(agg, params)
         render_simulation_report(agg, params)

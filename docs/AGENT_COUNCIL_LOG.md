@@ -5897,3 +5897,33 @@ No decision needed in this run; keep progressing safely on first-screen clarity.
 
 ### Verification / Git
 Focused RED/GREEN test added and verified: `tests/test_result_causality.py::test_public_result_view_exposes_one_lean_briefing_contract_for_ui_and_api`. Focused suite passed: `pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 62 passed. Commit/push pending at time of log entry.
+
+
+## 2026-04-30 19:45 Europe/Berlin — Result page detail layers consolidated
+
+### Context
+Alexs latest correction remains: the result page should feel like one readable briefing, not a stack of generated helper blocks. The first briefing was already simplified; this heartbeat focused on the page immediately after that first card, where three separate collapsed areas still competed for attention.
+
+### Project Manager
+Priority: keep the first screen clean and make the rest of the dashboard feel like one optional review area. Risk: dense KPI cards are still useful, but they should not appear as another parallel result page. Next tasks: screenshot/browser QA of the visual hierarchy, then polish first-card spacing/typography.
+
+### Designer / UX
+Accepted UX direction: after the first result briefing, there is now one reader-facing detail area instead of separate optional narrative, full-KPI, and secondary expanders. Labels use plain wording such as `Kennzahlen im Detail` and `Bericht mit Annahmen und Quellen`, not internal menu language.
+
+### Creative Agent
+Idea: the next visual slice can make the first card feel like a calm one-page memo with subtle section spacing and compact metric rows. Fit is good if it reuses the same packet fields and does not add new claims.
+
+### Political Health-System Strategist
+Political interpretation remains behind mechanism, timing, assumptions, and KPI detail checks. This keeps sensitive levers like Medizinstudienplätze from being read as a direct recommendation before the delayed pipeline and plausibility checks are reviewed.
+
+### Evidence / Domain
+No new factual claims, sources, or model dynamics were added. This run changed the communication/layout layer only; evidence and assumptions remain visible in the detail Prüfung, not dumped into the opening screen.
+
+### Integrator Decision
+Accepted: consolidate post-briefing material into one `secondary_detail_layers` area, rename its public sections to reader-facing labels, and keep legacy narrative/storyboard/uncertainty/full KPI material inside that single collapsed review path. Deferred: full browser screenshot QA and CSS polish.
+
+### Question to Alex
+No important decision is blocked. Continue safely with visual hierarchy and readability cleanup.
+
+### Verification / Git
+Focused RED/GREEN: updated `tests/test_result_causality.py::test_causal_result_layout_keeps_dense_kpis_optional_after_cleartext`, saw it fail on old `KPI-Details`/`Policy-Briefing` labels, then passed after the implementation. Focused suite: `pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 62 passed. Full verification and git push pending.

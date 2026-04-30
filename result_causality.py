@@ -573,10 +573,17 @@ def build_causal_result_layout(packet: Mapping[str, Any]) -> dict[str, Any]:
             "mode": "single_collapsed_detail_area",
             "default_expanded": False,
             "sections": [
-                "KPI-Details",
-                "Trend und Timing",
-                "Policy-Briefing",
+                "Kennzahlen im Detail",
+                "Zeitverlauf und Timing",
+                "Bericht mit Annahmen und Quellen",
                 "politische Einordnung",
+            ],
+            "includes_legacy_layers": [
+                "Narrative Zusammenfassung",
+                "Entscheidungs-Checkpoints",
+                "Storyboard",
+                "Unsicherheitsband",
+                "vollständige Kennzahlen",
             ],
             "reason": (
                 "Alles nach dem ersten Ergebnisbriefing ist bewusst Prüfung: einzelne Kennzahlen, "

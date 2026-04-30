@@ -753,13 +753,20 @@ def test_causal_result_layout_keeps_dense_kpis_optional_after_cleartext():
     assert secondary["default_expanded"] is False
     assert secondary["label"] == "Detailprüfung nach dem Ergebnisbericht"
     assert secondary["sections"] == [
-        "KPI-Details",
-        "Trend und Timing",
-        "Policy-Briefing",
+        "Kennzahlen im Detail",
+        "Zeitverlauf und Timing",
+        "Bericht mit Annahmen und Quellen",
         "politische Einordnung",
     ]
+    assert secondary["includes_legacy_layers"] == [
+        "Narrative Zusammenfassung",
+        "Entscheidungs-Checkpoints",
+        "Storyboard",
+        "Unsicherheitsband",
+        "vollständige Kennzahlen",
+    ]
     assert "ersten Ergebnisbriefing" in secondary["reason"]
-    assert all(term not in secondary["label"] + secondary["reason"] for term in ["KPI-Wand", "Klartext", "generated", "helper"])
+    assert all(term not in secondary["label"] + secondary["reason"] + " ".join(secondary["sections"]) for term in ["KPI", "Policy-Briefing", "KPI-Wand", "Klartext", "generated", "helper"])
     assert layout["guardrail"] == packet["guardrail"]
 
 
