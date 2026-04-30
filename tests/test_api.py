@@ -1234,6 +1234,22 @@ def test_api_exposes_registry_integration_operator_briefing_without_actions():
     assert share_cards_body["registry_integration_operator_export_share_cards"]["cards"][2]["is_stop_gate"] is True
     assert "kein execute=true" in share_cards_body["guardrail"]
 
+    bundle = body["registry_integration_operator_export_bundle"]
+    assert bundle["title"] == "Registry-Operator-Export-Bundle"
+    assert bundle["copy_safe"] is True
+    assert bundle["packet_sha256"] == export_audit["packet_sha256"]
+    assert "GET /data-readiness/registry-integration-operator-export-digest" in bundle["focused_status_routes"]
+    assert "Branch/PR stoppen" in " ".join(bundle["bundle_steps"])
+    assert "kein execute=true" in bundle["guardrail"]
+
+    bundle_response = client.get("/data-readiness/registry-integration-operator-export-bundle?limit=3")
+    assert bundle_response.status_code == 200
+    bundle_body = bundle_response.json()
+    assert bundle_body["status"] == "data_readiness_registry_integration_operator_export_bundle_not_applied"
+    assert bundle_body["registry_integration_operator_export_bundle"]["copy_safe"] is True
+    assert bundle_body["registry_integration_operator_export_bundle"]["focused_status_routes"][0].startswith("GET ")
+    assert "kein execute=true" in bundle_body["guardrail"]
+
     invalid = client.get("/data-readiness/registry-integration-operator-briefing?limit=0")
     assert invalid.status_code == 422
     assert invalid.json()["detail"]["status"] == "invalid_data_readiness_registry_integration_operator_briefing_limit"

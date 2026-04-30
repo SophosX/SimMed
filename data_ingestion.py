@@ -3031,6 +3031,57 @@ def build_data_readiness_registry_integration_operator_export_share_cards(export
 
 
 
+def build_data_readiness_registry_integration_operator_export_bundle(
+    export_packet: dict,
+    export_audit: dict,
+    export_digest: dict,
+    export_share_cards: dict,
+) -> dict:
+    """Bundle all read-only operator export surfaces into one audit-ready object.
+
+    The packet/audit/digest/cards each serve a different operator context. This
+    bundle is the one API/UI object a future agent can fetch before writing an
+    issue or handoff note. It summarizes copy-safety, names the exact focused
+    read-only routes, and preserves the Stop-Gate before any branch or Registry
+    change.
+    """
+
+    routes = [
+        "GET /data-readiness/registry-integration-operator-export-packet",
+        "GET /data-readiness/registry-integration-operator-export-audit",
+        "GET /data-readiness/registry-integration-operator-export-digest",
+        "GET /data-readiness/registry-integration-operator-export-share-cards",
+    ]
+    copy_safe = (
+        export_audit.get("copy_safe") is True
+        and export_digest.get("copy_safe") is True
+        and export_share_cards.get("copy_safe") is True
+        and not export_digest.get("unsafe_findings")
+    )
+    return {
+        "title": "Registry-Operator-Export-Bundle",
+        "plain_language_note": (
+            "Ein einziger read-only Einstiegspunkt für die letzte Übergabe: Paket, Audit, "
+            "Kurz-Digest und mobile Karten zusammen prüfen, dann vor Branch/PR stoppen."
+        ),
+        "primary_parameter_key": export_packet.get("primary_parameter_key"),
+        "primary_label": export_packet.get("primary_label"),
+        "copy_safe": copy_safe,
+        "packet_sha256": export_audit.get("packet_sha256"),
+        "safe_route_count": export_audit.get("safe_route_count", 0),
+        "focused_status_routes": routes,
+        "bundle_steps": [
+            "Exportpaket öffnen und Parameter/Stop-Gate prüfen",
+            "Audit mit SHA256 und unsafe-findings lesen",
+            "Digest nur als Status-/Handoff-Text kopieren",
+            "Mobile Share-Karten prüfen und vor Branch/PR stoppen",
+        ],
+        "stop_condition": export_packet.get("stop_condition"),
+        "definition_of_done_before_branch": export_packet.get("definition_of_done_before_branch", []),
+        "guardrail": "Read-only/Export-bundle-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    }
+
+
 def build_data_readiness_registry_integration_handoff_packet(decision_record: dict) -> dict:
     """Create a copy-safe operator handoff from the Go/Hold/Reject decision record.
 

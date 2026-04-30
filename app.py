@@ -66,6 +66,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_operator_export_audit,
     build_data_readiness_registry_integration_operator_export_digest,
     build_data_readiness_registry_integration_operator_export_share_cards,
+    build_data_readiness_registry_integration_operator_export_bundle,
     build_data_readiness_registry_integration_pr_runbook,
     build_data_readiness_registry_integration_progress_timeline,
     build_data_readiness_registry_integration_status_board,
@@ -4247,6 +4248,12 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
     operator_export_digest = build_data_readiness_registry_integration_operator_export_digest(
         operator_export_packet, operator_export_audit
     )
+    operator_export_share_cards = build_data_readiness_registry_integration_operator_export_share_cards(
+        operator_export_digest
+    )
+    operator_export_bundle = build_data_readiness_registry_integration_operator_export_bundle(
+        operator_export_packet, operator_export_audit, operator_export_digest, operator_export_share_cards
+    )
     return {
         "title": "Nächste Daten-Schritte: erst Cache, dann Review, dann Integration",
         "plain_language_note": (
@@ -4284,9 +4291,8 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         "registry_integration_operator_export_packet": operator_export_packet,
         "registry_integration_operator_export_audit": operator_export_audit,
         "registry_integration_operator_export_digest": operator_export_digest,
-        "registry_integration_operator_export_share_cards": build_data_readiness_registry_integration_operator_export_share_cards(
-            operator_export_digest
-        ),
+        "registry_integration_operator_export_share_cards": operator_export_share_cards,
+        "registry_integration_operator_export_bundle": operator_export_bundle,
         "registry_integration_handoff_packet": build_data_readiness_registry_integration_handoff_packet(decision_record),
         "registry_integration_pr_runbook": pr_runbook,
         "rows": [
@@ -4762,6 +4768,18 @@ def render_learning_data_readiness_backlog():
         ]
         st.dataframe(pd.DataFrame(export_share_rows), use_container_width=True, hide_index=True)
         st.caption(export_share_cards["guardrail"])
+        export_bundle = backlog["registry_integration_operator_export_bundle"]
+        st.markdown(f"**{export_bundle['title']}**")
+        st.caption(export_bundle["plain_language_note"])
+        st.dataframe(pd.DataFrame([{
+            "Copy-safe": "ja" if export_bundle["copy_safe"] else "nein",
+            "SHA256": export_bundle["packet_sha256"],
+            "GET-Routen": export_bundle["safe_route_count"],
+            "Stop-Gate": export_bundle["stop_condition"],
+        }]), use_container_width=True, hide_index=True)
+        st.caption("Bundle-Schritte: " + " → ".join(export_bundle["bundle_steps"]))
+        st.caption("Fokussierte Statusrouten: " + " · ".join(export_bundle["focused_status_routes"]))
+        st.caption(export_bundle["guardrail"])
         command_palette = backlog["registry_integration_command_palette"]
         st.markdown(f"**{command_palette['title']}**")
         st.caption(command_palette["plain_language_note"])

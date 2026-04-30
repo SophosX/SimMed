@@ -2919,3 +2919,16 @@ Keine.
 
 ### Verification / Git
 Vor Commit: gezielte Tests 3 passed; volle Suite `165 passed`; `py_compile app.py data_ingestion.py api.py`; Smoke `OK share cards smoke`. Commit/Push folgen in diesem Lauf.
+
+
+## 2026-04-30 04:22 UTC – Registry-Operator-Export-Bundle
+
+- **Context:** Heartbeat priorisierte Core-Plattform/Data-Readiness statt KI-Recherche; bestehende Exportpaket/Audit/Digest/Share-Cards waren getrennt, aber für Operatoren noch kein einzelner API/UI-Einstieg.
+- **Project Manager:** Kleine, sichere Plattform-Scheibe: finalen Registry-Handoff leichter auffindbar machen, ohne Daten-/Modellintegration auszulösen.
+- **Designer/UX:** Mobile/touch-sichere Learning-Page ergänzt ein Bundle mit Copy-safe, SHA256, GET-Routen, Stop-Gate und fokussierten Statusrouten.
+- **Creative Agent:** Produktfit: ein "Export-Bundle" funktioniert wie ein Übergabeumschlag für Menschen/Agenten; nützlich, ohne neue Prognose-/Policy-Claims.
+- **Political Health-System Strategist:** Guardrail bleibt wichtig: kein Branch/PR und keine Registry-Änderung vor dokumentiertem menschlichem Go/Hold/Reject.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; Änderung betrifft Provenienz-/Governance-Workflow, keine neuen Fachannahmen.
+- **Integrator Decision:** `build_data_readiness_registry_integration_operator_export_bundle(...)` in `data_ingestion.py`, fokussierter API-Endpunkt `/data-readiness/registry-integration-operator-export-bundle`, Learning-Page-Surfacing und Regressionstests ergänzt.
+- **Question to Alex if needed:** Keine.
+- **Verification/Git:** `pytest -q` → 165 passed; `py_compile` für App/API/Data/Test-Dateien; 20×2 Simulation-Smoke → `(60, 30)`/`(320, 6)`. Commit/Push folgt in diesem Lauf.
