@@ -101,6 +101,14 @@ def test_learning_data_passport_overview_separates_registry_cache_and_transforma
     review_handoff = overview["snapshot_review_start_handoff_packet"]
     assert review_handoff["checklist_route"] == "GET /data-snapshots/review-start-checklist"
     assert "keine Review-Erzeugung" in review_handoff["guardrail"]
+    draft_preflight = overview["snapshot_review_draft_preflight"]
+    assert draft_preflight["status"] in {
+        "draft_preflight_blocked_by_integrity",
+        "draft_preflight_ready_for_manual_review",
+        "draft_preflight_no_ready_snapshot",
+    }
+    assert "keine Review-Erzeugung" in draft_preflight["guardrail"]
+    assert "definition_of_done_before_record_review" in draft_preflight
     assert "curl -s" in handoff["copyable_status_command"]
     assert "kein execute=true" in handoff["guardrail"]
     assert 1 <= len(overview["rows"]) <= 6

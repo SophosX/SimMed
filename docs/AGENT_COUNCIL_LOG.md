@@ -2393,3 +2393,32 @@ Gezielt: `pytest tests/test_api.py::test_api_exposes_focused_registry_integratio
 - **Integrator Decision:** `build_cached_snapshot_review_start_status_cards(...)` in `data_ingestion.py`, API-Feld `review_start_status_cards` in `/data-snapshots/review-start-checklist`, Learning-Page-Datenpass-Integration und Regressionstests ergänzt.
 - **Question to Alex if needed:** Keine wichtige Entscheidung offen.
 - **Verification/Git:** Full pytest 145 passed, py_compile für geänderte Module/Tests OK, 20×2 Simulation-Smoke OK. Commit/Push folgt.
+
+## 2026-04-30 04:11 Europe/Berlin — Heartbeat: Transformation-Review-Draft-Preflight
+
+### Context
+Alex priorisiert wieder Core-Plattform vor KI/Evidence. Aktueller Branch `feat/platform-data-status-foundation`; vorhandener Datenpfad ging von Rohsnapshot-Integrität zu Review-Start-Handoff, aber vor Persistenz einer `ReviewedTransformation` fehlte ein expliziter Pflichtfelder-Preflight.
+
+### Project Manager
+Priorität: Dateningestion/Provenienz-Gates konkreter machen, ohne Live-Fetch oder Modellmutation. Nächste 1-3 Tasks: Draft-Preflight in Status/API/UI weiter verlinken; danach fokussierte Review-Erfassungsentscheidung planen; weiterhin keine Evidence-Sidequests.
+
+### Designer / UX
+Die Learning Page zeigt nun nach Integrität und Review-Start zusätzlich den Schritt „Review-Draft-Preflight“, damit Erstnutzer sehen: erst Pflichtfelder prüfen, dann ggf. Review erfassen, danach erst Modellintegration.
+
+### Creative Agent
+Idee: später eine „Daten-Werkbank“-Wizard-Ansicht daraus machen. Fit: gut für Motivation/Verständnis, aber erst nach stabilen read-only Statusobjekten; heute nur strukturierter Preflight.
+
+### Political Health-System Strategist
+Gut für Glaubwürdigkeit gegenüber Politik/Verwaltung: keine Rohdaten werden unkontrolliert zu Modellwahrheiten. Der Preflight stärkt auditierbare Rollen, Methoden, Caveats und verhindert scheinbare Scheinpräzision.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf; keine neuen realweltlichen Claims. Änderung betrifft nur Governance-/Provenienzstruktur: Reviewer, Methode, Einheit, Denominator, Output-Wert, Caveat und SHA256 müssen sichtbar sein, bevor eine Review persistiert wird.
+
+### Integrator Decision
+Akzeptiert: `build_transformation_review_draft_preflight(...)` in `data_ingestion.py`, API `GET /data-snapshots/review-draft-preflight`, Einbettung in `/data-snapshots/review-start-checklist` und Learning-Page-Datenpass. Alles bleibt read-only: kein Netzwerkabruf, kein Cache-Schreiben, keine Review-Erzeugung, keine Registry-/Modellmutation.
+
+### Question to Alex if needed
+Keine wichtige Produktentscheidung offen; der sichere Default bleibt Hold/read-only bis zu einer bewusst geplanten Review-Erfassung.
+
+### Verification / Git
+Targeted tests: `3 passed`; full suite: `147 passed`; py_compile für betroffene Dateien OK; Simulation smoke `20 runs × 2 years` OK (`df=(60, 30)`, `reg=(320, 6)`). Commit/Push folgt in diesem Lauf.

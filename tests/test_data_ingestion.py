@@ -9,6 +9,7 @@ from data_ingestion import (
     build_cached_snapshot_review_start_checklist,
     build_cached_snapshot_review_start_handoff_packet,
     build_cached_snapshot_review_start_status_cards,
+    build_transformation_review_draft_preflight,
     build_connector_snapshot_requests,
     build_data_connector_queue,
     build_data_passport_rows,
@@ -257,6 +258,40 @@ def test_cached_snapshot_review_start_handoff_packet_points_to_review_templates_
     assert "Registry-/Modellintegration erst in separatem getesteten PR" in " ".join(handoff["operator_sequence"])
     assert "keine Review-Erzeugung" in handoff["guardrail"]
     assert "keine Registry-/Modellmutation" in handoff["guardrail"]
+
+
+def test_transformation_review_draft_preflight_lists_required_fields_without_recording_review(tmp_path):
+    cache_source_payload(
+        source_id="destatis_genesis",
+        source_url="https://www-genesis.destatis.de/genesis/online",
+        payload=b"year,value\n2024,84.4\n",
+        filename="population.csv",
+        cache_root=tmp_path,
+        source_period="2024",
+        output_parameter_keys=("bevoelkerung_mio",),
+        transformation_note="raw fixture only; no model mutation",
+        retrieved_at="2026-04-29T20:00:00+00:00",
+    )
+    checklist = build_cached_snapshot_review_start_checklist(
+        build_cached_snapshot_integrity_report(cache_root=tmp_path)
+    )
+
+    preflight = build_transformation_review_draft_preflight(checklist)
+
+    assert preflight["status"] == "draft_preflight_ready_for_manual_review"
+    assert preflight["ready_draft_count"] == 1
+    assert "noch nichts persistieren" in preflight["first_safe_step"]
+    row = preflight["rows"][0]
+    assert row["parameter_key"] == "bevoelkerung_mio"
+    assert row["review_template_route"] == "GET /data-connectors/transformation-review-template/bevoelkerung_mio"
+    assert row["draft_status"] == "template_ready_not_recorded"
+    required = " ".join(row["required_before_record_review"])
+    assert "reviewer identity" in required
+    assert "method_note" in required
+    assert "output_value" in required
+    assert "source_snapshot_sha256" in required
+    assert "keine Review-Erzeugung" in row["guardrail"]
+    assert "keine Registry-/Modellmutation" in preflight["guardrail"]
 
 
 

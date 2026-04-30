@@ -19,6 +19,7 @@ from data_ingestion import (
     build_cached_snapshot_review_start_checklist,
     build_cached_snapshot_review_start_handoff_packet,
     build_cached_snapshot_review_start_status_cards,
+    build_transformation_review_draft_preflight,
     build_connector_execution_plan,
     build_connector_execution_workbench,
     build_connector_snapshot_requests,
@@ -135,6 +136,22 @@ def get_data_snapshot_review_start_checklist() -> dict:
         "review_start_checklist": checklist,
         "review_start_status_cards": build_cached_snapshot_review_start_status_cards(checklist),
         "review_start_handoff_packet": build_cached_snapshot_review_start_handoff_packet(checklist),
+        "transformation_review_draft_preflight": build_transformation_review_draft_preflight(checklist),
+    }
+
+
+@api.get("/data-snapshots/review-draft-preflight")
+def get_data_snapshot_review_draft_preflight() -> dict:
+    """Expose required manual fields before any transformation review is recorded."""
+
+    integrity = build_cached_snapshot_integrity_report()
+    checklist = build_cached_snapshot_review_start_checklist(integrity)
+    preflight = build_transformation_review_draft_preflight(checklist)
+    return {
+        "status": "transformation_review_draft_preflight_not_executed",
+        "guardrail": "Preflight ist read-only: keine Review-Erzeugung, kein Cache-Schreiben und keine Registry-/Modellmutation.",
+        "review_start_checklist": checklist,
+        "transformation_review_draft_preflight": preflight,
     }
 
 

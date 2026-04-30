@@ -36,6 +36,7 @@ from data_ingestion import (
     build_cached_snapshot_review_start_checklist,
     build_cached_snapshot_review_start_handoff_packet,
     build_cached_snapshot_review_start_status_cards,
+    build_transformation_review_draft_preflight,
     build_connector_execution_plan,
     build_connector_snapshot_requests,
     build_data_connector_queue,
@@ -4101,6 +4102,7 @@ def build_learning_data_passport_overview(limit: int = 8) -> dict[str, Any]:
         "snapshot_review_start_checklist": review_start_checklist,
         "snapshot_review_start_status_cards": build_cached_snapshot_review_start_status_cards(review_start_checklist),
         "snapshot_review_start_handoff_packet": build_cached_snapshot_review_start_handoff_packet(review_start_checklist),
+        "snapshot_review_draft_preflight": build_transformation_review_draft_preflight(review_start_checklist),
         "rows": [
             {
                 "Parameter": row["label"],
@@ -4150,6 +4152,10 @@ def render_learning_data_passport_overview():
             st.code(review_handoff["copyable_status_command"], language="bash")
             if review_start["rows"]:
                 st.dataframe(pd.DataFrame(review_start["rows"]), use_container_width=True, hide_index=True)
+            draft_preflight = overview["snapshot_review_draft_preflight"]
+            st.markdown(f"**Review-Draft-Preflight:** {draft_preflight['first_safe_step']}")
+            if draft_preflight["rows"]:
+                st.dataframe(pd.DataFrame(draft_preflight["rows"]), use_container_width=True, hide_index=True)
     if overview["rows"]:
         st.dataframe(pd.DataFrame(overview["rows"]), use_container_width=True, hide_index=True)
     st.caption("Guardrail: Rohdaten-Snapshot ≠ geprüfter Modelleffekt. Annahmen bleiben sichtbar, bis eine Transformation geprüft und dokumentiert wurde.")

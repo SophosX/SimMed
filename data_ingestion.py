@@ -699,6 +699,69 @@ def build_cached_snapshot_review_start_status_cards(review_start_checklist: dict
     ]
 
 
+def build_transformation_review_draft_preflight(review_start_checklist: dict) -> dict:
+    """Return a read-only preflight before creating persisted transformation reviews.
+
+    The preflight turns the review-start checklist into explicit required fields
+    for a future ReviewedTransformation. It does not create a review, write
+    files, fetch data, or change registry/model values.
+    """
+
+    rows = []
+    for row in review_start_checklist.get("rows", []):
+        for parameter_key, route in zip(
+            row.get("output_parameter_keys", []),
+            row.get("review_template_routes", []),
+            strict=False,
+        ):
+            rows.append({
+                "parameter_key": parameter_key,
+                "source_id": row.get("source_id", ""),
+                "raw_path": row.get("raw_path", ""),
+                "source_period": row.get("source_period", ""),
+                "source_snapshot_sha256": row.get("source_snapshot_sha256", ""),
+                "review_template_route": route,
+                "required_before_record_review": [
+                    "reviewer identity/role",
+                    "method_note with table/filter/year/denominator",
+                    "output_value and output_unit checked against registry bounds",
+                    "caveat explaining remaining uncertainty and non-integration status",
+                    "source_snapshot_sha256 matched to manifest",
+                ],
+                "draft_status": "template_ready_not_recorded",
+                "guardrail": "Preflight ist read-only: keine Review-Erzeugung, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+            })
+
+    blocked_count = review_start_checklist.get("blocked_snapshot_count", 0)
+    if blocked_count:
+        status = "draft_preflight_blocked_by_integrity"
+        first_safe_step = "Integritätsblocker klären; keine Review-Daten erfassen."
+    elif rows:
+        status = "draft_preflight_ready_for_manual_review"
+        first_safe_step = "Review-Template je Parameter öffnen und Pflichtfelder manuell prüfen; noch nichts persistieren."
+    else:
+        status = "draft_preflight_no_ready_snapshot"
+        first_safe_step = "Erst Rohsnapshot-Integrität oder Connector-Dry-run prüfen."
+
+    return {
+        "title": "Transformation-Review-Draft: Preflight vor Persistenz",
+        "status": status,
+        "first_safe_step": first_safe_step,
+        "ready_draft_count": len(rows),
+        "blocked_snapshot_count": blocked_count,
+        "rows": rows,
+        "definition_of_done_before_record_review": [
+            "SHA256-Match ist dokumentiert",
+            "Rohdatei/Manifest wurden manuell geöffnet",
+            "Transformation, Einheit, Jahr/Denominator und Plausibilitätsgrenzen sind nachvollziehbar",
+            "Reviewer/Rolle und Caveat sind ausgefüllt",
+            "Registry-/Modellintegration bleibt ein separater getesteter PR",
+        ],
+        "guardrail": "Read-only/Draft-only: kein Netzwerkabruf, kein Cache-Schreiben, keine Review-Erzeugung, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    }
+
+
+
 def build_cached_snapshot_review_start_handoff_packet(review_start_checklist: dict) -> dict:
     """Create a copyable handoff for starting manual transformation reviews.
 

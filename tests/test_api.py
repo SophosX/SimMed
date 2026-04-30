@@ -83,6 +83,35 @@ def test_api_exposes_snapshot_review_start_checklist_without_execution():
     assert packet["checklist_route"] == "GET /data-snapshots/review-start-checklist"
     assert "curl -s" in packet["copyable_status_command"]
     assert "keine Review-Erzeugung" in packet["guardrail"]
+    preflight = body["transformation_review_draft_preflight"]
+    assert preflight["status"] in {
+        "draft_preflight_blocked_by_integrity",
+        "draft_preflight_ready_for_manual_review",
+        "draft_preflight_no_ready_snapshot",
+    }
+    assert "keine Review-Erzeugung" in preflight["guardrail"]
+
+
+def test_api_exposes_transformation_review_draft_preflight_without_recording_review():
+    client = TestClient(api)
+    response = client.get("/data-snapshots/review-draft-preflight")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "transformation_review_draft_preflight_not_executed"
+    assert "keine Review-Erzeugung" in body["guardrail"]
+    preflight = body["transformation_review_draft_preflight"]
+    assert preflight["status"] in {
+        "draft_preflight_blocked_by_integrity",
+        "draft_preflight_ready_for_manual_review",
+        "draft_preflight_no_ready_snapshot",
+    }
+    assert "definition_of_done_before_record_review" in preflight
+    assert "keine Registry-/Modellmutation" in preflight["guardrail"]
+    for row in preflight["rows"]:
+        assert row["draft_status"] == "template_ready_not_recorded"
+        assert "review_template_route" in row
+        assert "output_value" in " ".join(row["required_before_record_review"])
 
 
 def test_api_exposes_focused_snapshot_integrity_handoff_without_execution():
