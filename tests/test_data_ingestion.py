@@ -14,6 +14,7 @@ from data_ingestion import (
     build_data_readiness_integration_plan,
     build_data_readiness_integration_pr_brief,
     build_data_readiness_platform_brief,
+    build_data_readiness_registry_integration_decision_record,
     build_data_readiness_summary,
     build_next_data_readiness_actions,
     build_parameter_data_workflow_card,
@@ -831,3 +832,56 @@ def test_integration_pr_brief_turns_green_plans_into_safe_handoff():
     assert "GET /data-readiness/bevoelkerung_mio" in " ".join(item["copyable_pr_body_outline"])
     assert "kein Branch" in item["guardrail"]
     assert "keine Registry-/Modellmutation" in brief["guardrail"]
+
+
+def test_registry_integration_decision_record_requires_human_go_hold_reject():
+    preview = {
+        "rows": [
+            {
+                "parameter_key": "bevoelkerung_mio",
+                "label": "Bevölkerung",
+                "reviewed_output_value": 84.5,
+                "source_snapshot_sha256": "abc123",
+                "unit_check": {"unit_matches": True},
+                "plausibility_check": {"within_registry_bounds": True},
+                "required_human_decision": "separater PR erforderlich",
+            },
+            {
+                "parameter_key": "krankenhausbetten",
+                "label": "Krankenhausbetten",
+                "reviewed_output_value": None,
+                "source_snapshot_sha256": None,
+                "unit_check": {"unit_matches": False},
+                "plausibility_check": {"within_registry_bounds": None},
+            },
+        ]
+    }
+    pr_brief = {
+        "briefs": [
+            {
+                "parameter_key": "bevoelkerung_mio",
+                "branch_name": "feat/integrate-reviewed-bevoelkerung_mio",
+            }
+        ]
+    }
+
+    decision = build_data_readiness_registry_integration_decision_record(preview, pr_brief)
+
+    assert decision["title"].startswith("Registry-Integrationsentscheidung")
+    assert decision["summary"] == {"diff_rows_seen": 2, "decision_rows": 2, "ready_for_human_go_no_go": 1}
+    ready = decision["rows"][0]
+    assert ready["status"] == "human_go_no_go_required_before_pr"
+    assert ready["checks"] == {
+        "reviewed_value_present": True,
+        "source_snapshot_sha256_present": True,
+        "unit_matches_registry": True,
+        "within_registry_bounds": True,
+        "pr_brief_available": True,
+    }
+    assert ready["branch_name_if_go"] == "feat/integrate-reviewed-bevoelkerung_mio"
+    assert "Go:" in ready["safe_options"][0]
+    assert "Hold" in ready["recommended_default"]
+    blocked = decision["rows"][1]
+    assert blocked["status"] == "blocked_before_human_go_no_go"
+    assert blocked["checks"]["pr_brief_available"] is False
+    assert "keine Registry-/Modellmutation" in decision["guardrail"]

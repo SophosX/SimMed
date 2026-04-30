@@ -495,3 +495,31 @@ def test_api_exposes_registry_diff_preview_for_reviewed_values_without_apply():
     assert population["plausibility_check"]["within_registry_bounds"] is True
     assert "darf ein separater PR den Default ändern" in population["required_human_decision"]
     assert "keine Registry-/Modellmutation" in population["guardrail"]
+
+
+
+def test_api_exposes_registry_integration_decision_record_without_apply():
+    client = TestClient(api)
+    seed_response = client.post("/data-fixtures/seed-reference-review-demo")
+    assert seed_response.status_code == 200
+
+    response = client.get("/data-readiness/registry-integration-decision-record?limit=3")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "data_readiness_registry_integration_decision_record_not_applied"
+    assert "keine Registry-/Modellmutation" in body["guardrail"]
+    decision = body["registry_integration_decision_record"]
+    assert decision["title"].startswith("Registry-Integrationsentscheidung")
+    assert decision["summary"]["decision_rows"] <= 3
+    population = next(row for row in decision["rows"] if row["parameter_key"] == "bevoelkerung_mio")
+    assert population["status"] == "human_go_no_go_required_before_pr"
+    assert population["checks"]["reviewed_value_present"] is True
+    assert population["checks"]["source_snapshot_sha256_present"] is True
+    assert population["checks"]["unit_matches_registry"] is True
+    assert population["checks"]["within_registry_bounds"] is True
+    assert population["checks"]["pr_brief_available"] is True
+    assert population["branch_name_if_go"] == "feat/integrate-reviewed-bevoelkerung_mio"
+    assert any(option.startswith("Hold:") for option in population["safe_options"])
+    assert "kein Branch" in population["guardrail"]
+    assert "keine Registry-/Modellmutation" in decision["guardrail"]

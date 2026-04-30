@@ -1975,3 +1975,29 @@ Focused tests passed before final full verification: `tests/test_data_ingestion.
 - **Integrator Decision:** `build_learning_data_readiness_backlog()` baut nun `registry_diff_preview`; `render_learning_data_readiness_backlog()` rendert die Vorschau mobil als Tabelle; Regressionstest erweitert.
 - **Question to Alex:** Keine.
 - **Verification/Git:** Lokal grün: fokussierte Tests 23 passed; volle Suite 122 passed; py_compile; 20-run Simulation-Smoke OK. Git-Commit/Push folgt in diesem Lauf.
+
+## 2026-04-30 02:18 Europe/Berlin — Heartbeat: Registry-Entscheidungszettel
+
+### Context
+Alex priorisiert Core-Plattform über KI-Recherche. Nach Registry-Diff-Preview/PR-Brief fehlte noch ein kurzer Go/Hold/Reject-Entscheidungszettel vor einem echten Integrations-PR.
+
+### Project Manager
+Priorität bleibt Datenintegration/Provenienz. Nächste sinnvolle Plattform-Scheibe: Decision-Record auch auf der Learning Page oder als Parameterkarte sichtbar machen.
+
+### Designer / UX
+Der neue Decision-Record reduziert Tabellen-Komplexität: Nutzer sehen pro Parameter die Frage, Checks, sichere Optionen und Default-Empfehlung, bevor irgendein Apply/PR-Gedanke entsteht.
+
+### Creative Agent
+Idee: später als farbige Ampelkarte „Go / Hold / Reject“ im Daten-Cockpit zeigen. Fit: gut für Entscheidungshygiene; erst nach API/Tests, keine automatische Aktion.
+
+### Political Health-System Strategist
+Konservativer Hold-Default passt politisch: keine Datenintegration wird als amtliche Prognose, Wirkungsbeweis oder politische Empfehlung verkauft.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Es wurden keine neuen Fachclaims eingeführt; nur bestehende Review-/SHA256-/Einheiten-/Grenzen-Checks werden neu gebündelt.
+
+### Integrator Decision
+Akzeptiert: `build_data_readiness_registry_integration_decision_record(...)` plus fokussierter API-Endpunkt `/data-readiness/registry-integration-decision-record`. Guardrails bleiben read-only: kein Branch, kein execute=true, keine Cache-/Review-Schreibaktion, keine Registry-/Modellmutation.
+
+### Verification / Git
+Fokustests bestanden: `tests/test_data_ingestion.py::test_registry_integration_decision_record_requires_human_go_hold_reject` und `tests/test_api.py::test_api_exposes_registry_integration_decision_record_without_apply`. Full Suite/Commit/Push folgen nach finaler Verifikation dieses Heartbeats.

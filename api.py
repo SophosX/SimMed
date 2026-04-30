@@ -28,6 +28,7 @@ from data_ingestion import (
     build_data_readiness_operator_handoff,
     build_data_readiness_registry_diff_preview,
     build_data_readiness_platform_brief,
+    build_data_readiness_registry_integration_decision_record,
     build_data_readiness_gate_plan,
     build_data_readiness_summary,
     build_next_data_readiness_actions,
@@ -230,8 +231,9 @@ def get_data_readiness_integration_preflight(limit: int = 5) -> dict:
         "summary": build_data_readiness_summary(items),
         "integration_preflight": (preflight := build_data_readiness_integration_preflight(items, passport_rows, limit=limit)),
         "integration_plan": (plan := build_data_readiness_integration_plan(preflight)),
-        "registry_diff_preview": build_data_readiness_registry_diff_preview(plan, parameters),
-        "integration_pr_brief": build_data_readiness_integration_pr_brief(plan),
+        "registry_diff_preview": (preview := build_data_readiness_registry_diff_preview(plan, parameters)),
+        "integration_pr_brief": (brief := build_data_readiness_integration_pr_brief(plan)),
+        "registry_integration_decision_record": build_data_readiness_registry_integration_decision_record(preview, brief),
     }
 
 
@@ -258,8 +260,9 @@ def get_data_readiness_integration_plan(limit: int = 3) -> dict:
         "summary": build_data_readiness_summary(items),
         "integration_preflight": preflight,
         "integration_plan": (plan := build_data_readiness_integration_plan(preflight, limit=limit)),
-        "registry_diff_preview": build_data_readiness_registry_diff_preview(plan, parameters),
-        "integration_pr_brief": build_data_readiness_integration_pr_brief(plan),
+        "registry_diff_preview": (preview := build_data_readiness_registry_diff_preview(plan, parameters)),
+        "integration_pr_brief": (brief := build_data_readiness_integration_pr_brief(plan)),
+        "registry_integration_decision_record": build_data_readiness_registry_integration_decision_record(preview, brief),
     }
 
 
@@ -313,8 +316,9 @@ def get_data_readiness_registry_diff_preview(limit: int = 3) -> dict:
         "guardrail": "Registry-Diff-Preview ist read-only: kein Branch, kein execute=true, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
         "summary": build_data_readiness_summary(items),
         "integration_plan": plan,
-        "registry_diff_preview": build_data_readiness_registry_diff_preview(plan, parameters),
-        "integration_pr_brief": build_data_readiness_integration_pr_brief(plan),
+        "registry_diff_preview": (preview := build_data_readiness_registry_diff_preview(plan, parameters)),
+        "integration_pr_brief": (brief := build_data_readiness_integration_pr_brief(plan)),
+        "registry_integration_decision_record": build_data_readiness_registry_integration_decision_record(preview, brief),
     }
 
 
@@ -341,6 +345,36 @@ def get_data_readiness_dashboard_cards(limit: int = 3) -> dict:
         "summary": summary,
         "dashboard_cards": build_data_readiness_dashboard_cards(summary, actions),
         "first_contact_guide": build_data_readiness_first_contact_guide(summary, actions),
+    }
+
+
+@api.get("/data-readiness/registry-integration-decision-record")
+def get_data_readiness_registry_integration_decision_record(limit: int = 3) -> dict:
+    """Return the final read-only Go/Hold/Reject decision sheet before a Registry PR."""
+
+    if limit < 1 or limit > 10:
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "status": "invalid_data_readiness_registry_integration_decision_record_limit",
+                "limit": limit,
+                "guardrail": "Limit muss zwischen 1 und 10 liegen; keine Registry-/Modelländerung wurde ausgeführt.",
+            },
+        )
+    parameters = list_parameters()
+    items = build_data_readiness_backlog(parameters)
+    passport_rows = build_data_passport_rows(parameters)
+    preflight = build_data_readiness_integration_preflight(items, passport_rows, limit=10)
+    plan = build_data_readiness_integration_plan(preflight, limit=limit)
+    preview = build_data_readiness_registry_diff_preview(plan, parameters)
+    brief = build_data_readiness_integration_pr_brief(plan)
+    return {
+        "status": "data_readiness_registry_integration_decision_record_not_applied",
+        "guardrail": "Decision-Record ist read-only: kein Branch, kein execute=true, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+        "summary": build_data_readiness_summary(items),
+        "registry_diff_preview": preview,
+        "integration_pr_brief": brief,
+        "registry_integration_decision_record": build_data_readiness_registry_integration_decision_record(preview, brief),
     }
 
 

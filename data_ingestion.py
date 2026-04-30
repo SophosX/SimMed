@@ -1314,6 +1314,70 @@ def build_data_readiness_registry_diff_preview(
 
 
 
+def build_data_readiness_registry_integration_decision_record(
+    registry_diff_preview: dict,
+    integration_pr_brief: dict,
+) -> dict:
+    """Summarize the final human go/no-go decision before any Registry PR.
+
+    The diff preview and PR brief already contain the detailed technical checks.
+    This helper turns them into a short, auditable decision record so operators
+    and future agents know exactly what must be decided before code is touched.
+    It remains read-only and never changes Registry/model values.
+    """
+
+    briefs_by_key = {
+        brief["parameter_key"]: brief
+        for brief in integration_pr_brief.get("briefs", [])
+    }
+    rows: list[dict] = []
+    for row in registry_diff_preview.get("rows", []):
+        parameter_key = row["parameter_key"]
+        brief = briefs_by_key.get(parameter_key, {})
+        unit_matches = row.get("unit_check", {}).get("unit_matches") is True
+        within_bounds = row.get("plausibility_check", {}).get("within_registry_bounds") is True
+        has_reviewed_value = row.get("reviewed_output_value") is not None
+        has_sha = bool(row.get("source_snapshot_sha256"))
+        ready_for_human_go_no_go = all([unit_matches, within_bounds, has_reviewed_value, has_sha, brief])
+        rows.append({
+            "parameter_key": parameter_key,
+            "label": row.get("label", parameter_key),
+            "status": "human_go_no_go_required_before_pr" if ready_for_human_go_no_go else "blocked_before_human_go_no_go",
+            "decision_question": "Soll dieser geprüfte Transformationswert in einem separaten Registry-/Modell-PR vorbereitet werden?",
+            "checks": {
+                "reviewed_value_present": has_reviewed_value,
+                "source_snapshot_sha256_present": has_sha,
+                "unit_matches_registry": unit_matches,
+                "within_registry_bounds": within_bounds,
+                "pr_brief_available": bool(brief),
+            },
+            "safe_options": [
+                "Go: separaten PR gemäß PR-Brief vorbereiten, Tests/Smoke ausführen, Guardrails im PR-Text behalten",
+                "Hold: zusätzliche Quellen-/Methodenprüfung verlangen, kein PR und keine Wertänderung",
+                "Reject: Review als nicht integrationsreif markieren und neues Transformationsreview planen",
+            ],
+            "recommended_default": "Hold, falls irgendein Check fehlt; Go nur bei vollständigem Review, SHA256/Manifest, Einheit, Grenzen und PR-Brief.",
+            "branch_name_if_go": brief.get("branch_name"),
+            "required_human_decision": row.get("required_human_decision"),
+            "guardrail": "Decision-Record ist read-only: kein Branch, kein execute=true, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+        })
+    return {
+        "title": "Registry-Integrationsentscheidung (Go/Hold/Reject)",
+        "plain_language_note": (
+            "Diese Liste ist der letzte Entscheidungszettel vor einem separaten PR. "
+            "Sie sagt, ob Go/Hold/Reject fachlich geklärt werden muss, ändert aber nichts im Modell."
+        ),
+        "summary": {
+            "diff_rows_seen": len(registry_diff_preview.get("rows", [])),
+            "decision_rows": len(rows),
+            "ready_for_human_go_no_go": sum(1 for row in rows if row["status"] == "human_go_no_go_required_before_pr"),
+        },
+        "rows": rows,
+        "guardrail": "Read-only/Entscheidungsvorbereitung: kein Branch, kein execute=true, keine Datenaktion, keine Review-Erzeugung, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+    }
+
+
+
 def build_data_readiness_integration_pr_brief(integration_plan: dict) -> dict:
     """Turn read-only integration plans into a conservative PR handoff.
 
