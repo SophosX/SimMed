@@ -5132,4 +5132,4 @@ Accepted: add `render_follow_up_after_sections=False` to the public result view 
 Keine wichtige Entscheidung offen; continue safely with clearer first-screen visual grouping next.
 
 ### Verification / Git
-RED/GREEN focused test completed locally: `tests/test_result_causality.py::test_public_result_view_has_single_follow_up_rendering_instruction` failed first on the missing render instruction and passed after implementation. Full verification/Git sync follows in this heartbeat.
+RED/GREEN focused test completed locally: `tests/test_result_causality.py::test_public_result_view_has_single_follow_up_rendering_instruction` failed first on the missing render instruction and passed after implementation. Verification: focused result/API/UI tests → 51 passed; full `python3 -m pytest -q` → 277 passed; `py_compile` and 50-run simulation smoke passed. Git: committed and pushed `c64bc83` (`Avoid duplicate result follow-up prompt`) to `origin/main`; verified with `git show --name-only --oneline -1`.
