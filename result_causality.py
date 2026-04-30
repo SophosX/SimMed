@@ -1251,8 +1251,15 @@ def build_causal_result_packet(
         "guardrail": RESULT_CAUSALITY_GUARDRAIL,
     }
 
+    first_view_contract = {
+        "first_screen": "one_result_card",
+        "kpis": "only_inside_relevant_kpi_section",
+        "details": "collapsed_audit_below",
+    }
+
     public_result_view = {
         "briefing": lean_public_briefing,
+        "first_view_contract": first_view_contract,
         "briefing_style": "single_readable_briefing",
         "first_screen_policy": "one_briefing_then_collapsed_audit",
         "primary_render_mode": "structured_sections_with_single_kpi_rows",

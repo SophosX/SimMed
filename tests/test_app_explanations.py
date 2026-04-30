@@ -1045,6 +1045,49 @@ def test_result_causal_overview_exposes_briefing_quality_checks_for_first_view()
     assert "Klartext" not in combined
 
 
+def test_result_causal_overview_declares_one_clean_first_view_before_audit_details():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+    agg = pd.DataFrame([
+        {
+            "jahr": 2026,
+            "aerzte_pro_100k_mean": 430.0,
+            "burnout_rate_mean": 12.0,
+            "wartezeit_fa_mean": 25.0,
+            "gkv_saldo_mean": -2.0,
+            "telemedizin_rate_mean": 5.0,
+            "versorgungsindex_rural_mean": 72.0,
+        },
+        {
+            "jahr": 2041,
+            "aerzte_pro_100k_mean": 360.0,
+            "burnout_rate_mean": 23.0,
+            "wartezeit_fa_mean": 45.0,
+            "gkv_saldo_mean": -12.0,
+            "telemedizin_rate_mean": 18.0,
+            "versorgungsindex_rural_mean": 56.0,
+        },
+    ])
+
+    public_view = build_result_causal_overview(agg, params)["public_result_view"]
+
+    assert public_view["first_view_contract"] == {
+        "first_screen": "one_result_card",
+        "kpis": "only_inside_relevant_kpi_section",
+        "details": "collapsed_audit_below",
+    }
+    assert public_view["render_relevant_kpis_separately"] is False
+    assert public_view["answer_rows"] == []
+    assert public_view["deeper_review_default_expanded"] is False
+    assert public_view["dense_kpi_default_expanded"] is False
+    assert public_view["legacy_detail_default_expanded"] is False
+    assert public_view["first_screen_render_blocks"] == [
+        "headline_and_short_answer",
+        "result_sections_with_single_relevant_kpi_rows",
+        "collapsed_audit",
+    ]
+
+
 def test_sidebar_quick_start_steps_make_first_action_clear():
     steps = sidebar_quick_start_steps()
     combined = " ".join(steps)

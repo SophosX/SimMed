@@ -6111,3 +6111,33 @@ Keine wichtige Entscheidung offen. Ich gehe weiter mit der empfohlenen Richtung:
 Lokal grün: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 66 passed; `python3 -m pytest -q` → 293 passed; Runtime-Smoke 50 Runs × 3 Jahre inklusive Causal Packet erfolgreich. Git-Commit/Push wird nach Source→GitHub-Sync verifiziert.
 
 Nachtrag Verification/Git: Commit `18a517d` (`Clarify first result packet`) wurde auf `origin/main` gepusht. `git show --name-only --oneline -1` bestätigt: `docs/AGENT_COUNCIL_LOG.md`, `result_causality.py`, `tests/test_result_causality.py`.
+
+
+## 2026-04-30 20:35 Europe/Berlin — Heartbeat: First-View-Vertrag für eine einzige Ergebniskarte
+
+### Context
+Alexs aktuelle Korrektur bleibt: Die Result Page muss zuerst eine klare Antwort liefern, nicht mehrere überlappende Erklärflächen. Dieser Lauf hat den öffentlichen Result-Packet-Vertrag expliziter gemacht: erster Screen = eine Ergebniskarte, relevante KPIs nur im Abschnitt „Relevante Kennzahlen“, Details geschlossen darunter.
+
+### Project Manager
+Priorität: verhindern, dass alte Audit-/Legacy-Layer wieder in die erste Ansicht rutschen. Risiko: der Packet enthält aus Kompatibilitätsgründen weiterhin viele Detailfelder; deshalb braucht die UI einen klaren, testbaren First-View-Vertrag. Nächster Schritt: Browser-/Screenshot-Prüfung der realen Streamlit-Seite und weitere Verdichtung der geschlossenen Detailbereiche.
+
+### Designer / UX
+Der neue `first_view_contract` ist bewusst schlicht: `one_result_card`, `only_inside_relevant_kpi_section`, `collapsed_audit_below`. Das gibt künftigen UI-Schritten eine klare Regel: kein zweites KPI-Raster, keine zweite Kurzantwort, keine zweite Storyboard-Fläche über dem ersten Ergebnis.
+
+### Creative Agent
+Spätere Idee: Diese eine Ergebniskarte kann später als teilbare Kurzbriefing-Karte exportiert werden. Fit: gut, weil es denselben Vertrag nutzt; nicht jetzt, damit kein neuer Block entsteht.
+
+### Political Health-System Strategist
+Die politische Deutung bleibt unterhalb der fachlichen Erstlesung. Gerade bei Medizinstudienplätzen soll zuerst der verzögerte Pipeline-/Kapazitätspfad verstanden werden, bevor Stakeholder- oder Strategiefragen auftauchen.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Keine neuen Realweltbehauptungen, Parameter oder Modellmechanismen; nur ein klarerer UI/API-Vertrag für die Kommunikation vorhandener Ergebnisse. Guardrails zu amtlicher Prognose, Wirksamkeitsnachweis und Evidenzgrenzen bleiben erhalten.
+
+### Integrator Decision
+Akzeptiert: `public_result_view.first_view_contract` dokumentiert und testet die klare Ergebnis-Hierarchie. Zusätzlich schützt ein App-Test, dass `answer_rows` leer bleiben, relevante KPIs nicht separat gerendert werden und Detail-/KPI-/Legacy-Bereiche geschlossen starten. Modell-Dynamik unverändert.
+
+### Question to Alex
+Keine wichtige Entscheidung offen. Ich arbeite sicher weiter in derselben Richtung: echte erste Lesbarkeit prüfen, dann Detail-Dichte reduzieren.
+
+### Verification / Git
+TDD: neuer App-Test lief zuerst rot wegen fehlendem `first_view_contract`, danach grün. Fokussierte Tests: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients tests/test_app_explanations.py::test_result_causal_overview_exposes_briefing_quality_checks_for_first_view tests/test_app_explanations.py::test_result_causal_overview_declares_one_clean_first_view_before_audit_details -q` → 68 passed. Full Suite/Smoke/Git folgen nach dieser Log-Aktualisierung.

@@ -424,6 +424,7 @@ def test_public_result_packet_is_minimal_and_does_not_expose_legacy_layers_first
 
     allowed_public_keys = {
         "briefing",
+        "first_view_contract",
         "briefing_style",
         "render_order",
         "first_screen_render_blocks",
