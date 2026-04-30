@@ -5279,4 +5279,4 @@ Accepted: make the public result section bodies more concise, especially the del
 No important decision open; continue safely with clearer first-screen result hierarchy.
 
 ### Verification / Git
-Focused tests passed: `tests/test_result_causality.py::test_simplified_public_result_packet_is_short_clear_and_not_meta`, `tests/test_result_causality.py::test_public_result_view_has_single_follow_up_rendering_instruction`, `tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients`. Full-suite and Git push still pending at this log entry.
+Focused tests passed: `tests/test_result_causality.py::test_simplified_public_result_packet_is_short_clear_and_not_meta`, `tests/test_result_causality.py::test_public_result_view_has_single_follow_up_rendering_instruction`, `tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients`. Full suite passed: `279 passed`. Runtime smoke passed: `run_simulation(... n_runs=50, n_years=3)` plus causal packet build. Git push confirmed on `main`: `f01a8a0 Clarify causal result first view`.
