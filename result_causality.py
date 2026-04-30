@@ -988,8 +988,8 @@ def build_causal_result_packet(
     if study_places_changed:
         short_answer = (
             f"Die Medizinstudienplätze wurden gesenkt; die wichtigsten Signale sind: {top_kpi_sentences}. "
-            "Der Effekt kommt über die Ausbildungs-Pipeline: ab etwa Jahr 6 erreicht die kleinere Kohorte den Arbeitsmarkt, Richtung Jahr 11–15 wird der Facharztpfad wichtig. "
-            "Das bedeutet möglichen Kapazitätsdruck; nächster Check: Puffer wie Telemedizin, Delegation oder Zuwanderung gegen Wartezeit und Belastung prüfen."
+            "Der Effekt ist nicht sofort sichtbar, sondern läuft über die Ausbildungs-Pipeline: ab etwa Jahr 6 erreicht die kleinere Kohorte den Arbeitsmarkt, Richtung Jahr 11–15 wird der Facharztpfad wichtig. "
+            "Das bedeutet: Ohne glaubwürdige Puffer entsteht späterer Kapazitätsdruck. Nächster Check: Wartezeit, Belastung und Puffer gemeinsam prüfen."
         )
     elif changed:
         short_answer = (
@@ -1021,7 +1021,7 @@ def build_causal_result_packet(
     ) or "Keine priorisierten Kennzahlen verfügbar."
     if study_places_changed:
         result_body = (
-            "Heraus kommt ein späterer Kapazitätsdruck: Anfangs bleibt die Versorgung fast unverändert, später zählen Ärzteangebot, Wartezeit und Belastung deutlich stärker."
+            "Heraus kommt ein späterer Kapazitätsdruck. Anfangs bleibt die Versorgung fast unverändert; später werden weniger Ärzt:innen, längere Wartezeiten und höhere Belastung relevant."
         )
     elif changed:
         result_body = (
@@ -1045,7 +1045,7 @@ def build_causal_result_packet(
     adaptation_body = (
         "Das Modell prüft Puffer: Telemedizin, Delegation oder Zuwanderung. "
         f"Beobachtet: {observed_text} "
-        "Sinkt Burnout trotz Ärztemangel, ist das ein Plausibilitätscheck."
+        "Wenn Burnout/Belastung trotz Ärztemangel sinkt, muss ein solcher Puffer klar erkennbar sein; sonst ist es ein Plausibilitätscheck."
     )
     result_sections = [
         {"heading": "Ergebnis", "body": result_body[:190]},
@@ -1066,7 +1066,7 @@ def build_causal_result_packet(
         }
     ]
     follow_up_question = (
-        "Passen die sichtbaren Puffer im Modell zur späteren Kapazitätslücke — oder muss der Ausbildungs-/Facharztpfad nachgeschärft werden?"
+        "Nächster Check: Passen die sichtbaren Puffer im Modell zur späteren Kapazitätslücke — oder muss der Ausbildungs-/Facharztpfad nachgeschärft werden?"
         if study_places_changed
         else "Welche Annahme begrenzt die wichtigste beobachtete Kennzahl am stärksten?"
     )

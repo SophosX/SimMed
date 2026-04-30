@@ -5133,3 +5133,33 @@ Keine wichtige Entscheidung offen; continue safely with clearer first-screen vis
 
 ### Verification / Git
 RED/GREEN focused test completed locally: `tests/test_result_causality.py::test_public_result_view_has_single_follow_up_rendering_instruction` failed first on the missing render instruction and passed after implementation. Verification: focused result/API/UI tests → 51 passed; full `python3 -m pytest -q` → 277 passed; `py_compile` and 50-run simulation smoke passed. Git: committed and pushed `c64bc83` (`Avoid duplicate result follow-up prompt`) to `origin/main`; verified with `git show --name-only --oneline -1`.
+
+
+## 2026-04-30 16:28 Europe/Berlin — Result briefing first-screen rebuild
+
+### Context
+Alex corrected that the result page still felt unclear and overloaded. This heartbeat focused on the public causal result packet and the first Streamlit rendering path: `result_causality.py`, `app.py`, and API-facing packet compatibility.
+
+### Project Manager
+Priority: make the first result screen answer what happened, what changed, why it happened, what it means, and what to check next. Risk: legacy helper layers can still crowd the page if they appear before the briefing. Next tasks: move remaining legacy result sections deeper into audit expanders, then design a deliberate broader-scenario input flow.
+
+### Designer / UX
+The first view should read as one bordered briefing card, not as several competing widgets. Relevant Kennzahlen stay inside the briefing; dense KPI cards, timeline tables, evidence rows, and older narrative/storyboard helpers remain collapsed below.
+
+### Creative Agent
+A useful next idea is a “Briefing-Modus” toggle that keeps only the readable report and hides operational audit tables until requested. Fit: strong for newcomer clarity, but it should be a display preference only, not a change in model meaning.
+
+### Political Health-System Strategist
+For medical-study-place cuts, the page now emphasizes delayed capacity pressure and requires a professional check of buffers before political interpretation. This avoids overstating an immediate workforce effect or treating model outputs as a campaign claim.
+
+### Evidence / Domain
+No new factual claims or external research were added. The change is communication-layer only: the existing pipeline lag, evidence/assumption guardrails, and no-official-forecast/no-effectiveness-proof framing remain visible but not dumped into the first screen.
+
+### Integrator Decision
+Accepted a concise public packet with `result_headline`, `short_answer`, seven ordered result sections, relevant KPI rows, and one follow-up check. Also rendered the first result overview inside one clean Streamlit card and left detailed audits collapsed.
+
+### Question to Alex
+No important decision is blocked. Recommendation: continue safely by removing or demoting remaining duplicate result widgets until the page reads like one briefing from top to bottom.
+
+### Verification / Git
+Verification before sync: `pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` (50 passed), full `pytest -q` (277 passed), `py_compile app.py result_causality.py api.py simulation_core.py`, and 50-run simulation smoke with causal packet build. Git sync/commit/push follows this entry.

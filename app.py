@@ -3520,32 +3520,35 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
     """Render the simplified first result briefing before any dense audit layer."""
     packet = build_result_causal_overview(agg, params)
     view = packet.get("public_result_view", packet)
-    st.markdown(f"### {view.get('headline', packet.get('result_headline', packet['title']))}")
-    st.write(view.get("short_answer", packet.get("short_answer", "Der Modelllauf wurde berechnet; die Detailprüfung steht darunter.")))
+    card = st.container(border=True)
+    with card:
+        st.markdown(f"### {view.get('headline', packet.get('result_headline', packet['title']))}")
+        st.write(view.get("short_answer", packet.get("short_answer", "Der Modelllauf wurde berechnet; die Detailprüfung steht darunter.")))
 
-    relevant_kpis = view.get("relevant_kpis", packet.get("relevant_kpis", []))
-    primary_blocks = view.get("result_sections") or packet.get("result_sections", [])
-    for section in primary_blocks:
-        heading = section["heading"]
-        st.markdown(f"**{heading}**")
-        if heading == "Relevante Kennzahlen":
-            rows = relevant_kpis[:4]
-            if rows:
-                for row in rows:
-                    st.markdown(
-                        f"- **{row.get('label', 'Kennzahl')}**: {row.get('start', '–')} → {row.get('end', '–')} "
-                        f"({row.get('direction', 'stabil')}). {row.get('meaning') or row.get('why_relevant', '')}"
-                    )
+        relevant_kpis = view.get("relevant_kpis", packet.get("relevant_kpis", []))
+        primary_blocks = view.get("result_sections") or packet.get("result_sections", [])
+        for section in primary_blocks:
+            heading = section["heading"]
+            if heading == "Relevante Kennzahlen":
+                st.markdown("**Relevante Kennzahlen**")
+                rows = relevant_kpis[:4]
+                if rows:
+                    for row in rows:
+                        st.markdown(
+                            f"- **{row.get('label', 'Kennzahl')}**: {row.get('start', '–')} → {row.get('end', '–')} "
+                            f"({row.get('direction', 'stabil')}). {row.get('meaning') or row.get('why_relevant', '')}"
+                        )
+                else:
+                    st.write(section["body"])
             else:
+                st.markdown(f"**{heading}**")
                 st.write(section["body"])
-        else:
-            st.write(section["body"])
 
-    if view.get("follow_up_question", packet.get("follow_up_question")) and view.get("render_follow_up_after_sections", True):
-        st.markdown("**Nächster Prüfschritt**")
-        st.write(view.get("follow_up_question", packet.get("follow_up_question")))
+        if view.get("follow_up_question", packet.get("follow_up_question")) and view.get("render_follow_up_after_sections", True):
+            st.markdown("**Nächster Prüfschritt**")
+            st.write(view.get("follow_up_question", packet.get("follow_up_question")))
 
-    st.caption(view.get("guardrail", packet["guardrail"]))
+        st.caption(view.get("guardrail", packet["guardrail"]))
 
     audit_sections = view.get("audit_sections", [])
     audit_label = "Vertiefung: Wirkpfad, Evidenz und Details"
