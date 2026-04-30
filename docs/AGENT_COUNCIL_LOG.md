@@ -4839,3 +4839,33 @@ Keine wichtige Entscheidung offen; sicher weiter mit sichtbarer Ergebnisflächen
 
 ### Verification / Git
 Source verification grün: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 41 passed; `python3 -m pytest -q` → 268 passed; `python3 -m py_compile app.py result_causality.py api.py simulation_core.py` passed; 50-run × 15-year smoke inklusive `build_causal_result_packet(...)` passed. Commit `ac17f74` (`Clarify public result packet contract`) wurde auf `origin/main` gepusht; `git show --name-only --oneline -1` bestätigte `docs/AGENT_COUNCIL_LOG.md`, `tests/test_api.py`, `tests/test_result_causality.py`.
+
+
+## 2026-04-30 15:07 Europe/Berlin — Heartbeat: Ergebnis-first Briefing verschlankt
+
+### Context
+Alexs Korrektur war eindeutig: die Resultatseite soll nicht weitere Erklärungsschichten stapeln, sondern sofort in seriösem Deutsch beantworten, was herauskam, was sich relevant verändert hat, warum und was es bedeutet. Relevante Dateien: `result_causality.py`, `app.py`, `tests/test_result_causality.py`.
+
+### Project Manager
+Priorität: erste Ergebnisansicht neu ordnen und alte Detail-/Widget-Sprache nach unten in geschlossene Prüfbereiche verschieben. Risiko: bestehende Legacy-Helfer sind noch für Tests/API nötig, dürfen aber nicht mehr den Einstieg dominieren. Nächste Tasks: Streamlit-Feinschliff im Browser, dann alte Ergebnishelfer weiter konsolidieren.
+
+### Designer / UX
+Die erste Ansicht folgt jetzt der gewünschten Reihenfolge: Ergebnis → Eingriff → Warum es passiert → Relevante Kennzahlen → Anpassungen → Einordnung → Nächster Prüfschritt. Relevante KPIs erscheinen als kurze Zeilen statt als zweite Kartenwand.
+
+### Creative Agent
+Idee: den Ergebnisbericht später als „1-Seiten-Briefing“ exportierbar machen. Passt gut, weil die neue Packet-Struktur schon Headline, Kurzantwort, Abschnitte, relevante KPIs und nächste Prüfung trennt; noch nicht umgesetzt.
+
+### Political Health-System Strategist
+Politische Deutung bleibt bewusst nachgelagert: zuerst Kapazitätspfad, Puffer und Evidenzgrenze prüfen, dann Stakeholder/Umsetzbarkeit lesen. Keine neue politische Behauptung wurde ergänzt.
+
+### Evidence / Domain
+Keine neue externe Recherche in diesem Lauf; es wurden keine neuen Realwelt-Claims oder Modellparameter eingeführt. Der Eingriff „weniger Medizinstudienplätze“ bleibt als SimMed-Pipeline-Annahme mit Jahr-6-/Jahr-11–15-Prüffenster gekennzeichnet.
+
+### Integrator Decision
+Akzeptiert: public packet verschlankt (`result_headline`, `short_answer`, `result_sections`, `relevant_kpis`, `follow_up_question`) und Streamlit rendert diese Struktur als eine erste Lesefassung. Legacy-/Audit-Inhalte bleiben verfügbar, aber geschlossen.
+
+### Question to Alex
+Keine neue Entscheidung nötig. Ich gehe sicher weiter mit UI-Konsolidierung und Browser-Sinncheck.
+
+### Verification / Git
+Vor Commit geprüft: `python3 -m pytest -q` → 269 passed; `python3 -m py_compile app.py result_causality.py api.py simulation_core.py tests/test_result_causality.py`; 50-run/15-year Simulation-Smoke mit halbierten Medizinstudienplätzen → OK. Git-Sync/Commit folgt in diesem Heartbeat.

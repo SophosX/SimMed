@@ -3524,23 +3524,19 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
     st.info(view.get("short_answer", packet.get("short_answer", "Der Modelllauf wurde berechnet; die Detailprüfung steht darunter.")))
 
     relevant_kpis = view.get("relevant_kpis", packet.get("relevant_kpis", []))
-    primary_blocks = view.get("primary_blocks") or view.get("first_screen_blocks", view.get("sections", packet.get("result_sections", [])))
-    kpi_refs = {str(row.get("metric_key", "")) for row in relevant_kpis}
+    primary_blocks = view.get("result_sections") or packet.get("result_sections", [])
     for section in primary_blocks:
         heading = section["heading"]
         st.markdown(f"**{heading}**")
         if heading == "Relevante Kennzahlen":
-            rows = [row for row in relevant_kpis if row.get("metric_key") in kpi_refs] or relevant_kpis
-            cols = st.columns(min(len(rows), 4) or 1)
-            for idx, row in enumerate(rows):
-                with cols[idx % len(cols)]:
-                    st.metric(
-                        label=row.get("label", "Kennzahl"),
-                        value=f"{row.get('start', '–')} → {row.get('end', '–')}",
-                        delta=row.get("direction", "stabil"),
+            rows = relevant_kpis[:4]
+            if rows:
+                for row in rows:
+                    st.markdown(
+                        f"- **{row.get('label', 'Kennzahl')}**: {row.get('start', '–')} → {row.get('end', '–')} "
+                        f"({row.get('direction', 'stabil')}). {row.get('meaning') or row.get('why_relevant', '')}"
                     )
-                    st.caption(row.get("meaning") or row.get("why_relevant", ""))
-            if not rows:
+            else:
                 st.write(section["body"])
         else:
             st.write(section["body"])

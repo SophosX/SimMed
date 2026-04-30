@@ -753,7 +753,7 @@ def build_causal_result_packet(
             "heading": "Ausgangslage",
             "body": (
                 "SimMed liest diesen Lauf als Deutschland-Referenzpfad mit veränderten Stellschrauben. "
-                "Die erste Ansicht zeigt bewusst nur die Kennzahlen, die den zentralen Wirkpfad erklären, statt den Raum mit Zahlen zu tapezieren."
+                "Die erste Ansicht zeigt bewusst nur die Kennzahlen, die den zentralen Wirkpfad erklären."
             ),
         },
         {
@@ -803,7 +803,7 @@ def build_causal_result_packet(
         },
     ]
     lead_paragraph = (
-        "Kurz gesagt: Dieser Lauf wird als Wirkungskette gelesen. "
+        "Dieser Lauf wird als Wirkungskette gelesen. "
         "Die erste Ansicht konzentriert sich auf wenige relevante Kennzahlen, erklärt die gesetzte Änderung, "
         "ordnet den berechneten Wirkpfad ein und zeigt, welche Anpassungsreaktionen vor einer politischen Deutung geprüft werden müssen."
     )
@@ -1020,11 +1020,11 @@ def build_causal_result_packet(
         "Fällt Burnout trotz Ärztemangel, ist das ein Plausibilitätscheck."
     )
     result_sections = [
-        {"heading": "Ergebnis", "body": result_body},
-        {"heading": "Eingriff", "body": changed_text[:340]},
-        {"heading": "Warum es passiert", "body": why_body},
-        {"heading": "Relevante Kennzahlen", "body": kpi_body[:340]},
-        {"heading": "Anpassungen", "body": adaptation_body[:360]},
+        {"heading": "Ergebnis", "body": result_body[:260]},
+        {"heading": "Eingriff", "body": changed_text[:260]},
+        {"heading": "Warum es passiert", "body": why_body[:260]},
+        {"heading": "Relevante Kennzahlen", "body": kpi_body[:260]},
+        {"heading": "Anpassungen", "body": adaptation_body[:260]},
         {
             "heading": "Einordnung",
             "body": (
@@ -1083,19 +1083,22 @@ def build_causal_result_packet(
         "render_order": [
             "result_headline",
             "short_answer",
-            "first_screen_blocks",
+            "result_sections",
             "relevant_kpis",
             "follow_up_question",
             "audit_sections",
         ],
         "headline": result_headline,
         "short_answer": short_answer,
+        "result_sections": result_sections,
         "first_screen_blocks": first_screen_blocks,
         "primary_blocks": first_screen_blocks,
         "relevant_kpis": relevant_kpis_public,
         "follow_up_question": follow_up_question,
         "audit_sections": audit_sections,
         "deeper_review_default_expanded": False,
+        "legacy_detail_default_expanded": False,
+        "dense_kpi_default_expanded": False,
         "audit_expanders": [
             "Zeitfenster, Annahmen und Plausibilität",
             "vollständige Kennzahlen und Detailkarten",

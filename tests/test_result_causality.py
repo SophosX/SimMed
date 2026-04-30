@@ -67,7 +67,7 @@ def test_simplified_public_result_packet_is_short_clear_and_not_meta():
     assert packet["public_result_view"]["render_order"] == [
         "result_headline",
         "short_answer",
-        "first_screen_blocks",
+        "result_sections",
         "relevant_kpis",
         "follow_up_question",
         "audit_sections",
@@ -183,12 +183,15 @@ def test_public_result_packet_is_minimal_and_does_not_expose_legacy_layers_first
         "render_order",
         "headline",
         "short_answer",
+        "result_sections",
         "first_screen_blocks",
         "primary_blocks",
         "relevant_kpis",
         "follow_up_question",
         "audit_sections",
         "deeper_review_default_expanded",
+        "legacy_detail_default_expanded",
+        "dense_kpi_default_expanded",
         "audit_expanders",
         "guardrail",
     }
@@ -537,7 +540,7 @@ def test_professional_briefing_has_human_first_view_kpi_cards_without_meta_table
     packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
 
     briefing = packet["professional_briefing"]
-    assert briefing["lead_paragraph"].startswith("Kurz gesagt:")
+    assert briefing["lead_paragraph"].startswith("Dieser Lauf wird als Wirkungskette")
     assert "wenige relevante Kennzahlen" in briefing["lead_paragraph"]
     assert "erst ab Jahr 6" in briefing["lead_paragraph"]
     assert briefing["section_flow"] == [
@@ -649,7 +652,7 @@ def test_public_result_packet_is_short_clear_and_not_a_legacy_helper_dump():
     assert public_view["render_order"] == [
         "result_headline",
         "short_answer",
-        "first_screen_blocks",
+        "result_sections",
         "relevant_kpis",
         "follow_up_question",
         "audit_sections",
@@ -842,6 +845,49 @@ def test_first_view_public_copy_avoids_internal_packet_and_wall_jargon():
     assert "Audit-Layer" not in public_text
     assert "Ergebnisbericht" in public_text
     assert "Detailprüfung" in public_text
+    assert "Kurz gesagt" not in public_text
+    assert "Zahlen zu tapezieren" not in public_text
+
+
+def test_public_result_view_is_one_short_briefing_without_duplicate_opening_widgets():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    public = packet["public_result_view"]
+
+    assert public["briefing_style"] == "single_readable_briefing"
+    assert public["render_order"] == [
+        "result_headline",
+        "short_answer",
+        "result_sections",
+        "relevant_kpis",
+        "follow_up_question",
+        "audit_sections",
+    ]
+    assert [section["heading"] for section in public["result_sections"]] == [
+        "Ergebnis",
+        "Eingriff",
+        "Warum es passiert",
+        "Relevante Kennzahlen",
+        "Anpassungen",
+        "Einordnung",
+        "Nächster Prüfschritt",
+    ]
+    assert len(public["result_sections"]) <= 7
+    assert all(len(section["body"]) <= 260 for section in public["result_sections"])
+    assert public["legacy_detail_default_expanded"] is False
+    assert public["dense_kpi_default_expanded"] is False
+    text = " ".join(
+        [public["headline"], public["short_answer"], public["follow_up_question"]]
+        + [section["heading"] + " " + section["body"] for section in public["result_sections"]]
+    )
+    assert "Medizinstudienplätze" in text
+    assert "Wartezeit" in text or "Ärzte" in text
+    assert "ab etwa Jahr 6" in text
+    assert "keine amtliche Prognose" in text
+    for term in ["random Internet", "Klartext", "KPI-Wand", "generated", "helper", "Audit-Layer", "Kurz gesagt", "Zahlen zu tapezieren"]:
+        assert term not in text
 
 
 def test_professional_briefing_exposes_single_public_storyline_for_first_result_view():
@@ -1097,7 +1143,7 @@ def test_result_layout_uses_human_first_view_names_not_internal_widget_language(
     assert view["render_order"] == [
         "result_headline",
         "short_answer",
-        "first_screen_blocks",
+        "result_sections",
         "relevant_kpis",
         "follow_up_question",
         "audit_sections",
