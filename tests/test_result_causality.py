@@ -86,3 +86,24 @@ def test_causal_result_packet_flags_counterintuitive_burnout_drop_under_physicia
     assert "Burnout sinkt trotz sinkender Arztkapazität" in findings
     assert "Telemedizin" in packet["counterintuitive_findings"][0]["possible_model_explanation"]
     assert "Mechanismus prüfen" in packet["counterintuitive_findings"][0]["operator_action"]
+
+
+def test_causal_result_packet_contains_structured_story_sections_for_api_and_ui():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+
+    assert [section["id"] for section in packet["story_sections"]] == [
+        "output",
+        "changed_inputs",
+        "mechanisms",
+        "adaptation",
+        "counterintuitive_checks",
+        "evidence_assumptions",
+    ]
+    section_text = " ".join(section["text"] for section in packet["story_sections"])
+    assert "wenige relevante KPIs" in section_text
+    assert "Medizinstudienplätze" in section_text
+    assert "ab etwa Jahr 6" in section_text
+    assert "keine amtliche Prognose" in packet["story_sections"][-1]["text"]

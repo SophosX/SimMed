@@ -395,6 +395,21 @@ def _simulate_year(s: dict, p: dict, rng: np.random.Generator) -> dict:
     s["wartezeit_ha"] = max(1.0, 3.0 * wz_faktor * noise(0.08))
     s["wartezeit_fa"] = max(3.0, 25.0 * wz_faktor * noise(0.10))
 
+    # Ausbildungsplatz-Kürzungen wirken nicht sofort, sondern nach dem
+    # Studien-/Weiterbildungs-Lag. Dieser Druck ist eine explizite SimMed-
+    # Annahme (kein amtlicher Forecast): ab Jahr 6 steigt Kapazitäts- und
+    # Arbeitsdruck, sofern Telemedizin/Immigration/Delegation ihn nicht später
+    # sichtbar kompensieren.
+    default_study_places = get_default_params()["medizinstudienplaetze"]
+    study_place_cut = max(0.0, 1.0 - float(p["medizinstudienplaetze"]) / float(default_study_places))
+    pipeline_pressure = 0.0
+    years_since_start = s["jahr"] - 2026
+    if study_place_cut > 0 and years_since_start >= 6:
+        lag_progress = min(1.0, (years_since_start - 5) / 10.0)
+        pipeline_pressure = study_place_cut * lag_progress
+        s["wartezeit_ha"] *= 1.0 + 0.25 * pipeline_pressure
+        s["wartezeit_fa"] *= 1.0 + 0.70 * pipeline_pressure
+
     # ═══════════════════════════════════════════════════════════════
     # PHASE 5 – FINANZMODELL
     # ═══════════════════════════════════════════════════════════════
@@ -511,8 +526,12 @@ def _simulate_year(s: dict, p: dict, rng: np.random.Generator) -> dict:
     # --- Loop G: Burnout → Versorgungsreduktion ---
     workload = nachfrage_index / max(angebot_nachfrage, 0.3)
     arbeitszeit_faktor = p["arbeitszeit_stunden"] / 52.0  # Norm: 52h
+    burnout_from_workload = 0.10 + 0.10 * max(0, workload - 1.0) + 0.05 * max(0, arbeitszeit_faktor - 1.0)
+    # Bei verzögerter Ausbildungsplatz-Kürzung darf Burnout nicht still sinken,
+    # solange der Output keinen starken Entlastungsmechanismus nachweist.
+    burnout_from_pipeline_pressure = 0.12 + 0.10 * pipeline_pressure
     s["burnout_rate"] = np.clip(
-        0.10 + 0.10 * max(0, workload - 1.0) + 0.05 * max(0, arbeitszeit_faktor - 1.0),
+        max(burnout_from_workload, burnout_from_pipeline_pressure if pipeline_pressure > 0 else 0.0),
         0.05, 0.50,
     )
     s["zufriedenheit_aerzte"] = max(10, 65.0 - 80.0 * (s["burnout_rate"] - 0.10))
@@ -856,6 +875,10 @@ def run_scenario(parameter_changes: Optional[dict[str, Any]] = None, *, n_runs: 
         "runs": n_runs,
         "seed": seed,
         "parameter_changes": parameter_changes,
+        "annual_summary": [
+            {k: float(v) for k, v in row.items() if isinstance(v, (int, float, np.number))}
+            for row in agg.to_dict(orient="records")
+        ],
         "final_year_summary": {k: float(v) for k, v in last.items() if isinstance(v, (int, float, np.number))},
         "regional_rows": int(len(df_reg)),
     }

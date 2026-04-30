@@ -3523,6 +3523,11 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
     st.caption(packet["subtitle"])
     st.info(packet["coherent_story"])
 
+    if packet.get("story_sections"):
+        for section in packet["story_sections"]:
+            st.markdown(f"**{section['heading']}**")
+            st.write(section["text"])
+
     cols = st.columns(2)
     with cols[0]:
         st.markdown("**Lesereihenfolge**")
@@ -3560,8 +3565,8 @@ def render_dashboard(agg: pd.DataFrame, params: dict):
     last = agg.iloc[-1]
     endjahr = int(last["jahr"])
 
-    render_result_narrative_summary(agg, params)
     render_result_causal_overview(agg, params)
+    render_result_narrative_summary(agg, params)
     render_result_decision_checkpoints(agg, params)
     render_result_storyboard(agg, params)
     render_uncertainty_band_summary(agg)

@@ -3479,3 +3479,33 @@ Verified locally: `python -m pytest -q` → 205 passed; `python -m py_compile ap
 - **Integrator Decision:** Wired `build_causal_result_packet()` into `app.py` through `build_result_causal_overview()`/`render_result_causal_overview()` and added a regression test that the app reuses the packet before the KPI wall.
 - **Question to Alex if needed:** Keine; safe reversible UX/platform slice.
 - **Verification/Git:** `pytest tests/test_result_causality.py -q` → 3 passed; full `pytest -q` → 209 passed; `py_compile` for touched core files passed; 20-run/3-year simulation smoke with causal overview passed. Commit/push follows in this heartbeat.
+
+
+## 2026-04-30 09:25 Europe/Berlin — Heartbeat: Causal Output/API and Delayed Training Pressure
+
+### Context
+Alex's priority shifted from adding isolated explanations to restructuring SimMed around one coherent causal result output. Worked on `result_causality.py`, `api.py`, `simulation_core.py`, `app.py`, `tests/test_result_causality.py`, `tests/test_api.py`, `tests/test_simulation_core.py`, and the causal-output plan.
+
+### Project Manager
+Priority: make the first result view answer-first and test the medical-study-place-halving expectation. Risk: old KPI wall still exists below the new causal output, so the next slice should reduce/expander-gate dense cards rather than add more snippets.
+
+### Designer / UX
+Good direction: `Simulationsergebnis in Klartext` now has structured sections a first-time user can read sequentially before dense metrics. Next UX step: show only the relevant KPI set from the packet in the primary view and demote the full KPI grid to optional detail.
+
+### Creative Agent
+Idea: a “Crash-Timeline” inside the causal packet with phases `0–5`, `6–10`, `11–15`. Fit: directly answers Alex's concern about delayed crashes; feasible as structured data; should remain model-trace explanation, not spectacle.
+
+### Political Health-System Strategist
+The delayed training-pressure framing is politically plausible as a policy stress-test: short-run effects are muted, but medium-term capacity and workforce pressure matter. Keep it clearly separate from claims about actual future German legislation or stakeholder behavior.
+
+### Evidence / Domain
+No new external evidence claim was added. The new `pipeline_pressure` is explicitly marked as a SimMed assumption/regression guard, not an official forecast. Evidence-grade/registry surfacing remains a required follow-up inside the causal packet.
+
+### Integrator Decision
+Accepted: causal packet structured sections, API embedding, yearly summary support, dashboard ordering, and a narrow model regression for delayed capacity/burnout pressure. Deferred: broader DRG/GKV-benefit/free-text parser and adaptation registry.
+
+### Question to Alex
+No blocking decision now; continue safely with reducing KPI clutter and adding year-window traces.
+
+### Verification / Git
+Pending full-suite verification, commit, and push at time of entry.

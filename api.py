@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from typing import Any
 
+import pandas as pd
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
@@ -103,6 +104,7 @@ from scenario_gallery import (
     build_scenario_gallery_run_handoff_sheet,
     build_scenario_gallery_run_readiness_summary,
 )
+from result_causality import build_causal_result_packet
 from simulation_core import MODEL_VERSION, build_scenario_manifest, get_default_params, run_scenario
 
 api = FastAPI(title="SimMed Deutschland 2040 API", version="0.2.0")
@@ -1642,6 +1644,11 @@ def simulate(req: ScenarioRequest) -> dict:
         unknown = sorted(set(req.parameter_changes) - set(get_default_params()))
         return {"error": "unknown_parameter", "unknown": unknown, "detail": str(exc)}
     result["model"] = MODEL_VERSION
+    result["causal_result_packet"] = build_causal_result_packet(
+        pd.DataFrame(result.get("annual_summary", [])),
+        {**get_default_params(), **req.parameter_changes},
+        max_kpis=5,
+    )
     result["political_feasibility"] = assess_political_feasibility(req.parameter_changes)
     result["uncertainty_band_summary"] = build_uncertainty_band_summary_from_final(result["final_year_summary"])
     result["uncertainty_first_contact_cards"] = build_uncertainty_first_contact_cards(result["uncertainty_band_summary"])

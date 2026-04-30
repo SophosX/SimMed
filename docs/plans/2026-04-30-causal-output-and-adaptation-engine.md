@@ -559,3 +559,21 @@ Acceptance:
 7. Add evidence/source policy filtering and labels.
 
 This order fixes the trust problem first: the model must produce plausible dynamics and explain them before adding many new knobs.
+
+
+## 8. Heartbeat implementation update — causal packet/API and delayed training-pressure regression
+
+Implemented safe slice:
+
+- `result_causality.py` now returns `story_sections` as a structured sequential German explanation for UI/API: Output → changed inputs → mechanisms → adaptation → counterintuitive checks → evidence/assumptions.
+- `/simulate` now embeds `causal_result_packet`, generated from the run's yearly aggregate summary, so agent/API clients get the same answer-first result layer as Streamlit.
+- `simulation_core.run_scenario(...)` now returns `annual_summary` to support causal packets without re-running simulations in API code.
+- `render_dashboard(...)` now renders the causal overview before the older narrative/checkpoint/KPI/detail layers.
+- A regression test now captures Alex's medical-study-place-halving expectation: year 1 should not crash immediately, year 6 should show delayed capacity pressure, final waiting time should be worse than start, and burnout must not silently improve under the shortage scenario.
+- Model change is deliberately narrow: halving study places adds an explicit delayed `pipeline_pressure` from year 6 onward. It increases waiting-time pressure and sets a burnout floor unless visible adaptation mechanisms later compensate. This is labeled in code as a SimMed assumption, not an official forecast.
+
+Next safe slices:
+
+1. Replace the large KPI grid with a compact relevant-KPI renderer driven only by `causal_result_packet['relevant_kpis']`, leaving old KPI details behind an expander.
+2. Expand the causal packet with year-window traces (`0–5`, `6–10`, `11–15`) so the free-text story can say exactly when the delayed crash begins and worsens.
+3. Extract adaptation mechanisms into a small registry rather than keeping all mechanism text inside `result_causality.py` and `simulation_core.py`.

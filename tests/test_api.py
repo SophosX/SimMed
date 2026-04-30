@@ -1,6 +1,35 @@
 from fastapi.testclient import TestClient
 
 from api import api
+from simulation_core import get_default_params
+
+
+def test_simulate_embeds_causal_result_packet_for_answer_first_clients():
+    client = TestClient(api)
+    defaults = get_default_params()
+    response = client.post(
+        "/simulate",
+        json={
+            "parameter_changes": {"medizinstudienplaetze": defaults["medizinstudienplaetze"] * 0.5},
+            "n_runs": 3,
+            "n_years": 15,
+            "seed": 42,
+        },
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    packet = body["causal_result_packet"]
+    assert packet["title"] == "Simulationsergebnis in Klartext"
+    assert len(packet["relevant_kpis"]) <= 5
+    assert "Medizinstudienplätze" in packet["coherent_story"]
+    assert "ab etwa Jahr 6" in packet["coherent_story"]
+    assert [section["id"] for section in packet["story_sections"]][:3] == [
+        "output",
+        "changed_inputs",
+        "mechanisms",
+    ]
+    assert "keine random Internet-Suche" in packet["guardrail"]
 
 
 def test_api_exposes_data_snapshot_status_guardrail():

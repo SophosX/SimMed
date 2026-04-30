@@ -204,6 +204,46 @@ def build_causal_result_packet(
     ) or "Keine spezifischen Anpassungsmechanismen wurden aus den geänderten Haupthebeln abgeleitet."
     counter_text = " ".join(item["finding"] + " " + item["operator_action"] for item in counter) or "Keine harte Gegenintuition im kompakten KPI-Set erkannt."
 
+    story_sections = [
+        {
+            "id": "output",
+            "heading": "Was ist der Output?",
+            "text": f"Die erste Leseschicht zeigt wenige relevante KPIs statt einer KPI-Wand: {kpi_text}",
+        },
+        {
+            "id": "changed_inputs",
+            "heading": "Was wurde geändert?",
+            "text": changed_text,
+        },
+        {
+            "id": "mechanisms",
+            "heading": "Warum verändert sich das Ergebnis?",
+            "text": (
+                "SimMed verbindet Eingriffe über Kapazität, Nachfrage, Finanzierung und Zeitverzug. "
+                "Bei Medizinstudienplätzen ist der zentrale Mechanismus die Ausbildungs-Pipeline: "
+                "ab etwa Jahr 6 kommen weniger Absolvent:innen an, danach steigt der Facharzt-/Kapazitätsdruck."
+            ),
+        },
+        {
+            "id": "adaptation",
+            "heading": "Welche Anpassungen werden sichtbar?",
+            "text": mechanism_text,
+        },
+        {
+            "id": "counterintuitive_checks",
+            "heading": "Was ist gegenintuitiv oder prüfpflichtig?",
+            "text": counter_text,
+        },
+        {
+            "id": "evidence_assumptions",
+            "heading": "Welche Evidenz-/Annahmegrenze gilt?",
+            "text": (
+                f"{RESULT_CAUSALITY_GUARDRAIL} Evidenzgrade und Registry-Caveats begrenzen die Interpretation; "
+                "diese Erklärung ist ein lokaler Modelllauf, keine freie Web-Recherche und keine automatische Parameterintegration."
+            ),
+        },
+    ]
+
     coherent_story = (
         f"Ausgangspunkt: {changed_text} Ergebnis: {kpi_text} "
         f"Warum: Die Simulation liest Änderungen nicht als Einzelzahl, sondern als Wirkpfad über Kapazität, Nachfrage, Finanzierung und Zeitverzug. "
@@ -226,6 +266,7 @@ def build_causal_result_packet(
         "relevant_kpis": kpis,
         "adaptation_mechanisms": mechanisms,
         "counterintuitive_findings": counter,
+        "story_sections": story_sections,
         "coherent_story": coherent_story,
         "method_note": RESULT_CAUSALITY_GUARDRAIL,
         "guardrail": RESULT_CAUSALITY_GUARDRAIL,
