@@ -692,6 +692,8 @@ def build_causal_result_packet(
         {
             "label": str(row.get("label", "")),
             "movement": str(row.get("sentence", "")),
+            "value_line": f"{row.get('start', '–')} → {row.get('end', '–')} ({row.get('direction', 'stabil')})",
+            "interpretation_tone": str(row.get("interpretation", "prüfen")),
             "why_it_matters": str(summary.get("mechanism_link", row.get("why_relevant", ""))),
             "what_to_check_next": (
                 "Zeitverlauf und Annahmen prüfen, bevor diese Kennzahl politisch interpretiert wird."

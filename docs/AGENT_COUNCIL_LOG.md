@@ -4036,3 +4036,33 @@ Keine wichtige Entscheidung offen. Sicher weiter: nächster kohärenter Chunk so
 
 ### Verification / Git
 TDD: neuer API-Assertion-Test war zuerst rot (`len(first_view_kpi_cards) == 5`), danach grün nach API-Anpassung. Verifikation: `python3 -m pytest -q` → 248 passed; `py_compile` für Kernmodule/Tests OK; 50-run/15-Jahre Simulation-Smoke mit `build_causal_result_packet` → OK. Git: Commit `2a71a58` (`Align API causal briefing KPI limit`) wurde nach `origin/main` gepusht und per `git show --name-only --oneline -1` geprüft.
+
+
+## 2026-04-30 09:42 UTC — Heartbeat: Ergebnisbericht-KPI-Karten
+
+### Context
+Alex priorisiert eine ernsthafte, menschlich lesbare Ergebnisansicht: ein zusammenhängender deutscher Ergebnisbericht vor Detailtabellen/KPI-Wand. Diese Runde verfeinert den bestehenden `result_causality.py`-Pfad und die Dashboard-Erstdarstellung.
+
+### Project Manager
+Priorität bleibt: Ergebnisbericht als primäre Lesespur stabilisieren, nicht weitere Einzel-Snippets anhängen. Nächste Aufgaben: 1) echte Streamlit-Render-Regression für die neue Kartenlogik, 2) relevante-KPI-Auswahl weiter gegen Szenariofamilien testen, 3) danach Freitext-Szenariovorschlag nur als Review-/Proposal-Fluss planen.
+
+### Designer / UX
+Die relevanten Kennzahlen erscheinen nun als wenige `st.metric`-Karten mit Wertlinie und Interpretationston, statt sofort als Dataframe. Die prüfbare Zeilentabelle bleibt eingeklappt verfügbar. Das reduziert den ersten Tabellen-Eindruck und passt besser zum Ergebnisbericht.
+
+### Creative Agent
+Idee: später eine kleine „Was würde ich als Fachreviewer zuerst öffnen?“-Leiste direkt aus den KPI-Karten ableiten. Fit: gut für Entscheidungssicherheit; heute bewusst nicht umgesetzt, damit die erste Ansicht ruhig bleibt.
+
+### Political Health-System Strategist
+Die Änderung verbessert die politische Lesbarkeit: Erst Wirkpfad und belastende/entlastende Signale verstehen, dann Stakeholder-/Umsetzungsbewertung. Keine neuen politischen Behauptungen oder Lobbying-Empfehlungen wurden eingeführt.
+
+### Evidence / Domain
+Nur Präsentations-/Erklärungsebene geändert. Keine neuen Datenquellen, keine Modellparameter, keine Evidenzbehauptungen. Guardrails bleiben: Modell-Einordnung, keine amtliche Prognose, kein Wirksamkeitsnachweis.
+
+### Integrator Decision
+Akzeptiert: `first_view_kpi_cards` enthalten jetzt `value_line` und `interpretation_tone`; `render_result_causal_overview()` rendert die erste KPI-Auswahl als mobile/touch-freundlichere Karten und hält die Tabelle als optionalen Prüf-Layer.
+
+### Question to Alex
+Keine neue Entscheidung nötig. Sicher weiter mit Ergebnisbericht/Relevant-KPI-Verfeinerung.
+
+### Verification / Git
+Gezielt grün: `pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients tests/test_app_explanations.py::test_result_causal_overview_exposes_briefing_quality_checks_for_first_view -q`; `py_compile result_causality.py app.py api.py simulation_core.py`; Runtime-Smoke 30 Runs × 3 Jahre mit `build_causal_result_packet`. Commit/Push folgt nach Sync in den GitHub-Clone.

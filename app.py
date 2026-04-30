@@ -3545,11 +3545,30 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
     first_view_cards = primary_view.get("first_view_kpi_cards", []) if primary_view else []
     if first_view_cards:
         st.markdown("**Relevante Kennzahlen für die erste Einordnung**")
-        st.dataframe(
-            pd.DataFrame(first_view_cards)[["label", "movement", "why_it_matters", "what_to_check_next"]],
-            use_container_width=True,
-            hide_index=True,
-        )
+        cols = st.columns(min(len(first_view_cards), 4))
+        for idx, card in enumerate(first_view_cards):
+            with cols[idx % len(cols)]:
+                tone = card.get("interpretation_tone", "prüfen")
+                st.metric(
+                    label=card.get("label", "Kennzahl"),
+                    value=card.get("value_line", card.get("movement", "–")),
+                    delta=tone,
+                )
+                st.caption(card.get("why_it_matters", ""))
+                st.caption(f"Nächster Check: {card.get('what_to_check_next', '')}")
+        with st.expander("Kennzahlen als prüfbare Zeilen", expanded=False):
+            st.dataframe(
+                pd.DataFrame(first_view_cards)[[
+                    "label",
+                    "movement",
+                    "value_line",
+                    "interpretation_tone",
+                    "why_it_matters",
+                    "what_to_check_next",
+                ]],
+                use_container_width=True,
+                hide_index=True,
+            )
 
     next_check = primary_view.get("next_check") if primary_view else None
     if next_check:

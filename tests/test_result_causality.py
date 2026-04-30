@@ -385,11 +385,20 @@ def test_professional_briefing_has_human_first_view_kpi_cards_without_meta_table
     assert packet["primary_result_view"]["lead_paragraph"] == briefing["lead_paragraph"]
     cards = briefing["first_view_kpi_cards"]
     assert 1 <= len(cards) <= 4
-    assert {"label", "movement", "why_it_matters", "what_to_check_next"} <= set(cards[0])
+    assert {
+        "label",
+        "movement",
+        "value_line",
+        "interpretation_tone",
+        "why_it_matters",
+        "what_to_check_next",
+    } <= set(cards[0])
     assert any(card["label"] == "Facharzt-Wartezeit" for card in cards)
     assert any("Ausbildungs-Pipeline" in card["why_it_matters"] for card in cards)
+    assert any(card["interpretation_tone"] in {"eher belastend", "eher entlastend"} for card in cards)
+    assert all("→" in card["value_line"] for card in cards)
     combined = " ".join(
-        card["movement"] + " " + card["why_it_matters"] + " " + card["what_to_check_next"]
+        card["movement"] + " " + card["value_line"] + " " + card["why_it_matters"] + " " + card["what_to_check_next"]
         for card in cards
     )
     assert "answer_first" not in combined
