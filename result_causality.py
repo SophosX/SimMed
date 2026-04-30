@@ -1040,8 +1040,8 @@ def build_causal_result_packet(
     if study_places_changed:
         short_answer = (
             f"Das Ergebnis: Weniger Medizinstudienplätze erzeugen verzögerten Kapazitätsdruck; sichtbar bei {top_kpi_sentences}. "
-            "Warum? weil ab etwa Jahr 6 weniger Nachwuchs ankommt; Richtung Jahr 11–15 zählt der Facharztpfad. "
-            "Was bedeutet das? Das bedeutet: nächste Prüfung: Wartezeit, Belastung und Puffer prüfen, dann politisch bewerten."
+            "Das passiert, weil ab etwa Jahr 6 weniger Nachwuchs ankommt; Richtung Jahr 11–15 zählt der Facharztpfad. "
+            "Das bedeutet: nächste Prüfung sind Wartezeit, Belastung und Puffer; erst danach politisch bewerten."
         )
     elif changed:
         short_answer = (

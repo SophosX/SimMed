@@ -117,7 +117,9 @@ def test_short_answer_reads_like_plain_first_screen_result_not_helper_text():
 
     assert answer.startswith("Das Ergebnis:")
     assert answer.count("Das bedeutet") == 1
-    assert "Was bedeutet das?" in answer
+    assert "Warum?" not in answer
+    assert "Was bedeutet das?" not in answer
+    assert "Das bedeutet" in answer
     assert "Medizinstudienplätze" in answer
     assert "Ärzte pro 100k" in answer and "Facharzt-Wartezeit" in answer
     assert "ab etwa Jahr 6" in answer and "Jahr 11–15" in answer
@@ -156,7 +158,8 @@ def test_public_result_view_answers_first_screen_questions_inside_one_briefing_n
     assert "Kapazitätsdruck" in briefing
     assert "Ärzte pro 100k" in briefing and "Facharzt-Wartezeit" in briefing
     assert "ab etwa Jahr 6" in briefing
-    assert "Was bedeutet das?" in packet["short_answer"]
+    assert "Was bedeutet das?" not in packet["short_answer"]
+    assert "Das bedeutet" in packet["short_answer"]
 
 
 def test_public_result_view_keeps_only_one_first_screen_briefing_before_audit():
@@ -1666,7 +1669,8 @@ def test_public_result_text_uses_clear_serious_language_without_internal_terms()
     for phrase in banned:
         assert phrase.lower() not in public_text.lower()
 
-    assert "Was bedeutet das?" in packet["short_answer"]
+    assert "Was bedeutet das?" not in packet["short_answer"]
+    assert "Das bedeutet" in packet["short_answer"]
     assert "Medizinstudienplätze" in packet["short_answer"]
     assert "Ärzte pro 100k" in public_text
     assert "Facharzt-Wartezeit" in public_text

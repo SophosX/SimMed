@@ -5809,3 +5809,32 @@ No important decision is blocked; continue safely with clearer first-view render
 
 ### Verification / Git
 Focused clarity/API tests passed locally: `python3 -m pytest tests/test_result_causality.py tests/test_app_explanations.py::test_result_causal_overview_exposes_briefing_quality_checks_for_first_view tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 61 passed. Full verification also passed: `python3 -m pytest -q` → 287 passed; `py_compile` for `app.py`, `result_causality.py`, `api.py`, `simulation_core.py`; 50-run simulation smoke with halved medical study places produced a valid simplified causal packet. Git commit/push status is recorded in the heartbeat response.
+
+## 2026-04-30 17:23 Europe/Berlin — Result-first wording cleanup
+
+### Context
+Alexs latest correction: the result page must read like one clear German briefing, not like overlapping helper layers. This slice tightened the public short answer in `result_causality.py` and the clarity regression tests in `tests/test_result_causality.py`.
+
+### Project Manager
+Priority remains the first result screen. Risk is wording drift back into question labels or internal UI/process terms. Next tasks: reduce remaining legacy/audit density below the first card, then visually polish the compact KPI rows.
+
+### Designer / UX
+The first answer now stays declarative: Ergebnis, why, meaning, next check in three sentences. It avoids literal prompt labels like “Warum?”/“Was bedeutet das?” inside the paragraph, while the section headings still provide the clear reading sequence.
+
+### Creative Agent
+A useful next idea is a one-page “Briefing mode” visual rhythm: one headline, one answer paragraph, three relevant KPI chips, then a single collapsed audit drawer. Fit is high because it removes clutter without hiding evidence.
+
+### Political Health-System Strategist
+The wording keeps political interpretation delayed until Wartezeit, Belastung, Puffer, and assumptions are checked. This prevents the output from sounding like a campaign claim or a finished policy recommendation.
+
+### Evidence / Domain
+No model dynamics or evidence claims changed. The medical-study-place lag remains a SimMed stress-test assumption documented in the registry/model context; the public text stays within that scope. Keine neue Recherche in diesem Lauf.
+
+### Integrator Decision
+Accepted: tighten the public short answer and tests so it is serious, direct German prose rather than embedded Q&A labels. Deferred: larger visual restructuring of the collapsed audit/detail areas.
+
+### Question to Alex
+No important decision is open; continue safely toward a calmer first-screen briefing and less duplicate result UI.
+
+### Verification / Git
+Focused tests passed: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q`. Full suite passed: `python3 -m pytest -q` (287 passed). Smoke passed: 50 runs × 3 years with causal packet assertion. Git sync/commit follows in this heartbeat.
