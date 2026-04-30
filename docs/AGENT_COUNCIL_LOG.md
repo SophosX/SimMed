@@ -3423,3 +3423,33 @@ Keine.
 
 ### Verification / Git
 Tests: `pytest tests/test_result_uncertainty.py tests/test_api.py::test_simulate_exposes_uncertainty_band_summary_for_agents -q`; `py_compile app.py api.py result_uncertainty.py`; 20-run Simulation-Smoke; full `pytest -q` (204 passed). Git-Commit/Push folgt in diesem Lauf.
+
+
+## 2026-04-30 08:56 Europe/Berlin — Heartbeat: Uncertainty interpretation packet
+
+### Context
+Alex requested platform-first heartbeats. This slice consolidated the existing P5/P95 uncertainty helpers into a reusable interpretation packet for API/UI clients. Touched `result_uncertainty.py`, `api.py`, `app.py`, and uncertainty/API tests.
+
+### Project Manager
+Priority: continue core UX/API platform work over secondary KI evidence intake. Risk: uncertainty UI had several separate rows/cards that clients could read inconsistently. Next tasks: expose the same packet in focused report/export surfaces, then continue data-ingestion provenance gates.
+
+### Designer / UX
+First-time users now see a single answer-first packet summary and definition-of-done before decision-making, before the detailed uncertainty rows. This improves mobile/tablet reading without adding another isolated snippet.
+
+### Creative Agent
+Idea: later turn the packet into a one-tap “Unsicherheits-Brille” overlay for Policy-Briefings. Fit is good if it remains an interpretation layer only, not a new forecast mode.
+
+### Political Health-System Strategist
+The packet explicitly slows policy interpretation: P5/P95 bands must be read before political feasibility, preventing false certainty in stakeholder/implementation discussions. No new stakeholder claims were added.
+
+### Evidence / Domain
+No new research in this run. The change only reassembles existing Monte-Carlo output and keeps guardrails: no official forecast, no effectiveness proof, no confidence guarantee, no execute=true, no data/model mutation.
+
+### Integrator Decision
+Accepted as a safe, reversible platform slice: reusable helper, `/simulate` response embedding, Streamlit uncertainty expander integration, and regression tests.
+
+### Question to Alex
+Keine.
+
+### Verification / Git
+Verified locally: `python -m pytest -q` → 205 passed; `python -m py_compile app.py api.py result_uncertainty.py tests/test_result_uncertainty.py tests/test_api.py tests/test_app_explanations.py`; 20-run/2-year simulation smoke with uncertainty rows. Commit/push status follows in heartbeat report.

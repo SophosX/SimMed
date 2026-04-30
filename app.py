@@ -95,9 +95,7 @@ from parameter_registry import PARAMETER_REGISTRY, list_parameters
 from result_uncertainty import (
     build_uncertainty_band_summary_from_final,
     build_uncertainty_decision_checklist,
-    build_uncertainty_first_contact_cards,
-    build_uncertainty_reading_storyboard,
-    build_uncertainty_result_questions,
+    build_uncertainty_interpretation_packet,
 )
 import scenario_gallery as scenario_gallery_module
 from simulation_report import build_simulation_report as build_policy_briefing_report
@@ -3452,9 +3450,14 @@ def render_uncertainty_band_summary(agg: pd.DataFrame):
         return
     with st.expander("Unsicherheit zuerst lesen: Wie breit sind die Modell-Spannweiten?", expanded=False):
         st.caption("P5/P95 zeigen die Spannweite der Monte-Carlo-Läufe im Endjahr. Das ist Orientierung, keine amtliche Prognose.")
-        storyboard_rows = build_uncertainty_reading_storyboard(rows)
-        question_rows = build_uncertainty_result_questions(rows)
-        first_contact_cards = build_uncertainty_first_contact_cards(rows)
+        interpretation_packet = build_uncertainty_interpretation_packet(rows)
+        st.info(f"**{interpretation_packet['title']}:** {interpretation_packet['summary']}")
+        st.markdown("**Definition of done vor einer Entscheidung:**")
+        for item in interpretation_packet["definition_of_done_before_decision"]:
+            st.markdown(f"- {item}")
+        storyboard_rows = interpretation_packet["reading_storyboard"]
+        question_rows = interpretation_packet["result_questions"]
+        first_contact_cards = interpretation_packet["first_contact_cards"]
         if storyboard_rows:
             st.markdown("**Lesereihenfolge für Unsicherheit:**")
             st.dataframe(

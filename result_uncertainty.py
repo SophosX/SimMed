@@ -218,6 +218,42 @@ def build_uncertainty_reading_storyboard(
 
 
 
+def build_uncertainty_interpretation_packet(
+    band_rows: Sequence[Mapping[str, str]],
+    *,
+    limit: int = 4,
+) -> dict[str, Any]:
+    """Bundle all uncertainty-reading helpers into one API/UI packet.
+
+    This keeps first-contact clients from stitching together separate rows in
+    inconsistent order. It is still read-only/status-only: no simulation run,
+    sensitivity analysis, connector execution, cache write, or model mutation.
+    """
+
+    rows = list(band_rows)[:limit]
+    broad_count = sum(1 for row in rows if row.get("signal") == "breites Band")
+    return {
+        "title": "Unsicherheit sicher lesen",
+        "mode": "read_only_uncertainty_interpretation",
+        "summary": (
+            f"{len(rows)} P5/P95-Kennzahlen im Paket; {broad_count} davon mit breitem Band. "
+            "Erst Spannweite und Wirkpfad prüfen, dann vorsichtig interpretieren."
+        ),
+        "first_contact_cards": build_uncertainty_first_contact_cards(rows),
+        "result_questions": build_uncertainty_result_questions(rows, limit=limit),
+        "decision_checklist": build_uncertainty_decision_checklist(rows, limit=limit),
+        "reading_storyboard": build_uncertainty_reading_storyboard(rows, limit=limit),
+        "definition_of_done_before_decision": [
+            "Mittelwert, P5 und P95 gemeinsam gelesen",
+            "breite Bänder als Robustheitsfrage markiert",
+            "passenden KPI-Wirkpfad und Annahmen-/Evidenzcheck geöffnet",
+            "Trend-Timing und politische Einordnung getrennt geprüft",
+        ],
+        "guardrail": UNCERTAINTY_GUARDRAIL,
+    }
+
+
+
 def build_uncertainty_band_summary_from_final(
     final_year_summary: Mapping[str, Any],
     *,

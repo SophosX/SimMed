@@ -2,6 +2,7 @@ from result_uncertainty import (
     build_uncertainty_band_summary_from_final,
     build_uncertainty_decision_checklist,
     build_uncertainty_first_contact_cards,
+    build_uncertainty_interpretation_packet,
     build_uncertainty_reading_storyboard,
     build_uncertainty_result_questions,
 )
@@ -133,3 +134,36 @@ def test_uncertainty_reading_storyboard_orders_safe_result_interpretation():
     assert "keine amtliche Prognose" in storyboard[3]["answer_first"]
     assert "kein Wirksamkeitsnachweis" in storyboard[3]["guardrail"]
     assert all("execute=true" not in step.get("open_next", "") for step in storyboard)
+
+
+def test_uncertainty_interpretation_packet_bundles_safe_reading_path():
+    rows = [
+        {
+            "metric_key": "gkv_saldo",
+            "label": "GKV-Saldo",
+            "mean": "10.00",
+            "p5": "-5.00",
+            "p95": "25.00",
+            "signal": "breites Band",
+        },
+        {"metric_key": "wartezeit_fa", "label": "Facharzt-Wartezeit", "signal": "enges Band"},
+    ]
+
+    packet = build_uncertainty_interpretation_packet(rows)
+
+    assert packet["mode"] == "read_only_uncertainty_interpretation"
+    assert "2 P5/P95-Kennzahlen" in packet["summary"]
+    assert "1 davon mit breitem Band" in packet["summary"]
+    assert packet["first_contact_cards"][0]["title"] == "Erst Spannweite, dann Mittelwert"
+    assert packet["result_questions"][0]["question"] == "Wie sicher ist das Signal bei GKV-Saldo?"
+    assert packet["decision_checklist"][0]["decision_status"] == "erst Robustheit prüfen"
+    assert [step["stage"] for step in packet["reading_storyboard"]] == [
+        "Orientieren",
+        "Robustheit prüfen",
+        "Wirkpfad gegenlesen",
+        "Entscheidung bremsen",
+    ]
+    assert "Annahmen-/Evidenzcheck" in " ".join(packet["definition_of_done_before_decision"])
+    assert "keine amtliche Prognose" in packet["guardrail"]
+    assert "kein Wirksamkeitsnachweis" in packet["guardrail"]
+    assert "execute=true" not in str(packet)

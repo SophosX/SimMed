@@ -1685,6 +1685,13 @@ def test_simulate_exposes_uncertainty_band_summary_for_agents():
     assert "KPI-Detailkarte" in storyboard[0]["open_next"]
     assert "keine amtliche Prognose" in storyboard[-1]["answer_first"]
     assert "kein Wirksamkeitsnachweis" in storyboard[-1]["guardrail"]
+    packet = body["uncertainty_interpretation_packet"]
+    assert packet["mode"] == "read_only_uncertainty_interpretation"
+    assert "P5/P95-Kennzahlen" in packet["summary"]
+    assert packet["first_contact_cards"] == first_contact_cards[: len(packet["first_contact_cards"])]
+    assert packet["reading_storyboard"] == storyboard[: len(packet["reading_storyboard"])]
+    assert "Annahmen-/Evidenzcheck" in " ".join(packet["definition_of_done_before_decision"])
+    assert "execute=true" not in str(packet)
     assert "keine amtliche Prognose" in body["uncertainty_guardrail"]
     assert all("kein Wirksamkeitsnachweis" in row["guardrail"] for row in rows)
     assert body["final_year_summary"]["jahr"] == 2028.0

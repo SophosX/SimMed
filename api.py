@@ -88,6 +88,7 @@ from result_uncertainty import (
     build_uncertainty_band_summary_from_final,
     build_uncertainty_decision_checklist,
     build_uncertainty_first_contact_cards,
+    build_uncertainty_interpretation_packet,
     build_uncertainty_reading_storyboard,
     build_uncertainty_result_questions,
 )
@@ -1645,7 +1646,12 @@ def simulate(req: ScenarioRequest) -> dict:
     result["uncertainty_first_contact_cards"] = build_uncertainty_first_contact_cards(result["uncertainty_band_summary"])
     result["uncertainty_result_questions"] = build_uncertainty_result_questions(result["uncertainty_band_summary"])
     result["uncertainty_decision_checklist"] = build_uncertainty_decision_checklist(result["uncertainty_band_summary"])
-    result["uncertainty_reading_storyboard"] = build_uncertainty_reading_storyboard(result["uncertainty_band_summary"])
+    result["uncertainty_reading_storyboard"] = build_uncertainty_reading_storyboard(
+        result["uncertainty_band_summary"], limit=len(result["uncertainty_band_summary"])
+    )
+    result["uncertainty_interpretation_packet"] = build_uncertainty_interpretation_packet(
+        result["uncertainty_band_summary"], limit=len(result["uncertainty_band_summary"])
+    )
     result["uncertainty_guardrail"] = (
         "P5/P95-Spannweiten stammen aus den Monte-Carlo-Läufen dieses Szenarios; "
         "sie sind keine amtliche Prognose, kein Wirksamkeitsnachweis und keine Konfidenzgarantie."
