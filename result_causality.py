@@ -1057,6 +1057,27 @@ def build_causal_result_packet(
             block["kpi_refs"] = [str(row.get("metric_key", "")) for row in relevant_kpis_public]
         first_screen_blocks.append(block)
 
+    audit_sections = [
+        {
+            "id": "mechanism_audit",
+            "title": "Wirkpfad und Plausibilität prüfen",
+            "contains": "Zeitfenster, Anpassungsreaktionen und gegenintuitive Signale",
+            "default_expanded": False,
+        },
+        {
+            "id": "evidence_audit",
+            "title": "Evidenz und Annahmen prüfen",
+            "contains": "Evidenzgrade, Quellen, Unsicherheit und Registry-Caveats",
+            "default_expanded": False,
+        },
+        {
+            "id": "legacy_details",
+            "title": "Weitere Detailansichten öffnen",
+            "contains": "vollständige Kennzahlen, Trend, Policy-Briefing und politische Einordnung",
+            "default_expanded": False,
+        },
+    ]
+
     public_result_view = {
         "briefing_style": "single_readable_briefing",
         "render_order": [
@@ -1065,7 +1086,7 @@ def build_causal_result_packet(
             "first_screen_blocks",
             "relevant_kpis",
             "follow_up_question",
-            "deeper_review",
+            "audit_sections",
         ],
         "headline": result_headline,
         "short_answer": short_answer,
@@ -1073,6 +1094,7 @@ def build_causal_result_packet(
         "primary_blocks": first_screen_blocks,
         "relevant_kpis": relevant_kpis_public,
         "follow_up_question": follow_up_question,
+        "audit_sections": audit_sections,
         "deeper_review_default_expanded": False,
         "audit_expanders": [
             "Zeitfenster, Annahmen und Plausibilität",
@@ -1088,6 +1110,7 @@ def build_causal_result_packet(
         "short_answer": short_answer,
         "result_sections": result_sections,
         "follow_up_question": follow_up_question,
+        "audit_sections": audit_sections,
         "public_result_view": public_result_view,
         "subtitle": "Relevante Kennzahlen und ein zusammenhängender Wirkpfad von Ausgangslage bis Einordnung.",
         "reading_order": [

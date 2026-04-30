@@ -4749,3 +4749,33 @@ Keine wichtige Entscheidung offen; weiter sicher an Ergebnis-Klarheit und visuel
 
 ### Verification / Git
 Verification in source tree: `python3 -m pytest tests/test_result_causality.py -q` → 38 passed; `python3 -m pytest -q` → 266 passed; `python3 -m py_compile app.py result_causality.py api.py simulation_core.py parameter_registry.py data_sources.py` passed; 30-run × 15-year simulation/packet smoke passed with headline “Weniger Medizinstudienplätze: der relevante Druck kommt verzögert”. Git commit/push for this verification-log handoff pending in this entry.
+
+
+## 2026-04-30 14:44 Europe/Berlin — Result briefing audit sections
+
+### Context
+Alexs Korrektur bleibt die Leitplanke: die erste Ergebnisansicht muss ein lesbares Briefing sein, nicht eine Sammlung überlappender Hilfsblöcke. Dieser Lauf hat die neue vereinfachte `causal_result_packet`-Struktur weiter stabilisiert: `public_result_view` benennt jetzt explizit getrennte, standardmäßig geschlossene Audit-Bereiche.
+
+### Project Manager
+Priorität: Ergebnis-Seite zuerst verständlich machen, ohne neue Modellannahmen einzubauen. Risiko: Detail- und Legacy-Schichten dürfen nicht wieder in die erste Ansicht rutschen. Nächste Aufgaben: Streamlit-First-View weiter visuell glätten, Legacy-Detailblöcke weiter konsolidieren, danach breitere Szenario-Hebel planen.
+
+### Designer / UX
+Die erste Ansicht bleibt bei der Reihenfolge Ergebnis → Eingriff → Warum es passiert → Relevante Kennzahlen → Anpassungen → Einordnung → Nächster Prüfschritt. Die Vertiefung ist jetzt als klare Audit-Zone markiert, nicht als weiterer gleichrangiger Ergebnisblock.
+
+### Creative Agent
+Idee: Die Audit-Zone kann später wie ein ärztlicher Befund gelesen werden: zuerst Befund, dann Laborwerte/Methodik im Anhang. Fit: sehr gut für Vertrauen und Lesbarkeit; noch keine neue Funktion nötig.
+
+### Political Health-System Strategist
+Für politische Lesbarkeit ist die Reihenfolge wichtig: erst Ergebnis und Wirkpfad verstehen, dann Evidenzgrenzen und Stakeholder-Deutung öffnen. Das verhindert, dass einzelne Kennzahlen vorschnell als politische Empfehlung gelesen werden.
+
+### Evidence / Domain
+Keine neue externe Recherche in diesem Lauf; keine neuen Sachbehauptungen oder Modellparameter. Die Änderung betrifft Paketstruktur, UI-Hierarchie und Tests. Evidenz-/Annahmegrenzen bleiben im Audit sichtbar.
+
+### Integrator Decision
+Akzeptiert: `public_result_view.audit_sections` als strukturierter Vertrag zwischen API und UI; Streamlit rendert die Vertiefung mit diesen Titeln standardmäßig geschlossen. Verworfene Richtung: weitere freie Textschichten in der ersten Ansicht.
+
+### Question to Alex
+Keine wichtige Entscheidung offen. Sicher weiter: Ergebnis-First-View weiter reduzieren und visuell als ein Briefing ausarbeiten.
+
+### Verification / Git
+Lokal grün: `python3 -m pytest -q` (267 passed), `py_compile` für zentrale Dateien, Smoke-Test `run_simulation(... n_runs=50, n_years=3)` plus `build_causal_result_packet(...)`. Git-Sync/Commit/Push folgt in diesem Lauf.

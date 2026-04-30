@@ -3553,7 +3553,16 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
 
     st.caption(view.get("guardrail", packet["guardrail"]))
 
-    with st.expander("Weitere Prüfung: Zeitfenster, Annahmen und Plausibilität", expanded=False):
+    audit_sections = view.get("audit_sections", [])
+    audit_label = "Vertiefung: Wirkpfad, Evidenz und Details"
+    if audit_sections:
+        audit_label = "Vertiefung: " + " · ".join(section.get("title", "Details") for section in audit_sections[:2])
+
+    with st.expander(audit_label, expanded=view.get("deeper_review_default_expanded", False)):
+        if audit_sections:
+            for section in audit_sections:
+                st.markdown(f"**{section.get('title', 'Weitere Prüfung')}**")
+                st.caption(section.get("contains", ""))
         if packet.get("timeline_windows"):
             st.markdown("**Zeitfenster des Wirkpfads**")
             st.dataframe(

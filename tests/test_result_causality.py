@@ -70,7 +70,7 @@ def test_simplified_public_result_packet_is_short_clear_and_not_meta():
         "first_screen_blocks",
         "relevant_kpis",
         "follow_up_question",
-        "deeper_review",
+        "audit_sections",
     ]
     assert [section["heading"] for section in packet["result_sections"]] == [
         "Ergebnis",
@@ -120,6 +120,27 @@ def test_public_adaptation_section_is_not_truncated_mid_sentence():
     assert "Ab etwa Jahr 6" in why
 
 
+def test_public_result_view_separates_briefing_from_collapsed_audit_layers():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    view = packet["public_result_view"]
+
+    assert view["briefing_style"] == "single_readable_briefing"
+    assert view["deeper_review_default_expanded"] is False
+    assert [section["id"] for section in view["audit_sections"]] == [
+        "mechanism_audit",
+        "evidence_audit",
+        "legacy_details",
+    ]
+    assert all(section["default_expanded"] is False for section in view["audit_sections"])
+    assert all("Ergebnis" not in section["title"] for section in view["audit_sections"])
+    assert any("Zeitfenster" in section["contains"] for section in view["audit_sections"])
+    assert any("vollständige Kennzahlen" in section["contains"] for section in view["audit_sections"])
+    assert "audit_sections" in view["render_order"]
+
+
 def test_first_result_view_has_one_sequential_briefing_with_kpis_in_place():
     params = get_default_params()
     params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
@@ -166,6 +187,7 @@ def test_public_result_packet_is_minimal_and_does_not_expose_legacy_layers_first
         "primary_blocks",
         "relevant_kpis",
         "follow_up_question",
+        "audit_sections",
         "deeper_review_default_expanded",
         "audit_expanders",
         "guardrail",
@@ -988,7 +1010,7 @@ def test_result_layout_uses_human_first_view_names_not_internal_widget_language(
         "first_screen_blocks",
         "relevant_kpis",
         "follow_up_question",
-        "deeper_review",
+        "audit_sections",
     ]
     assert layout["primary_sequence"] == [
         "Ergebnis",
