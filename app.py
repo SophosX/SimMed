@@ -98,7 +98,7 @@ from result_uncertainty import (
     build_uncertainty_interpretation_packet,
     build_uncertainty_robustness_brief,
 )
-from result_causality import build_causal_result_packet
+from result_causality import build_causal_result_layout, build_causal_result_packet
 import scenario_gallery as scenario_gallery_module
 from simulation_report import build_simulation_report as build_policy_briefing_report
 
@@ -3585,87 +3585,91 @@ def render_dashboard(agg: pd.DataFrame, params: dict):
     endjahr = int(last["jahr"])
 
     render_result_causal_overview(agg, params)
+    causal_layout = build_causal_result_layout(build_result_causal_overview(agg, params))
     render_result_narrative_summary(agg, params)
     render_result_decision_checkpoints(agg, params)
     render_result_storyboard(agg, params)
     render_uncertainty_band_summary(agg)
 
-    st.markdown(f"### Kernkennzahlen {endjahr} (Mittelwerte über alle Runs)")
-    st.caption("Desktop: ⓘ/Hover erklärt jede Karte. Mobil/Tablet: dieselben Erklärungen stehen direkt darunter in den aufklappbaren KPI-Details. P5/P95-Spannweiten stehen oben im Unsicherheits-Check.")
+    dense = causal_layout["dense_kpi_wall"]
+    with st.expander(dense["label"], expanded=dense["default_expanded"]):
+        st.caption(dense["reason"])
+        st.markdown(f"### Kernkennzahlen {endjahr} (Mittelwerte über alle Runs)")
+        st.caption("Desktop: ⓘ/Hover erklärt jede Karte. Mobil/Tablet: dieselben Erklärungen stehen direkt darunter in den aufklappbaren KPI-Details. P5/P95-Spannweiten stehen oben im Unsicherheits-Check.")
 
-    def delta_pct(col: str) -> float:
-        v0, v1 = first[f"{col}_mean"], last[f"{col}_mean"]
-        return ((v1 / v0) - 1) * 100 if v0 != 0 else 0
+        def delta_pct(col: str) -> float:
+            v0, v1 = first[f"{col}_mean"], last[f"{col}_mean"]
+            return ((v1 / v0) - 1) * 100 if v0 != 0 else 0
 
-    # Zeile 1: Kosten & Finanzen
-    c1, c2, c3, c4 = st.columns(4)
-    with c1:
-        v = last["gesundheitsausgaben_mrd_mean"]
-        render_metric_card_with_details("Gesundheitsausgaben", f"{v:.0f} Mrd. €", "gesundheitsausgaben_mrd", delta_pct("gesundheitsausgaben_mrd"), False, "metric-card")
-    with c2:
-        v = last["bip_anteil_mean"]
-        d = v - first["bip_anteil_mean"]
-        render_metric_card_with_details("BIP-Anteil Gesundheit", f"{v:.1f} %", "bip_anteil", d * 8, False, "mc-orange")
-    with c3:
-        v = last["gkv_beitragssatz_mean"]
-        d = v - first["gkv_beitragssatz_mean"]
-        render_metric_card_with_details("GKV-Beitragssatz (eff.)", f"{v:.1f} %", "gkv_beitragssatz", d * 5, False, "mc-red")
-    with c4:
-        v = last["gkv_saldo_mean"]
-        cls = "mc-green" if v >= 0 else "mc-red"
-        render_metric_card_with_details("GKV-Saldo", f"{v:+.1f} Mrd. €", "gkv_saldo", css_class=cls)
+        # Zeile 1: Kosten & Finanzen
+        c1, c2, c3, c4 = st.columns(4)
+        with c1:
+            v = last["gesundheitsausgaben_mrd_mean"]
+            render_metric_card_with_details("Gesundheitsausgaben", f"{v:.0f} Mrd. €", "gesundheitsausgaben_mrd", delta_pct("gesundheitsausgaben_mrd"), False, "metric-card")
+        with c2:
+            v = last["bip_anteil_mean"]
+            d = v - first["bip_anteil_mean"]
+            render_metric_card_with_details("BIP-Anteil Gesundheit", f"{v:.1f} %", "bip_anteil", d * 8, False, "mc-orange")
+        with c3:
+            v = last["gkv_beitragssatz_mean"]
+            d = v - first["gkv_beitragssatz_mean"]
+            render_metric_card_with_details("GKV-Beitragssatz (eff.)", f"{v:.1f} %", "gkv_beitragssatz", d * 5, False, "mc-red")
+        with c4:
+            v = last["gkv_saldo_mean"]
+            cls = "mc-green" if v >= 0 else "mc-red"
+            render_metric_card_with_details("GKV-Saldo", f"{v:+.1f} Mrd. €", "gkv_saldo", css_class=cls)
 
-    # Zeile 2: Gesundheit
-    c1, c2, c3, c4 = st.columns(4)
-    with c1:
-        v = last["lebenserwartung_mean"]
-        d = v - first["lebenserwartung_mean"]
-        render_metric_card_with_details("Lebenserwartung", f"{v:.1f} J.", "lebenserwartung", d * 8, True, "mc-green")
-    with c2:
-        v = last["vermeidbare_mortalitaet_mean"]
-        render_metric_card_with_details("Vermeidb. Mortalität", f"{v:.0f} /100k", "vermeidbare_mortalitaet", delta_pct("vermeidbare_mortalitaet"), False, "mc-red")
-    with c3:
-        v = last["chroniker_rate_mean"]
-        d = v - first["chroniker_rate_mean"]
-        render_metric_card_with_details("Chroniker-Rate", f"{v:.1f} %", "chroniker_rate", d * 2, False, "mc-orange")
-    with c4:
-        v = last["bevoelkerung_mio_mean"]
-        render_metric_card_with_details("Bevölkerung", f"{v:.1f} Mio.", "bevoelkerung_mio", delta_pct("bevoelkerung_mio"), css_class="mc-blue")
+        # Zeile 2: Gesundheit
+        c1, c2, c3, c4 = st.columns(4)
+        with c1:
+            v = last["lebenserwartung_mean"]
+            d = v - first["lebenserwartung_mean"]
+            render_metric_card_with_details("Lebenserwartung", f"{v:.1f} J.", "lebenserwartung", d * 8, True, "mc-green")
+        with c2:
+            v = last["vermeidbare_mortalitaet_mean"]
+            render_metric_card_with_details("Vermeidb. Mortalität", f"{v:.0f} /100k", "vermeidbare_mortalitaet", delta_pct("vermeidbare_mortalitaet"), False, "mc-red")
+        with c3:
+            v = last["chroniker_rate_mean"]
+            d = v - first["chroniker_rate_mean"]
+            render_metric_card_with_details("Chroniker-Rate", f"{v:.1f} %", "chroniker_rate", d * 2, False, "mc-orange")
+        with c4:
+            v = last["bevoelkerung_mio_mean"]
+            render_metric_card_with_details("Bevölkerung", f"{v:.1f} Mio.", "bevoelkerung_mio", delta_pct("bevoelkerung_mio"), css_class="mc-blue")
 
-    # Zeile 3: Versorgung
-    c1, c2, c3, c4 = st.columns(4)
-    with c1:
-        v = last["aerzte_pro_100k_mean"]
-        render_metric_card_with_details("Ärzte / 100k", f"{v:.0f}", "aerzte_pro_100k", delta_pct("aerzte_pro_100k"), True, "mc-blue")
-    with c2:
-        v = last["wartezeit_fa_mean"]
-        render_metric_card_with_details("Wartezeit FA", f"{v:.0f} Tage", "wartezeit_fa", delta_pct("wartezeit_fa"), False, "mc-orange")
-    with c3:
-        v = last["versorgungsindex_rural_mean"]
-        d = v - first["versorgungsindex_rural_mean"]
-        render_metric_card_with_details("Versorgung Land", f"{v:.0f} / 100", "versorgungsindex_rural", d * 1.5, True, "mc-green")
-    with c4:
-        v = last["gini_versorgung_mean"]
-        render_metric_card_with_details("Gini Versorgung", f"{v:.3f}", "gini_versorgung", delta_pct("gini_versorgung"), False, "metric-card")
+        # Zeile 3: Versorgung
+        c1, c2, c3, c4 = st.columns(4)
+        with c1:
+            v = last["aerzte_pro_100k_mean"]
+            render_metric_card_with_details("Ärzte / 100k", f"{v:.0f}", "aerzte_pro_100k", delta_pct("aerzte_pro_100k"), True, "mc-blue")
+        with c2:
+            v = last["wartezeit_fa_mean"]
+            render_metric_card_with_details("Wartezeit FA", f"{v:.0f} Tage", "wartezeit_fa", delta_pct("wartezeit_fa"), False, "mc-orange")
+        with c3:
+            v = last["versorgungsindex_rural_mean"]
+            d = v - first["versorgungsindex_rural_mean"]
+            render_metric_card_with_details("Versorgung Land", f"{v:.0f} / 100", "versorgungsindex_rural", d * 1.5, True, "mc-green")
+        with c4:
+            v = last["gini_versorgung_mean"]
+            render_metric_card_with_details("Gini Versorgung", f"{v:.3f}", "gini_versorgung", delta_pct("gini_versorgung"), False, "metric-card")
 
-    # Zeile 4: System & Personal
-    c1, c2, c3, c4 = st.columns(4)
-    with c1:
-        v = last["burnout_rate_mean"]
-        d = v - first["burnout_rate_mean"]
-        render_metric_card_with_details("Burnout Ärzte", f"{v:.1f} %", "burnout_rate", d * 3, False, "mc-red")
-    with c2:
-        v = last["telemedizin_rate_mean"]
-        render_metric_card_with_details("Telemedizin", f"{v:.0f} %", "telemedizin_rate", css_class="mc-blue")
-    with c3:
-        v = last["kollaps_wahrscheinlichkeit_mean"]
-        cls = "mc-red" if v > 15 else "mc-green"
-        render_metric_card_with_details("Kollaps-Risiko", f"{v:.1f} %", "kollaps_wahrscheinlichkeit", css_class=cls)
-    with c4:
-        v = last["zufriedenheit_patienten_mean"]
-        d = v - first["zufriedenheit_patienten_mean"]
-        cls = "mc-green" if v > 60 else "mc-orange"
-        render_metric_card_with_details("Patientenzufr.", f"{v:.0f} / 100", "zufriedenheit_patienten", d, True, cls)
+        # Zeile 4: System & Personal
+        c1, c2, c3, c4 = st.columns(4)
+        with c1:
+            v = last["burnout_rate_mean"]
+            d = v - first["burnout_rate_mean"]
+            render_metric_card_with_details("Burnout Ärzte", f"{v:.1f} %", "burnout_rate", d * 3, False, "mc-red")
+        with c2:
+            v = last["telemedizin_rate_mean"]
+            render_metric_card_with_details("Telemedizin", f"{v:.0f} %", "telemedizin_rate", css_class="mc-blue")
+        with c3:
+            v = last["kollaps_wahrscheinlichkeit_mean"]
+            cls = "mc-red" if v > 15 else "mc-green"
+            render_metric_card_with_details("Kollaps-Risiko", f"{v:.1f} %", "kollaps_wahrscheinlichkeit", css_class=cls)
+        with c4:
+            v = last["zufriedenheit_patienten_mean"]
+            d = v - first["zufriedenheit_patienten_mean"]
+            cls = "mc-green" if v > 60 else "mc-orange"
+            render_metric_card_with_details("Patientenzufr.", f"{v:.0f} / 100", "zufriedenheit_patienten", d, True, cls)
 
     render_kpi_deep_dive(agg, params)
     render_main_trend_chart(agg, params)

@@ -1,7 +1,7 @@
 import pandas as pd
 
 from simulation_core import get_default_params
-from result_causality import build_causal_result_packet
+from result_causality import build_causal_result_packet, build_causal_result_layout
 from app import build_result_causal_overview
 
 
@@ -155,3 +155,25 @@ def test_causal_result_packet_has_sequential_free_text_blocks_before_optional_de
         "relevant_kpis": packet["relevant_kpis"],
         "optional_details_after": ["KPI-Drilldowns", "Trend", "Policy-Briefing", "Politik/Stakeholder"],
     }
+
+
+def test_causal_result_layout_keeps_dense_kpis_optional_after_cleartext():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+
+    layout = build_causal_result_layout(packet)
+
+    assert layout["first_view"] == "Simulationsergebnis in Klartext"
+    assert layout["primary_sequence"] == [
+        "coherent_free_text",
+        "relevant_kpis",
+        "adaptation_mechanisms",
+        "counterintuitive_checks",
+        "evidence_assumptions",
+    ]
+    assert layout["dense_kpi_wall"]["mode"] == "optional_expander_after_causal_story"
+    assert layout["dense_kpi_wall"]["default_expanded"] is False
+    assert "nicht die erste Ansicht" in layout["dense_kpi_wall"]["reason"]
+    assert "KPI-Wand" in layout["dense_kpi_wall"]["label"]
+    assert layout["guardrail"] == packet["guardrail"]

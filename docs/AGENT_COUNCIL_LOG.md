@@ -3567,3 +3567,32 @@ Keine wichtige Entscheidung offen; sicher weiter mit der nächsten kleinen Schei
 
 ### Verification / Git
 Vor Commit: neuer Test rot (`KeyError: free_text_blocks`), dann grün. Finale Tests/Git werden nach Suite und Push ergänzt.
+
+## 2026-04-30 09:45 Europe/Berlin — Heartbeat: Klartext-first result layout
+
+### Context
+Alexs aktuelle Priorität bleibt: Resultate zuerst als kohärenten deutschen Wirkpfad lesen, nicht als KPI-Wand. Der bestehende `build_causal_result_packet(...)` war schon in UI/API verdrahtet; die dichte KPI-Kartenansicht stand aber weiterhin direkt im Hauptfluss.
+
+### Project Manager
+Priorität: die neue Ergebnisarchitektur sichtbar machen, ohne Modellgleichungen nebenbei zu verändern. Nächste sichere Schritte: Layout weiter auf den Causal Packet source-of-truth ziehen, dann Modellregression für den Medizinstudienplatz-Crash vertiefen.
+
+### Designer / UX
+Die erste Ansicht muss Antwort und Lesepfad liefern. Deshalb wird die alte KPI-Wand als optionale Detail-/Audit-Ebene nach dem Klartext markiert, nicht als primärer Einstieg.
+
+### Creative Agent
+Idee: später einen "Ergebnis als Geschichte / Audit als Tabelle"-Schalter anbieten. Produktfit gut, aber erst nach stabilem causal packet; heute nur sichere Layout-Struktur.
+
+### Political Health-System Strategist
+Politische Einordnung bleibt nachgelagert: erst Modelloutput und Wirkpfad verstehen, dann Umsetzbarkeit/Veto-Spieler lesen. Kein neuer politischer Fakt oder Lobbying-Claim in diesem Lauf.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Die Änderung betrifft UI-/API-Struktur und Guardrails; Evidenz-/Annahmegrenzen bleiben über Packet-Guardrail sichtbar. Keine neue Modellannahme wurde als Fakt kodiert.
+
+### Integrator Decision
+Akzeptiert: `build_causal_result_layout(packet)` als kleine strukturierte Layout-Brücke und Streamlit-Dashboard nutzt sie, um die KPI-Wand in einen optionalen Expander nach der Klartext-Erklärung zu verschieben. Modellmechanismen unverändert.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; wir können sicher weiter an Modellregression/Adaptationsmechanismen arbeiten.
+
+### Verification / Git
+Fokustests bestanden: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 8 passed. Full suite bestanden: `python3 -m pytest -q` → 215 passed. Compile/Smoke bestanden: `py_compile result_causality.py app.py api.py simulation_core.py` plus 50-run Simulation/Klartext-Layout-Smoke. Commit/Push folgen im Verifikationsschritt dieses Heartbeats.

@@ -213,6 +213,39 @@ def _timeline_windows(params: Mapping[str, Any]) -> list[dict[str, str]]:
     ]
 
 
+def build_causal_result_layout(packet: Mapping[str, Any]) -> dict[str, Any]:
+    """Describe the answer-first result layout for UI/API clients.
+
+    This keeps the old dense KPI cards available as an audit/detail layer, but
+    explicitly prevents them from being the first interpretation surface.
+    """
+
+    return {
+        "first_view": str(packet.get("title", "Simulationsergebnis in Klartext")),
+        "primary_sequence": [
+            "coherent_free_text",
+            "relevant_kpis",
+            "adaptation_mechanisms",
+            "counterintuitive_checks",
+            "evidence_assumptions",
+        ],
+        "dense_kpi_wall": {
+            "label": "Optionale KPI-Wand / Detailkarten erst nach dem Klartext",
+            "mode": "optional_expander_after_causal_story",
+            "default_expanded": False,
+            "reason": (
+                "Die KPI-Wand ist nicht die erste Ansicht, weil Alex zuerst Output, Änderung, "
+                "Wirkpfad, Anpassung und Caveat als zusammenhängende Geschichte lesen soll."
+            ),
+        },
+        "optional_details_after": packet.get("primary_result_view", {}).get(
+            "optional_details_after",
+            ["KPI-Drilldowns", "Trend", "Policy-Briefing", "Politik/Stakeholder"],
+        ),
+        "guardrail": packet.get("guardrail", RESULT_CAUSALITY_GUARDRAIL),
+    }
+
+
 def build_causal_result_packet(
     agg: pd.DataFrame,
     params: Mapping[str, Any],
