@@ -5751,3 +5751,32 @@ Keine wichtige Entscheidung offen. Weiter sicher mit Detailbereich-Cleanup und v
 
 ### Verification / Git
 Verifiziert: fokussierte Public-Result-No-Jargon-Tests grün; `pytest tests/test_result_causality.py -q` → 59 passed; `pytest tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients tests/test_result_causality.py -q` → 60 passed; full `pytest -q` → 287 passed; `py_compile`; 30-run Simulation-Smoke mit halbierten Medizinstudienplätzen und kompaktem causal packet OK. Git-Sync/Commit/Push wird nach diesem Eintrag durchgeführt und im finalen Status berichtet.
+
+## 2026-04-30 19:14 Europe/Berlin — Ergebnisbriefing vereinfacht
+
+### Context
+Alexs Korrektur: Die Ergebnis-Seite soll nicht noch mehr Erklär-Widgets stapeln, sondern sofort als ein ernstes, lesbares deutsches Briefing funktionieren. Relevante Dateien: `result_causality.py`, `app.py`, `api.py`, `tests/test_result_causality.py`, `tests/test_api.py`, `tests/test_app_explanations.py`.
+
+### Project Manager
+Priorität bleibt die erste Ergebnisansicht. Der sichere nächste Schritt ist, die neue kurze Packet-Struktur weiter in Export/API-Clients und Beispiel-Szenarien zu ziehen, statt neue Nebenwidgets zu ergänzen. Risiko: alte Legacy-Helfer bleiben als Audit-Schicht nötig, dürfen aber nicht wieder die erste Ansicht dominieren.
+
+### Designer / UX
+Die erste Ansicht folgt jetzt einer klaren Sequenz: Ergebnis → Eingriff → Warum es passiert → Relevante Kennzahlen → Anpassungen → Einordnung → Nächster Prüfschritt. Vollständige KPI-Karten, Storyboard, Trend und Policy-Briefing bleiben bewusst in geschlossenen Vertiefungen.
+
+### Creative Agent
+Produktidee: später einen „Briefing-Modus“ als exportierbares einseitiges Ergebnisblatt anbieten. Fit: stark für politische/operative Gespräche; erst sinnvoll, wenn die neue erste Ansicht in weiteren Szenarien stabil bleibt.
+
+### Political Health-System Strategist
+Die politische Deutung bleibt nachgelagert: Der erste Screen sagt, was rauskommt und welche Prüfung nötig ist, aber vermeidet Wahl-/Lobbying- oder Wirksamkeitsbehauptungen. Bei Medizinstudienplätzen wird der Pipeline-Lag als prüfbarer Wirkpfad, nicht als amtliche Prognose formuliert.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf; es wurden keine neuen externen Fakten oder Modellparameter eingeführt. Evidenz/Annahmen bleiben im Audit-Bereich sichtbar, aber nicht als Quellen-Dump in der ersten Ansicht.
+
+### Integrator Decision
+Akzeptiert: vereinfachtes öffentliches Causal-Result-Packet mit `result_headline`, `short_answer`, maximal sieben kurzen `result_sections`, `relevant_kpis`, `follow_up_question` und geschlossenen Audit-Hinweisen. API `/simulate` verwendet weiterhin dasselbe Packet.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; weiter sicher in Richtung klarer Ergebnis-Briefings und weniger konkurrierender Erstansichten.
+
+### Verification / Git
+Verifikation lokal grün: `python3 -m pytest -q` → 287 passed; `py_compile` für Kernmodule; 50-run Simulation-Smoke mit halbierten Medizinstudienplätzen und Causal-Packet-Check erfolgreich. Git-Commit/Push wird nach Sync aus dem Arbeitsverzeichnis in den GitHub-Clone verifiziert.
