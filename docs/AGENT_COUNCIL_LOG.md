@@ -6343,4 +6343,4 @@ Akzeptiert: öffentliche Ergebnisabschnitte in `result_causality.py` weiter verk
 Keine wichtige Entscheidung offen. Ich arbeite sicher weiter an der klaren Ergebnis-Lesefassung.
 
 ### Verification / Git
-Vor Commit: neue Klarheitstests rot gesehen, dann mit gekürzten Abschnittstexten grün gemacht. Vollständige Verifikation und Git-Push folgen in diesem Lauf.
+Verifiziert: neue Klarheitstests rot gesehen, dann grün; `pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 72 passed; `pytest -q` → 300 passed; `py_compile` + 50-run Simulation-Smoke OK. Commit `02fd6bc` wurde nach `origin/main` gepusht.
