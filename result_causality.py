@@ -405,6 +405,7 @@ def build_causal_result_packet(
     timeline_windows = _timeline_windows(params)
     counter = _counterintuitive_findings(kpis, params)
     changed_text = " ".join(item["change"] for item in changed) or "Keine zentrale Stellschraube wurde gegenüber dem Standardpfad verändert."
+    study_places_changed = any(item.get("key") == "medizinstudienplaetze" for item in changed)
     kpi_text = " ".join(item["sentence"] for item in kpis) or "Keine priorisierten KPI-Bewegungen verfügbar."
     mechanism_text = " ".join(
         f"{item['mechanism']}: {item['expected_effect']} Timing: {item['timing']}." for item in mechanisms
@@ -551,6 +552,26 @@ def build_causal_result_packet(
         for row, summary in zip(kpis, kpi_summary, strict=False)
     ]
 
+    if study_places_changed:
+        pathway_body = (
+            "Der Eingriff läuft im Modell über Kapazität, Nachfrage, Finanzierung und Zeitverzug. "
+            "Bei weniger Medizinstudienplätzen ist der entscheidende Punkt die Ausbildungs-Pipeline: "
+            "in Jahr 0–5 passiert noch wenig an der ärztlichen Versorgung, ab Jahr 6 erreicht die kleinere Kohorte den Arbeitsmarkt, "
+            "und Richtung Jahr 11–15 wird der Facharzt- und Kapazitätseffekt deutlich prüfpflichtig. "
+            f"{timeline_text}"
+        )
+    elif changed:
+        pathway_body = (
+            "Der Eingriff läuft im Modell über die jeweils dokumentierten SimMed-Pfade — Kapazität, Nachfrage, Finanzierung, regionale Verteilung und Zeitverzug. "
+            "Für diesen Lauf wird kein spezieller Ausbildungs-Pipeline-Lag abgeleitet; der Bericht prüft deshalb die tatsächlich veränderten Hebel und die dazu passenden Kennzahlen. "
+            f"{timeline_text}"
+        )
+    else:
+        pathway_body = (
+            "Es wurde keine zentrale Stellschraube verändert. Der Bericht liest deshalb den Referenzpfad selbst: Welche Kennzahlen bewegen sich im Modelllauf, "
+            "obwohl kein zusätzlicher Eingriff gesetzt wurde, und welche davon sollten vor einer fachlichen Deutung genauer geprüft werden?"
+        )
+
     professional_sections = [
         {
             "heading": "Ausgangslage",
@@ -565,13 +586,7 @@ def build_causal_result_packet(
         },
         {
             "heading": "Berechnete Wirkpfade",
-            "body": (
-                "Der Eingriff läuft im Modell über Kapazität, Nachfrage, Finanzierung und Zeitverzug. "
-                "Bei weniger Medizinstudienplätzen ist der entscheidende Punkt die Ausbildungs-Pipeline: "
-                "in Jahr 0–5 passiert noch wenig an der ärztlichen Versorgung, ab Jahr 6 erreicht die kleinere Kohorte den Arbeitsmarkt, "
-                "und Richtung Jahr 11–15 wird der Facharzt- und Kapazitätseffekt deutlich prüfpflichtig. "
-                f"{timeline_text}"
-            ),
+            "body": pathway_body,
         },
         {
             "heading": "Relevante KPIs",

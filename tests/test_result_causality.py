@@ -392,3 +392,18 @@ def test_packet_primary_plain_text_is_the_professional_briefing_not_legacy_numbe
     assert "Berechnete Wirkpfade\n" in packet["sequential_plain_text"]
     assert "1. Ergebnis" not in packet["sequential_plain_text"]
     assert "2. Änderung" not in packet["sequential_plain_text"]
+
+
+def test_professional_briefing_does_not_invent_study_place_path_when_no_lever_changed():
+    params = get_default_params()
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    text = packet["professional_briefing"]["sequential_text"]
+
+    assert "Keine zentrale Stellschraube" in text
+    assert "Medizinstudienplätze wurde" not in text
+    assert "Bei weniger Medizinstudienplätzen" not in text
+    assert "ab Jahr 6 erreicht die kleinere Kohorte" not in text
+    assert packet["timeline_windows"] == []
+    assert packet["adaptation_mechanisms"] == []
+    assert packet["primary_result_view"]["next_check"]["label"] == "Was daraus folgt"

@@ -3875,3 +3875,16 @@ Keine wichtige Entscheidung offen. Sicher weiter: als nächstes echte Zeitfenste
 
 ### Verification / Git
 RED beobachtet: `test_packet_primary_plain_text_is_the_professional_briefing_not_legacy_numbered_blocks` scheiterte erwartungsgemäß, weil `sequential_plain_text` noch die nummerierten Blöcke enthielt. Zieltests danach grün: `tests/test_result_causality.py` + API-Causal-Test → 17 passed; Full Suite im Source-Tree → 243 passed; py_compile OK; Smoke `run_simulation(... n_runs=50, n_years=3)` + Causal Packet OK. Commit `7a3667f` wurde nach `origin/main` gepusht; erwartete Dateien im Commit verifiziert: `result_causality.py`, `tests/test_result_causality.py`, `docs/AGENT_COUNCIL_LOG.md`.
+
+
+## 2026-04-30 09:01 UTC — Heartbeat: Ergebnisbericht ohne falschen Pipeline-Fokus
+
+- **Context:** Alex wants the first result view to read like one serious human simulation briefing, not a pile of KPI snippets. The causal packet already handles the medical-study-place stress path; this slice tightened the default/no-lever case so the professional briefing does not accidentally narrate a study-place pipeline when no such lever changed.
+- **Project Manager:** This is a small but coherent correctness/UX guardrail inside the larger result-experience track: one packet remains source of truth for UI/API, while irrelevant mechanism prose is suppressed.
+- **Designer/UX:** The report now keeps the sequential structure (Ausgangslage → Eingriff → Wirkpfade → KPIs → Anpassung → Einordnung → nächste Prüfentscheidung) but adapts the Wirkpfad paragraph to the scenario. That feels less templated and less like it is forcing every run through the same story.
+- **Creative Agent:** Good product fit: the report behaves more like an analyst who noticed what actually changed, not like a slide generator with one favorite paragraph. Subtle, but important.
+- **Political Health-System Strategist:** No new stakeholder or policy claim was added. This avoids over-reading a neutral/default run as an education-pipeline reform scenario.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; no external factual claims were added. Guardrail remains: model output, documented assumptions, no official forecast or effectiveness proof.
+- **Integrator Decision:** Added a regression test and made `result_causality.py` choose the professional Wirkpfad paragraph conditionally: study-place-specific when that lever changes, generic changed-lever framing for other interventions, and reference-path framing when no lever changed.
+- **Question to Alex if needed:** Keine wichtige Entscheidung offen; safe to continue with result briefing polish and broader lever coverage.
+- **Verification/Git:** RED observed for the no-lever briefing test; GREEN after patch. Verified `python -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 18 passed; `python -m pytest -q` → 244 passed; `py_compile` for result/API/app files; 50-run simulation + causal packet smoke passed. Commit/push status recorded in final heartbeat.
