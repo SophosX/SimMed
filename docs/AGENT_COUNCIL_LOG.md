@@ -4927,4 +4927,4 @@ Accepted: `public_result_view.briefing_markdown`, a `first_screen_policy` marker
 Keine wichtige Entscheidung offen. Safe next step: reduce or reorganize the remaining legacy result expanders so the page below the first briefing also feels intentional rather than historical.
 
 ### Verification / Git
-Local verification before sync: `pytest -q` → 270 passed; `py_compile app.py result_causality.py api.py simulation_core.py` passed; 50-run simulation smoke passed and produced a `briefing_markdown` public result view. Git commit/push verification follows in the heartbeat status.
+Verified before sync: `pytest -q` → 270 passed; `py_compile app.py result_causality.py api.py simulation_core.py` passed; 50-run simulation smoke passed and produced a `briefing_markdown` public result view. GitHub sync verified: commit `224e9b9` (`Clarify causal result first view`) pushed to `origin/main`; touched `app.py`, `result_causality.py`, `tests/test_result_causality.py`, and this council log.
