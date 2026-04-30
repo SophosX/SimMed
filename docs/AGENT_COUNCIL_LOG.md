@@ -6314,3 +6314,33 @@ Verifiziert: `python3 -m pytest tests/test_result_causality.py tests/test_api.py
 **Question to Alex if needed:** No blocking decision; next safe step is a stronger visual first-screen card/layout and hiding legacy detail blocks further down.
 
 **Verification/Git:** `tests/test_result_causality.py` + API causal packet test passed, full suite passed (`300 passed`), py_compile and 50-run smoke simulation passed. Commit `374f3d2` was pushed to `origin/main`.
+
+
+## 2026-04-30 21:27 Europe/Berlin — Heartbeat Result First Screen weiter gekürzt
+
+### Context
+Alexs aktuelle Korrektur: Die Ergebnis-Seite soll nicht wie ein Stapel aus Erklärwidgets wirken, sondern sofort beantworten: Was kam heraus, was änderte sich relevant, warum, was bedeutet es? Dieser Lauf arbeitet am öffentlichen `causal_result_packet` und der ersten Ergebnisansicht.
+
+### Project Manager
+Priorität bleibt Ergebnis-Klarheit vor neuen Features. Risiko: zu viele parallel gepflegte Legacy-Helfer können die erste Ansicht wieder überladen. Nächste Tasks: erste Result-Card weiter als Quelle der Wahrheit nutzen, Details geschlossen halten, danach die vollständigen alten Blocks schrittweise aus dem sichtbaren Hauptpfad entfernen.
+
+### Designer / UX
+Die erste Ansicht wird strenger: sieben feste Überschriften, kurze Abschnittstexte, relevante Kennzahlen nur einmal in der Ergebnisbriefing-Kette. Das reduziert Leselast, ohne Auditierbarkeit zu verlieren.
+
+### Creative Agent
+Produktidee für später: eine Ein-Satz-Zusammenfassung als „Briefing-Leitsatz“ über jedem Beispiel-Szenario. Fit: hilfreich für Einsteiger, aber erst nach der stabilen Ergebnis-Story sinnvoll.
+
+### Political Health-System Strategist
+Politische Einordnung bleibt bewusst nachgelagert. Für Medizinstudienplätze muss zuerst die Pipeline- und Kapazitätslogik plausibel sein; erst danach lohnt die Stakeholder-/Umsetzbarkeitsdeutung.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf; es wurden keine neuen externen Fakten oder Parameterannahmen eingeführt. Die Änderung betrifft die Kommunikationsschicht des vorhandenen Modelllaufs. Guardrails zu Prognose/Wirksamkeitsnachweis bleiben sichtbar, aber kürzer.
+
+### Integrator Decision
+Akzeptiert: öffentliche Ergebnisabschnitte in `result_causality.py` weiter verkürzen und mit Tests auf klare Reihenfolge, kurze Bodies und verbotene interne Begriffe absichern. Keine Modellmechanik geändert.
+
+### Question to Alex
+Keine wichtige Entscheidung offen. Ich arbeite sicher weiter an der klaren Ergebnis-Lesefassung.
+
+### Verification / Git
+Vor Commit: neue Klarheitstests rot gesehen, dann mit gekürzten Abschnittstexten grün gemacht. Vollständige Verifikation und Git-Push folgen in diesem Lauf.

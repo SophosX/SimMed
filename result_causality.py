@@ -1121,7 +1121,7 @@ def build_causal_result_packet(
     kpi_body = "; ".join(kpi_items) + "." if kpi_items else "Keine priorisierten Kennzahlen verfügbar."
     if study_places_changed:
         result_body = (
-            "Heraus kommt verzögerter Kapazitätsdruck: anfangs wenig Effekt, später weniger Ärzt:innen, längere Wartezeiten und mehr Belastung."
+            "Heraus kommt verzögerter Kapazitätsdruck: erst wenig Effekt, später weniger Ärzt:innen und längere Wartezeiten."
         )
     elif changed:
         result_body = (
@@ -1157,7 +1157,7 @@ def build_causal_result_packet(
     ]
     if study_places_changed:
         why_body = (
-            "Ausbildungs-Pipeline: Jahr 0–5 wenig Änderung. Ab etwa Jahr 6 weniger Nachwuchs; Richtung Jahr 11–15 zählt der Facharztpfad."
+            "Ausbildungs-Pipeline: Jahr 0–5 wenig Änderung. Ab etwa Jahr 6 weniger Nachwuchs; Jahr 11–15 zählt Facharztpfad."
         )
     else:
         why_body = pathway_body[:145]
@@ -1169,8 +1169,8 @@ def build_causal_result_packet(
         observed_signals.append(f"{label} {direction}")
     observed_text = "; ".join(observed_signals) or "kein starkes Puffersignal sichtbar"
     adaptation_body = (
-        f"Puffer wie Telemedizin prüfen; beobachtet: {observed_text}. "
-        "Sinkt Belastung trotz Mangel, ist das ein Plausibilitätscheck."
+        f"Puffer prüfen; beobachtet: {observed_text}. "
+        "Sinkt Belastung, ist das ein Plausibilitätscheck."
     )
     result_sections = [
         {"heading": "Ergebnis", "body": result_body},
@@ -1181,8 +1181,8 @@ def build_causal_result_packet(
         {
             "heading": "Einordnung",
             "body": (
-                "Das bedeutet: prüfbare Wirkungskette, aber keine fertige Entscheidung; "
-                "keine amtliche Prognose, kein Wirksamkeitsnachweis, kein Beweis realer Wirkung."
+                "Das bedeutet: prüfbare Kette, aber nicht entscheiden; "
+                "keine amtliche Prognose, kein Wirksamkeitsnachweis, kein Beweis."
             ),
         },
         {
