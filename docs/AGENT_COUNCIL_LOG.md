@@ -2720,3 +2720,33 @@ Keine wichtige Entscheidung offen.
 
 ### Verification / Git
 Focused API test passed locally; full verification/commit/push follows in this heartbeat.
+
+
+## 2026-04-30 05:32 Europe/Berlin — Heartbeat: Operator-Briefing in Learning Page
+
+### Context
+Core-platform priority: the Registry-integration safety chain already had API/data helpers for progress timeline, command palette and operator briefing. The Learning Page still jumped from timeline to copy-palette without the one-screen briefing.
+
+### Project Manager
+Priority: improve the data-readiness/provenance operator path, not KI evidence. Risk: too many adjacent tables overwhelm first-time/mobile users before any safe Registry integration decision. Next: continue turning final data gates into concise, action-oriented status layers.
+
+### Designer / UX
+Added a mobile-safe answer-first briefing in the Learning Page: start command, parameter command, human decision command, stop-before-code line, operator questions and definition-of-done before branch. This reduces table overload before the command palette.
+
+### Creative Agent
+Idea kept low-risk: treat the briefing like an airport boarding pass for the final data gate — one compact screen before the detailed checklist. Fit is good for newcomer clarity; no new model/evidence claim.
+
+### Political Health-System Strategist
+The stop-before-code wording protects against premature policy claims: a technically green data path still needs human Go/Hold/Reject and cannot become an official forecast or policy-effect proof.
+
+### Evidence / Domain
+No new external research in this run. The change only reuses existing Data Passport/Registry-integration status structures and keeps raw cache, transformation review, decision audit and model integration separate.
+
+### Integrator Decision
+Accepted: wire `build_data_readiness_registry_integration_operator_briefing(...)` into `build_learning_data_readiness_backlog()` and render it before the copy-palette. Deferred: live execute buttons and actual Registry/model mutation.
+
+### Question to Alex
+Keine.
+
+### Verification / Git
+Verified locally: focused API/data tests and `py_compile`; full suite `162 passed`; simulation smoke `20 runs × 3 years` OK with shapes `(80, 30)` and `(320, 6)`. Commit/push pending in this heartbeat.

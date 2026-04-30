@@ -253,6 +253,18 @@ def test_learning_data_readiness_backlog_includes_integration_preflight():
     assert not any("execute=true" in row["copyable_command"] for row in command_palette["commands"])
     assert "kein Branch" in command_palette["guardrail"]
     assert "keine Registry-/Modellmutation" in command_palette["guardrail"]
+    operator_briefing = backlog["registry_integration_operator_briefing"]
+    assert operator_briefing["title"].startswith("Registry-Integration: Operator-Briefing")
+    assert operator_briefing["primary_parameter_key"] == progress_timeline["primary_parameter_key"]
+    assert operator_briefing["first_safe_command"].startswith("GET ")
+    assert operator_briefing["next_parameter_command"].startswith("GET /data-readiness/")
+    assert "decision-audit-checklist" in operator_briefing["human_decision_command"]
+    assert operator_briefing["stop_before_code"].startswith("STOP:")
+    assert "execute=true" not in operator_briefing["first_safe_command"]
+    assert "execute=true" not in operator_briefing["next_parameter_command"]
+    assert "execute=true" not in operator_briefing["human_decision_command"]
+    assert "kein Branch" in operator_briefing["guardrail"]
+    assert "keine Registry-/Modellmutation" in operator_briefing["guardrail"]
     handoff_packet = backlog["registry_integration_handoff_packet"]
     assert handoff_packet["title"].startswith("Registry-Integrations-Handoff")
     assert handoff_packet["summary"]["handoff_rows"] == decision_record["summary"]["decision_rows"]

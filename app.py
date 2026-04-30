@@ -59,6 +59,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_decision_record,
     build_data_readiness_registry_integration_decision_template,
     build_data_readiness_registry_integration_handoff_packet,
+    build_data_readiness_registry_integration_operator_briefing,
     build_data_readiness_registry_integration_pr_runbook,
     build_data_readiness_registry_integration_progress_timeline,
     build_data_readiness_registry_integration_status_board,
@@ -4227,6 +4228,10 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
     progress_timeline = build_data_readiness_registry_integration_progress_timeline(
         safe_start_cards, status_board
     )
+    command_palette = build_data_readiness_registry_integration_command_palette(progress_timeline)
+    operator_briefing = build_data_readiness_registry_integration_operator_briefing(
+        progress_timeline, command_palette
+    )
     return {
         "title": "Nächste Daten-Schritte: erst Cache, dann Review, dann Integration",
         "plain_language_note": (
@@ -4257,7 +4262,8 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         "registry_integration_safe_start_checklist": safe_start_checklist,
         "registry_integration_safe_start_cards": safe_start_cards,
         "registry_integration_progress_timeline": progress_timeline,
-        "registry_integration_command_palette": build_data_readiness_registry_integration_command_palette(progress_timeline),
+        "registry_integration_command_palette": command_palette,
+        "registry_integration_operator_briefing": operator_briefing,
         "registry_integration_handoff_packet": build_data_readiness_registry_integration_handoff_packet(decision_record),
         "registry_integration_pr_runbook": pr_runbook,
         "rows": [
@@ -4646,6 +4652,18 @@ def render_learning_data_readiness_backlog():
         ]
         st.dataframe(pd.DataFrame(progress_rows), use_container_width=True, hide_index=True)
         st.caption(progress_timeline["guardrail"])
+        operator_briefing = backlog["registry_integration_operator_briefing"]
+        st.markdown(f"**{operator_briefing['title']}**")
+        st.caption(operator_briefing["plain_language_summary"])
+        st.info(
+            f"Start: `{operator_briefing['first_safe_command']}` → "
+            f"Parameter: `{operator_briefing['next_parameter_command']}` → "
+            f"Entscheidung: `{operator_briefing['human_decision_command']}`"
+        )
+        st.caption("Stop vor Codearbeit: " + operator_briefing["stop_before_code"])
+        st.caption("Operator-Fragen: " + " · ".join(operator_briefing["operator_questions"]))
+        st.caption("Definition of done vor Branch: " + " · ".join(operator_briefing["definition_of_done_before_branch"]))
+        st.caption(operator_briefing["guardrail"])
         command_palette = backlog["registry_integration_command_palette"]
         st.markdown(f"**{command_palette['title']}**")
         st.caption(command_palette["plain_language_note"])
