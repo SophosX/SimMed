@@ -5455,4 +5455,4 @@ Akzeptiert: Das öffentliche Kausalpaket enthält `result_headline`, `short_answ
 Keine wichtige Entscheidung offen. Sicher weiter: nächste Runde sollte die visuelle Hierarchie im laufenden Streamlit prüfen und ggf. die KPI-Zeilen noch stärker wie ein Briefing statt wie Dashboard-Karten gestalten.
 
 ### Verification / Git
-Verifiziert lokal: `python3 -m pytest -q` → 282 passed; `python3 -m py_compile app.py result_causality.py api.py simulation_core.py parameter_registry.py data_sources.py provenance.py`; Smoke-Test mit 50 Runs × 15 Jahre und halbierten Medizinstudienplätzen → OK, Headline “Weniger Medizinstudienplätze: der relevante Druck kommt verzögert”. Git-Sync/Commit/Push folgt nach dieser Log-Ergänzung.
+Verifiziert lokal: `python3 -m pytest -q` → 282 passed; `python3 -m py_compile app.py result_causality.py api.py simulation_core.py parameter_registry.py data_sources.py provenance.py`; Smoke-Test mit 50 Runs × 15 Jahre und halbierten Medizinstudienplätzen → OK, Headline “Weniger Medizinstudienplätze: der relevante Druck kommt verzögert”. Git: bestehende Ergebnis-Briefing-Commits sind auf `origin/main`; Council-Log-Nachtrag wurde als `732e5e7` gepusht.
