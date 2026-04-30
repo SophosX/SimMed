@@ -127,7 +127,8 @@ def test_first_result_view_has_one_sequential_briefing_with_kpis_in_place():
     assert "Ärzte pro 100k" in kpi_block["body"]
     assert "Facharzt-Wartezeit" in kpi_block["body"]
     assert "erste Befund" not in kpi_block["body"]
-    assert view["first_screen_note"] == "Die erste Ansicht ist ein fortlaufendes Ergebnis-Briefing; Detailprüfungen bleiben darunter geschlossen."
+    assert view["briefing_style"] == "single_readable_briefing"
+    assert view["primary_blocks"] == packet["result_sections"]
 
 
 def test_causal_result_packet_prioritizes_relevant_kpis_and_coherent_freetext():
@@ -900,6 +901,28 @@ def test_relevant_kpis_have_plain_meaning_for_first_result_view():
         assert row["direction"] in {"steigt", "sinkt", "stabil"}
         assert row.get("meaning")
         assert "amtliche Prognose" not in row["meaning"]
+
+
+def test_public_result_view_is_one_briefing_not_overlapping_explanation_layers():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    view = packet["public_result_view"]
+
+    assert view["briefing_style"] == "single_readable_briefing"
+    assert view["primary_blocks"] == packet["result_sections"]
+    assert view["deeper_review_default_expanded"] is False
+    assert "first_screen_note" not in view
+    assert "relevante kennzahlen" in view["briefing_summary"].lower()
+    assert "Nächster Prüfschritt" in [section["heading"] for section in view["primary_blocks"]]
+    public_text = " ".join(
+        [view["headline"], view["short_answer"], view["briefing_summary"]]
+        + [section["body"] for section in view["primary_blocks"]]
+    )
+    for term in ["Widget", "helper", "generated", "Meta", "Audit-Layer", "KPI-Wand"]:
+        assert term not in public_text
+
 
 
 def test_result_layout_uses_human_first_view_names_not_internal_widget_language():

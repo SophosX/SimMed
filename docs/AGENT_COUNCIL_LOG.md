@@ -4600,3 +4600,33 @@ Keine wichtige Entscheidung offen. Sicher weiterarbeiten: visuelle Verdichtung d
 
 ### Verification / Git
 Fokussierte Tests grün: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 35 passed. Full suite im Source-Baum grün: `python3 -m pytest -q` → 262 passed; Py-Compile und kleiner Simulation-/Packet-Smoke bestanden. GitHub-Push bestätigt: `ac510ed Clarify causal result first view` auf `origin/main` mit `docs/AGENT_COUNCIL_LOG.md`, `result_causality.py`, `tests/test_result_causality.py`.
+
+
+## 2026-04-30 14:08 Europe/Berlin — Result page single-briefing first view
+
+### Context
+Alex's latest correction was that the result page still felt unclear and overloaded. This run tightened the public causal result packet and Streamlit first view around one readable German briefing: Ergebnis → Eingriff → Warum es passiert → Relevante Kennzahlen → Anpassungen → Einordnung → Nächster Prüfschritt.
+
+### Project Manager
+Priority: first-result clarity before adding more result widgets. Risk: existing legacy helpers remain useful for audit, but must stay below the main briefing. Next tasks: visually refine the Streamlit card layout, then retire or hide redundant legacy first-view snippets if they still compete with the new briefing.
+
+### Designer / UX
+The first screen now has one source-of-truth briefing style (`single_readable_briefing`) and compact relevant KPI rows. The duplicate follow-up prompt is not rendered twice when the briefing already includes “Nächster Prüfschritt”.
+
+### Creative Agent
+Idea: later turn the seven headings into a print/report-style “one-page result memo” export. Fit: strong for serious policy use, but only after the on-screen hierarchy is visually stable.
+
+### Political Health-System Strategist
+The main result avoids policy overclaiming: it states capacity pressure and timing first, then asks for fachliche Prüfung before political Bewertung. That is appropriate for sensitive measures such as reducing medical study places.
+
+### Evidence / Domain
+No new external evidence was added in this run. The change is communication/UI structure only; model dynamics, parameter values, source grades and provenance remain unchanged.
+
+### Integrator Decision
+Accepted: add regression coverage that the public result view is one briefing, not overlapping explanation layers; update `result_causality.py` and `app.py` so the first view uses `primary_blocks` and pushes deeper checks into collapsed review.
+
+### Question to Alex
+No important product decision required in this heartbeat; continue safely toward visual cleanup of the same briefing.
+
+### Verification / Git
+Focused tests passed: `tests/test_result_causality.py` plus API causal packet test. Full suite passed: 263 tests. Runtime smoke passed: 50 runs × 3 years with simplified causal packet. Git commit/push pending at time of this entry.

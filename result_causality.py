@@ -1051,6 +1051,7 @@ def build_causal_result_packet(
         first_screen_blocks.append(block)
 
     public_result_view = {
+        "briefing_style": "single_readable_briefing",
         "render_order": [
             "result_headline",
             "short_answer",
@@ -1061,11 +1062,16 @@ def build_causal_result_packet(
         ],
         "headline": result_headline,
         "short_answer": short_answer,
-        "first_screen_note": "Die erste Ansicht ist ein fortlaufendes Ergebnis-Briefing; Detailprüfungen bleiben darunter geschlossen.",
+        "briefing_summary": (
+            "Die erste Ansicht liest den Lauf als ein Ergebnis-Briefing: Ergebnis, Eingriff, Ursache, "
+            "relevante Kennzahlen, Anpassungen, Einordnung und nächster Prüfschritt."
+        ),
         "sections": result_sections,
+        "primary_blocks": result_sections,
         "first_screen_blocks": first_screen_blocks,
         "relevant_kpis": relevant_kpis_public,
         "follow_up_question": follow_up_question,
+        "deeper_review_default_expanded": False,
         "audit_expanders": [
             "Zeitfenster, Annahmen und Plausibilität",
             "vollständige Kennzahlen und Detailkarten",

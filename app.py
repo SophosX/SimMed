@@ -3524,11 +3524,13 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
     st.info(view.get("short_answer", packet.get("short_answer", "Der Modelllauf wurde berechnet; die Detailprüfung steht darunter.")))
 
     relevant_kpis = view.get("relevant_kpis", packet.get("relevant_kpis", []))
-    for section in view.get("first_screen_blocks", view.get("sections", packet.get("result_sections", []))):
-        st.markdown(f"**{section['heading']}**")
-        if section.get("display") == "kpi_rows" or section.get("heading") == "Relevante Kennzahlen":
-            kpi_refs = set(section.get("kpi_refs", []))
-            rows = [row for row in relevant_kpis if not kpi_refs or row.get("metric_key") in kpi_refs]
+    primary_blocks = view.get("primary_blocks") or view.get("first_screen_blocks", view.get("sections", packet.get("result_sections", [])))
+    kpi_refs = {str(row.get("metric_key", "")) for row in relevant_kpis}
+    for section in primary_blocks:
+        heading = section["heading"]
+        st.markdown(f"**{heading}**")
+        if heading == "Relevante Kennzahlen":
+            rows = [row for row in relevant_kpis if row.get("metric_key") in kpi_refs] or relevant_kpis
             cols = st.columns(min(len(rows), 4) or 1)
             for idx, row in enumerate(rows):
                 with cols[idx % len(cols)]:
@@ -3543,7 +3545,9 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
         else:
             st.write(section["body"])
 
-    if view.get("follow_up_question", packet.get("follow_up_question")):
+    if view.get("follow_up_question", packet.get("follow_up_question")) and not any(
+        section.get("heading") == "Nächster Prüfschritt" for section in primary_blocks
+    ):
         st.markdown("**Nächster Prüfschritt**")
         st.write(view.get("follow_up_question", packet.get("follow_up_question")))
 
