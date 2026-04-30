@@ -4809,3 +4809,33 @@ Keine blockierende Entscheidung offen. Sicher weiter: nächste Scheibe sollte di
 
 ### Verification / Git
 Focused tests grün: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 41 passed. Full verification/Git folgt nach Gesamttest und Sync.
+
+
+## 2026-04-30 15:00 Europe/Berlin — Heartbeat: öffentlicher Ergebnis-Pfad gekürzt
+
+### Context
+Der Lauf hat Alex' Korrektur weiter in einen testbaren Vertrag übersetzt: Die öffentliche erste Ergebnisansicht bleibt kurz, ernst und sequenziell. Legacy-/Diagnosefelder bleiben für alte API-Caller verfügbar, aber `public_result_view` ist der saubere Einstieg für UI und neue Clients.
+
+### Project Manager
+Priorität: Klarheit im ersten Screen, nicht mehr Text. Risiko: bestehende Tests/API-Caller erwarten ältere Detailfelder in `primary_result_view`; deshalb wurde die neue Strenge auf `public_result_view` gelegt und die Rückwärtskompatibilität nicht gebrochen.
+
+### Designer / UX
+Die sichtbare Lesereihenfolge ist jetzt als öffentliche Struktur abgesichert: Headline, Kurzantwort, kurze Ergebnisblöcke, relevante Kennzahlen, nächster Prüfschritt, danach geschlossene Audit-Bereiche. Das ist noch kein komplettes visuelles Redesign, aber es verhindert, dass alte Detailpakete als erste Ergebnisfläche gelesen werden.
+
+### Creative Agent
+Die passende Metapher bleibt: erst Übergabebericht, dann Befundanhang. Keine neue Spielerei; der nächste Nutzen entsteht durch bessere visuelle Gewichtung und weniger sichtbare Konkurrenz direkt unter dem Ergebnis.
+
+### Political Health-System Strategist
+Keine neue politische Aussage. Der Studienplatz-Hebel bleibt als verzögerter Kapazitätspfad formuliert; politische Bewertung kommt erst nach Plausibilitäts- und Evidenzcheck.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Keine neuen Modellparameter, Effektgrößen oder Quellenclaims. Die Änderung betrifft Struktur, Verständlichkeit und Regressionstests der bestehenden Ergebnis-Kommunikation.
+
+### Integrator Decision
+Akzeptiert: zusätzlicher Klarheitstest für den öffentlichen Packet-Pfad und API-Test-Erweiterung für `result_headline`, `short_answer`, `result_sections` und geschlossene Audit-Zonen. Deferred: visuelle Streamlit-Card-Neugestaltung als nächste kohärente Scheibe.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; sicher weiter mit sichtbarer Ergebnisflächen-Entrümpelung.
+
+### Verification / Git
+Source verification grün: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 41 passed; `python3 -m pytest -q` → 268 passed; `python3 -m py_compile app.py result_causality.py api.py simulation_core.py` passed; 50-run × 15-year smoke inklusive `build_causal_result_packet(...)` passed. Git Sync/Commit/Push folgt.

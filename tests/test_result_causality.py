@@ -620,20 +620,54 @@ def test_professional_briefing_exposes_human_reader_brief_without_table_first_la
     assert packet["primary_result_view"]["professional_briefing_text"] == briefing["reader_brief"]
 
 
-def test_packet_primary_plain_text_is_the_professional_briefing_not_legacy_numbered_blocks():
+def test_public_result_packet_is_short_clear_and_not_a_legacy_helper_dump():
     params = get_default_params()
     params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
 
     packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    public_text = "\n".join(
+        [packet["result_headline"], packet["short_answer"], packet["follow_up_question"]]
+        + [section["heading"] + "\n" + section["body"] for section in packet["result_sections"]]
+        + [row["label"] + "\n" + row["meaning"] for row in packet["relevant_kpis"]]
+    )
 
-    assert packet["sequential_plain_text"] == packet["professional_briefing"]["sequential_text"]
-    assert packet["primary_result_view"]["sequential_plain_text"] == packet["professional_briefing"]["sequential_text"]
-    assert packet["legacy_numbered_story"] != packet["sequential_plain_text"]
-    assert "Ausgangslage\n" in packet["sequential_plain_text"]
-    assert "Eingriff\n" in packet["sequential_plain_text"]
-    assert "Berechnete Wirkpfade\n" in packet["sequential_plain_text"]
-    assert "1. Ergebnis" not in packet["sequential_plain_text"]
-    assert "2. Änderung" not in packet["sequential_plain_text"]
+    assert [section["heading"] for section in packet["result_sections"]] == [
+        "Ergebnis",
+        "Eingriff",
+        "Warum es passiert",
+        "Relevante Kennzahlen",
+        "Anpassungen",
+        "Einordnung",
+        "Nächster Prüfschritt",
+    ]
+    assert len(packet["result_sections"]) <= 7
+    assert all(len(section["body"]) <= 280 for section in packet["result_sections"])
+    assert "Medizinstudienplätze" in packet["short_answer"]
+    assert "ab etwa Jahr 6" in packet["short_answer"]
+    assert any(row["label"] in packet["short_answer"] for row in packet["relevant_kpis"][:2])
+    public_view = packet["public_result_view"]
+    assert public_view["render_order"] == [
+        "result_headline",
+        "short_answer",
+        "first_screen_blocks",
+        "relevant_kpis",
+        "follow_up_question",
+        "audit_sections",
+    ]
+    assert public_view["first_screen_blocks"][0]["heading"] == "Ergebnis"
+    assert "professional_briefing" not in public_view
+    assert "legacy_numbered_story" not in public_view
+    for banned in [
+        "random Internet",
+        "Klartext",
+        "KPI-Wand",
+        "generated",
+        "helper",
+        "Legacy",
+        "DataFrame",
+        "zweite erste Ergebnisansicht",
+    ]:
+        assert banned not in public_text
 
 
 def test_professional_briefing_does_not_invent_study_place_path_when_no_lever_changed():

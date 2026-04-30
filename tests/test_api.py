@@ -30,6 +30,20 @@ def test_simulate_embeds_causal_result_packet_for_answer_first_clients():
         "mechanisms",
     ]
     assert "dokumentierten Parametern" in packet["guardrail"]
+    assert packet["result_headline"].startswith("Weniger Medizinstudienplätze")
+    assert "Medizinstudienplätze" in packet["short_answer"]
+    assert "ab etwa Jahr 6" in packet["short_answer"]
+    assert [section["heading"] for section in packet["result_sections"]] == [
+        "Ergebnis",
+        "Eingriff",
+        "Warum es passiert",
+        "Relevante Kennzahlen",
+        "Anpassungen",
+        "Einordnung",
+        "Nächster Prüfschritt",
+    ]
+    assert len(packet["result_sections"]) <= 7
+    assert packet["public_result_view"]["deeper_review_default_expanded"] is False
     assert "random Internet" not in packet["guardrail"]
     assert "Klartext" not in packet["sequential_plain_text"]
     briefing = packet["professional_briefing"]
