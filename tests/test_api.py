@@ -52,6 +52,29 @@ def test_api_exposes_focused_snapshot_integrity_without_fetch_or_import():
     }
     assert "keine Registry-/Modellmutation" in body["integrity_action_plan"]["guardrail"]
     assert body["integrity_handoff_packet"]["status_route"] == "GET /data-snapshots/integrity"
+    assert body["review_start_checklist"]["status"] in {
+        "review_start_blocked_by_integrity",
+        "review_start_ready_for_manual_check",
+        "no_integrity_checked_snapshot_ready",
+    }
+
+
+def test_api_exposes_snapshot_review_start_checklist_without_execution():
+    client = TestClient(api)
+    response = client.get("/data-snapshots/review-start-checklist")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "raw_snapshot_review_start_checklist_not_executed"
+    assert "keine Review-Erzeugung" in body["guardrail"]
+    checklist = body["review_start_checklist"]
+    assert checklist["status"] in {
+        "review_start_blocked_by_integrity",
+        "review_start_ready_for_manual_check",
+        "no_integrity_checked_snapshot_ready",
+    }
+    assert "definition_of_done_before_review_creation" in checklist
+    assert "keine Registry-/Modellmutation" in checklist["guardrail"]
 
 
 def test_api_exposes_focused_snapshot_integrity_handoff_without_execution():

@@ -2355,3 +2355,16 @@ Gezielt: `pytest tests/test_api.py::test_api_exposes_focused_registry_integratio
 - **Integrator Decision:** `build_cached_snapshot_integrity_handoff_packet(...)` in `data_ingestion.py`, fokussiertes API `GET /data-snapshots/integrity-handoff`, Einbettung in Integritäts-Responses und Learning-Page-Datenpass.
 - **Question to Alex if needed:** Keine; sicherer, reversibler Infrastruktur-Slice.
 - **Verification/Git:** 141 Tests, py_compile für `app.py data_ingestion.py api.py`, 20×2 Simulation-Smoke OK; Commit/Push folgt.
+
+
+## 2026-04-30 — Raw-Snapshot Pre-Review Gate
+
+- **Context:** Heartbeat primary track remains core platform: data ingestion/provenance must become safer and clearer before model integration.
+- **Project Manager:** Chose a small reversible data-foundation slice between SHA256 integrity and transformation review rather than more evidence intake.
+- **Designer/UX:** Learning Page now exposes a Pre-Review status/table so operators see the next tap-safe step after raw-cache integrity without guessing.
+- **Creative Agent:** Treat the pre-review gate as a “sterile airlock” between raw bytes and model claims: pass only metadata/checklists forward.
+- **Political Health-System Strategist:** No new policy/stakeholder claims; this reduces risk that preliminary health-system data is over-read as policy proof.
+- **Evidence/Domain:** Added output parameter keys and source period to integrity rows; review-start checklist asks for SHA256, table/filter/year/unit/denominator/plausibility/caveats before any model PR.
+- **Integrator Decision:** Implemented `build_cached_snapshot_review_start_checklist(...)`, surfaced it in `/data-snapshots/integrity`, new focused `/data-snapshots/review-start-checklist`, and Learning Page data-passport overview.
+- **Question to Alex if needed:** Keine.
+- **Verification/Git:** Targeted tests passed; full pytest passed (143); py_compile passed; 20-run simulation smoke passed. Commit/push pending in this heartbeat.

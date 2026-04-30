@@ -6,6 +6,7 @@ from data_ingestion import (
     build_cached_snapshot_integrity_action_plan,
     build_cached_snapshot_integrity_handoff_packet,
     build_cached_snapshot_integrity_report,
+    build_cached_snapshot_review_start_checklist,
     build_connector_snapshot_requests,
     build_data_connector_queue,
     build_data_passport_rows,
@@ -93,6 +94,8 @@ def test_cached_snapshot_integrity_report_recomputes_sha_without_model_import(tm
     assert integrity["integrity_status"] == "sha256_match"
     assert integrity["expected_sha256"] == snapshot.sha256
     assert integrity["actual_sha256"] == snapshot.sha256
+    assert integrity["output_parameter_keys"] == ["bevoelkerung_mio"]
+    assert integrity["source_period"] == "2024"
     assert "Registry-/Modellintegration" in integrity["guardrail"]
 
     report = build_cached_snapshot_integrity_report(cache_root=tmp_path)
@@ -164,6 +167,39 @@ def test_cached_snapshot_integrity_handoff_packet_is_copyable_and_read_only(tmp_
     assert "Registry-/Modellintegration separat" in " ".join(handoff["operator_sequence"])
     assert "kein execute=true" in handoff["guardrail"]
     assert "keine Registry-/Modellmutation" in handoff["guardrail"]
+
+
+
+def test_cached_snapshot_review_start_checklist_routes_only_sha_matched_snapshots(tmp_path):
+    cache_source_payload(
+        source_id="destatis_genesis",
+        source_url="https://www-genesis.destatis.de/genesis/online",
+        payload=b"year,value\n2024,84.4\n",
+        filename="population.csv",
+        cache_root=tmp_path,
+        source_period="2024",
+        output_parameter_keys=("bevoelkerung_mio",),
+        transformation_note="raw fixture only; no model mutation",
+        retrieved_at="2026-04-29T20:00:00+00:00",
+    )
+    report = build_cached_snapshot_integrity_report(cache_root=tmp_path)
+
+    checklist = build_cached_snapshot_review_start_checklist(report)
+
+    assert checklist["status"] == "review_start_ready_for_manual_check"
+    assert checklist["ready_snapshot_count"] == 1
+    row = checklist["rows"][0]
+    assert row["source_snapshot_sha256"] == report["rows"][0]["actual_sha256"]
+    assert row["review_template_routes"] == ["GET /data-connectors/transformation-review-template/bevoelkerung_mio"]
+    assert "Denominator" in " ".join(row["first_review_questions"])
+    assert row["may_create_review_after_manual_check"] is True
+    assert "keine Registry-/Modellmutation" in checklist["guardrail"]
+
+    (tmp_path / "destatis_genesis" / "raw" / "population.csv").write_bytes(b"tampered")
+    blocked = build_cached_snapshot_review_start_checklist(build_cached_snapshot_integrity_report(cache_root=tmp_path))
+    assert blocked["status"] == "review_start_blocked_by_integrity"
+    assert blocked["blocked_snapshot_count"] == 1
+    assert blocked["rows"] == []
 
 
 def test_snapshot_status_is_read_only_and_conservative(tmp_path):

@@ -551,6 +551,8 @@ def verify_cached_snapshot_integrity(snapshot: CachedSourceSnapshot | dict) -> d
         return {
             "source_id": snapshot_data.get("source_id", ""),
             "raw_path": str(raw_path),
+            "output_parameter_keys": list(snapshot_data.get("output_parameter_keys", [])),
+            "source_period": snapshot_data.get("source_period", ""),
             "expected_sha256": expected_sha,
             "actual_sha256": None,
             "integrity_status": "raw_file_missing",
@@ -561,6 +563,8 @@ def verify_cached_snapshot_integrity(snapshot: CachedSourceSnapshot | dict) -> d
     return {
         "source_id": snapshot_data.get("source_id", ""),
         "raw_path": str(raw_path),
+        "output_parameter_keys": list(snapshot_data.get("output_parameter_keys", [])),
+        "source_period": snapshot_data.get("source_period", ""),
         "expected_sha256": expected_sha,
         "actual_sha256": actual_sha,
         "integrity_status": "sha256_match" if expected_sha == actual_sha else "sha256_mismatch",
@@ -587,6 +591,59 @@ def build_cached_snapshot_integrity_report(cache_root: Path | str = CACHE_ROOT) 
         },
         "rows": rows,
         "guardrail": "Read-only/Integrität-only: kein Netzwerkabruf, kein Cache-Schreiben, keine Transformation, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+    }
+
+
+def build_cached_snapshot_review_start_checklist(integrity_report: dict, limit: int = 5) -> dict:
+    """Return the safe pre-review checklist for raw snapshots whose SHA256 matches.
+
+    This bridges raw-cache integrity to the separate transformation-review template
+    without creating a review, fetching data, or mutating model/registry values.
+    """
+
+    ready_rows = [
+        row for row in integrity_report.get("rows", [])
+        if row.get("integrity_status") == "sha256_match"
+    ]
+    blocked_rows = [
+        row for row in integrity_report.get("rows", [])
+        if row.get("integrity_status") in {"sha256_mismatch", "raw_file_missing"}
+    ]
+    rows = []
+    for row in ready_rows[:limit]:
+        parameter_keys = list(row.get("output_parameter_keys") or [])
+        rows.append({
+            "source_id": row.get("source_id", ""),
+            "raw_path": row.get("raw_path", ""),
+            "source_period": row.get("source_period", ""),
+            "output_parameter_keys": parameter_keys,
+            "source_snapshot_sha256": row.get("actual_sha256", ""),
+            "review_template_routes": [
+                f"GET /data-connectors/transformation-review-template/{key}"
+                for key in parameter_keys
+            ],
+            "first_review_questions": [
+                "Passt die Rohdatei exakt zum Manifest-SHA256?",
+                "Sind Jahr/Filter/Tabelle/Denominator nachvollziehbar dokumentiert?",
+                "Ist der Zielwert mit Einheit und Plausibilitätsgrenzen vereinbar?",
+                "Welche Caveats verhindern noch Registry-/Modellintegration?",
+            ],
+            "may_create_review_after_manual_check": True,
+            "guardrail": "Start-Checkliste ist read-only: SHA256 ok erlaubt nur manuelle Transformation-Review, nicht Modellintegration, amtliche Prognose oder Wirkungsbeweis.",
+        })
+    return {
+        "title": "Rohsnapshot → Transformation-Review: Start-Checkliste",
+        "status": "review_start_blocked_by_integrity" if blocked_rows else ("review_start_ready_for_manual_check" if rows else "no_integrity_checked_snapshot_ready"),
+        "blocked_snapshot_count": len(blocked_rows),
+        "ready_snapshot_count": len(ready_rows),
+        "rows": rows,
+        "definition_of_done_before_review_creation": [
+            "SHA256-Match in der Integritätsprüfung",
+            "Rohdatei und Manifest manuell geöffnet",
+            "Tabelle/Filter/Jahr/Einheit/Denominator geprüft",
+            "Review-Template je Parameter ausgefüllt; Modellintegration bleibt separater PR",
+        ],
+        "guardrail": "Read-only/Pre-review-only: kein Netzwerkabruf, kein Cache-Schreiben, keine Review-Erzeugung, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
     }
 
 

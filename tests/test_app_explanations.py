@@ -85,6 +85,11 @@ def test_learning_data_passport_overview_separates_registry_cache_and_transforma
         "integrity_ok_but_not_reviewed",
         "no_cached_snapshots_yet",
     }
+    assert overview["snapshot_review_start_checklist"]["status"] in {
+        "review_start_blocked_by_integrity",
+        "review_start_ready_for_manual_check",
+        "no_integrity_checked_snapshot_ready",
+    }
     assert "first_safe_action" in overview["snapshot_integrity_action_plan"]
     assert "keine Registry-/Modellmutation" in overview["snapshot_integrity_action_plan"]["guardrail"]
     handoff = overview["snapshot_integrity_handoff_packet"]
