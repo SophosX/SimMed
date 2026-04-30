@@ -36,6 +36,7 @@ from data_ingestion import (
     execute_connector_snapshot_request,
     list_cached_snapshots,
     list_reviewed_transformations,
+    seed_reference_fixture_reviewed_transformations,
     seed_reference_fixture_snapshots,
 )
 from data_sources import list_sources
@@ -351,6 +352,32 @@ def seed_data_fixture_snapshots() -> dict:
         "guardrail": "Fixture-Snapshots dienen nur Cache/Provenienz- und UI-Tests; sie ändern keine SimMed-Modellparameter und sind kein Live-Destatis-Import.",
         "seeded_snapshots": [snapshot.to_dict() for snapshot in snapshots],
         "data_passport": build_data_passport_rows(parameters),
+    }
+
+
+@api.post("/data-fixtures/seed-reference-review-demo")
+def seed_data_fixture_review_demo() -> dict:
+    """Seed a reviewed-model-ready fixture so the integration planning chain has a green demo row.
+
+    This is still a fixture/dev action: it writes a ReviewedTransformation record
+    tied to the static population fixture only. It does not fetch live data, change
+    Registry/model defaults, create a branch/PR, or prove a policy effect.
+    """
+
+    reviews = seed_reference_fixture_reviewed_transformations()
+    parameters = list_parameters()
+    passport = build_data_passport_rows(parameters)
+    backlog = build_data_readiness_backlog(parameters)
+    preflight = build_data_readiness_integration_preflight(backlog, passport)
+    integration_plan = build_data_readiness_integration_plan(preflight)
+    return {
+        "status": "reference_fixture_review_demo_seeded_not_model_integration",
+        "guardrail": "Demo-Review ist nur ein Fixture für Preflight/Integrationsplan/PR-Brief: kein Live-Destatis-Import, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+        "seeded_reviews": [review.to_dict() for review in reviews],
+        "data_passport": passport,
+        "integration_preflight": preflight,
+        "integration_plan": integration_plan,
+        "integration_pr_brief": build_data_readiness_integration_pr_brief(integration_plan),
     }
 
 

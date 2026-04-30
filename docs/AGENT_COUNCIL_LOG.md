@@ -1921,3 +1921,32 @@ Keine.
 
 ### Verification / Git
 Lokal verifiziert: `pytest -q tests/test_data_ingestion.py tests/test_api.py tests/test_app_explanations.py` → 97 passed; `py_compile` für app/data_ingestion/api/tests; Simulation-Smoke 20 Runs × 2 Jahre → `df (60, 30)`, `reg (320, 6)`. Git-Commit/Push folgt in diesem Heartbeat.
+
+## 2026-04-30 02:02 Europe/Berlin — Heartbeat: reviewed fixture green path
+
+### Context
+Alex corrected the heartbeat priority toward core platform work. This slice extends the data-ingestion/provenance foundation with a safe reviewed-model-ready fixture demo for `bevoelkerung_mio`, so the existing Data Passport → Preflight → Integrationsplan → PR-Brief chain can show one green example without mutating model defaults.
+
+### Project Manager
+Priority: keep advancing real-data readiness gates rather than more evidence-only intake. Risk: a green demo row could be mistaken for a live import, so all API/helper guardrails repeat fixture-only, no live Destatis import, no model mutation, no forecast/proof. Next tasks: surface this path in the Learning Page, then design the separate explicit integration PR checklist.
+
+### Designer / UX
+The API now gives agents/operators a concrete happy path to inspect instead of only blocked rows. UX follow-up should make the Learning Page explain “grün heißt: PR planbar, noch nicht Modellwert” in plain language.
+
+### Creative Agent
+Idea: add a small “Datenampel-Demo” card that lets newcomers compare one green fixture row with one blocked raw-snapshot row. Fit: useful for onboarding if clearly labelled as demo/fixture; defer visual card until after API/helper behavior is stable.
+
+### Political Health-System Strategist
+No new policy claim. Guardrail remains important: a reviewed baseline value is not a reform effect, not an official forecast, and not a political recommendation.
+
+### Evidence / Domain
+No new external research in this run. The fixture review uses the existing static population fixture only; it must not be described as live Destatis evidence or a validated 2040 baseline.
+
+### Integrator Decision
+Accepted a small platform slice: `seed_reference_fixture_reviewed_transformations()` plus `POST /data-fixtures/seed-reference-review-demo`, with regression tests proving the green preflight/PR-brief path remains non-mutating.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; next safe platform step is Learning-Page surfacing of the green demo path.
+
+### Verification / Git
+Focused tests passed before final full verification: `tests/test_data_ingestion.py::test_reference_fixture_review_can_create_green_integration_pr_path_without_model_import` and `tests/test_api.py::test_api_seeds_reference_review_demo_for_green_integration_path_without_model_import`.

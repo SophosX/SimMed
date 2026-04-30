@@ -27,6 +27,7 @@ from data_ingestion import (
     read_snapshot_manifest,
     read_transformation_review,
     record_reviewed_transformation,
+    seed_reference_fixture_reviewed_transformations,
     seed_reference_fixture_snapshots,
     snapshot_payload_hash,
 )
@@ -172,6 +173,48 @@ def test_reference_fixture_seeds_population_cache_without_model_import(tmp_path)
     assert rows[0]["latest_snapshot"]["source_period"] == "registry-baseline fixture"
     assert "Modellwert bleibt" in rows[0]["status_note"]
     assert rows[1]["has_cached_snapshot"] is False
+
+
+def test_reference_fixture_review_can_create_green_integration_pr_path_without_model_import(tmp_path):
+    reviews = seed_reference_fixture_reviewed_transformations(cache_root=tmp_path)
+
+    assert len(reviews) == 1
+    review = reviews[0]
+    assert review.parameter_key == "bevoelkerung_mio"
+    assert review.status == "reviewed_model_ready"
+    assert "not a live GENESIS download" in review.caveat
+
+    parameters = [
+        {
+            "key": "bevoelkerung_mio",
+            "label": "Bevölkerung",
+            "unit": "million people",
+            "evidence_grade": "A",
+            "source_ids": ["destatis_genesis"],
+            "data_status": "aus_daten",
+            "source_version": "fixture only; live GENESIS import pending",
+            "data_lineage": "Static fixture review for workflow demonstration only.",
+        }
+    ]
+    passport = build_data_passport_rows(parameters, cache_root=tmp_path)
+    backlog = build_data_readiness_backlog(parameters, cache_root=tmp_path)
+    preflight = build_data_readiness_integration_preflight(backlog, passport)
+    plan = build_data_readiness_integration_plan(preflight)
+    pr_brief = build_data_readiness_integration_pr_brief(plan)
+
+    assert passport[0]["cache"]["has_cached_snapshot"] is True
+    assert passport[0]["transformation_review"]["status"] == "reviewed_model_ready"
+    assert backlog[0]["next_gate"] == "explicit_model_integration_needed"
+    assert preflight["summary"]["ready_for_integration_plan"] == 1
+    assert plan["plans"][0]["status"] == "planbar_aber_nicht_ausgefuehrt"
+    assert pr_brief["briefs"][0]["branch_name"] == "feat/integrate-reviewed-bevoelkerung_mio"
+    combined_guardrails = " ".join(
+        [passport[0]["passport_note"], preflight["guardrail"], plan["guardrail"], pr_brief["guardrail"]]
+    )
+    assert "keine Registry-/Modellmutation" in combined_guardrails
+    assert "keine amtliche Prognose" in combined_guardrails
+    assert "kein Wirkungsbeweis" in combined_guardrails
+
 
 
 def test_reviewed_transformation_is_separate_passport_layer(tmp_path):

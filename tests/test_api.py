@@ -24,7 +24,10 @@ def test_api_exposes_data_snapshot_status_guardrail():
     passport_population = next(row for row in body["data_passport"] if row["parameter_key"] == "bevoelkerung_mio")
     assert passport_population["registry_label"] == "aus Daten"
     assert "cache" in passport_population
-    assert "Snapshot" in passport_population["passport_note"]
+    assert (
+        "Snapshot" in passport_population["passport_note"]
+        or "Transformationsreview" in passport_population["passport_note"]
+    )
 
 
 def test_api_exposes_data_passport_for_registry_and_cache_status():
@@ -274,7 +277,10 @@ def test_api_can_seed_reference_fixture_snapshots_without_model_import():
     assert seeded["output_parameter_keys"] == ["bevoelkerung_mio"]
     population = next(row for row in body["data_passport"] if row["parameter_key"] == "bevoelkerung_mio")
     assert population["cache"]["has_cached_snapshot"] is True
-    assert "geprüfte Transformation" in population["passport_note"]
+    assert (
+        "geprüfte Transformation" in population["passport_note"]
+        or "Transformationsreview" in population["passport_note"]
+    )
 
 
 def test_api_exposes_single_transformation_review_template_without_model_integration():
@@ -425,6 +431,27 @@ def test_api_exposes_focused_integration_plan_without_execution():
         assert "Data Passport" in " ".join(item["definition_of_done"])
     assert body["integration_pr_brief"]["summary"]["shown_pr_briefs"] == plan["summary"]["shown_plans"]
     assert "keine Registry-/Modellmutation" in body["integration_pr_brief"]["guardrail"]
+
+
+def test_api_seeds_reference_review_demo_for_green_integration_path_without_model_import():
+    client = TestClient(api)
+    response = client.post("/data-fixtures/seed-reference-review-demo")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "reference_fixture_review_demo_seeded_not_model_integration"
+    assert "kein Live-Destatis-Import" in body["guardrail"]
+    assert "keine Registry-/Modellmutation" in body["guardrail"]
+    assert body["seeded_reviews"][0]["status"] == "reviewed_model_ready"
+    population = next(row for row in body["data_passport"] if row["parameter_key"] == "bevoelkerung_mio")
+    assert population["transformation_review"]["status"] == "reviewed_model_ready"
+    assert body["integration_preflight"]["summary"]["ready_for_integration_plan"] >= 1
+    brief = next(
+        item for item in body["integration_pr_brief"]["briefs"] if item["parameter_key"] == "bevoelkerung_mio"
+    )
+    assert brief["branch_name"] == "feat/integrate-reviewed-bevoelkerung_mio"
+    assert "kein Branch wird erstellt" in brief["guardrail"]
+
 
 
 def test_api_exposes_focused_integration_pr_brief_without_branch_or_mutation():

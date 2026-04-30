@@ -612,6 +612,49 @@ def seed_reference_fixture_snapshots(
     ]
 
 
+def seed_reference_fixture_reviewed_transformations(
+    *,
+    cache_root: Path | str = CACHE_ROOT,
+    fixture_root: Path | str = FIXTURE_ROOT,
+) -> list[ReviewedTransformation]:
+    """Seed a reviewed-model-ready *fixture* without integrating it into the model.
+
+    This creates the first green demo path for Preflight → Integrationsplan → PR-Brief.
+    It deliberately references the static population fixture and writes only a
+    ReviewedTransformation record. It does not fetch live GENESIS data, update the
+    Registry, change simulation defaults, or prove a policy effect.
+    """
+
+    snapshots = seed_reference_fixture_snapshots(cache_root=cache_root, fixture_root=fixture_root)
+    population_snapshot = next(
+        (snapshot for snapshot in snapshots if "bevoelkerung_mio" in snapshot.output_parameter_keys),
+        None,
+    )
+    if population_snapshot is None:
+        return []
+
+    review = ReviewedTransformation(
+        parameter_key="bevoelkerung_mio",
+        source_snapshot_sha256=population_snapshot.sha256,
+        status="reviewed_model_ready",
+        reviewed_at="2026-04-29T21:30:00+00:00",
+        reviewer="SimMed fixture review / not a live Destatis import",
+        method_note=(
+            "Static fixture review for platform workflow only: inspect CSV fixture, "
+            "confirm it mirrors the current registry default unit (million people), "
+            "and keep live GENESIS import plus registry/model PR separate."
+        ),
+        caveat=(
+            "Demo fixture only: not a live GENESIS download, not an official forecast, "
+            "not automatic Registry/model integration, and not policy-effect proof."
+        ),
+        output_value=84.5,
+        output_unit="million people",
+    )
+    record_reviewed_transformation(review, cache_root=cache_root)
+    return [review]
+
+
 def list_cached_snapshots(cache_root: Path | str = CACHE_ROOT) -> list[CachedSourceSnapshot]:
     """Return all cache manifests sorted newest-first by retrieval timestamp.
 
