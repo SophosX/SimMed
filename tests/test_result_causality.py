@@ -120,6 +120,32 @@ def test_public_result_view_has_single_follow_up_rendering_instruction():
     assert section_by_heading["Nächster Prüfschritt"] != view["follow_up_question"]
 
 
+def test_first_result_view_excludes_legacy_audit_payloads_and_stays_brief():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    first_view = packet["primary_result_view"]
+    public_view = packet["public_result_view"]
+
+    assert len(packet["result_sections"]) <= 7
+    assert all(len(section["body"]) <= 220 for section in packet["result_sections"])
+    assert 2 <= packet["short_answer"].count(".") <= 4
+    assert len(packet["short_answer"]) <= 460
+    for legacy_key in [
+        "legacy_numbered_story",
+        "sequential_plain_text",
+        "professional_briefing",
+        "professional_briefing_text",
+        "public_storyline",
+        "cleartext_reading_cards",
+    ]:
+        assert legacy_key in first_view
+        assert legacy_key not in public_view
+    assert public_view["briefing_style"] == "single_readable_briefing"
+    assert public_view["audit_sections"]
+
+
 def test_relevant_kpis_are_public_rows_with_plain_change_and_reading():
     params = get_default_params()
     params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5

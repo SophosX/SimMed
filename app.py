@@ -3550,7 +3550,6 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
                 st.write(block["body"])
 
         st.caption(brief.get("audit_hint") or view.get("guardrail", packet["guardrail"]))
-        st.caption(view.get("guardrail", packet["guardrail"]))
 
     audit_sections = view.get("audit_sections", [])
     audit_label = "Vertiefung: Wirkpfad, Evidenz und Details"

@@ -1025,8 +1025,8 @@ def build_causal_result_packet(
     if study_places_changed:
         short_answer = (
             f"Die Medizinstudienplätze wurden gesenkt; die wichtigsten Signale sind: {top_kpi_sentences}. "
-            "Der Effekt ist nicht sofort sichtbar, sondern läuft über die Ausbildungs-Pipeline: ab etwa Jahr 6 erreicht die kleinere Kohorte den Arbeitsmarkt, Richtung Jahr 11–15 wird der Facharztpfad wichtig. "
-            "Das bedeutet: Ohne glaubwürdige Puffer entsteht späterer Kapazitätsdruck. Nächster Check: Wartezeit, Belastung und Puffer gemeinsam prüfen."
+            "Der Effekt kommt verzögert über die Ausbildungs-Pipeline: ab etwa Jahr 6 erreicht die kleinere Kohorte den Arbeitsmarkt, Richtung Jahr 11–15 wird der Facharztpfad wichtig. "
+            "Das bedeutet: späteren Kapazitätsdruck als nächste Prüfung zusammen mit Wartezeit, Belastung und sichtbaren Puffern bewerten."
         )
     elif changed:
         short_answer = (

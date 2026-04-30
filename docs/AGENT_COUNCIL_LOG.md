@@ -5369,3 +5369,32 @@ Keine wichtige Entscheidung offen; sicher weiter mit Vereinfachung und Zusammenf
 
 ### Verification / Git
 Verifiziert: `pytest tests/test_result_causality.py::test_public_result_view_exposes_single_executive_brief_for_first_screen -q`; `pytest tests/test_result_causality.py tests/test_api.py -q` → 122 passed; `py_compile app.py result_causality.py api.py`; kleiner Simulation-/Packet-Smoke; `pytest -q` → 281 passed. Git-Sync/Commit/Push folgt als normaler Integrator-Schritt.
+
+## 2026-04-30 15:34 UTC — Result page clarity rebuild slice
+
+### Context
+Alexs aktuelle Korrektur: Die Ergebnis-Seite soll nicht wie übereinander gestapelte Hilfsblöcke wirken, sondern als klare erste Antwort: Ergebnis, Eingriff, Warum, relevante Kennzahlen, Anpassungen, Einordnung, nächster Prüfschritt. Relevante Dateien: `result_causality.py`, `app.py`, `tests/test_result_causality.py`.
+
+### Project Manager
+Priorität bleibt die erste Ergebnisansicht. Risiko: alte Audit-/Kompatibilitätsfelder dürfen API- und UI-Tests nicht brechen, sollen aber nicht mehr in der öffentlichen ersten Ansicht landen. Nächste Tasks: echten visuellen Streamlit-First-Screen weiter reduzieren, danach Legacy-Auditflächen schrittweise konsolidieren.
+
+### Designer / UX
+Die öffentliche `public_result_view` bleibt jetzt der saubere Einstieg: kurze Antwort, maximal sieben Abschnitte, relevante KPI-Zeilen und geschlossene Vertiefung. Doppelte Caption im Renderer wurde entfernt, damit der erste Block ruhiger liest.
+
+### Creative Agent
+Produktidee: Aus dem gleichen Packet später einen druckbaren „1-Minuten-Brief“ erzeugen. Fit: gut für Verständlichkeit und Teilen; erst sinnvoll, wenn der First Screen stabil ist.
+
+### Political Health-System Strategist
+Die Formulierung bleibt vorsichtig: späterer Kapazitätsdruck bei weniger Studienplätzen wird als prüfpflichtiger SimMed-Wirkpfad beschrieben, nicht als amtliche Prognose oder politische Empfehlung.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Es wurden keine neuen Sachclaims oder Datenquellen eingeführt; die Änderung betrifft Ergebnis-Kommunikation und API-/UI-Struktur. Guardrails zu Annahmen, Evidenz und fehlendem Wirksamkeitsnachweis bleiben im Auditbereich sichtbar.
+
+### Integrator Decision
+Akzeptiert: kürzere `short_answer`, öffentliche First-View ohne Legacy-Auditpayloads, strengere Klarheitstests, weniger doppelte UI-Captions. Bewusst beibehalten: Legacy-Felder in `primary_result_view` für bestehende Tests/ältere UI- und API-Clients, aber nicht in `public_result_view`.
+
+### Question to Alex if needed
+Keine offene Entscheidung nötig; sinnvoller Default ist weiter sichere Vereinfachung der First-Result-Ansicht ohne Modelländerung.
+
+### Verification / Git
+Verifikation lokal grün: `python3 -m pytest -q` (282 passed), `python3 -m py_compile app.py result_causality.py api.py simulation_core.py`, 50-run Smoke-Test mit causal packet. Git-Sync/Commit/Push erfolgt im Anschluss an diesen Logeintrag.
