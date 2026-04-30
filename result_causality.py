@@ -1157,10 +1157,10 @@ def build_causal_result_packet(
     ]
     if study_places_changed:
         why_body = (
-            "Der Eingriff wirkt verzögert: In Jahr 0–5 ändert sich wenig. Ausbildungs-Pipeline: Ab etwa Jahr 6 kommt weniger Nachwuchs an; Richtung Jahr 11–15 zählt der Facharztpfad."
+            "Ausbildungs-Pipeline: Jahr 0–5 wenig Änderung. Ab etwa Jahr 6 weniger Nachwuchs; Richtung Jahr 11–15 zählt der Facharztpfad."
         )
     else:
-        why_body = pathway_body[:180]
+        why_body = pathway_body[:145]
 
     observed_signals = []
     for signal in adaptation_trace[:2]:
@@ -1169,8 +1169,8 @@ def build_causal_result_packet(
         observed_signals.append(f"{label} {direction}")
     observed_text = "; ".join(observed_signals) or "kein starkes Puffersignal sichtbar"
     adaptation_body = (
-        f"Das Modell sucht nach Puffern wie Telemedizin; beobachtet: {observed_text}. "
-        "Sinkt Belastung trotz Mangel, ist das ein Plausibilitätscheck."
+        f"Puffer wie Telemedizin prüfen; beobachtet: {observed_text}. "
+        "Sinkt Belastung trotz Mangel, bleibt das ein Plausibilitätscheck."
     )
     result_sections = [
         {"heading": "Ergebnis", "body": result_body},
@@ -1181,8 +1181,8 @@ def build_causal_result_packet(
         {
             "heading": "Einordnung",
             "body": (
-                "Das bedeutet: eine prüfbare Wirkungskette, aber noch keine fertige Entscheidung; "
-                "keine amtliche Prognose, kein Wirksamkeitsnachweis und kein Beweis realer Wirkung."
+                "Das bedeutet: prüfbare Wirkungskette, aber keine fertige Entscheidung; "
+                "keine amtliche Prognose, kein Wirksamkeitsnachweis, kein Beweis realer Wirkung."
             ),
         },
         {

@@ -135,8 +135,9 @@ def test_short_answer_reads_like_plain_first_screen_result_not_helper_text():
         "Einordnung",
         "Nächster Prüfschritt",
     ]
-    assert all(len(section["body"]) <= 170 for section in sections)
+    assert all(len(section["body"]) <= 150 for section in sections)
     assert all("Detailkarten" not in section["body"] for section in sections)
+    assert all("KPI" not in section["body"] for section in sections)
     assert public_view["first_screen_policy"] == "one_briefing_then_collapsed_audit"
     assert public_view["dense_kpi_default_expanded"] is False
     assert public_view["deeper_review_default_expanded"] is False
@@ -412,7 +413,7 @@ def test_public_adaptation_section_is_not_truncated_mid_sentence():
     assert " M Fällt" not in adaptation
     assert adaptation.endswith("Plausibilitätscheck.")
     assert all(section["body"].endswith((".", "?", "!")) for section in packet["result_sections"])
-    assert why.startswith("Der Eingriff wirkt verzögert: In Jahr 0–5")
+    assert why.startswith("Ausbildungs-Pipeline: Jahr 0–5 wenig Änderung")
     assert "Ab etwa Jahr 6" in why
 
 

@@ -6264,3 +6264,32 @@ Keine wichtige Entscheidung offen. Sicher weiterarbeiten: als Nächstes Browser-
 ### Verification / Git
 Verifiziert: `pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 70 passed; `pytest -q` → 298 passed; `py_compile` für `app.py`, `result_causality.py`, `api.py`, `simulation_core.py`; Smoke-Test `run_simulation(... n_runs=50, n_years=3)` plus Packet-Assertions → OK. Git-Sync/Commit/Push folgt in diesem Lauf.
 
+
+## 2026-04-30 21:13 Europe/Berlin — Ergebnisbriefing weiter gekürzt
+
+### Context
+Alexs jüngste Korrektur bleibt Leitlinie: die erste Ergebnisseite soll als ein lesbares deutsches Briefing starten, nicht als Stapel konkurrierender Hilfen. Dieser Lauf straffte die öffentlichen `result_sections` im `causal_result_packet` weiter und hielt API/UI-Vertrag stabil.
+
+### Project Manager
+Priorität: erste Ergebnisansicht verständlicher machen, ohne neue Modellbehauptungen einzubauen. Risiko: ältere Tests erwarteten längere Formulierungen; angepasst wurde nur die öffentliche Lesefassung, nicht die Simulation.
+
+### Designer / UX
+Die erste Ansicht bleibt bei sieben klaren Überschriften: Ergebnis → Eingriff → Warum es passiert → Relevante Kennzahlen → Anpassungen → Einordnung → Nächster Prüfschritt. Abschnittstexte sind jetzt maximal 150 Zeichen, damit die Seite schneller lesbar ist.
+
+### Creative Agent
+Idee: später einen „Briefing-Modus“ visuell wie eine seriöse Ein-Seiten-Notiz gestalten. Fit: gut für Alexs Ziel „nicht Zahlenwand“, aber erst nach diesem Klarheits-Schnitt; keine zusätzliche Widget-Schicht jetzt.
+
+### Political Health-System Strategist
+Die Formulierungen behalten die Grenze zwischen Modell-Einordnung und politischer Entscheidung: keine amtliche Prognose, kein Wirksamkeitsnachweis, kein Beweis realer Wirkung. Das schützt vor Überdeutung bei sensiblen Themen wie Studienplatzkürzungen.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf; keine neuen Sachbehauptungen. Der Ausbildungs-Pipeline-Hinweis bleibt als SimMed-Modellannahme sichtbar und verweist auf Jahr 0–5, ab etwa Jahr 6 und Jahr 11–15.
+
+### Integrator Decision
+Akzeptiert: öffentliche Ergebnisabschnitte weiter verdichten; „Ausbildungs-Pipeline“ und Plausibilitätscheck erhalten; API-Paket bleibt kompatibel. Zurückgestellt: neue Modellhebel und Freitext-Szenarien.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; weiter sicher am Ergebnisbriefing und an der reduzierten ersten Bildschirmansicht arbeiten.
+
+### Verification / Git
+Lokal grün vor Sync: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` (70 passed), `python3 -m pytest -q` (298 passed), `py_compile result_causality.py app.py api.py`, 50-run/15-year smoke test OK. Git-Sync/Commit folgt nach dieser Log-Ergänzung.
