@@ -2764,6 +2764,56 @@ def build_data_readiness_registry_integration_operator_briefing_cards(operator_b
 
 
 
+def build_data_readiness_registry_integration_operator_briefing_handoff_sheet(briefing_cards: dict) -> dict:
+    """Return a one-page handoff sheet for the mobile operator briefing cards.
+
+    The card deck is touch-friendly, but a future human/operator also needs a
+    compact audit sheet that states the exact safe order, what evidence to have
+    open, and where the workflow must stop. This remains read-only/status-only
+    and deliberately never creates a branch, review, cache write, or model
+    change.
+    """
+
+    rows: list[dict] = []
+    for index, card in enumerate(briefing_cards.get("cards", []), start=1):
+        command = card.get("copyable_command", "")
+        rows.append(
+            {
+                "rank": index,
+                "card_id": card.get("id"),
+                "title": card.get("title"),
+                "copyable_command": command,
+                "operator_question": card.get("operator_question"),
+                "handoff_note": (
+                    "STOP-Gate: erst dokumentiertes menschliches Go außerhalb dieses Sheets, dann separaten PR planen."
+                    if card.get("is_stop_gate")
+                    else "Status/Evidenz öffnen und Ergebnis in der Entscheidungsvorlage referenzieren; keine Ausführung."
+                ),
+                "is_stop_gate": bool(card.get("is_stop_gate")),
+                "guardrail": card.get("guardrail"),
+            }
+        )
+
+    return {
+        "title": "Registry-Operator-Handoff-Sheet",
+        "plain_language_note": (
+            "Ein kopierbares Übergabeblatt für die letzten Registry-Gates: erst Status lesen, "
+            "dann Parameter prüfen, Entscheidung auditieren und vor Codearbeit stoppen."
+        ),
+        "primary_parameter_key": briefing_cards.get("primary_parameter_key"),
+        "primary_label": briefing_cards.get("primary_label"),
+        "rows": rows,
+        "operator_definition_of_done": [
+            "Alle Statusrouten aus dem Sheet wurden gelesen",
+            "Parameter-Workflow, Diff-Preview, PR-Brief und Entscheidungs-Template sind referenziert",
+            "Go/Hold/Reject ist außerhalb dieses read-only Sheets mit Rationale, Entscheider und Zeitpunkt dokumentiert",
+            "Branch/PR erst in einem separaten, getesteten Integrationsschritt nach dokumentiertem Go",
+        ],
+        "guardrail": "Read-only/Handoff-sheet-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    }
+
+
+
 def build_data_readiness_registry_integration_handoff_packet(decision_record: dict) -> dict:
     """Create a copy-safe operator handoff from the Go/Hold/Reject decision record.
 

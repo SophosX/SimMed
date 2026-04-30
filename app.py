@@ -61,6 +61,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_handoff_packet,
     build_data_readiness_registry_integration_operator_briefing,
     build_data_readiness_registry_integration_operator_briefing_cards,
+    build_data_readiness_registry_integration_operator_briefing_handoff_sheet,
     build_data_readiness_registry_integration_pr_runbook,
     build_data_readiness_registry_integration_progress_timeline,
     build_data_readiness_registry_integration_status_board,
@@ -4233,6 +4234,7 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
     operator_briefing = build_data_readiness_registry_integration_operator_briefing(
         progress_timeline, command_palette
     )
+    operator_briefing_cards = build_data_readiness_registry_integration_operator_briefing_cards(operator_briefing)
     return {
         "title": "Nächste Daten-Schritte: erst Cache, dann Review, dann Integration",
         "plain_language_note": (
@@ -4265,7 +4267,8 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         "registry_integration_progress_timeline": progress_timeline,
         "registry_integration_command_palette": command_palette,
         "registry_integration_operator_briefing": operator_briefing,
-        "registry_integration_operator_briefing_cards": build_data_readiness_registry_integration_operator_briefing_cards(operator_briefing),
+        "registry_integration_operator_briefing_cards": operator_briefing_cards,
+        "registry_integration_operator_briefing_handoff_sheet": build_data_readiness_registry_integration_operator_briefing_handoff_sheet(operator_briefing_cards),
         "registry_integration_handoff_packet": build_data_readiness_registry_integration_handoff_packet(decision_record),
         "registry_integration_pr_runbook": pr_runbook,
         "rows": [
@@ -4681,6 +4684,23 @@ def render_learning_data_readiness_backlog():
         ]
         st.dataframe(pd.DataFrame(briefing_card_rows), use_container_width=True, hide_index=True)
         st.caption(briefing_cards["guardrail"])
+        handoff_sheet = backlog["registry_integration_operator_briefing_handoff_sheet"]
+        st.markdown(f"**{handoff_sheet['title']}**")
+        st.caption(handoff_sheet["plain_language_note"])
+        handoff_sheet_rows = [
+            {
+                "Rang": row["rank"],
+                "Karte": row["title"],
+                "Befehl/Stop": row["copyable_command"],
+                "Übergabe-Notiz": row["handoff_note"],
+                "Stop-Gate": "ja" if row["is_stop_gate"] else "nein",
+                "Guardrail": row["guardrail"],
+            }
+            for row in handoff_sheet["rows"]
+        ]
+        st.dataframe(pd.DataFrame(handoff_sheet_rows), use_container_width=True, hide_index=True)
+        st.caption("Definition of done: " + " · ".join(handoff_sheet["operator_definition_of_done"]))
+        st.caption(handoff_sheet["guardrail"])
         command_palette = backlog["registry_integration_command_palette"]
         st.markdown(f"**{command_palette['title']}**")
         st.caption(command_palette["plain_language_note"])

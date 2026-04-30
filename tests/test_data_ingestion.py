@@ -32,6 +32,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_decision_template,
     build_data_readiness_registry_integration_handoff_packet,
     build_data_readiness_registry_integration_operator_briefing_cards,
+    build_data_readiness_registry_integration_operator_briefing_handoff_sheet,
     build_data_readiness_registry_integration_operator_steps,
     build_data_readiness_registry_integration_pr_runbook,
     build_data_readiness_registry_integration_progress_timeline,
@@ -1582,3 +1583,30 @@ def test_registry_operator_briefing_cards_make_safe_route_touch_friendly():
     assert "kein Branch" in cards["guardrail"]
     assert "kein execute=true" in cards["guardrail"]
     assert "keine Registry-/Modellmutation" in cards["guardrail"]
+
+
+def test_registry_operator_briefing_handoff_sheet_is_copy_safe_and_stop_first():
+    briefing_cards = build_data_readiness_registry_integration_operator_briefing_cards(
+        {
+            "primary_parameter_key": "bevoelkerung_mio",
+            "primary_label": "Bevölkerung",
+            "first_safe_command": "GET /data-readiness/registry-integration-status-board",
+            "next_parameter_command": "GET /data-readiness/bevoelkerung_mio",
+            "human_decision_command": "GET /data-readiness/registry-integration-decision-audit-checklist",
+            "stop_before_code": "STOP: erst menschliches Go außerhalb dieses Pakets dokumentieren",
+            "definition_of_done_before_branch": ["Go/Hold/Reject dokumentiert"],
+        }
+    )
+
+    sheet = build_data_readiness_registry_integration_operator_briefing_handoff_sheet(briefing_cards)
+
+    assert sheet["title"] == "Registry-Operator-Handoff-Sheet"
+    assert sheet["primary_parameter_key"] == "bevoelkerung_mio"
+    assert [row["rank"] for row in sheet["rows"]] == [1, 2, 3, 4]
+    assert sheet["rows"][1]["copyable_command"] == "GET /data-readiness/bevoelkerung_mio"
+    assert sheet["rows"][-1]["is_stop_gate"] is True
+    assert sheet["rows"][-1]["handoff_note"].startswith("STOP-Gate")
+    assert "Go/Hold/Reject" in sheet["operator_definition_of_done"][2]
+    assert "kein Branch" in sheet["guardrail"]
+    assert "kein execute=true" in sheet["guardrail"]
+    assert "keine Registry-/Modellmutation" in sheet["guardrail"]

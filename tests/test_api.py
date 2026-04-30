@@ -1155,6 +1155,18 @@ def test_api_exposes_registry_integration_operator_briefing_without_actions():
     assert cards_body["registry_integration_operator_briefing_cards"]["cards"][1]["copyable_command"] == "GET /data-readiness/bevoelkerung_mio"
     assert "keine Registry-/Modellmutation" in cards_body["guardrail"]
 
+    sheet = body["registry_integration_operator_briefing_handoff_sheet"]
+    assert sheet["rows"][-1]["is_stop_gate"] is True
+    assert "Go/Hold/Reject" in sheet["operator_definition_of_done"][2]
+    assert "kein Branch" in sheet["guardrail"]
+
+    sheet_response = client.get("/data-readiness/registry-integration-operator-briefing-handoff-sheet?limit=3")
+    assert sheet_response.status_code == 200
+    sheet_body = sheet_response.json()
+    assert sheet_body["status"] == "data_readiness_registry_integration_operator_briefing_handoff_sheet_not_applied"
+    assert sheet_body["registry_integration_operator_briefing_handoff_sheet"]["rows"][1]["copyable_command"] == "GET /data-readiness/bevoelkerung_mio"
+    assert "kein execute=true" in sheet_body["guardrail"]
+
     invalid = client.get("/data-readiness/registry-integration-operator-briefing?limit=0")
     assert invalid.status_code == 422
     assert invalid.json()["detail"]["status"] == "invalid_data_readiness_registry_integration_operator_briefing_limit"

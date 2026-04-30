@@ -2779,3 +2779,16 @@ Keine.
 
 ### Verification / Git
 Lokal verifiziert: gezielte Tests für Data-Ingestion/API/App, danach `python3 -m pytest -q`, `python3 -m py_compile app.py api.py data_ingestion.py`, und Smoke `build_learning_data_readiness_backlog()` mit 4 Karten. Commit/Push folgt in diesem Heartbeat.
+
+
+## 2026-04-30T03:44:53+00:00 — Registry-Operator-Handoff-Sheet
+
+- Context: Core-platform heartbeat stayed on Data-Readiness/Registry integration gates; no new external evidence claims.
+- Project Manager: Useful next slice was reducing handoff ambiguity after mobile operator briefing cards, without executing connectors or starting code integration.
+- Designer/UX: Added a one-page, mobile/table-friendly handoff sheet that repeats the safe route, highlights the Stop-Gate, and states definition-of-done before any branch.
+- Creative Agent: Kept the artifact as a copyable operator sheet rather than another dense dashboard; fit is operational clarity for future agents/humans.
+- Political Health-System Strategist: Preserved the human Go/Hold/Reject audit before policy-sensitive model/default changes; no lobbying/vote-forecast content added.
+- Evidence/Domain: No new research in this run; all copy is governance/status wording derived from existing Registry/Data-Readiness gates.
+- Integrator Decision: Implemented `build_data_readiness_registry_integration_operator_briefing_handoff_sheet(...)`, surfaced it in API and Learning Page data, and added focused regression coverage.
+- Question to Alex if needed: Keine — safe/read-only platform plumbing.
+- Verification/Git: Targeted tests passed; full pytest passed (164); py_compile passed; simulation smoke passed (20 runs × 2 years). Commit/push pending in this heartbeat.
