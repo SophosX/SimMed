@@ -59,6 +59,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_operator_export_review_checklist,
     build_data_readiness_registry_integration_operator_export_share_brief,
     build_data_readiness_registry_integration_operator_export_status_card,
+    build_data_readiness_registry_integration_final_gate_summary,
     build_data_readiness_registry_integration_operator_steps,
     build_data_readiness_registry_integration_safe_start_packet,
     build_data_readiness_registry_integration_safe_start_checklist,
@@ -1027,6 +1028,8 @@ def get_data_readiness_registry_integration_operator_briefing(limit: int = 3) ->
         export_review_checklist)
     export_status_card = build_data_readiness_registry_integration_operator_export_status_card(
         export_share_brief)
+    final_gate_summary = build_data_readiness_registry_integration_final_gate_summary(
+        export_status_card)
     return {
 
         "status": "data_readiness_registry_integration_operator_briefing_not_applied",
@@ -1046,6 +1049,7 @@ def get_data_readiness_registry_integration_operator_briefing(limit: int = 3) ->
         "registry_integration_operator_export_review_checklist": export_review_checklist,
         "registry_integration_operator_export_share_brief": export_share_brief,
         "registry_integration_operator_export_status_card": export_status_card,
+        "registry_integration_final_gate_summary": final_gate_summary,
     }
 
 
@@ -1215,6 +1219,19 @@ def get_data_readiness_registry_integration_operator_export_status_card(limit: i
         "guardrail": "Operator-Export-Statuskarte ist read-only/status-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
         "summary": response["summary"],
         "registry_integration_operator_export_status_card": response["registry_integration_operator_export_status_card"],
+    }
+
+
+@api.get("/data-readiness/registry-integration-final-gate-summary")
+def get_data_readiness_registry_integration_final_gate_summary(limit: int = 3) -> dict:
+    """Return the final read-only no-code-work gate before Registry/model PR work."""
+
+    response = get_data_readiness_registry_integration_operator_briefing(limit=limit)
+    return {
+        "status": "data_readiness_registry_integration_final_gate_summary_not_applied",
+        "guardrail": "Final-Gate-Summary ist read-only/status-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+        "summary": response["summary"],
+        "registry_integration_final_gate_summary": response["registry_integration_final_gate_summary"],
     }
 
 

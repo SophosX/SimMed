@@ -73,6 +73,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_operator_export_review_checklist,
     build_data_readiness_registry_integration_operator_export_share_brief,
     build_data_readiness_registry_integration_operator_export_status_card,
+    build_data_readiness_registry_integration_final_gate_summary,
     build_data_readiness_registry_integration_pr_runbook,
     build_data_readiness_registry_integration_progress_timeline,
     build_data_readiness_registry_integration_status_board,
@@ -4464,6 +4465,9 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
     operator_export_status_card = build_data_readiness_registry_integration_operator_export_status_card(
         operator_export_share_brief
     )
+    final_gate_summary = build_data_readiness_registry_integration_final_gate_summary(
+        operator_export_status_card
+    )
     return {
         "title": "Nächste Daten-Schritte: erst Cache, dann Review, dann Integration",
         "plain_language_note": (
@@ -4509,6 +4513,7 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         "registry_integration_operator_export_review_checklist": operator_export_review_checklist,
         "registry_integration_operator_export_share_brief": operator_export_share_brief,
         "registry_integration_operator_export_status_card": operator_export_status_card,
+        "registry_integration_final_gate_summary": final_gate_summary,
         "registry_integration_handoff_packet": build_data_readiness_registry_integration_handoff_packet(decision_record),
         "registry_integration_pr_runbook": pr_runbook,
         "rows": [
@@ -5066,6 +5071,18 @@ def render_learning_data_readiness_backlog():
             "Stop-Gate": export_status_card["stop_condition"],
         }]), use_container_width=True, hide_index=True)
         st.caption(export_status_card["guardrail"])
+        final_gate_summary = backlog["registry_integration_final_gate_summary"]
+        st.markdown(f"**{final_gate_summary['title']}**")
+        st.caption(final_gate_summary["plain_language_note"])
+        st.dataframe(pd.DataFrame([{
+            "Codearbeit aus diesem Status?": "ja" if final_gate_summary["can_start_code_work_from_this_surface"] else "nein",
+            "Status teilbar?": "ja" if final_gate_summary["status_shareable"] else "nein",
+            "Erste sichere Route": final_gate_summary["first_safe_route"],
+            "Antwort": final_gate_summary["operator_answer"],
+            "Stop": final_gate_summary["stop_condition"],
+        }]), use_container_width=True, hide_index=True)
+        st.caption("Vor Branch erforderlich: " + " · ".join(final_gate_summary["required_external_go_before_branch"]))
+        st.caption(final_gate_summary["guardrail"])
         command_palette = backlog["registry_integration_command_palette"]
         st.markdown(f"**{command_palette['title']}**")
         st.caption(command_palette["plain_language_note"])

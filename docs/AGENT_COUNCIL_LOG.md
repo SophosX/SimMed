@@ -3323,3 +3323,32 @@ Gezielt verifiziert: `pytest tests/test_result_uncertainty.py tests/test_api.py:
 - **Integrator Decision:** `result_uncertainty.build_uncertainty_first_contact_cards(...)` als zentrale API/UI-Hilfe eingeführt, in `/simulate` und Streamlit-Unsicherheitsbereich verdrahtet.
 - **Question to Alex if needed:** Keine.
 - **Verification/Git:** Fokus-Tests und py_compile liefen lokal; Simulation-Smoke mit 20 Runs/2 Jahren erfolgreich. Commit/Push folgt in diesem Heartbeat.
+
+## 2026-04-30 08:29 Europe/Berlin — Final Registry Gate Summary
+
+### Context
+Alexs neue Vorgabe priorisiert Core-Plattformarbeit. Dieser Lauf blieb im Daten-/Provenance-Track und ergänzt die Registry-Integrationskette um ein letztes read-only Gate vor jeder Code-/PR-Arbeit.
+
+### Project Manager
+Priorität: Datenintegration sicher operationalisierbar machen, ohne Cache/Review/Registry-Modellintegration zu vermischen. Nächste Tasks: fokussierte Parameter-Workflow-UX weiter kürzen; danach echte Connector-Review-Drafts vorbereiten.
+
+### Designer / UX
+Die Learning Page bekam nach der Export-Statuskarte eine klare Antwort auf „Darf ich daraus Codearbeit starten?“: Nein, Status ist nur teilbar/lesbar; Branch/PR braucht separates auditiertes Go.
+
+### Creative Agent
+Idee: das Final-Gate später als kleine „Schranke“ im UI visualisieren. Fit: gut für mobile Erstnutzer, aber erst nach weiteren Verdichtungen sinnvoll; heute nur strukturierte Daten + Tabelle.
+
+### Political Health-System Strategist
+Für gesundheitspolitische Modellwerte ist das Stoppschild wichtig: selbst ein grüner Datenstatus ist kein Wirkungsbeweis, keine amtliche Prognose und keine Lobbying-Empfehlung.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Änderung nutzt vorhandene Data-Passport/Review/Diff/PR-Brief-Gates und fügt keine neuen Sachbehauptungen oder Modellparameter hinzu.
+
+### Integrator Decision
+Akzeptiert: `build_data_readiness_registry_integration_final_gate_summary(...)`, fokussierter API-Endpunkt `/data-readiness/registry-integration-final-gate-summary`, Learning-Page-Surfacing und Regressionstests. Alles read-only/status-only.
+
+### Question to Alex
+Keine.
+
+### Verification / Git
+Gezielte Tests: `tests/test_api.py::test_api_exposes_registry_integration_operator_briefing_without_actions`, `tests/test_api.py::test_api_exposes_registry_final_gate_summary_without_code_work`, `tests/test_app_explanations.py::test_learning_data_readiness_backlog_prioritizes_safe_data_gates` passed. Full suite: `198 passed`. Py-compile + 20-run/2-year simulation smoke passed. Commit/Push folgt nach Zip-Refresh.

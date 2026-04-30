@@ -3383,6 +3383,50 @@ def build_data_readiness_registry_integration_operator_export_status_card(
     }
 
 
+def build_data_readiness_registry_integration_final_gate_summary(
+    export_status_card: dict,
+) -> dict:
+    """Return the final read-only gate summary before any Registry/model PR.
+
+    The export status card is already compact, but a future operator still needs a
+    single explicit answer to: can I start code work now? This helper always keeps
+    code work outside the status surface and routes the operator back to the safe
+    evidence trail unless a separate human Go/audit exists elsewhere.
+    """
+
+    first_route = export_status_card.get("first_safe_route") or "GET /data-readiness/registry-integration-operator-export-status-card"
+    copy_safe = export_status_card.get("copy_safe") is True
+    return {
+        "title": "Letztes Gate vor Registry-/Modell-PR",
+        "plain_language_note": (
+            "Diese Zusammenfassung beantwortet vor jeder Codearbeit: Status ist lesbar/teilbar, "
+            "aber ein Branch oder PR darf erst nach separatem dokumentiertem und auditiertem Go starten."
+        ),
+        "primary_parameter_key": export_status_card.get("primary_parameter_key"),
+        "primary_label": export_status_card.get("primary_label"),
+        "can_start_code_work_from_this_surface": False,
+        "status_shareable": copy_safe,
+        "first_safe_route": first_route,
+        "required_external_go_before_branch": [
+            "ausgefüllte Go/Hold/Reject-Entscheidung mit Rationale, Entscheider und Zeitpunkt",
+            "Audit-Checkliste ohne fehlende technische Checks",
+            "Registry-Diff-Preview, PR-Brief, Data-Passport und Transformationsreview geöffnet",
+            "separater getesteter Integrations-PR geplant; dieses Statuspaket startet ihn nicht",
+        ],
+        "operator_answer": (
+            "Status darf geteilt werden; Codearbeit bleibt trotzdem STOP bis ein separates auditiertes Go vorliegt."
+            if copy_safe
+            else "Status nicht teilen; erst Export-Checkliste/GET-Routen/Stop-Gate reparieren."
+        ),
+        "stop_condition": export_status_card.get(
+            "stop_condition",
+            "STOP: kein Branch/PR ohne dokumentierte Go/Hold/Reject-Entscheidung.",
+        ),
+        "guardrail": "Read-only/Final-gate-only: kein Branch, kein execute=true, keine Datenaktion, keine Review-Erzeugung, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    }
+
+
+
 def _check_passed(checks: list[dict], needle: str) -> bool:
     return any(needle in check.get("check", "") and check.get("passed") is True for check in checks)
 

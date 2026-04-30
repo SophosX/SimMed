@@ -1419,6 +1419,20 @@ def test_api_exposes_registry_integration_operator_briefing_without_actions():
     assert status_card["first_safe_route"].startswith("GET ")
     assert "STOP:" in status_card["stop_condition"]
     assert "execute=true" not in " ".join(status_card["safe_routes_to_open"])
+    final_gate = body["registry_integration_final_gate_summary"]
+    assert final_gate["can_start_code_work_from_this_surface"] is False
+    assert final_gate["status_shareable"] is True
+    assert final_gate["first_safe_route"].startswith("GET ")
+    assert any("Go/Hold/Reject" in item for item in final_gate["required_external_go_before_branch"])
+    assert "STOP" in final_gate["operator_answer"]
+    assert "kein Branch" in final_gate["guardrail"]
+
+    final_gate_response = client.get("/data-readiness/registry-integration-final-gate-summary?limit=3")
+    assert final_gate_response.status_code == 200
+    final_gate_body = final_gate_response.json()
+    assert final_gate_body["status"] == "data_readiness_registry_integration_final_gate_summary_not_applied"
+    assert final_gate_body["registry_integration_final_gate_summary"]["can_start_code_work_from_this_surface"] is False
+    assert "kein execute=true" in final_gate_body["guardrail"]
 
     export_response = client.get("/data-readiness/registry-integration-operator-export-packet?limit=3")
     assert export_response.status_code == 200
@@ -1563,6 +1577,24 @@ def test_api_exposes_registry_operator_export_status_card_without_execution():
     assert "execute=true" not in " ".join(status_card["safe_routes_to_open"])
     assert "kein execute=true" in payload["guardrail"]
     assert "keine Registry-/Modellmutation" in status_card["guardrail"]
+
+
+def test_api_exposes_registry_final_gate_summary_without_code_work():
+    client = TestClient(api)
+    response = client.get("/data-readiness/registry-integration-final-gate-summary")
+
+    assert response.status_code == 200
+    payload = response.json()
+    summary = payload["registry_integration_final_gate_summary"]
+    assert payload["status"] == "data_readiness_registry_integration_final_gate_summary_not_applied"
+    assert summary["title"] == "Letztes Gate vor Registry-/Modell-PR"
+    assert summary["can_start_code_work_from_this_surface"] is False
+    assert summary["status_shareable"] is True
+    assert summary["first_safe_route"].startswith("GET ")
+    assert any("Go/Hold/Reject" in item for item in summary["required_external_go_before_branch"])
+    assert "STOP" in summary["operator_answer"]
+    assert "kein execute=true" in payload["guardrail"]
+    assert "keine Registry-/Modellmutation" in summary["guardrail"]
 
 
 

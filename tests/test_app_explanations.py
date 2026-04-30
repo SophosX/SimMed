@@ -376,6 +376,14 @@ def test_learning_data_readiness_backlog_includes_integration_preflight():
     assert export_status_card["stop_condition"].startswith("STOP:")
     assert "kein execute=true" in export_status_card["guardrail"]
     assert "keine Registry-/Modellmutation" in export_status_card["guardrail"]
+    final_gate = backlog["registry_integration_final_gate_summary"]
+    assert final_gate["title"] == "Letztes Gate vor Registry-/Modell-PR"
+    assert final_gate["can_start_code_work_from_this_surface"] is False
+    assert final_gate["status_shareable"] is True
+    assert final_gate["first_safe_route"].startswith("GET ")
+    assert any("Go/Hold/Reject" in item for item in final_gate["required_external_go_before_branch"])
+    assert "STOP" in final_gate["operator_answer"]
+    assert "kein execute=true" in final_gate["guardrail"]
     handoff_packet = backlog["registry_integration_handoff_packet"]
     assert handoff_packet["title"].startswith("Registry-Integrations-Handoff")
     assert handoff_packet["summary"]["handoff_rows"] == decision_record["summary"]["decision_rows"]
