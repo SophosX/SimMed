@@ -5579,7 +5579,7 @@ Local verification before sync: `pytest tests/test_result_causality.py` (57 pass
 ## 2026-04-30 18:29 Europe/Berlin — Heartbeat Result-First Page Cleanup
 
 ### Context
-Alex’ neueste Korrektur war deutlich: Die Result-Seite soll nicht noch mehr Erklär-Widgets stapeln, sondern zuerst als ein lesbares deutsches Briefing funktionieren. Relevant sind `result_causality.py`, `app.py`, `api.py` und die Causal-Result/API-Tests.
+Alexs neueste Korrektur war deutlich: Die Result-Seite soll nicht noch mehr Erklär-Widgets stapeln, sondern zuerst als ein lesbares deutsches Briefing funktionieren. Relevant sind `result_causality.py`, `app.py`, `api.py` und die Causal-Result/API-Tests.
 
 ### Project Manager
 Priorität bleibt die erste Ergebnisansicht. Risiko: zu viele parallele alte Helfer können die klare Antwort wieder überdecken. Nächste Aufgaben: Rendering weiter visuell straffen, alte Detailblöcke nur unter Audit-Expandern halten, danach größere Policy-Briefing-Aufräumung.
