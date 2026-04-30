@@ -5985,4 +5985,4 @@ Akzeptiert: die Ergebnis-Kommunikation läuft über den vereinfachten öffentlic
 Keine offene Grundsatzentscheidung. Empfehlung: weiter sicher in Richtung „ein Briefing zuerst, Audit danach“ iterieren.
 
 ### Verification / Git
-Vorläufig: fokussierte Tests `tests/test_result_causality.py` plus API-Causal-Packet-Test laufen grün. Full suite, Sync, Commit und Push folgen in diesem Heartbeat.
+`python3 -m pytest -q` passed (289 tests). `py_compile` passed for app/result_causality/API/core and focused tests. Smoke test: 50 runs × 3 years plus causal packet contract passed (`short_answer`, ≤7 sections, audit collapsed). Zip refreshed at `/opt/data/cache/documents/health_simulation_app_updated.zip`. Council-log sync committed/pushed as `bc6677d`; this verification note follows as a normal follow-up commit.
