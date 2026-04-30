@@ -6373,4 +6373,4 @@ Akzeptiert: strenger Klarheitstest für Alexs vier Startfragen, kürzerer `short
 Keine wichtige Entscheidung offen; sicher weiter an der klaren Ergebnis-Lesefassung arbeiten.
 
 ### Verification / Git
-Verifiziert lokal: neuer Klarheitstest zuerst rot, dann grün; `pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 73 passed; `pytest -q` → 301 passed; `py_compile result_causality.py app.py api.py`; 50-run/15-year Simulation-Smoke OK. Git-Sync/Commit/Push folgt nach Spiegelung in den GitHub-Clone.
+Verifiziert lokal und im GitHub-Clone: neuer Klarheitstest zuerst rot, dann grün; `pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 73 passed; `pytest -q` → 301 passed; `py_compile result_causality.py app.py api.py`; 50-run/15-year Simulation-Smoke OK. Commit `4732784` wurde nach `origin/main` gepusht; Zip-Artefakt aktualisiert.
