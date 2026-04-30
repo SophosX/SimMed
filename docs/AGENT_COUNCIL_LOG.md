@@ -3453,3 +3453,16 @@ Keine.
 
 ### Verification / Git
 Verified locally: `python -m pytest -q` → 205 passed; `python -m py_compile app.py api.py result_uncertainty.py tests/test_result_uncertainty.py tests/test_api.py tests/test_app_explanations.py`; 20-run/2-year simulation smoke with uncertainty rows. Commit/push status follows in heartbeat report.
+
+
+## 2026-04-30T07:04:34Z – Unsicherheits-Robustheitsbrief für Resultate
+
+- **Context:** Plattform-Heartbeat bleibt auf Core-UX/Interpretation fokussiert; keine neue externe Recherche, keine Daten-/Modellmutation.
+- **Project Manager:** Kleine sichere Plattform-Scheibe: vorhandene P5/P95-Bänder werden in eine priorisierte Robust/Fragil-Prüfreihenfolge übersetzt.
+- **Designer/UX:** Mobile/tablet-sichere Tabelle ergänzt den Unsicherheits-Expander: Nutzer sehen vor KPI-Karten, welche Kennzahlen zuerst als fragile Robustheitsfrage zu öffnen sind.
+- **Creative Agent:** Kein neues Designmotiv; bestehende Frage-/Storyboard-Logik wird als kompakter Prüfbrief wiederverwendet statt weiterer Snippets.
+- **Political Health-System Strategist:** Guardrail bleibt: Unsicherheitsbänder sind keine amtliche Prognose, kein Wirksamkeitsnachweis und keine politische Entscheidungs-/Lobbying-Empfehlung.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; ausschließlich bereits berechnete Monte-Carlo-Aggregate werden status-/leseorientiert neu angeordnet.
+- **Integrator Decision:** `build_uncertainty_robustness_brief(...)` in `result_uncertainty.py` hinzugefügt, in `/simulate` und Streamlit-Unsicherheitsblock eingebunden, Tests ergänzt.
+- **Question to Alex if needed:** Keine.
+- **Verification/Git:** Lokal: `pytest tests/test_result_uncertainty.py tests/test_api.py::test_simulate_exposes_uncertainty_band_summary_for_agents -q`, `py_compile result_uncertainty.py api.py app.py`, 20-run Smoke, danach volle Suite `206 passed`. Commit/Push folgt in diesem Lauf.

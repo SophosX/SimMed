@@ -96,6 +96,7 @@ from result_uncertainty import (
     build_uncertainty_band_summary_from_final,
     build_uncertainty_decision_checklist,
     build_uncertainty_interpretation_packet,
+    build_uncertainty_robustness_brief,
 )
 import scenario_gallery as scenario_gallery_module
 from simulation_report import build_simulation_report as build_policy_briefing_report
@@ -3476,6 +3477,22 @@ def render_uncertainty_band_summary(agg: pd.DataFrame):
             for item in question_rows:
                 st.markdown(f"- **{item['question']}** {item['answer_first']} {item['what_to_open_next']}")
             st.caption(question_rows[0]["guardrail"])
+        robustness_rows = build_uncertainty_robustness_brief(rows)
+        if robustness_rows:
+            st.markdown("**Robust oder fragil? Reihenfolge für die nächste Prüfung:**")
+            st.dataframe(
+                pd.DataFrame(robustness_rows)[[
+                    "rank",
+                    "label",
+                    "uncertainty_signal",
+                    "robustness_status",
+                    "operator_action",
+                    "next_section",
+                ]],
+                use_container_width=True,
+                hide_index=True,
+            )
+            st.caption(robustness_rows[0]["guardrail"])
         checklist_rows = build_uncertainty_decision_checklist(rows)
         if checklist_rows:
             st.markdown("**Entscheidungs-Check vor Interpretation:**")

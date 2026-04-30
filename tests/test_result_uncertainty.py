@@ -4,6 +4,7 @@ from result_uncertainty import (
     build_uncertainty_first_contact_cards,
     build_uncertainty_interpretation_packet,
     build_uncertainty_reading_storyboard,
+    build_uncertainty_robustness_brief,
     build_uncertainty_result_questions,
 )
 
@@ -136,6 +137,25 @@ def test_uncertainty_reading_storyboard_orders_safe_result_interpretation():
     assert all("execute=true" not in step.get("open_next", "") for step in storyboard)
 
 
+def test_uncertainty_robustness_brief_ranks_fragile_signals_before_stable_ones():
+    rows = [
+        {"metric_key": "wartezeit_fa", "label": "Facharzt-Wartezeit", "signal": "enges Band"},
+        {"metric_key": "gkv_saldo", "label": "GKV-Saldo", "signal": "breites Band"},
+        {"metric_key": "aerzte_pro_100k", "label": "Ärzte pro 100k", "signal": "mittleres Band"},
+    ]
+
+    brief = build_uncertainty_robustness_brief(rows)
+
+    assert [row["metric_key"] for row in brief] == ["gkv_saldo", "aerzte_pro_100k", "wartezeit_fa"]
+    assert brief[0]["robustness_status"] == "fragil lesen"
+    assert "Nicht aus dem Mittelwert entscheiden" in brief[0]["operator_action"]
+    assert brief[1]["robustness_status"] == "bedingt robust lesen"
+    assert brief[2]["robustness_status"] == "im Modell relativ robust"
+    assert "KPI-Detailkarte" in brief[0]["next_section"]
+    assert "keine amtliche Prognose" in brief[0]["guardrail"]
+    assert "execute=true" not in str(brief)
+
+
 def test_uncertainty_interpretation_packet_bundles_safe_reading_path():
     rows = [
         {
@@ -157,6 +177,7 @@ def test_uncertainty_interpretation_packet_bundles_safe_reading_path():
     assert packet["first_contact_cards"][0]["title"] == "Erst Spannweite, dann Mittelwert"
     assert packet["result_questions"][0]["question"] == "Wie sicher ist das Signal bei GKV-Saldo?"
     assert packet["decision_checklist"][0]["decision_status"] == "erst Robustheit prüfen"
+    assert packet["robustness_brief"][0]["robustness_status"] == "fragil lesen"
     assert [step["stage"] for step in packet["reading_storyboard"]] == [
         "Orientieren",
         "Robustheit prüfen",
@@ -167,3 +188,4 @@ def test_uncertainty_interpretation_packet_bundles_safe_reading_path():
     assert "keine amtliche Prognose" in packet["guardrail"]
     assert "kein Wirksamkeitsnachweis" in packet["guardrail"]
     assert "execute=true" not in str(packet)
+

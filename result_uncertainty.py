@@ -218,6 +218,53 @@ def build_uncertainty_reading_storyboard(
 
 
 
+def build_uncertainty_robustness_brief(
+    band_rows: Sequence[Mapping[str, str]],
+    *,
+    limit: int = 4,
+) -> list[dict[str, str]]:
+    """Rank P5/P95 rows into robust-vs-fragile interpretation actions.
+
+    This helper is a read-only UX/API bridge for first-time users: it tells them
+    which Monte-Carlo bands need a robustness check first and which look more
+    stable inside the current model run. It does not run a sensitivity analysis,
+    fetch data, change parameters, or convert model spread into an official
+    forecast interval.
+    """
+
+    priority = {"breites Band": 0, "mittleres Band": 1, "enges Band": 2}
+    rows = sorted(
+        list(band_rows),
+        key=lambda row: (priority.get(row.get("signal", ""), 3), row.get("label") or row.get("metric_key") or ""),
+    )[:limit]
+    brief: list[dict[str, str]] = []
+    for index, row in enumerate(rows, start=1):
+        label = row.get("label") or row.get("metric_key") or "Kennzahl"
+        signal = row.get("signal", "Spannweite prüfen")
+        if signal == "breites Band":
+            robustness_status = "fragil lesen"
+            operator_action = "Nicht aus dem Mittelwert entscheiden; zuerst P5/P95, Wirkpfad und Annahmencheck öffnen."
+        elif signal == "mittleres Band":
+            robustness_status = "bedingt robust lesen"
+            operator_action = "Mittelwert nur mit Bandbreite und Trend-Timing verwenden; bei Zielkonflikten Sensitivität planen."
+        else:
+            robustness_status = "im Modell relativ robust"
+            operator_action = "Als stabileres SimMed-Signal lesen, aber Evidenzgrad, Datenstatus und politische Umsetzung weiter prüfen."
+        brief.append(
+            {
+                "rank": str(index),
+                "metric_key": row.get("metric_key", ""),
+                "label": label,
+                "uncertainty_signal": signal,
+                "robustness_status": robustness_status,
+                "operator_action": operator_action,
+                "next_section": f"KPI-Detailkarte für {label} → Annahmen-/Evidenzcheck → Trend-Timing",
+                "guardrail": UNCERTAINTY_GUARDRAIL,
+            }
+        )
+    return brief
+
+
 def build_uncertainty_interpretation_packet(
     band_rows: Sequence[Mapping[str, str]],
     *,
@@ -242,6 +289,7 @@ def build_uncertainty_interpretation_packet(
         "first_contact_cards": build_uncertainty_first_contact_cards(rows),
         "result_questions": build_uncertainty_result_questions(rows, limit=limit),
         "decision_checklist": build_uncertainty_decision_checklist(rows, limit=limit),
+        "robustness_brief": build_uncertainty_robustness_brief(rows, limit=limit),
         "reading_storyboard": build_uncertainty_reading_storyboard(rows, limit=limit),
         "definition_of_done_before_decision": [
             "Mittelwert, P5 und P95 gemeinsam gelesen",
@@ -297,3 +345,4 @@ def build_uncertainty_band_summary_from_final(
             }
         )
     return sorted(rows, key=lambda row: float(row["band_width"]), reverse=True)[:limit]
+
