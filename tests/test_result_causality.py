@@ -596,11 +596,12 @@ def test_professional_briefing_exposes_single_public_storyline_for_first_result_
         "Relevante Kennzahlen",
         "Anpassungsreaktionen",
         "Einordnung",
+        "Was daraus folgt",
         "Nächste Prüfentscheidung",
     ]
     positions = [storyline.index(heading) for heading in expected_order]
     assert positions == sorted(positions)
-    assert "Was daraus folgt" not in storyline
+    assert storyline.count("Einordnung\n") == 1
     assert "Warum das wichtig ist:" not in storyline
     assert "Kurz gesagt:" not in storyline
     assert "random Internet" not in storyline
@@ -703,6 +704,7 @@ def test_causal_packet_exposes_public_briefing_sequence_for_api_and_ui_clients()
         "Relevante Kennzahlen",
         "Anpassungsreaktionen",
         "Einordnung",
+        "Was daraus folgt",
         "Nächste Prüfentscheidung",
     ]
     assert packet["primary_result_view"]["public_briefing_sequence"] == sequence
@@ -717,3 +719,34 @@ def test_causal_packet_exposes_public_briefing_sequence_for_api_and_ui_clients()
     public_text = " ".join(step["stage"] + " " + step["body"] + " " + step["reader_hint"] for step in sequence)
     banned = ["random Internet", "Klartext", "KPI-Wand", "Audit-Layer", "guardrail", "render_sequence", "causal_result_packet"]
     assert not any(term in public_text for term in banned)
+
+
+def test_causal_packet_public_storyline_is_one_complete_human_briefing_block():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    storyline = packet["public_briefing_text"]
+
+    expected_order = [
+        "Ergebnisbericht",
+        "Ausgangslage",
+        "Eingriff",
+        "Wirkpfad der Simulation",
+        "Relevante Kennzahlen",
+        "Anpassungsreaktionen",
+        "Einordnung",
+        "Was daraus folgt",
+        "Nächste Prüfentscheidung",
+    ]
+    positions = [storyline.index(label) for label in expected_order]
+    assert positions == sorted(positions)
+    assert storyline.count("Einordnung\n") == 1
+    assert "ab Jahr 6" in storyline
+    assert "Jahr 11–15" in storyline
+    assert "Telemedizin" in storyline
+    assert "Burnout" in storyline
+    assert "keine amtliche Prognose" in storyline
+    assert "kein Wirksamkeitsnachweis" in storyline
+    banned = ["random Internet", "Klartext", "KPI-Wand", "Audit-Layer", "guardrail", "render_sequence", "causal_result_packet"]
+    assert not any(term in storyline for term in banned)

@@ -4272,3 +4272,32 @@ Keine wichtige Entscheidung offen. Sicher weiter: Ergebnisbericht stabilisieren,
 
 ### Verification / Git
 RED: neuer Test `test_professional_briefing_exposes_single_public_storyline_for_first_result_view` schlug zunächst mit `KeyError: public_storyline` fehl. GREEN: `public_storyline` in `result_causality.py`, API-Test erweitert, Streamlit-Renderer bevorzugt den neuen Block. Verification lokal grün: `pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 29 passed; `pytest -q` → 256 passed; `py_compile` grün; 50-run simulation/result-packet smoke passed (`df=(800, 30)`, `reg=(800, 6)`). Git: Commit `de35c28` auf `main` gepusht; `git show --name-only --oneline -1` bestätigte `app.py`, `result_causality.py`, `tests/test_api.py`, `tests/test_result_causality.py` und `docs/AGENT_COUNCIL_LOG.md`.
+
+## 2026-04-30 12:39 Europe/Berlin — Heartbeat Ergebnisbericht-Public-Storyline
+
+### Context
+Alex asked for a larger, coherent result-experience slice: the first result view should read as one serious German simulation briefing rather than scattered KPI/help fragments. This heartbeat tightened `result_causality.py`, `app.py`, and tests so the public briefing block now includes the full sequence through “Was daraus folgt” before the next Prüfentscheidung.
+
+### Project Manager
+Priority: keep consolidating the result experience around one reader-facing Ergebnisbericht and prevent regressions back to KPI-wall or internal packet language. Risk: the existing result layer is rich but still contains many legacy optional sections; the first view must stay clearly primary. Next tasks: continue moving optional detail layers behind the briefing, then refine scenario-specific adaptation mechanisms.
+
+### Designer / UX
+The public story now has a complete human reading path: Ausgangslage → Eingriff → Wirkpfad → relevante Kennzahlen → Anpassungsreaktionen → Einordnung → Was daraus folgt → nächste Prüfentscheidung. This should feel less like dashboard furniture and more like a short policy-simulation briefing.
+
+### Creative Agent
+Idea: later render the same public briefing as a one-page “SimMed Ergebnisbrief” export/share card. Fit: high for explainability and sharing, but only after the text is stable and mobile layout is clean.
+
+### Political Health-System Strategist
+Keeping “Was daraus folgt” inside the main public block is important: political interpretation should not jump directly from KPI movement to stakeholder strategy. The current sequence forces fachliche Prüfung before politics, which is the safer posture for a sensitive health-system simulator.
+
+### Evidence / Domain
+No new external evidence claim was introduced. This is an explanation/UI/API structuring change only; existing guardrails remain: no official forecast, no policy-effect proof, and registry/evidence caveats remain visible.
+
+### Integrator Decision
+Accepted: add `public_briefing_text` as the explicit public reader-facing field, keep `public_storyline` as a compatibility alias, include “Was daraus folgt” in the public sequence, and make Streamlit prefer the explicit public briefing text.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; sicher weiter mit Ergebnisbericht-Verdichtung und Adaptationsmechanismen.
+
+### Verification / Git
+Verified locally: `python3 -m pytest -q` → 257 passed; `py_compile` for app/API/core/result modules/tests; smoke run 30×3 with halved Medizinstudienplätze and public briefing assertions passed. Git sync/commit/push follows in this heartbeat.

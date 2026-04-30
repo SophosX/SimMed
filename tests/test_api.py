@@ -62,6 +62,8 @@ def test_simulate_embeds_causal_result_packet_for_answer_first_clients():
     ]
     assert packet["primary_result_view"]["professional_briefing_text"].startswith("Ausgangslage: ")
     assert packet["professional_briefing"]["public_storyline"].startswith("Ergebnisbericht\n\nAusgangslage\n")
+    assert packet["public_briefing_text"] == packet["professional_briefing"]["public_storyline"]
+    assert "Was daraus folgt\n" in packet["public_briefing_text"]
     assert packet["primary_result_view"]["public_storyline"] == packet["professional_briefing"]["public_storyline"]
     assert "Warum das wichtig ist:" not in packet["professional_briefing"]["public_storyline"]
     assert packet["policy_readiness_summary"]["headline"] == "Was daraus folgt"

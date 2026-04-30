@@ -869,7 +869,6 @@ def build_causal_result_packet(
         "Berechnete Wirkpfade": "Wirkpfad der Simulation",
         "Relevante KPIs": "Relevante Kennzahlen",
         "Einordnung und Belastbarkeit": "Einordnung",
-        "Was daraus folgt": "Einordnung",
     }
     public_briefing_sequence = [
         {
@@ -878,15 +877,17 @@ def build_causal_result_packet(
             "reader_hint": block["reader_hint"],
         }
         for block in narrative_blocks
-        if block["heading"] != "Was daraus folgt"
     ]
-    public_storyline = "\n\n".join(
+    public_briefing_text = "\n\n".join(
         ["Ergebnisbericht"]
         + [
             f"{step['stage']}\n{step['body']}"
             for step in public_briefing_sequence
         ]
     )
+    # Backward-compatible alias for older UI/API callers; the new name is more
+    # explicit that this is public reader-facing prose, not an internal packet dump.
+    public_storyline = public_briefing_text
     reader_brief = "\n\n".join(
         f"{block['heading']}: {block['body']}\n{block['reader_hint']}" for block in narrative_blocks
     )
@@ -997,6 +998,7 @@ def build_causal_result_packet(
         "story_sections": story_sections,
         "professional_briefing": professional_briefing,
         "public_briefing_sequence": public_briefing_sequence,
+        "public_briefing_text": public_briefing_text,
         "first_view_briefing_cards": first_view_briefing_cards,
         "policy_readiness_summary": policy_readiness_summary,
         "briefing_quality_checks": briefing_quality_checks,
