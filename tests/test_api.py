@@ -471,3 +471,27 @@ def test_api_exposes_focused_integration_pr_brief_without_branch_or_mutation():
         assert item["status"] == "pr_brief_bereit_aber_nicht_ausgefuehrt"
         assert "ReviewedTransformation" in " ".join(item["review_checklist"])
         assert "keine amtliche Prognose" in item["guardrail"]
+
+
+def test_api_exposes_registry_diff_preview_for_reviewed_values_without_apply():
+    client = TestClient(api)
+    seed_response = client.post("/data-fixtures/seed-reference-review-demo")
+    assert seed_response.status_code == 200
+
+    response = client.get("/data-readiness/registry-diff-preview?limit=3")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "data_readiness_registry_diff_preview_not_applied"
+    assert "keine Registry-/Modellmutation" in body["guardrail"]
+    preview = body["registry_diff_preview"]
+    assert preview["title"].startswith("Registry-Diff-Preview")
+    assert "kein Registry-Write" in preview["guardrail"]
+    population = next(row for row in preview["rows"] if row["parameter_key"] == "bevoelkerung_mio")
+    assert population["status"] == "diff_preview_only_not_applied"
+    assert population["current_registry_default"] == 84.4
+    assert population["reviewed_output_value"] == 84.5
+    assert population["unit_check"]["unit_matches"] is True
+    assert population["plausibility_check"]["within_registry_bounds"] is True
+    assert "darf ein separater PR den Default ändern" in population["required_human_decision"]
+    assert "keine Registry-/Modellmutation" in population["guardrail"]

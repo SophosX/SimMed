@@ -1950,3 +1950,15 @@ Keine wichtige Entscheidung offen; next safe platform step is Learning-Page surf
 
 ### Verification / Git
 Focused tests passed before final full verification: `tests/test_data_ingestion.py::test_reference_fixture_review_can_create_green_integration_pr_path_without_model_import` and `tests/test_api.py::test_api_seeds_reference_review_demo_for_green_integration_path_without_model_import`.
+
+## 2026-04-30 — Heartbeat: Registry-Diff-Preview vor Datenintegration
+
+- **Context:** Alex hat Core-Plattform vor KI/Evidence priorisiert. Aktuelle Daten-Reife-Kette hatte Preflight → Integrationsplan → PR-Brief, aber noch keine fokussierte Vorschau, was ein reviewed Wert gegenüber dem aktuellen Registry-Default bedeuten würde.
+- **Project Manager:** Kleine, sichere Plattform-Scheibe: letzte read-only Prüfstufe vor einem späteren Integrations-PR ergänzen statt Modellwerte zu ändern.
+- **Designer/UX:** API-Antwort benennt current default, reviewed output, Unit-Check, Plausibilitätsgrenzen und menschliche Entscheidung in Alltagssprache; das verhindert versehentliches “Apply”-Verständnis.
+- **Creative Agent:** Die Diff-Preview ist als “Entscheidungstor” produktrelevant: nicht spektakulär, aber macht Datenintegration nachvollziehbar und reviewbar.
+- **Political Health-System Strategist:** Keine neue politische Behauptung; Guardrails bleiben wichtig, damit ein aktualisierter Datenwert nicht als Policy-Wirkungsbeweis oder amtliche Prognose gelesen wird.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; es wurden nur vorhandene Fixture-/Review-Metadaten strukturiert sichtbar gemacht.
+- **Integrator Decision:** `build_data_readiness_registry_diff_preview(...)` in `data_ingestion.py` ergänzt und via `GET /data-readiness/registry-diff-preview` sowie bestehende Integrations-API-Flächen exponiert. Keine Registry-/Modellmutation.
+- **Question to Alex if needed:** Keine wichtige Entscheidung offen; nächster sicherer Schritt ist UI/Learning-Page-Sichtbarkeit oder eine echte reviewed-live Datenquelle vorbereiten.
+- **Verification/Git:** `python3 -m pytest -q tests/test_api.py tests/test_data_ingestion.py` → 45 passed; vollständige Suite + py_compile → 122 passed; Simulation-Smoke 30×3 Jahre OK.

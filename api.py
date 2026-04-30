@@ -26,6 +26,7 @@ from data_ingestion import (
     build_data_readiness_integration_plan,
     build_data_readiness_integration_pr_brief,
     build_data_readiness_operator_handoff,
+    build_data_readiness_registry_diff_preview,
     build_data_readiness_platform_brief,
     build_data_readiness_gate_plan,
     build_data_readiness_summary,
@@ -229,6 +230,7 @@ def get_data_readiness_integration_preflight(limit: int = 5) -> dict:
         "summary": build_data_readiness_summary(items),
         "integration_preflight": (preflight := build_data_readiness_integration_preflight(items, passport_rows, limit=limit)),
         "integration_plan": (plan := build_data_readiness_integration_plan(preflight)),
+        "registry_diff_preview": build_data_readiness_registry_diff_preview(plan, parameters),
         "integration_pr_brief": build_data_readiness_integration_pr_brief(plan),
     }
 
@@ -256,6 +258,7 @@ def get_data_readiness_integration_plan(limit: int = 3) -> dict:
         "summary": build_data_readiness_summary(items),
         "integration_preflight": preflight,
         "integration_plan": (plan := build_data_readiness_integration_plan(preflight, limit=limit)),
+        "registry_diff_preview": build_data_readiness_registry_diff_preview(plan, parameters),
         "integration_pr_brief": build_data_readiness_integration_pr_brief(plan),
     }
 
@@ -283,6 +286,34 @@ def get_data_readiness_integration_pr_brief(limit: int = 3) -> dict:
         "guardrail": "PR-Brief ist read-only: kein Branch, kein execute=true, kein Netzwerkabruf, keine Cache-/Review-Erzeugung, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
         "summary": build_data_readiness_summary(items),
         "integration_plan": plan,
+        "integration_pr_brief": build_data_readiness_integration_pr_brief(plan),
+    }
+
+
+@api.get("/data-readiness/registry-diff-preview")
+def get_data_readiness_registry_diff_preview(limit: int = 3) -> dict:
+    """Return a read-only diff preview between reviewed values and current Registry defaults."""
+
+    if limit < 1 or limit > 10:
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "status": "invalid_data_readiness_registry_diff_preview_limit",
+                "limit": limit,
+                "guardrail": "Limit muss zwischen 1 und 10 liegen; keine Registry-/Modelländerung wurde ausgeführt.",
+            },
+        )
+    parameters = list_parameters()
+    items = build_data_readiness_backlog(parameters)
+    passport_rows = build_data_passport_rows(parameters)
+    preflight = build_data_readiness_integration_preflight(items, passport_rows, limit=10)
+    plan = build_data_readiness_integration_plan(preflight, limit=limit)
+    return {
+        "status": "data_readiness_registry_diff_preview_not_applied",
+        "guardrail": "Registry-Diff-Preview ist read-only: kein Branch, kein execute=true, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+        "summary": build_data_readiness_summary(items),
+        "integration_plan": plan,
+        "registry_diff_preview": build_data_readiness_registry_diff_preview(plan, parameters),
         "integration_pr_brief": build_data_readiness_integration_pr_brief(plan),
     }
 

@@ -1243,6 +1243,77 @@ def build_data_readiness_integration_plan(
         "guardrail": "Read-only/Planung-only: keine Datenaktion, keine Review-Erzeugung, keine Registry-/Modellmutation, keine amtliche Prognose und kein Wirkungsbeweis.",
     }
 
+def build_data_readiness_registry_diff_preview(
+    integration_plan: dict,
+    parameters: list[dict],
+    *,
+    cache_root: Path | str = CACHE_ROOT,
+) -> dict:
+    """Preview reviewed-value vs. current Registry default before any code change.
+
+    This is the last read-only sanity check before a future integration PR: it
+    shows what would have to be compared by a human/integrator, but it does not
+    edit ``parameter_registry.py`` or simulation defaults.
+    """
+
+    parameter_by_key = {parameter["key"]: parameter for parameter in parameters}
+    transformation_by_key = _latest_transformation_by_parameter(cache_root)
+    rows: list[dict] = []
+    for plan in integration_plan.get("plans", []):
+        parameter_key = plan["parameter_key"]
+        parameter = parameter_by_key.get(parameter_key, {})
+        transformation = transformation_by_key.get(parameter_key)
+        reviewed_value = transformation.output_value if transformation else None
+        current_default = parameter.get("default")
+        plausible_min = parameter.get("plausible_min")
+        plausible_max = parameter.get("plausible_max")
+        within_bounds = None
+        if isinstance(reviewed_value, (int, float)) and plausible_min is not None and plausible_max is not None:
+            within_bounds = plausible_min <= reviewed_value <= plausible_max
+        numeric_delta = None
+        if isinstance(reviewed_value, (int, float)) and isinstance(current_default, (int, float)):
+            numeric_delta = reviewed_value - current_default
+        rows.append({
+            "parameter_key": parameter_key,
+            "label": plan.get("label", parameter.get("label", parameter_key)),
+            "status": "diff_preview_only_not_applied",
+            "current_registry_default": current_default,
+            "reviewed_output_value": reviewed_value,
+            "unit_check": {
+                "registry_unit": parameter.get("unit", ""),
+                "reviewed_output_unit": transformation.output_unit if transformation else "",
+                "unit_matches": bool(transformation and transformation.output_unit == parameter.get("unit", "")),
+            },
+            "numeric_delta_from_registry_default": numeric_delta,
+            "plausibility_check": {
+                "plausible_min": plausible_min,
+                "plausible_max": plausible_max,
+                "within_registry_bounds": within_bounds,
+            },
+            "source_snapshot_sha256": transformation.source_snapshot_sha256 if transformation else None,
+            "review_status": transformation.status if transformation else "not_reviewed",
+            "required_human_decision": (
+                "Nur wenn Einheit, SHA256/Manifest, Methode, Berichtsjahr, Caveat und Registry-Grenzen geprüft sind, "
+                "darf ein separater PR den Default ändern."
+            ),
+            "guardrail": "Diff-Preview ist read-only: keine Registry-/Modellmutation, keine Datenaktion, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+        })
+    return {
+        "title": "Registry-Diff-Preview vor Datenintegration",
+        "plain_language_note": (
+            "Diese Vorschau zeigt, was ein geprüfter Transformationswert gegenüber dem aktuellen Registry-Default bedeuten würde. "
+            "Sie ist kein Apply-Schritt und ändert keine Modellwerte."
+        ),
+        "summary": {
+            "plan_rows_seen": len(integration_plan.get("plans", [])),
+            "shown_diff_previews": len(rows),
+        },
+        "rows": rows,
+        "guardrail": "Read-only/Planung-only: kein Registry-Write, keine Simulationseffekt-Änderung, kein execute=true und kein Wirkungsbeweis.",
+    }
+
+
+
 def build_data_readiness_integration_pr_brief(integration_plan: dict) -> dict:
     """Turn read-only integration plans into a conservative PR handoff.
 
