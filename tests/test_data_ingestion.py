@@ -14,7 +14,9 @@ from data_ingestion import (
     build_data_readiness_integration_plan,
     build_data_readiness_integration_pr_brief,
     build_data_readiness_platform_brief,
+    build_data_readiness_registry_diff_preview,
     build_data_readiness_registry_integration_decision_record,
+    build_data_readiness_registry_integration_handoff_packet,
     build_data_readiness_summary,
     build_next_data_readiness_actions,
     build_parameter_data_workflow_card,
@@ -885,3 +887,51 @@ def test_registry_integration_decision_record_requires_human_go_hold_reject():
     assert blocked["status"] == "blocked_before_human_go_no_go"
     assert blocked["checks"]["pr_brief_available"] is False
     assert "keine Registry-/Modellmutation" in decision["guardrail"]
+
+
+def test_registry_integration_handoff_packet_is_copy_safe_and_read_only():
+    decision_record = {
+        "rows": [
+            {
+                "parameter_key": "bevoelkerung_mio",
+                "label": "Bevölkerung",
+                "status": "human_go_no_go_required_before_pr",
+                "checks": {
+                    "reviewed_value_present": True,
+                    "source_snapshot_sha256_present": True,
+                    "unit_matches_registry": True,
+                    "within_registry_bounds": True,
+                    "pr_brief_available": True,
+                },
+                "branch_name_if_go": "feat/integrate-reviewed-bevoelkerung_mio",
+                "recommended_default": "Hold, falls irgendein Check fehlt; Go nur vollständig.",
+                "safe_options": ["Go", "Hold", "Reject"],
+            },
+            {
+                "parameter_key": "krankenhausbetten",
+                "label": "Krankenhausbetten",
+                "status": "blocked_before_human_go_no_go",
+                "checks": {
+                    "reviewed_value_present": False,
+                    "source_snapshot_sha256_present": False,
+                    "unit_matches_registry": False,
+                    "within_registry_bounds": None,
+                    "pr_brief_available": False,
+                },
+            },
+        ]
+    }
+
+    packet = build_data_readiness_registry_integration_handoff_packet(decision_record)
+
+    assert packet["title"].startswith("Registry-Integrations-Handoff")
+    assert packet["summary"] == {"decision_rows_seen": 2, "handoff_rows": 2, "blocked_or_hold_default": 1}
+    ready = packet["rows"][0]
+    assert ready["copyable_status_command"] == "GET /data-readiness/bevoelkerung_mio"
+    assert ready["missing_checks_before_go"] == []
+    assert "Go/Hold/Reject" in ready["definition_of_done_before_branch"][0]
+    blocked = packet["rows"][1]
+    assert "Review-Wert fehlt" in blocked["missing_checks_before_go"]
+    assert "PR-Brief fehlt" in blocked["missing_checks_before_go"]
+    assert "kein Branch" in packet["guardrail"]
+    assert "keine Registry-/Modellmutation" in ready["guardrail"]

@@ -522,4 +522,11 @@ def test_api_exposes_registry_integration_decision_record_without_apply():
     assert population["branch_name_if_go"] == "feat/integrate-reviewed-bevoelkerung_mio"
     assert any(option.startswith("Hold:") for option in population["safe_options"])
     assert "kein Branch" in population["guardrail"]
+    handoff = body["registry_integration_handoff_packet"]
+    assert handoff["title"].startswith("Registry-Integrations-Handoff")
+    handoff_population = next(row for row in handoff["rows"] if row["parameter_key"] == "bevoelkerung_mio")
+    assert handoff_population["copyable_status_command"] == "GET /data-readiness/bevoelkerung_mio"
+    assert handoff_population["missing_checks_before_go"] == []
+    assert "Go/Hold/Reject" in handoff_population["definition_of_done_before_branch"][0]
+    assert "kein Branch" in handoff["guardrail"]
     assert "keine Registry-/Modellmutation" in decision["guardrail"]

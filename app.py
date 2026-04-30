@@ -42,6 +42,8 @@ from data_ingestion import (
     build_data_readiness_integration_plan,
     build_data_readiness_integration_pr_brief,
     build_data_readiness_registry_diff_preview,
+    build_data_readiness_registry_integration_decision_record,
+    build_data_readiness_registry_integration_handoff_packet,
     build_data_readiness_gate_plan,
     build_data_readiness_operator_handoff,
     build_data_readiness_platform_brief,
@@ -4120,6 +4122,8 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
     integration_preflight = build_data_readiness_integration_preflight(full_backlog, passport_rows, limit=5)
     integration_plan = build_data_readiness_integration_plan(integration_preflight)
     registry_diff_preview = build_data_readiness_registry_diff_preview(integration_plan, parameters)
+    integration_pr_brief = build_data_readiness_integration_pr_brief(integration_plan)
+    decision_record = build_data_readiness_registry_integration_decision_record(registry_diff_preview, integration_pr_brief)
     return {
         "title": "Nächste Daten-Schritte: erst Cache, dann Review, dann Integration",
         "plain_language_note": (
@@ -4139,7 +4143,9 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         "integration_preflight": integration_preflight,
         "integration_plan": integration_plan,
         "registry_diff_preview": registry_diff_preview,
-        "integration_pr_brief": build_data_readiness_integration_pr_brief(integration_plan),
+        "integration_pr_brief": integration_pr_brief,
+        "registry_integration_decision_record": decision_record,
+        "registry_integration_handoff_packet": build_data_readiness_registry_integration_handoff_packet(decision_record),
         "rows": [
             {
                 "Parameter": item["label"],
@@ -4414,7 +4420,47 @@ def render_learning_data_readiness_backlog():
         else:
             st.caption("Noch kein PR-Brief, weil kein Integrationsplan preflight-grün ist.")
         st.caption(pr_brief["guardrail"])
-        st.caption("Diese Liste priorisiert Plattformarbeit: erst Status/Dry-run, dann Rohdaten-Cache nur bewusst, danach Review und explizite Modellintegration. Preflight/Integrationsplan/PR-Brief bleiben read-only.")
+        decision_record = backlog["registry_integration_decision_record"]
+        st.markdown(f"**{decision_record['title']}**")
+        st.caption(decision_record["plain_language_note"])
+        decision_rows = [
+            {
+                "Parameter": row["label"],
+                "Status": row["status"],
+                "Frage": row["decision_question"],
+                "Checks": ", ".join(key for key, ok in row["checks"].items() if ok),
+                "Empfehlung": row["recommended_default"],
+                "Branch falls Go": row["branch_name_if_go"] or "—",
+                "Guardrail": row["guardrail"],
+            }
+            for row in decision_record["rows"]
+        ]
+        if decision_rows:
+            st.dataframe(pd.DataFrame(decision_rows), use_container_width=True, hide_index=True)
+        else:
+            st.caption("Noch kein Go/Hold/Reject-Entscheidungszettel, weil kein Registry-Diff vorliegt.")
+        st.caption(decision_record["guardrail"])
+        handoff_packet = backlog["registry_integration_handoff_packet"]
+        st.markdown(f"**{handoff_packet['title']}**")
+        st.caption(handoff_packet["plain_language_note"])
+        handoff_packet_rows = [
+            {
+                "Rang": row["rank"],
+                "Parameter": row["label"],
+                "Erster Schritt": row["first_safe_step"],
+                "Status öffnen": row["copyable_status_command"],
+                "Fehlt vor Go": " · ".join(row["missing_checks_before_go"]) or "nichts laut Checks",
+                "Definition of done": " · ".join(row["definition_of_done_before_branch"][:2]),
+                "Guardrail": row["guardrail"],
+            }
+            for row in handoff_packet["rows"]
+        ]
+        if handoff_packet_rows:
+            st.dataframe(pd.DataFrame(handoff_packet_rows), use_container_width=True, hide_index=True)
+        else:
+            st.caption("Noch kein Handoff-Packet, weil kein Decision-Record vorliegt.")
+        st.caption(handoff_packet["guardrail"])
+        st.caption("Diese Liste priorisiert Plattformarbeit: erst Status/Dry-run, dann Rohdaten-Cache nur bewusst, danach Review und explizite Modellintegration. Preflight/Integrationsplan/PR-Brief/Decision-Record bleiben read-only.")
     with st.expander("Warum diese Reihenfolge? Daten-Gates als Arbeitsplan", expanded=False):
         for gate in backlog["gate_plan"]:
             examples = ", ".join(gate["example_parameters"]) if gate["example_parameters"] else "aktuell keine Beispiele"

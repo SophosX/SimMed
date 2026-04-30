@@ -29,6 +29,7 @@ from data_ingestion import (
     build_data_readiness_registry_diff_preview,
     build_data_readiness_platform_brief,
     build_data_readiness_registry_integration_decision_record,
+    build_data_readiness_registry_integration_handoff_packet,
     build_data_readiness_gate_plan,
     build_data_readiness_summary,
     build_next_data_readiness_actions,
@@ -368,13 +369,15 @@ def get_data_readiness_registry_integration_decision_record(limit: int = 3) -> d
     plan = build_data_readiness_integration_plan(preflight, limit=limit)
     preview = build_data_readiness_registry_diff_preview(plan, parameters)
     brief = build_data_readiness_integration_pr_brief(plan)
+    decision_record = build_data_readiness_registry_integration_decision_record(preview, brief)
     return {
         "status": "data_readiness_registry_integration_decision_record_not_applied",
         "guardrail": "Decision-Record ist read-only: kein Branch, kein execute=true, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
         "summary": build_data_readiness_summary(items),
         "registry_diff_preview": preview,
         "integration_pr_brief": brief,
-        "registry_integration_decision_record": build_data_readiness_registry_integration_decision_record(preview, brief),
+        "registry_integration_decision_record": decision_record,
+        "registry_integration_handoff_packet": build_data_readiness_registry_integration_handoff_packet(decision_record),
     }
 
 

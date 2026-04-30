@@ -114,6 +114,14 @@ def test_learning_data_readiness_backlog_includes_integration_preflight():
     assert pr_brief["title"].startswith("Integrations-PR-Brief")
     assert pr_brief["summary"]["shown_pr_briefs"] == plan["summary"]["shown_plans"]
     assert "keine Registry-/Modellmutation" in pr_brief["guardrail"]
+    decision_record = backlog["registry_integration_decision_record"]
+    assert decision_record["title"].startswith("Registry-Integrationsentscheidung")
+    assert decision_record["summary"]["decision_rows"] == diff_preview["summary"]["shown_diff_previews"]
+    handoff_packet = backlog["registry_integration_handoff_packet"]
+    assert handoff_packet["title"].startswith("Registry-Integrations-Handoff")
+    assert handoff_packet["summary"]["handoff_rows"] == decision_record["summary"]["decision_rows"]
+    assert all(row["copyable_status_command"].startswith("GET /data-readiness/") for row in handoff_packet["rows"])
+    assert "keine Registry-/Modellmutation" in handoff_packet["guardrail"]
     for item in plan["plans"]:
         assert item["workflow_api"].startswith("GET /data-readiness/")
         assert "parameter_registry.py" in item["proposed_files"]

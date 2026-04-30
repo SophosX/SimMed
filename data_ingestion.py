@@ -1314,6 +1314,67 @@ def build_data_readiness_registry_diff_preview(
 
 
 
+def build_data_readiness_registry_integration_handoff_packet(decision_record: dict) -> dict:
+    """Create a copy-safe operator handoff from the Go/Hold/Reject decision record.
+
+    This is still deliberately read-only: it tells a human/integrator what to open,
+    what decision options exist, and what must be true before a separate PR starts.
+    It never creates a branch, writes reviews, fetches data, or mutates Registry/model
+    defaults.
+    """
+
+    rows: list[dict] = []
+    for idx, row in enumerate(decision_record.get("rows", []), start=1):
+        parameter_key = row["parameter_key"]
+        checks = row.get("checks", {})
+        missing_checks = [
+            label
+            for key, label in [
+                ("reviewed_value_present", "Review-Wert fehlt"),
+                ("source_snapshot_sha256_present", "SHA256/Manifest fehlt"),
+                ("unit_matches_registry", "Einheit passt nicht/ungeprüft"),
+                ("within_registry_bounds", "Registry-Grenzen nicht erfüllt/ungeprüft"),
+                ("pr_brief_available", "PR-Brief fehlt"),
+            ]
+            if checks.get(key) is not True
+        ]
+        rows.append({
+            "rank": idx,
+            "parameter_key": parameter_key,
+            "label": row.get("label", parameter_key),
+            "status": row.get("status", "blocked_before_human_go_no_go"),
+            "first_safe_step": "Decision-Record lesen und Go/Hold/Reject dokumentieren",
+            "copyable_status_command": f"GET /data-readiness/{parameter_key}",
+            "copyable_decision_route": "GET /data-readiness/registry-integration-decision-record",
+            "branch_name_if_go": row.get("branch_name_if_go"),
+            "missing_checks_before_go": missing_checks,
+            "recommended_default": row.get("recommended_default", "Hold, bis alle Checks vollständig sind."),
+            "safe_options": row.get("safe_options", []),
+            "definition_of_done_before_branch": [
+                "Go/Hold/Reject wurde mit Begründung festgehalten",
+                "Raw-Snapshot-SHA256/Manifest und Transformationsreview sind nachvollziehbar",
+                "Einheit, Berichtsjahr, Nenner/Methode und Registry-Grenzen wurden geprüft",
+                "Separater PR enthält Tests, UI/API-Labelchecks und Guardrails",
+            ],
+            "guardrail": "Handoff-Packet ist read-only: kein Branch, kein execute=true, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+        })
+    return {
+        "title": "Registry-Integrations-Handoff für Go/Hold/Reject",
+        "plain_language_note": (
+            "Dieses Packet macht den letzten menschlichen Entscheidungsschritt copybar: Status öffnen, "
+            "Go/Hold/Reject begründen, und erst danach ggf. einen separaten PR beginnen."
+        ),
+        "summary": {
+            "decision_rows_seen": len(decision_record.get("rows", [])),
+            "handoff_rows": len(rows),
+            "blocked_or_hold_default": sum(1 for row in rows if row["missing_checks_before_go"]),
+        },
+        "rows": rows,
+        "guardrail": "Read-only/Handoff-only: kein Branch, kein execute=true, keine Datenaktion, keine Review-Erzeugung, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+    }
+
+
+
 def build_data_readiness_registry_integration_decision_record(
     registry_diff_preview: dict,
     integration_pr_brief: dict,

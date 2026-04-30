@@ -2001,3 +2001,33 @@ Akzeptiert: `build_data_readiness_registry_integration_decision_record(...)` plu
 
 ### Verification / Git
 Fokustests bestanden: `tests/test_data_ingestion.py::test_registry_integration_decision_record_requires_human_go_hold_reject` und `tests/test_api.py::test_api_exposes_registry_integration_decision_record_without_apply`. Full Suite/Commit/Push folgen nach finaler Verifikation dieses Heartbeats.
+
+
+## 2026-04-30 02:24 Europe/Berlin — Heartbeat: Registry-Decision-Handoff
+
+### Context
+Core-platform heartbeat on `feat/platform-data-status-foundation`: continued the Data-Readiness safety ladder after Registry-Diff-Preview, PR-Brief, and Go/Hold/Reject Decision-Record.
+
+### Project Manager
+Priority remains data-ingestion/provenance foundation. Added one small reversible slice: a copy-safe operator handoff packet so a future integrator can open the exact status route and document Go/Hold/Reject before any branch/model change.
+
+### Designer / UX
+The Learning Page now shows the last pre-PR decision as a readable sequence: Decision-Record → Handoff-Packet → missing checks before Go. This helps first-time operators understand that reviewed data still does not automatically become a model value.
+
+### Creative Agent
+Kept the idea deliberately operational rather than flashy: a copyable handoff packet is more useful than another table because it becomes a safe bridge between platform status and human/integrator action.
+
+### Political Health-System Strategist
+No new stakeholder or reform claims added. Guardrails continue to prevent treating data integration as policy-effect proof, official forecast, vote forecast, or lobbying recommendation.
+
+### Evidence / Domain
+No new external research in this run. The slice reuses existing reviewed-transformation/provenance structures and only adds status/handoff metadata; no new factual source claims or model assumptions.
+
+### Integrator Decision
+Implemented `build_data_readiness_registry_integration_handoff_packet(...)`, exposed it through `/data-readiness/registry-integration-decision-record`, and surfaced it in the Learning Page backlog alongside Decision-Record/PR-Brief.
+
+### Question to Alex
+Keine wichtige Produktentscheidung offen; safe default remains Hold unless all checks are complete and a separate tested PR is prepared.
+
+### Verification / Git
+Focused tests passed: handoff helper, API decision endpoint, Learning Page backlog. Full suite passed: `125 passed`. Py-compile passed for touched files. Runtime smoke passed: 20 runs × 2 years → df `(60, 30)`, regional `(320, 6)`. Commit/push pending in this heartbeat.
