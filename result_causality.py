@@ -880,6 +880,13 @@ def build_causal_result_packet(
         for block in narrative_blocks
         if block["heading"] != "Was daraus folgt"
     ]
+    public_storyline = "\n\n".join(
+        ["Ergebnisbericht"]
+        + [
+            f"{step['stage']}\n{step['body']}"
+            for step in public_briefing_sequence
+        ]
+    )
     reader_brief = "\n\n".join(
         f"{block['heading']}: {block['body']}\n{block['reader_hint']}" for block in narrative_blocks
     )
@@ -896,6 +903,7 @@ def build_causal_result_packet(
         "section_flow": section_flow,
         "sections": professional_sections,
         "narrative_blocks": narrative_blocks,
+        "public_storyline": public_storyline,
         "reader_brief": reader_brief,
         "first_view_kpi_cards": first_view_kpi_cards,
         "sequential_text": "\n\n".join(
@@ -954,6 +962,7 @@ def build_causal_result_packet(
             "sequential_plain_text": sequential_plain_text,
             "professional_briefing": professional_briefing,
             "professional_briefing_text": reader_brief,
+            "public_storyline": public_storyline,
             "lead_paragraph": lead_paragraph,
             "section_flow": section_flow,
             "public_briefing_sequence": public_briefing_sequence,

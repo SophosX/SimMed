@@ -580,6 +580,38 @@ def test_first_view_public_copy_avoids_internal_packet_and_wall_jargon():
     assert "Detailprüfung" in public_text
 
 
+def test_professional_briefing_exposes_single_public_storyline_for_first_result_view():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    briefing = packet["professional_briefing"]
+    storyline = briefing["public_storyline"]
+
+    assert storyline.startswith("Ergebnisbericht\n\nAusgangslage\n")
+    expected_order = [
+        "Ausgangslage",
+        "Eingriff",
+        "Wirkpfad der Simulation",
+        "Relevante Kennzahlen",
+        "Anpassungsreaktionen",
+        "Einordnung",
+        "Nächste Prüfentscheidung",
+    ]
+    positions = [storyline.index(heading) for heading in expected_order]
+    assert positions == sorted(positions)
+    assert "Was daraus folgt" not in storyline
+    assert "Warum das wichtig ist:" not in storyline
+    assert "Kurz gesagt:" not in storyline
+    assert "random Internet" not in storyline
+    assert "KPI-Wand" not in storyline
+    assert "causal_result_packet" not in storyline
+    assert "Medizinstudienplätze" in storyline
+    assert "Jahr 6" in storyline and "Jahr 11" in storyline
+    assert "Telemedizin" in storyline and "Burnout" in storyline
+    assert packet["primary_result_view"]["public_storyline"] == storyline
+
+
 def test_causal_packet_has_plain_consequence_and_readiness_summary_for_first_view():
     params = get_default_params()
     params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5

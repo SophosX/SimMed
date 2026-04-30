@@ -4242,3 +4242,33 @@ No decision required right now; this is a safe/reversible continuation of the al
 
 ### Verification / Git
 Local verification passed: `pytest tests/test_result_causality.py::test_causal_packet_exposes_public_briefing_sequence_for_api_and_ui_clients -q`; targeted packet/API/UI tests passed (29 tests); full `pytest -q` passed (255 tests); `py_compile` passed; 50-run simulation/result-packet smoke test passed. Commit/push status follows after sync.
+
+
+## 2026-04-30 12:32 Europe/Berlin — Heartbeat: Ergebnisbericht als einzelner öffentlicher Erzählblock
+
+### Context
+Alex' Richtung ist klar: Die erste Ergebnisansicht soll wie ein ernsthafter, menschlich geschriebener Simulationsbericht lesen — nicht wie ein Paket aus Tabellen, internen Feldern und nachgeschobenen Erklärungen. Dieser Lauf bündelt die bereits vorhandene öffentliche Briefing-Sequenz in einen einzigen `public_storyline`-Text für UI/API und rendert ihn in Streamlit vor den relevanten KPI-Karten.
+
+### Project Manager
+Priorität bleibt die Ergebnis-Erfahrung. Akzeptierter Scope: ein zusammenhängender öffentlicher Ergebnisbericht plus Regressionstests; kein neuer Modellhebel, keine neuen Daten, keine freie Texteingabe mit Modellmutation. Nächste Aufgaben: die optionalen Detailbereiche weiter als Vertiefung nach dem Bericht behandeln und später einen Export/Download aus derselben Struktur ableiten.
+
+### Designer / UX
+Der erste Blick ist jetzt ruhiger: Überschrift, kurzer Lead, dann ein einzelner sauberer Block Ausgangslage → Eingriff → Wirkpfad → Kennzahlen → Anpassung → Einordnung → nächste Prüfentscheidung. Die hilfreichen Reader-Hints bleiben in strukturierten Feldern erhalten, stehen aber nicht mehr mitten im Haupttext. Das nimmt dem Bericht etwas Maschinenraum-Geräusch.
+
+### Creative Agent
+Idee für später: `public_storyline` kann fast direkt als „SimMed Ergebnisbrief“ exportiert werden — eine Seite, die ein Mensch in einer Sitzung lesen kann, ohne zuerst das Dashboard zu verstehen. Produktfit hoch, aber erst nach weiterer visueller Beruhigung des Result-Bereichs.
+
+### Political Health-System Strategist
+Die Reihenfolge ist politisch sauber: erst Wirkpfad und Anpassungsreaktionen, dann Belastbarkeit, dann Entscheidung. Gerade bei Studienplatz-Kürzungen verhindert das eine vorschnelle Schlagzeile, bevor Pipeline-Lag, Telemedizin/Delegation/Zuwanderung und Burnout-Druck geprüft sind.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Keine neuen externen Fakten oder Parameterannahmen. Die Änderung betrifft Darstellung und API-Schema des bestehenden Modelloutputs; Guardrails bleiben: keine amtliche Prognose, kein Wirksamkeitsnachweis, keine direkte Modellmutation aus Freitext.
+
+### Integrator Decision
+Akzeptiert: `professional_briefing.public_storyline` und `primary_result_view.public_storyline` als öffentlicher, sequenzieller Hauptbericht; Streamlit rendert diesen Block zuerst. Beibehalten: strukturierte Sequenz/KPI-Karten/Quality-Checks als Audit- und Vertiefungsdaten.
+
+### Question to Alex
+Keine wichtige Entscheidung offen. Sicher weiter: Ergebnisbericht stabilisieren, Detailbereiche unterordnen, danach Export-/Policy-Briefing-Anschluss aus derselben Struktur.
+
+### Verification / Git
+RED: neuer Test `test_professional_briefing_exposes_single_public_storyline_for_first_result_view` schlug zunächst mit `KeyError: public_storyline` fehl. GREEN: `public_storyline` in `result_causality.py`, API-Test erweitert, Streamlit-Renderer bevorzugt den neuen Block. Verification lokal grün: `pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 29 passed; `pytest -q` → 256 passed; `py_compile` grün; 50-run simulation/result-packet smoke passed (`df=(800, 30)`, `reg=(800, 6)`). Git: Commit/push folgt nach Sync.

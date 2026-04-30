@@ -3527,9 +3527,12 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
         st.markdown(f"**{primary_view.get('headline', 'Ergebnisbericht')}**")
         if professional.get("lead_paragraph"):
             st.info(professional["lead_paragraph"])
-        if professional.get("reader_summary"):
+        public_storyline = professional.get("public_storyline") or primary_view.get("public_storyline")
+        if public_storyline:
+            st.markdown(public_storyline.replace("\n", "\n\n"))
+        elif professional.get("reader_summary"):
             st.write(professional["reader_summary"])
-        sequence = packet.get("public_briefing_sequence") or primary_view.get("public_briefing_sequence", [])
+        sequence = [] if public_storyline else (packet.get("public_briefing_sequence") or primary_view.get("public_briefing_sequence", []))
         if sequence:
             for step in sequence:
                 st.markdown(f"**{step['stage']}**")
