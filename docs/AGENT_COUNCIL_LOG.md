@@ -2422,3 +2422,16 @@ Keine wichtige Produktentscheidung offen; der sichere Default bleibt Hold/read-o
 
 ### Verification / Git
 Targeted tests: `3 passed`; full suite: `147 passed`; py_compile für betroffene Dateien OK; Simulation smoke `20 runs × 2 years` OK (`df=(60, 30)`, `reg=(320, 6)`). Commit/Push folgt in diesem Lauf.
+
+
+## 2026-04-30T02:16:29Z — Draft-Review-Handoff für Rohdaten-Transformation
+
+- **Context:** Plattform-Heartbeat priorisiert Data-Ingestion/Provenance; bestehender Branch `feat/platform-data-status-foundation` hatte Preflight bis vor Review-Persistenz, aber noch kein copybares Operator-Handoff für diesen Draft-Schritt.
+- **Project Manager:** Kleine, sichere Plattform-Scheibe: Rohsnapshot → Integrität → Review-Start → Draft-Preflight → Handoff wird als Kette vollständiger, ohne Live-Fetch oder Modellmutation.
+- **Designer/UX:** Handoff formuliert den nächsten manuellen Schritt mit Route, erstem Parameter, Template-Route und Sequenz; mobil/agententauglich statt nur technischem Preflight-JSON.
+- **Creative Agent:** Kein neues UI-Spektakel; bewusst eine klare Operator-Checkliste als Grundlage für spätere Daten-Werkbank.
+- **Political Health-System Strategist:** Keine neuen politischen oder medizinischen Tatsachen; Guardrails verhindern, dass Daten-Review als amtliche Prognose oder Policy-Wirkungsbeweis gelesen wird.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; Arbeit betrifft Provenance-Governance und nutzt bestehende Rohsnapshot/SHA256/ReviewedTransformation-Trennung.
+- **Integrator Decision:** `build_transformation_review_draft_handoff_packet(...)` ergänzt und in `/data-snapshots/review-draft-preflight` sowie Review-Start-Aggregat eingebettet.
+- **Question to Alex if needed:** Keine.
+- **Verification/Git:** 148 Tests grün, py_compile grün, Simulation-Smoke `20 runs × 2 years` grün; Commit/Push folgt.

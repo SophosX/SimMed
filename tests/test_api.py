@@ -108,6 +108,10 @@ def test_api_exposes_transformation_review_draft_preflight_without_recording_rev
     }
     assert "definition_of_done_before_record_review" in preflight
     assert "keine Registry-/Modellmutation" in preflight["guardrail"]
+    packet = body["transformation_review_draft_handoff_packet"]
+    assert packet["preflight_route"] == "GET /data-snapshots/review-draft-preflight"
+    assert "curl -s" in packet["copyable_preflight_command"]
+    assert "keine Review-Erzeugung" in packet["guardrail"]
     for row in preflight["rows"]:
         assert row["draft_status"] == "template_ready_not_recorded"
         assert "review_template_route" in row

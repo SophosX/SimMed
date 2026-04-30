@@ -762,6 +762,51 @@ def build_transformation_review_draft_preflight(review_start_checklist: dict) ->
 
 
 
+def build_transformation_review_draft_handoff_packet(draft_preflight: dict) -> dict:
+    """Create a copyable handoff for manually completing review drafts.
+
+    This is the final read-only operator packet before a human records a
+    ReviewedTransformation. It points to preflight/template routes and required
+    fields, but it never creates a review or mutates registry/model values.
+    """
+
+    rows = draft_preflight.get("rows", [])
+    blocked_count = draft_preflight.get("blocked_snapshot_count", 0)
+    if blocked_count:
+        status = "draft_blocked_by_integrity"
+        first_safe_step = "Integritätsblocker klären; keine Draft-Felder ausfüllen."
+    elif rows:
+        status = "draft_ready_for_manual_completion"
+        first_safe_step = "Erstes Review-Template öffnen, Pflichtfelder aus dem Preflight manuell ausfüllen und noch nichts ins Modell übernehmen."
+    else:
+        status = "no_review_draft_ready"
+        first_safe_step = "Erst Rohsnapshot-Integrität, Review-Start-Checkliste oder Connector-Dry-run prüfen."
+
+    first_row = rows[0] if rows else {}
+    return {
+        "title": "Transformation-Review-Draft: Operator-Handoff",
+        "status": status,
+        "ready_draft_count": draft_preflight.get("ready_draft_count", len(rows)),
+        "blocked_snapshot_count": blocked_count,
+        "first_safe_step": first_safe_step,
+        "preflight_route": "GET /data-snapshots/review-draft-preflight",
+        "first_parameter_key": first_row.get("parameter_key", ""),
+        "first_review_template_route": first_row.get("review_template_route", ""),
+        "copyable_preflight_command": "curl -s http://localhost:8000/data-snapshots/review-draft-preflight",
+        "operator_sequence": [
+            "Draft-Preflight lesen",
+            "Rohdatei/Manifest und SHA256 erneut gegenprüfen",
+            "Review-Template je Parameter öffnen",
+            "ReviewedTransformation erst nach manueller Prüfung erfassen",
+            "Registry-/Modellintegration danach separat planen, testen und dokumentieren",
+        ],
+        "definition_of_done_before_record_review": draft_preflight.get("definition_of_done_before_record_review", []),
+        "rows": rows,
+        "guardrail": "Handoff ist draft-only/read-only: kein execute=true, kein Netzwerkabruf, kein Cache-Schreiben, keine Review-Erzeugung, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    }
+
+
+
 def build_cached_snapshot_review_start_handoff_packet(review_start_checklist: dict) -> dict:
     """Create a copyable handoff for starting manual transformation reviews.
 
