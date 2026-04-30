@@ -5694,3 +5694,31 @@ Keine wichtige Entscheidung offen. Weiter sicher mit visueller Result-Page-Prüf
 
 ### Verification / Git
 Verifiziert: `pytest tests/test_result_causality.py -q` → 59 passed; `pytest -q` → 287 passed; `py_compile` für zentrale App/API/Core/Result-Dateien; 50-run Simulation-Smoke mit halbierten Medizinstudienplätzen und causal packet OK. Git-Sync/Commit/Push wird nach diesem Log-Eintrag geprüft und im finalen Status berichtet.
+## 2026-04-30 19:03 Europe/Berlin — Result Page Clear Briefing First View
+
+### Context
+Alex corrected that the result page still felt unclear and overloaded. This heartbeat verifies the simplified `result_causality.py` packet and `app.py` first-view renderer: one readable German briefing first, compact relevant KPIs, detailed audit layers collapsed below.
+
+### Project Manager
+Priority: make the first screen answer what happened, what changed, why, and what it means before any dense KPI grid. Risk: older helper layers can still overwhelm the page if rendered above the briefing. Next: keep migrating result navigation into this single briefing structure and remove duplicated public first-view concepts when API clients no longer need compatibility fields.
+
+### Designer / UX
+The first view now follows a clearer hierarchy: headline, short answer, sequential sections, compact KPI rows, then collapsed audit. This should feel more like a serious briefing and less like stacked widgets.
+
+### Creative Agent
+Idea: later add a “Briefing-Modus” toggle that hides all audit layers until the reader asks for them. Fit: good for newcomer clarity, but only after the current single-briefing path is stable.
+
+### Political Health-System Strategist
+The wording keeps political interpretation behind fachliche Prüfung: delayed study-place effects, capacity/waiting-time signals, buffers, and evidence limits are checked before political feasibility or stakeholder reading.
+
+### Evidence / Domain
+No new external evidence was introduced. The change is communication/UI structure only; existing registry/evidence caveats remain visible in collapsed audit sections and the guardrail keeps “no official forecast/no effectiveness proof” explicit.
+
+### Integrator Decision
+Accepted: simplified public causal packet fields (`result_headline`, `short_answer`, `result_sections`, `relevant_kpis`, `follow_up_question`, `public_result_view`) and first-view rendering policy are verified. No model dynamics changed in this heartbeat.
+
+### Question to Alex
+No important decision is blocked. Continue safely with one next coherent slice: make the remaining trend/KPI/detail sections visually subordinate to the new briefing instead of competing with it.
+
+### Verification / Git
+Local verification passed before sync: `pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` (60 passed), full `pytest -q` (287 passed), `py_compile`, and a 50-run simulation smoke test. Git sync/push status is recorded in the heartbeat response after repository commit verification.
