@@ -3517,56 +3517,83 @@ def build_result_causal_overview(agg: pd.DataFrame, params: dict) -> dict:
 
 
 def render_result_causal_overview(agg: pd.DataFrame, params: dict):
-    """Render the new clear result page: one briefing, few KPIs, details later."""
+    """Render the simplified first result briefing before any dense audit layer."""
     packet = build_result_causal_overview(agg, params)
-    primary_view = packet.get("primary_result_view", {})
-    result_sections = packet.get("result_sections") or primary_view.get("result_sections", [])
-    kpi_cards = primary_view.get("first_view_kpi_cards", []) or []
-
     st.markdown(f"### {packet.get('result_headline', packet['title'])}")
-    st.info(packet.get("short_answer", packet.get("coherent_story", "")))
+    st.info(packet.get("short_answer", "Der Modelllauf wurde berechnet; die Detailprüfung steht darunter."))
 
-    if result_sections:
-        st.markdown("#### Ergebnisbericht")
-        for section in result_sections:
-            st.markdown(f"**{section['heading']}**")
-            st.write(section["body"])
+    for section in packet.get("result_sections", []):
+        st.markdown(f"**{section['heading']}**")
+        st.write(section["body"])
 
-    if kpi_cards:
-        st.markdown("#### Relevante Kennzahlen")
-        cols = st.columns(min(len(kpi_cards), 4))
-        for idx, card in enumerate(kpi_cards):
+    relevant_kpis = packet.get("relevant_kpis", [])
+    if relevant_kpis:
+        st.markdown("**Relevante Kennzahlen**")
+        cols = st.columns(min(len(relevant_kpis), 4))
+        for idx, row in enumerate(relevant_kpis):
             with cols[idx % len(cols)]:
                 st.metric(
-                    label=card.get("label", "Kennzahl"),
-                    value=card.get("value_line", card.get("movement", "–")),
-                    delta=card.get("interpretation_tone", "prüfen"),
+                    label=row.get("label", "Kennzahl"),
+                    value=f"{row.get('start', '–')} → {row.get('end', '–')}",
+                    delta=row.get("direction", "stabil"),
                 )
-                st.caption(card.get("why_it_matters", ""))
+                st.caption(row.get("meaning") or row.get("why_relevant", ""))
 
-    if packet.get("counterintuitive_findings"):
-        with st.expander("Plausibilitätsfrage", expanded=True):
-            for item in packet["counterintuitive_findings"]:
-                st.warning(item["finding"])
-                st.write(item["possible_model_explanation"])
-                st.caption(item["operator_action"])
+    if packet.get("follow_up_question"):
+        st.markdown("**Nächster Prüfschritt**")
+        st.write(packet["follow_up_question"])
 
-    audit_tabs = {
-        "Anpassungssignale": packet.get("adaptation_signal_trace", []),
-        "Zeitfenster": packet.get("timeline_windows", []),
-        "Annahmen/Evidenz": packet.get("evidence_assumption_rows", []),
-    }
-    with st.expander("Details und Annahmen prüfen", expanded=False):
-        st.caption("Hier stehen die Prüfdetails. Die erste Lesart bleibt oben bewusst kurz.")
-        for label, rows in audit_tabs.items():
-            if rows:
-                st.markdown(f"**{label}**")
-                st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
-        quality_checks = primary_view.get("briefing_quality_checks", [])
+    st.caption(packet["guardrail"])
+
+    with st.expander("Audit: Zeitfenster, Annahmen und Plausibilität", expanded=False):
+        if packet.get("timeline_windows"):
+            st.markdown("**Zeitfenster des Wirkpfads**")
+            st.dataframe(
+                pd.DataFrame(packet["timeline_windows"])[[
+                    "window",
+                    "expected_signal",
+                    "adaptation_to_check",
+                    "pressure_check",
+                ]],
+                use_container_width=True,
+                hide_index=True,
+            )
+        if packet.get("adaptation_signal_trace"):
+            st.markdown("**Anpassungs- und Drucksignale**")
+            st.dataframe(
+                pd.DataFrame(packet["adaptation_signal_trace"])[[
+                    "label",
+                    "observed_change",
+                    "role",
+                    "plain_interpretation",
+                ]],
+                use_container_width=True,
+                hide_index=True,
+            )
+        if packet.get("counterintuitive_findings"):
+            st.markdown("**Gegenintuition prüfen**")
+            st.dataframe(pd.DataFrame(packet["counterintuitive_findings"]), use_container_width=True, hide_index=True)
+        if packet.get("evidence_assumption_rows"):
+            st.markdown("**Evidenz- und Annahmengrenzen**")
+            st.dataframe(
+                pd.DataFrame(packet["evidence_assumption_rows"])[[
+                    "label",
+                    "evidence_grade",
+                    "source_ids",
+                    "uncertainty",
+                    "interpretation_limit",
+                ]],
+                use_container_width=True,
+                hide_index=True,
+            )
+        quality_checks = packet.get("briefing_quality_checks", [])
         if quality_checks:
-            st.markdown("**Qualitätscheck der Ergebnisdarstellung**")
-            st.dataframe(pd.DataFrame(quality_checks), use_container_width=True, hide_index=True)
-        st.caption(packet["guardrail"])
+            st.markdown("**Qualitätscheck der Ergebnislesart**")
+            st.dataframe(
+                pd.DataFrame(quality_checks)[["check", "status", "evidence", "why_it_matters"]],
+                use_container_width=True,
+                hide_index=True,
+            )
 
 def render_dashboard(agg: pd.DataFrame, params: dict):
     """Zeigt Dashboard-Karten mit Trend-Pfeilen."""

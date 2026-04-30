@@ -4330,3 +4330,33 @@ Keine wichtige Entscheidung offen. Sicher weiter: weitere Szenariofamilien syste
 
 ### Verification / Git
 Vorläufig lokal grün: `pytest -q` → 257 passed; `py_compile` für zentrale Module; 50-run Smoke mit gekürzten Medizinstudienplätzen und `build_causal_result_packet` → OK. Commit/Push folgt nach Sync in den GitHub-Klon.
+
+
+## 2026-04-30 12:55 Europe/Berlin — Result Page Rebuild: klare erste Ergebnisansicht
+
+### Context
+Alex korrigierte die Ergebnis-Seite: weniger überlappende Erklär-Widgets, mehr zusammenhängendes seriöses deutsches Briefing. Relevante Dateien: `result_causality.py`, `app.py`, `tests/test_result_causality.py`.
+
+### Project Manager
+Priorität: erster Bildschirm muss sofort beantworten, was herauskam, was sich relevant verändert hat, warum und was es bedeutet. Risiko: bestehende Legacy-Hilfen sind nützlich, dürfen aber nicht wieder die erste Ansicht überladen. Nächste Tasks: API/Export gegen neue Packet-Felder prüfen, Legacy-Hilfen weiter in Audit-Bereiche verschieben, danach Policy-Briefing konsolidieren.
+
+### Designer / UX
+Die erste Ergebnisansicht wird als ein Block gelesen: Headline, Kurzantwort, sieben kurze Abschnitte, wenige relevante Kennzahlen, nächster Prüfschritt. Detailtabellen wandern in einen geschlossenen Audit-Expander.
+
+### Creative Agent
+Produktidee: später könnte der Ergebnisbericht wie ein medizinischer Befund aufgebaut werden — Befund, Interpretation, Limitation, Empfehlung. Fit: gut für Seriosität und Verständlichkeit; jetzt nur als Strukturimpuls, nicht als neue Funktion.
+
+### Political Health-System Strategist
+Politische Deutung bleibt nachgelagert. Gerade bei Medizinstudienplätzen muss die Verzögerung 6+/11–15 Jahre sichtbar sein, bevor Stakeholder- oder Machbarkeitsfragen bewertet werden.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Es wurden keine neuen Daten- oder Wirksamkeitsclaims eingeführt; die Änderung betrifft die Kommunikation vorhandener Modellausgaben und bestehender Annahmen.
+
+### Integrator Decision
+Akzeptiert: neues öffentliches Packet mit `result_headline`, `short_answer`, `result_sections`, `relevant_kpis.meaning` und `follow_up_question`; Streamlit rendert zuerst nur diese klare Ansicht. Legacy-/Audit-Tabellen bleiben verfügbar, aber geschlossen.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; nächster sicherer Schritt ist weitere Konsolidierung der Detail-/Audit-Ebene, ohne Modellwerte zu verändern.
+
+### Verification / Git
+Rot-Test zuerst ergänzt; fokussierte Tests grün. Vollständige Tests und Git-Sync/Push werden nach diesem Log-Eintrag ausgeführt.

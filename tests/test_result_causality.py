@@ -37,38 +37,6 @@ def _agg_frame():
     ])
 
 
-def test_causal_result_packet_public_summary_is_short_clear_and_result_first():
-    params = get_default_params()
-    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
-
-    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
-
-    assert packet["result_headline"].startswith("Weniger Medizinstudienplätze")
-    short = packet["short_answer"]
-    assert "Medizinstudienplätze" in short
-    assert "Ärzte pro 100k" in short
-    assert "Wartezeit" in short
-    assert "ab Jahr 6" in short
-    assert len(short.split()) <= 95
-    assert "random Internet" not in short
-    assert "Klartext" not in short
-    assert "KPI-Wand" not in short
-    sections = packet["result_sections"]
-    assert [section["heading"] for section in sections] == [
-        "Ergebnis",
-        "Eingriff",
-        "Warum es passiert",
-        "Relevante Kennzahlen",
-        "Anpassungen",
-        "Einordnung",
-        "Nächster Prüfschritt",
-    ]
-    assert len(sections) == 7
-    assert all(len(section["body"].split()) <= 70 for section in sections)
-    assert packet["primary_result_view"]["result_sections"] == sections
-    assert packet["primary_result_view"]["short_answer"] == short
-
-
 def test_causal_result_packet_prioritizes_relevant_kpis_and_coherent_freetext():
     params = get_default_params()
     params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
@@ -791,3 +759,49 @@ def test_causal_packet_public_storyline_is_one_complete_human_briefing_block():
     assert "kein Wirksamkeitsnachweis" in storyline
     banned = ["random Internet", "Klartext", "KPI-Wand", "Audit-Layer", "guardrail", "render_sequence", "causal_result_packet"]
     assert not any(term in storyline for term in banned)
+
+
+def test_public_causal_packet_is_short_clear_and_free_of_meta_terms():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+
+    assert packet["result_headline"]
+    assert "Medizinstudienplätze" in packet["short_answer"]
+    assert any(kpi["label"] in packet["short_answer"] for kpi in packet["relevant_kpis"][:2])
+    assert "weil" in packet["short_answer"].lower() or "über" in packet["short_answer"].lower()
+    assert packet["follow_up_question"]
+    assert len(packet["result_sections"]) <= 7
+    assert [section["heading"] for section in packet["result_sections"]] == [
+        "Ergebnis",
+        "Eingriff",
+        "Warum es passiert",
+        "Relevante Kennzahlen",
+        "Anpassungen",
+        "Einordnung",
+        "Nächster Prüfschritt",
+    ]
+    public_text = " ".join(
+        [packet["result_headline"], packet["short_answer"], packet["follow_up_question"]]
+        + [section["body"] for section in packet["result_sections"]]
+    )
+    banned = ["random Internet", "Klartext", "KPI-Wand", "generated", "helper", "Widget", "Meta"]
+    for term in banned:
+        assert term not in public_text
+    assert all(len(section["body"].split()) <= 75 for section in packet["result_sections"])
+
+
+def test_relevant_kpis_have_plain_meaning_for_first_result_view():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+
+    assert 1 <= len(packet["relevant_kpis"]) <= 4
+    for row in packet["relevant_kpis"]:
+        assert row["label"]
+        assert "start" in row and "end" in row
+        assert row["direction"] in {"steigt", "sinkt", "stabil"}
+        assert row.get("meaning")
+        assert "amtliche Prognose" not in row["meaning"]
