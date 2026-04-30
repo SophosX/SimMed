@@ -90,6 +90,7 @@ from data_ingestion import (
     build_transformation_review_template,
 )
 from parameter_registry import PARAMETER_REGISTRY, list_parameters
+from result_uncertainty import build_uncertainty_band_summary_from_final
 import scenario_gallery as scenario_gallery_module
 from simulation_report import build_simulation_report as build_policy_briefing_report
 
@@ -3411,55 +3412,18 @@ def render_main_trend_chart(agg: pd.DataFrame, params: dict | None = None):
 def build_uncertainty_band_summary(agg: pd.DataFrame, metric_keys: list[str] | None = None, limit: int = 5) -> list[dict[str, str]]:
     """Summarize Monte-Carlo uncertainty bands for first-contact result reading.
 
-    Uses already aggregated P5/P95 columns only. This is a display/audit helper:
-    it does not rerun simulations, add new causal claims, or turn uncertainty
-    bands into official forecast intervals.
+    Uses already aggregated P5/P95 columns only. This UI wrapper delegates to the
+    API-safe helper in ``result_uncertainty`` so Streamlit and agents share the
+    same guardrails and labels.
     """
     if agg.empty:
         return []
-    metric_keys = metric_keys or [
-        "gkv_saldo",
-        "wartezeit_fa",
-        "versorgungsindex_rural",
-        "gesundheitsausgaben_mrd",
-        "aerzte_pro_100k",
-        "kollaps_wahrscheinlichkeit",
-    ]
-    last = agg.iloc[-1]
-    rows: list[dict[str, str]] = []
-    for key in metric_keys:
-        p5_col = f"{key}_p5"
-        p95_col = f"{key}_p95"
-        mean_col = f"{key}_mean"
-        if p5_col not in agg.columns or p95_col not in agg.columns or mean_col not in agg.columns:
-            continue
-        p5 = float(last[p5_col])
-        p95 = float(last[p95_col])
-        mean = float(last[mean_col])
-        width = p95 - p5
-        relative_width = abs(width / mean) if mean else abs(width)
-        if relative_width >= 0.50:
-            signal = "breites Band"
-            interpretation = "Ergebnis stark als Spannweite lesen; erst Annahmen und Treiber prüfen."
-        elif relative_width >= 0.20:
-            signal = "mittleres Band"
-            interpretation = "Mittelwert nur zusammen mit P5/P95 lesen; mehrere plausible Modellläufe unterscheiden sich sichtbar."
-        else:
-            signal = "enges Band"
-            interpretation = "Mittelwert wirkt in den Modellläufen relativ stabil, bleibt aber Szenario- und Annahmen-getrieben."
-        rows.append({
-            "metric_key": key,
-            "label": KPI_LABELS.get(key, key),
-            "end_year": str(int(last["jahr"])),
-            "mean": f"{mean:.2f}",
-            "p5": f"{p5:.2f}",
-            "p95": f"{p95:.2f}",
-            "band_width": f"{width:.2f}",
-            "signal": signal,
-            "interpretation": interpretation,
-            "guardrail": "Monte-Carlo-Spannweite im SimMed-Modell; keine amtliche Prognose, kein Wirksamkeitsnachweis und keine Konfidenzgarantie.",
-        })
-    return sorted(rows, key=lambda row: float(row["band_width"]), reverse=True)[:limit]
+    return build_uncertainty_band_summary_from_final(
+        agg.iloc[-1].to_dict(),
+        metric_labels=KPI_LABELS,
+        metric_keys=metric_keys,
+        limit=limit,
+    )
 
 
 def render_uncertainty_band_summary(agg: pd.DataFrame):

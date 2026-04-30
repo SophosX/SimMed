@@ -3255,3 +3255,16 @@ Lokal verifiziert: gezielte 3 Tests passed; vollständige Suite `191 passed`; `p
 - **Integrator Decision:** `build_uncertainty_band_summary()` plus `render_uncertainty_band_summary()` in `app.py`; Regressionstest ergänzt.
 - **Question to Alex if needed:** Keine wichtige Produktentscheidung offen; nächster sicherer Schritt: Sensitivitäts-/Treiber-Sicht aus vorhandenen Simulationsdaten strukturieren.
 - **Verification/Git:** Tests/py_compile/Smoke/Git werden nach diesem Logeintrag ausgeführt.
+
+
+## 2026-04-30 – Heartbeat: Agentenfähige Unsicherheits-Zusammenfassung
+
+- **Context:** Alex priorisiert Core-Plattform. Dieser Lauf macht die neue P5/P95-Unsicherheitslesart nicht nur in Streamlit, sondern auch für API/Agenten nutzbar.
+- **Project Manager:** Gute Plattform-Scheibe: `/simulate` liefert jetzt neben Mittelwerten auch eine vorsichtige Spannweiten-Zusammenfassung; nächster Plattform-Schritt bleibt Sensitivitäts-/Treiber-Sicht aus bestehenden Ergebnisdaten.
+- **Designer/UX:** Streamlit und API teilen dieselbe Guardrail-Logik; dadurch bleibt die mobile Ergebnislesespur konsistent mit agentischen/externen Clients.
+- **Creative Agent:** Idee später: Unsicherheit als Ampel/Lesereihenfolge im Policy-Briefing. Fit nur, wenn weiter aus vorhandenen P5/P95-Feldern abgeleitet und nicht als Prognosesicherheit inszeniert.
+- **Political Health-System Strategist:** Spannweiten vor politischen Schlussfolgerungen reduzieren Überinterpretation einzelner KPI-Mittelwerte als Mandat, Vote-Forecast oder Lobbying-Empfehlung.
+- **Evidence/Domain:** Keine neue Recherche; verwendet nur vorhandene Monte-Carlo-Aggregate (`_mean`, `_p5`, `_p95`) und bleibt ausdrücklich keine amtliche Prognose/kein Wirksamkeitsnachweis.
+- **Integrator Decision:** Neuer API-sicherer Helper `result_uncertainty.py`; `app.py` delegiert darauf, `/simulate` gibt `uncertainty_band_summary` und `uncertainty_guardrail` aus; Regressionstests ergänzt.
+- **Question to Alex if needed:** Keine wichtige Entscheidung offen.
+- **Verification/Git:** `pytest -q` 194 passed; `py_compile` für app/api/result_uncertainty/simulation_core/data_ingestion/parameter_registry; Simulation-Smoke `OK smoke (60, 30) (320, 6)`.

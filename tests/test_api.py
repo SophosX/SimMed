@@ -1564,3 +1564,20 @@ def test_api_exposes_registry_operator_export_status_card_without_execution():
     assert "kein execute=true" in payload["guardrail"]
     assert "keine Registry-/Modellmutation" in status_card["guardrail"]
 
+
+
+def test_simulate_exposes_uncertainty_band_summary_for_agents():
+    client = TestClient(api)
+    response = client.post(
+        "/simulate",
+        json={"parameter_changes": {"medizinstudienplaetze": 9000}, "n_runs": 5, "n_years": 2, "seed": 7},
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    rows = body["uncertainty_band_summary"]
+    assert rows
+    assert {"metric_key", "mean", "p5", "p95", "signal", "guardrail"} <= set(rows[0])
+    assert "keine amtliche Prognose" in body["uncertainty_guardrail"]
+    assert all("kein Wirksamkeitsnachweis" in row["guardrail"] for row in rows)
+    assert body["final_year_summary"]["jahr"] == 2028.0
