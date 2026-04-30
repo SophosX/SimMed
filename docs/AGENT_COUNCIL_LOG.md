@@ -5575,3 +5575,32 @@ No important decision open; continue safely with result-page simplification and 
 
 ### Verification / Git
 Local verification before sync: `pytest tests/test_result_causality.py` (57 passed), focused result/API/app suite (122 passed), full suite (285 passed), py_compile, and 50-run simulation smoke passed. Git commit/push status to be recorded by the final heartbeat after sync.
+
+## 2026-04-30 18:29 Europe/Berlin — Heartbeat Result-First Page Cleanup
+
+### Context
+Alex’ neueste Korrektur war deutlich: Die Result-Seite soll nicht noch mehr Erklär-Widgets stapeln, sondern zuerst als ein lesbares deutsches Briefing funktionieren. Relevant sind `result_causality.py`, `app.py`, `api.py` und die Causal-Result/API-Tests.
+
+### Project Manager
+Priorität bleibt die erste Ergebnisansicht. Risiko: zu viele parallele alte Helfer können die klare Antwort wieder überdecken. Nächste Aufgaben: Rendering weiter visuell straffen, alte Detailblöcke nur unter Audit-Expandern halten, danach größere Policy-Briefing-Aufräumung.
+
+### Designer / UX
+Die erste Seite muss mit wenigen Überschriften führen: Ergebnis → Eingriff → Warum es passiert → Relevante Kennzahlen → Anpassungen → Einordnung → Nächster Prüfschritt. Detailtabellen sind bewusst nachgelagert.
+
+### Creative Agent
+Produktidee: später ein sehr ruhiger “Briefing-Modus” mit Druck-/PDF-Export aus genau diesem Packet. Fit: gut für Ministerium/Verband/Expert:innenrunde, aber erst nach stabiler Bildschirm-Hierarchie.
+
+### Political Health-System Strategist
+Die politische Deutung darf erst nach Wirkpfad, Timing und Plausibilitätscheck kommen. Besonders bei Medizinstudienplätzen muss der verzögerte Pipeline-Effekt verständlich sein, ohne daraus eine amtliche Prognose oder Lobbying-Empfehlung zu machen.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf; es wurden keine neuen Fakten oder externen Quellen behauptet. Die Änderung betrifft Ergebnis-Kommunikation und Guardrails, nicht Modellparameter oder Evidenzgrade.
+
+### Integrator Decision
+Akzeptiert: vereinfachtes öffentliches Causal-Result-Packet als Quelle für erste UI/API-Antwort; relevante KPIs bleiben kompakt, Audit-/Evidenz-/Qualitätsdetails bleiben geschlossen darunter.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; weiter sicher an der Result-Seite schärfen.
+
+### Verification / Git
+Verifiziert in der Source: `python3 -m pytest tests/test_result_causality.py -q` (57 passed), `python3 -m pytest -q` (285 passed), kleiner Simulation/Packet-Smoke-Test OK. Git-Sync/Commit/Push folgt in diesem Heartbeat.
