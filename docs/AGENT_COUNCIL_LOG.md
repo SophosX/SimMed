@@ -6234,3 +6234,33 @@ Keine wichtige Entscheidung offen. Sicher weiterarbeiten: nächste kohärente Sc
 
 ### Verification / Git
 RED: `tests/test_result_causality.py::test_streamlit_first_view_does_not_render_follow_up_twice` fiel zuerst, weil `st.info(...)` den Prüfschritt doppelt renderte. GREEN: fokussierter Test und `tests/test_result_causality.py` grün. Vollständige Verifikation/Git-Push folgt in diesem Heartbeat.
+
+## 2026-04-30 19:05 UTC — Heartbeat: Ergebnis-Seite als klare erste Lesefassung
+
+### Context
+Alex korrigierte die Ergebnis-Seite erneut: keine weiteren übereinanderliegenden Erklär-Widgets, sondern eine klare erste Antwort auf Ergebnis, Eingriff, Warum, relevante Kennzahlen, Anpassungen, Einordnung und nächsten Prüfschritt. Relevante Dateien: `result_causality.py`, `app.py`, `api.py`, `tests/test_result_causality.py`, `tests/test_api.py`.
+
+### Project Manager
+Priorität bleibt die Ergebnis-Kommunikation. Dieser Lauf akzeptiert eine zusammenhängende erste Lesefassung und verschiebt weitere große Hebel wie DRG/GKV-Leistungskatalog/Freitext-Szenarien, bis die Ergebnislogik stabil gelesen werden kann.
+
+### Designer / UX
+Die erste Ansicht muss wie ein kurzer seriöser Ergebnisbericht wirken: ein Block, wenige Kennzahlen, klare Reihenfolge, Details darunter geschlossen. Vollständige KPI-Karten, Storyboard, Trend und politische Einordnung gehören in die Prüfung danach, nicht in den ersten Bildschirm.
+
+### Creative Agent
+Produktidee: später könnte die erste Lesefassung als „Briefing-Karte“ exportierbar werden. Fit: gut für Teilen/Policy-Review, aber erst sinnvoll, wenn die Lesefassung im Browser überzeugt.
+
+### Political Health-System Strategist
+Politische Deutung darf erst nach fachlichem Plausibilitätscheck kommen. Gerade bei weniger Medizinstudienplätzen muss der Zeitverzug sichtbar sein; Wartezeit/Burnout/Puffer dürfen nicht als einfache Sofortwirkung verkauft werden.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Es wurden keine neuen Realweltbehauptungen oder Parameterwerte eingeführt; die Änderung betrifft die Kommunikation des bestehenden SimMed-Modelllaufs. Guardrails bleiben: keine amtliche Prognose, kein Wirksamkeitsnachweis, keine politische Handlungsempfehlung aus einer Einzelzahl.
+
+### Integrator Decision
+Akzeptiert: vereinfachter öffentlicher `causal_result_packet` mit `result_headline`, `short_answer`, maximal sieben kurzen `result_sections`, relevanten KPI-Zeilen und geschlossenem Audit-Bereich. Streamlit rendert zuerst eine Lesefassung; API nutzt denselben Packet-Kern.
+
+### Question to Alex
+Keine wichtige Entscheidung offen. Sicher weiterarbeiten: als Nächstes Browser-/Screenshot-Sinncheck der ersten Ergebnisansicht und danach ggf. visuelle Feinkorrektur der Karte.
+
+### Verification / Git
+Verifiziert: `pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 70 passed; `pytest -q` → 298 passed; `py_compile` für `app.py`, `result_causality.py`, `api.py`, `simulation_core.py`; Smoke-Test `run_simulation(... n_runs=50, n_years=3)` plus Packet-Assertions → OK. Git-Sync/Commit/Push folgt in diesem Lauf.
+
