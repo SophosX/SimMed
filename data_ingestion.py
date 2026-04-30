@@ -2917,6 +2917,61 @@ def build_data_readiness_registry_integration_operator_export_audit(export_packe
     }
 
 
+def build_data_readiness_registry_integration_operator_export_digest(
+    export_packet: dict,
+    export_audit: dict,
+) -> dict:
+    """Return a concise, copy-safe digest for sharing the Registry operator packet.
+
+    The export packet and audit are structured enough for machines, but a human
+    operator often needs a short message for an issue, chat handoff, or release note.
+    This digest keeps only status/read-only routes, the stable audit hash, the stop
+    condition, and the pre-branch definition of done. It never adds execution,
+    branch, PR, cache-write, review-write, or model-mutation instructions.
+    """
+
+    safe_routes = [route for route in export_packet.get("safe_routes_to_open", []) if route.startswith("GET ")]
+    unsafe_terms = ["execute=true", "POST ", "git checkout", "git commit", "git push"]
+    digest_lines = [
+        f"# {export_packet.get('title', 'Registry-Operator-Exportpaket')}",
+        "",
+        f"Status: {export_audit.get('verdict_label', 'nicht_geprueft')}",
+        f"Packet-SHA256: {export_audit.get('packet_sha256', '')}",
+        f"Primärer Parameter: {export_packet.get('primary_label') or export_packet.get('primary_parameter_key') or 'kein Parameter'}",
+        "",
+        "Sichere Reihenfolge:",
+        f"1. {export_packet.get('copyable_summary', 'Status lesen → Parameter prüfen → Entscheidung auditieren → stoppen.')}",
+        "2. Nur die unten gelisteten GET-/Statusrouten öffnen.",
+        "3. Vor Branch/PR stoppen, bis ein menschliches Go/Hold/Reject separat dokumentiert ist.",
+        "",
+        "Statusrouten:",
+        *[f"- {route}" for route in safe_routes],
+        "",
+        f"Stop-Gate: {export_packet.get('stop_condition', 'STOP: kein Branch ohne dokumentiertes Go.')}",
+        "",
+        "Guardrail: Read-only-Digest: kein Branch, keine Ausführung, keine Datenaktion, keine Review-Erzeugung, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    ]
+    markdown = "\n".join(digest_lines).strip()
+    unsafe_findings = [term for term in unsafe_terms if term in markdown]
+    return {
+        "title": "Registry-Operator-Export-Digest",
+        "plain_language_note": (
+            "Kurzer, kopierbarer Status-Text für menschliche Übergaben. Er enthält nur geprüfte GET-Routen, "
+            "SHA256/Auditstatus und ein Stop-Gate vor jeder Codearbeit."
+        ),
+        "primary_parameter_key": export_packet.get("primary_parameter_key"),
+        "primary_label": export_packet.get("primary_label"),
+        "packet_sha256": export_audit.get("packet_sha256"),
+        "copy_safe": export_audit.get("copy_safe") is True and not unsafe_findings,
+        "safe_route_count": len(safe_routes),
+        "markdown": markdown,
+        "unsafe_findings": unsafe_findings,
+        "definition_of_done_before_branch": export_packet.get("definition_of_done_before_branch", []),
+        "guardrail": "Read-only/Export-digest-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    }
+
+
+
 def build_data_readiness_registry_integration_handoff_packet(decision_record: dict) -> dict:
     """Create a copy-safe operator handoff from the Go/Hold/Reject decision record.
 

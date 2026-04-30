@@ -50,6 +50,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_operator_briefing_handoff_sheet,
     build_data_readiness_registry_integration_operator_export_packet,
     build_data_readiness_registry_integration_operator_export_audit,
+    build_data_readiness_registry_integration_operator_export_digest,
     build_data_readiness_registry_integration_operator_steps,
     build_data_readiness_registry_integration_safe_start_packet,
     build_data_readiness_registry_integration_safe_start_checklist,
@@ -984,6 +985,8 @@ def get_data_readiness_registry_integration_operator_briefing(limit: int = 3) ->
     operator_briefing = build_data_readiness_registry_integration_operator_briefing(timeline, palette)
     operator_cards = build_data_readiness_registry_integration_operator_briefing_cards(operator_briefing)
     handoff_sheet = build_data_readiness_registry_integration_operator_briefing_handoff_sheet(operator_cards)
+    export_packet = build_data_readiness_registry_integration_operator_export_packet(operator_briefing, operator_cards, handoff_sheet)
+    export_audit = build_data_readiness_registry_integration_operator_export_audit(export_packet)
     return {
         "status": "data_readiness_registry_integration_operator_briefing_not_applied",
         "guardrail": "Operator-Briefing ist read-only/status-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
@@ -991,9 +994,10 @@ def get_data_readiness_registry_integration_operator_briefing(limit: int = 3) ->
         "registry_integration_operator_briefing": operator_briefing,
         "registry_integration_operator_briefing_cards": operator_cards,
         "registry_integration_operator_briefing_handoff_sheet": handoff_sheet,
-        "registry_integration_operator_export_packet": build_data_readiness_registry_integration_operator_export_packet(operator_briefing, operator_cards, handoff_sheet),
-        "registry_integration_operator_export_audit": build_data_readiness_registry_integration_operator_export_audit(
-            build_data_readiness_registry_integration_operator_export_packet(operator_briefing, operator_cards, handoff_sheet)
+        "registry_integration_operator_export_packet": export_packet,
+        "registry_integration_operator_export_audit": export_audit,
+        "registry_integration_operator_export_digest": build_data_readiness_registry_integration_operator_export_digest(
+            export_packet, export_audit
         ),
     }
 
@@ -1047,6 +1051,19 @@ def get_data_readiness_registry_integration_operator_export_audit(limit: int = 3
         "guardrail": "Operator-Export-Audit ist read-only/status-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
         "summary": response["summary"],
         "registry_integration_operator_export_audit": response["registry_integration_operator_export_audit"],
+    }
+
+
+@api.get("/data-readiness/registry-integration-operator-export-digest")
+def get_data_readiness_registry_integration_operator_export_digest(limit: int = 3) -> dict:
+    """Return a concise copy-safe markdown digest for operator handoff."""
+
+    response = get_data_readiness_registry_integration_operator_briefing(limit=limit)
+    return {
+        "status": "data_readiness_registry_integration_operator_export_digest_not_applied",
+        "guardrail": "Operator-Export-Digest ist read-only/status-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+        "summary": response["summary"],
+        "registry_integration_operator_export_digest": response["registry_integration_operator_export_digest"],
     }
 
 

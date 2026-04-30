@@ -1187,6 +1187,16 @@ def test_api_exposes_registry_integration_operator_briefing_without_actions():
     assert all(row["passed"] is True for row in export_audit["audit_checklist"])
     assert "Stop-Gate" in export_audit["audit_checklist"][-1]["check"]
     assert "kein execute=true" in export_audit["guardrail"]
+    export_digest = body["registry_integration_operator_export_digest"]
+    assert export_digest["copy_safe"] is True
+    assert export_digest["packet_sha256"] == export_audit["packet_sha256"]
+    assert export_digest["safe_route_count"] == export_audit["safe_route_count"]
+    assert "GET /data-readiness/bevoelkerung_mio" in export_digest["markdown"]
+    assert "Packet-SHA256" in export_digest["markdown"]
+    assert "Stop-Gate" in export_digest["markdown"]
+    assert "execute=true" not in export_digest["markdown"]
+    assert export_digest["unsafe_findings"] == []
+    assert "keine Registry-/Modellmutation" in export_digest["guardrail"]
 
     export_response = client.get("/data-readiness/registry-integration-operator-export-packet?limit=3")
     assert export_response.status_code == 200
@@ -1201,6 +1211,14 @@ def test_api_exposes_registry_integration_operator_briefing_without_actions():
     assert audit_body["status"] == "data_readiness_registry_integration_operator_export_audit_not_applied"
     assert audit_body["registry_integration_operator_export_audit"]["copy_safe"] is True
     assert "kein execute=true" in audit_body["guardrail"]
+
+    digest_response = client.get("/data-readiness/registry-integration-operator-export-digest?limit=3")
+    assert digest_response.status_code == 200
+    digest_body = digest_response.json()
+    assert digest_body["status"] == "data_readiness_registry_integration_operator_export_digest_not_applied"
+    assert digest_body["registry_integration_operator_export_digest"]["copy_safe"] is True
+    assert "GET /data-readiness/bevoelkerung_mio" in digest_body["registry_integration_operator_export_digest"]["markdown"]
+    assert "kein execute=true" in digest_body["guardrail"]
 
     invalid = client.get("/data-readiness/registry-integration-operator-briefing?limit=0")
     assert invalid.status_code == 422

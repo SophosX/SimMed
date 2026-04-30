@@ -2864,3 +2864,29 @@ Full tests and smoke passed locally before commit; commit/push and zip refresh f
 - **Integrator Decision:** `build_data_readiness_registry_integration_operator_export_audit()` um `verdict_label`, `operator_next_step` und `audit_checklist` erweitert; API übernimmt die Felder automatisch, Streamlit rendert sie.
 - **Question to Alex if needed:** Keine.
 - **Verification/Git:** Geprüft mit fokussierten API/UI-Tests, voller Pytest-Suite, py_compile und kleiner Simulation-Smoke; Commit/Push folgt.
+
+## 2026-04-30 06:08 Europe/Berlin — Heartbeat: Registry-Operator-Export-Digest
+
+### Context
+Core-platform focus: the Registry integration operator handoff already had export packet + copy-safety audit. This slice adds a concise, copyable digest so a future human/operator can paste the audited status into an issue/chat without accidentally including execution or Git commands.
+
+### Project Manager
+Priority remains Data-ingestion/provenance foundation. Small safe increment accepted because it improves the final read-only gate before any Registry/model integration. Next platform tasks: expose the digest visually in the Learning Page, then move from handoff/status surfaces toward the next real connector/review workflow slice.
+
+### Designer / UX
+The digest is answer-first and mobile-friendly: primary parameter, SHA256/audit status, safe GET routes, Stop-Gate, and guardrail in one markdown block. This reduces table fatigue for first-time operators.
+
+### Creative Agent
+Idea: turn the digest into a QR/share-card later for workshops. Fit is good for collaboration, but defer until the underlying data connector/review flow has more real reviewed parameters.
+
+### Political Health-System Strategist
+Good governance pattern: it prevents a technical green status from being misread as a political recommendation or policy-effect proof before a documented human Go/Hold/Reject.
+
+### Evidence / Domain
+No new factual/model claims and keine neue Recherche in diesem Lauf. The digest only repackages existing provenance/status routes and keeps Registry/model mutation explicitly blocked.
+
+### Integrator Decision
+Implemented `build_data_readiness_registry_integration_operator_export_digest(...)`, exposed it through the aggregate operator briefing, focused API endpoint, and Learning Page data builder. No connector execution, no review creation, no model/Registry mutation.
+
+### Verification / Git
+Focused tests passed: `pytest tests/test_api.py::test_api_exposes_registry_integration_operator_briefing_without_actions tests/test_app_explanations.py::test_learning_data_readiness_backlog_prioritizes_safe_data_gates -q`. Full verification and Git sync follow in this heartbeat.

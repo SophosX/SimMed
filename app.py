@@ -64,6 +64,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_operator_briefing_handoff_sheet,
     build_data_readiness_registry_integration_operator_export_packet,
     build_data_readiness_registry_integration_operator_export_audit,
+    build_data_readiness_registry_integration_operator_export_digest,
     build_data_readiness_registry_integration_pr_runbook,
     build_data_readiness_registry_integration_progress_timeline,
     build_data_readiness_registry_integration_status_board,
@@ -4238,6 +4239,10 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
     )
     operator_briefing_cards = build_data_readiness_registry_integration_operator_briefing_cards(operator_briefing)
     operator_handoff_sheet = build_data_readiness_registry_integration_operator_briefing_handoff_sheet(operator_briefing_cards)
+    operator_export_packet = build_data_readiness_registry_integration_operator_export_packet(
+        operator_briefing, operator_briefing_cards, operator_handoff_sheet
+    )
+    operator_export_audit = build_data_readiness_registry_integration_operator_export_audit(operator_export_packet)
     return {
         "title": "Nächste Daten-Schritte: erst Cache, dann Review, dann Integration",
         "plain_language_note": (
@@ -4272,13 +4277,10 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         "registry_integration_operator_briefing": operator_briefing,
         "registry_integration_operator_briefing_cards": operator_briefing_cards,
         "registry_integration_operator_briefing_handoff_sheet": operator_handoff_sheet,
-        "registry_integration_operator_export_packet": build_data_readiness_registry_integration_operator_export_packet(
-            operator_briefing, operator_briefing_cards, operator_handoff_sheet
-        ),
-        "registry_integration_operator_export_audit": build_data_readiness_registry_integration_operator_export_audit(
-            build_data_readiness_registry_integration_operator_export_packet(
-                operator_briefing, operator_briefing_cards, operator_handoff_sheet
-            )
+        "registry_integration_operator_export_packet": operator_export_packet,
+        "registry_integration_operator_export_audit": operator_export_audit,
+        "registry_integration_operator_export_digest": build_data_readiness_registry_integration_operator_export_digest(
+            operator_export_packet, operator_export_audit
         ),
         "registry_integration_handoff_packet": build_data_readiness_registry_integration_handoff_packet(decision_record),
         "registry_integration_pr_runbook": pr_runbook,

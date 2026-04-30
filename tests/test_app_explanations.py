@@ -302,6 +302,17 @@ def test_learning_data_readiness_backlog_includes_integration_preflight():
     ]
     assert all(row["passed"] is True for row in export_audit["audit_checklist"])
     assert "keine Registry-/Modellmutation" in export_audit["guardrail"]
+    export_digest = backlog["registry_integration_operator_export_digest"]
+    assert export_digest["title"] == "Registry-Operator-Export-Digest"
+    assert export_digest["packet_sha256"] == export_audit["packet_sha256"]
+    assert export_digest["copy_safe"] is True
+    assert export_digest["safe_route_count"] == export_audit["safe_route_count"]
+    assert operator_briefing["next_parameter_command"] in export_digest["markdown"]
+    assert "Packet-SHA256" in export_digest["markdown"]
+    assert "Stop-Gate" in export_digest["markdown"]
+    assert "execute=true" not in export_digest["markdown"]
+    assert export_digest["unsafe_findings"] == []
+    assert "keine Registry-/Modellmutation" in export_digest["guardrail"]
     handoff_packet = backlog["registry_integration_handoff_packet"]
     assert handoff_packet["title"].startswith("Registry-Integrations-Handoff")
     assert handoff_packet["summary"]["handoff_rows"] == decision_record["summary"]["decision_rows"]
