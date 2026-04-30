@@ -173,13 +173,15 @@ def test_learning_data_readiness_backlog_includes_integration_preflight():
     assert decision_template["summary"]["template_rows"] == decision_record["summary"]["decision_rows"]
     assert all(row["allowed_decisions"] == ["Go", "Hold", "Reject"] for row in decision_template["rows"])
     assert all("GET /data-readiness/" in " ".join(row["evidence_routes_to_open"]) for row in decision_template["rows"])
-    assert "keine Entscheidungsspeicherung" in " ".join(row["guardrail"] for row in decision_template["rows"])
+    decision_template_guardrails = " ".join(row["guardrail"] for row in decision_template["rows"]) or decision_template["guardrail"]
+    assert "keine Entscheidungsspeicherung" in decision_template_guardrails
     audit_checklist = backlog["registry_integration_decision_audit_checklist"]
     assert audit_checklist["title"].startswith("Audit-Checkliste")
     assert audit_checklist["summary"]["audit_rows"] == decision_record["summary"]["decision_rows"]
     assert all("Go, Hold oder Reject" in row["audit_questions"][0] for row in audit_checklist["rows"])
     assert all("GET /data-readiness/" in " ".join(row["evidence_routes_to_reopen"]) for row in audit_checklist["rows"])
-    assert "keine Entscheidungsspeicherung" in " ".join(row["guardrail"] for row in audit_checklist["rows"])
+    audit_guardrails = " ".join(row["guardrail"] for row in audit_checklist["rows"]) or audit_checklist["guardrail"]
+    assert "keine Entscheidungsspeicherung" in audit_guardrails
     status_board = backlog["registry_integration_status_board"]
     assert status_board["title"].startswith("Registry-Integrations-Statusboard")
     assert status_board["summary"]["board_rows"] == decision_record["summary"]["decision_rows"]
@@ -361,6 +363,13 @@ def test_learning_data_readiness_backlog_includes_integration_preflight():
     assert all(item["status"] == "ok" for item in export_review_checklist["checklist_items"])
     assert "execute=true" not in " ".join(export_review_checklist["safe_routes_to_open"])
     assert "keine Registry-/Modellmutation" in export_review_checklist["guardrail"]
+    export_status_card = backlog["registry_integration_operator_export_status_card"]
+    assert export_status_card["title"] == "Registry-Export-Statuskarte"
+    assert export_status_card["traffic_light"] == "gruen_status_teilbar"
+    assert export_status_card["first_safe_route"].startswith("GET ")
+    assert export_status_card["stop_condition"].startswith("STOP:")
+    assert "kein execute=true" in export_status_card["guardrail"]
+    assert "keine Registry-/Modellmutation" in export_status_card["guardrail"]
     handoff_packet = backlog["registry_integration_handoff_packet"]
     assert handoff_packet["title"].startswith("Registry-Integrations-Handoff")
     assert handoff_packet["summary"]["handoff_rows"] == decision_record["summary"]["decision_rows"]

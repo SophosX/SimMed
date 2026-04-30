@@ -3088,3 +3088,16 @@ Keine wichtige Entscheidung offen.
 
 ### Verification / Git
 Gezielte API-Tests, volle Testsuite, py_compile und kleiner Simulation-Smoke sind grün. Commit/Push folgt in diesem Heartbeat.
+
+
+## 2026-04-30 05:13 UTC — Registry-Export-Statuskarte auf Learning Page
+
+- **Context:** Heartbeat-Priorität Plattform: Data-Readiness/Registry-Export-Handoff weiter verdichten, damit Operatoren auf Mobil/Tablet nicht nur Markdown/Tabellen lesen müssen.
+- **Project Manager:** Kleine reversible Plattform-Scheibe; nutzt bestehende Export-Statuskarte statt neue Governance-Logik zu erfinden.
+- **Designer/UX:** One-screen Ampel (`gruen_status_teilbar`/`rot_stoppen_nicht_teilen`) mit erster GET-Route, Antwort und Stop-Gate direkt nach dem Share-Brief gerendert.
+- **Creative Agent:** Kein zusätzlicher Visual-Spektakel; bessere Produktpassung durch klare Statuskarte vor jeder Branch-/PR-Arbeit.
+- **Political Health-System Strategist:** Stärkt Governance vor politisch sensibler Registry-/Modellintegration: Status teilen ja/nein bleibt getrennt von Go/Hold/Reject und Umsetzung.
+- **Evidence/Domain:** Keine neue Recherche; keine neuen Sach-/Wirkungsclaims. Guardrails für `keine Entscheidungsspeicherung`, keine Registry-/Modellmutation und keinen Policy-Wirkungsbeweis bleiben sichtbar, auch wenn aktuell keine Decision-Rows vorhanden sind.
+- **Integrator Decision:** `build_learning_data_readiness_backlog()` gibt jetzt `registry_integration_operator_export_status_card` zurück; Learning Page rendert die Karte. Leere Decision-Template/Audit-Zustände nutzen Top-Level-Guardrails statt leerer Row-Listen.
+- **Question to Alex if needed:** Keine.
+- **Verification/Git:** `pytest -q` → 176 passed; `py_compile` für Kernmodule/Tests; 20x2 Simulation-Smoke OK `(60, 30)/(320, 6)`. Commit/Push folgt in diesem Lauf.

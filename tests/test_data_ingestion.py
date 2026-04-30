@@ -37,6 +37,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_operator_export_review_stoplight,
     build_data_readiness_registry_integration_operator_export_review_checklist,
     build_data_readiness_registry_integration_operator_export_share_brief,
+    build_data_readiness_registry_integration_operator_export_status_card,
     build_data_readiness_registry_integration_operator_steps,
     build_data_readiness_registry_integration_pr_runbook,
     build_data_readiness_registry_integration_progress_timeline,
@@ -1760,3 +1761,35 @@ def test_registry_operator_export_share_brief_is_final_read_only_handoff():
     assert blocked["status_label"] == "nicht_teilen_stoppen"
     assert blocked["safe_routes_to_open"] == []
 
+
+
+def test_registry_operator_export_status_card_is_one_screen_safe_handoff():
+    share_brief = {
+        "primary_parameter_key": "bevoelkerung_mio",
+        "primary_label": "Bevölkerung",
+        "copy_safe": True,
+        "safe_routes_to_open": [
+            "GET /data-readiness/registry-integration-operator-export-audit",
+            "GET /data-readiness/bevoelkerung_mio",
+        ],
+        "failed_check_count": 0,
+        "stop_condition": "STOP: vor Branch/PR menschliches Go/Hold/Reject dokumentieren.",
+    }
+
+    card = build_data_readiness_registry_integration_operator_export_status_card(share_brief)
+
+    assert card["title"] == "Registry-Export-Statuskarte"
+    assert card["traffic_light"] == "gruen_status_teilbar"
+    assert card["copy_safe"] is True
+    assert card["first_safe_route"] == "GET /data-readiness/registry-integration-operator-export-audit"
+    assert card["operator_answer"].startswith("Ja: nur den Status teilen")
+    assert card["stop_condition"].startswith("STOP:")
+    assert "kein execute=true" in card["guardrail"]
+    assert "keine Registry-/Modellmutation" in card["guardrail"]
+
+    blocked = build_data_readiness_registry_integration_operator_export_status_card(
+        {**share_brief, "copy_safe": False, "safe_routes_to_open": ["POST /bad"]}
+    )
+    assert blocked["traffic_light"] == "rot_stoppen_nicht_teilen"
+    assert blocked["first_safe_route"] == "keine sichere GET-Route"
+    assert blocked["copy_safe"] is False

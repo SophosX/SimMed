@@ -72,6 +72,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_operator_export_review_stoplight,
     build_data_readiness_registry_integration_operator_export_review_checklist,
     build_data_readiness_registry_integration_operator_export_share_brief,
+    build_data_readiness_registry_integration_operator_export_status_card,
     build_data_readiness_registry_integration_pr_runbook,
     build_data_readiness_registry_integration_progress_timeline,
     build_data_readiness_registry_integration_status_board,
@@ -4293,6 +4294,9 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
     operator_export_share_brief = build_data_readiness_registry_integration_operator_export_share_brief(
         operator_export_review_checklist
     )
+    operator_export_status_card = build_data_readiness_registry_integration_operator_export_status_card(
+        operator_export_share_brief
+    )
     return {
         "title": "Nächste Daten-Schritte: erst Cache, dann Review, dann Integration",
         "plain_language_note": (
@@ -4337,6 +4341,7 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         "registry_integration_operator_export_review_stoplight": operator_export_review_stoplight,
         "registry_integration_operator_export_review_checklist": operator_export_review_checklist,
         "registry_integration_operator_export_share_brief": operator_export_share_brief,
+        "registry_integration_operator_export_status_card": operator_export_status_card,
         "registry_integration_handoff_packet": build_data_readiness_registry_integration_handoff_packet(decision_record),
         "registry_integration_pr_runbook": pr_runbook,
         "rows": [
@@ -4883,6 +4888,17 @@ def render_learning_data_readiness_backlog():
         st.code(export_share_brief["markdown"], language="markdown")
         st.caption(export_share_brief["operator_next_step"])
         st.caption(export_share_brief["guardrail"])
+        export_status_card = backlog["registry_integration_operator_export_status_card"]
+        st.markdown(f"**{export_status_card['title']}**")
+        st.caption(export_status_card["plain_language_note"])
+        st.dataframe(pd.DataFrame([{
+            "Ampel": export_status_card["traffic_light"],
+            "Status teilbar?": "ja" if export_status_card["copy_safe"] else "nein",
+            "Erste sichere Route": export_status_card["first_safe_route"],
+            "Antwort": export_status_card["operator_answer"],
+            "Stop-Gate": export_status_card["stop_condition"],
+        }]), use_container_width=True, hide_index=True)
+        st.caption(export_status_card["guardrail"])
         command_palette = backlog["registry_integration_command_palette"]
         st.markdown(f"**{command_palette['title']}**")
         st.caption(command_palette["plain_language_note"])

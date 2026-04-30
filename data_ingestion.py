@@ -1994,7 +1994,7 @@ def build_data_readiness_registry_integration_decision_template(decision_record:
             "go_eligible_rows": sum(1 for row in rows if row["current_status"] == "human_go_no_go_required_before_pr"),
         },
         "rows": rows,
-        "guardrail": "Read-only/Template-only: kein Branch, kein execute=true, keine Datenaktion, keine Review-Erzeugung, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+        "guardrail": "Read-only/Template-only: keine Entscheidungsspeicherung, kein Branch, kein execute=true, keine Datenaktion, keine Review-Erzeugung, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
     }
 
 
@@ -2060,7 +2060,7 @@ def build_data_readiness_registry_integration_decision_audit_checklist(decision_
             "rows_requiring_hold_by_checks": sum(1 for row in rows if row["missing_technical_checks_before_go"]),
         },
         "rows": rows,
-        "guardrail": "Read-only/Audit-only: kein Branch, kein execute=true, keine Datenaktion, keine Review-Erzeugung, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+        "guardrail": "Read-only/Audit-only: keine Entscheidungsspeicherung, kein Branch, kein execute=true, keine Datenaktion, keine Review-Erzeugung, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
     }
 
 
