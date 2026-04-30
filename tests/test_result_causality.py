@@ -141,37 +141,31 @@ def test_short_answer_reads_like_plain_first_screen_result_not_helper_text():
         assert banned not in combined_public
 
 
-def test_public_result_view_answers_four_first_screen_questions_before_audit():
+def test_public_result_view_answers_first_screen_questions_inside_one_briefing_not_extra_rows():
     params = get_default_params()
     params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
 
     packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
     view = packet["public_result_view"]
-    rows = view["answer_rows"]
+    briefing = view["briefing_markdown"]
 
-    assert [row["question"] for row in rows] == [
-        "Was ist rausgekommen?",
-        "Was hat sich relevant verändert?",
-        "Warum?",
-        "Was bedeutet das?",
-    ]
-    assert all(len(row["answer"]) <= 190 for row in rows)
-    assert "Kapazitätsdruck" in rows[0]["answer"]
-    assert "Ärzte pro 100k" in rows[1]["answer"] and "Facharzt-Wartezeit" in rows[1]["answer"]
-    assert "ab etwa Jahr 6" in rows[2]["answer"]
-    assert "prüfen" in rows[3]["answer"]
-    assert view["executive_brief"]["answer_rows"] == rows
+    assert view["answer_rows"] == []
+    assert view["executive_brief"]["answer_rows"] == []
+    assert "Kapazitätsdruck" in briefing
+    assert "Ärzte pro 100k" in briefing and "Facharzt-Wartezeit" in briefing
+    assert "ab etwa Jahr 6" in briefing
+    assert "Was bedeutet das?" in packet["short_answer"]
 
 
-def test_public_result_view_keeps_four_question_summary_as_data_not_extra_first_screen_widget():
+def test_public_result_view_keeps_only_one_first_screen_briefing_before_audit():
     params = get_default_params()
     params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
 
     packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
     view = packet["public_result_view"]
 
-    assert view["answer_rows"]
-    assert view["executive_brief"]["answer_rows"] == view["answer_rows"]
+    assert view["answer_rows"] == []
+    assert view["executive_brief"]["answer_rows"] == []
     assert view["first_screen_render_blocks"] == [
         "headline",
         "short_answer",
@@ -1609,20 +1603,71 @@ def test_public_result_view_exposes_single_executive_brief_for_first_screen():
         "Nächster Prüfschritt",
     ]
     assert len(brief["blocks"]) <= 7
-    assert all(block["kind"] in {"text", "compact_kpi_rows"} for block in brief["blocks"])
-    assert brief["blocks"][3]["kind"] == "compact_kpi_rows"
-    assert brief["blocks"][3]["component"] == "readable_metric_cards"
-    assert brief["blocks"][3]["rows"] == packet["public_result_view"]["relevant_kpis"][:4]
-    assert all("display_value" in row for row in brief["blocks"][3]["rows"])
+    assert brief["blocks"] == packet["result_sections"]
+    assert packet["public_result_view"]["relevant_kpis"][:4]
+    assert all("display_value" in row for row in packet["public_result_view"]["relevant_kpis"][:4])
     assert brief["audit_hint"] == "Details bleiben darunter geschlossen: Zeitfenster, Evidenz, vollständige Kennzahlen und politische Einordnung."
 
     visible_text = " ".join(
         [brief["title"], brief["lead"], brief["audit_hint"]]
         + [block["heading"] + " " + block["body"] for block in brief["blocks"]]
-        + [row.get("label", "") + " " + row.get("meaning", "") for row in brief["blocks"][3]["rows"]]
+        + [row.get("label", "") + " " + row.get("meaning", "") for row in packet["public_result_view"]["relevant_kpis"][:4]]
     )
     for banned in ["random Internet", "Klartext", "KPI-Wand", "generated", "helper", "Meta", "Widget", "Audit-Layer"]:
         assert banned not in visible_text
     assert "ab etwa Jahr 6" in visible_text
     assert "keine amtliche Prognose" in visible_text
     assert "kein Wirksamkeitsnachweis" in visible_text
+
+def test_public_result_view_removes_overlapping_question_rows_from_first_screen_contract():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    view = packet["public_result_view"]
+
+    assert view["executive_brief"]["answer_rows"] == []
+    assert view["answer_rows"] == []
+    assert all(block["heading"] for block in view["executive_brief"]["blocks"])
+    assert view["executive_brief"]["blocks"] == packet["result_sections"]
+    assert view["render_order"] == [
+        "result_headline",
+        "short_answer",
+        "result_sections",
+        "relevant_kpis",
+        "follow_up_question",
+        "collapsed_audit_sections",
+    ]
+
+
+def test_public_result_text_uses_clear_serious_language_without_internal_terms():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    public_text = "\n".join([
+        packet["public_result_view"]["briefing_markdown"],
+        packet["short_answer"],
+        packet["follow_up_question"],
+    ])
+
+    banned = [
+        "random Internet",
+        "Klartext",
+        "KPI-Wand",
+        "helper",
+        "generated",
+        "Meta",
+        "DataFrame",
+        "Tabelle",
+    ]
+    for phrase in banned:
+        assert phrase.lower() not in public_text.lower()
+
+    assert "Was bedeutet das?" in packet["short_answer"]
+    assert "Medizinstudienplätze" in packet["short_answer"]
+    assert "Ärzte pro 100k" in public_text
+    assert "Facharzt-Wartezeit" in public_text
+    assert len(packet["relevant_kpis"]) <= 4
+    assert all(len(section["body"].split(".")) <= 4 for section in packet["result_sections"])
+

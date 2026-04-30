@@ -1191,22 +1191,15 @@ def build_causal_result_packet(
         },
     ]
 
-    executive_brief_blocks = []
-    for section in result_sections:
-        block = {
-            "heading": section["heading"],
-            "body": section["body"],
-            "kind": "compact_kpi_rows" if section["heading"] == "Relevante Kennzahlen" else "text",
-        }
-        if section["heading"] == "Relevante Kennzahlen":
-            block["component"] = "readable_metric_cards"
-            block["rows"] = relevant_kpis_public[:4]
-        executive_brief_blocks.append(block)
+    # The first screen must read like one briefing, not like stacked helper widgets.
+    # Keep the four-question summary inside `short_answer`/sections and leave the
+    # old answer-row structure empty so API/UI clients do not render a second
+    # competing first view.
     executive_brief = {
         "title": result_headline,
         "lead": short_answer,
-        "answer_rows": answer_rows,
-        "blocks": executive_brief_blocks,
+        "answer_rows": [],
+        "blocks": result_sections,
         "audit_hint": "Details bleiben darunter geschlossen: Zeitfenster, Evidenz, vollständige Kennzahlen und politische Einordnung.",
     }
 
@@ -1252,7 +1245,7 @@ def build_causal_result_packet(
         "short_answer": short_answer,
         "briefing_markdown": briefing_markdown,
         "executive_brief": executive_brief,
-        "answer_rows": answer_rows,
+        "answer_rows": [],
         "result_sections": result_sections,
         "first_screen_blocks": first_screen_blocks,
         "primary_blocks": first_screen_blocks,

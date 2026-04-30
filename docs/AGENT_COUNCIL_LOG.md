@@ -5604,3 +5604,33 @@ Keine wichtige Entscheidung offen; weiter sicher an der Result-Seite schärfen.
 
 ### Verification / Git
 Verifiziert in der Source: `python3 -m pytest tests/test_result_causality.py -q` (57 passed), `python3 -m pytest -q` (285 passed), kleiner Simulation/Packet-Smoke-Test OK. Git-Sync/Commit/Push folgt in diesem Heartbeat.
+
+
+## 2026-04-30 18:45 Europe/Berlin — Heartbeat: Ergebnisbriefing entstapelt
+
+### Context
+Alexs jüngste Korrektur war klar: die Ergebnis-Seite soll nicht noch eine weitere Erklärungsschicht bekommen, sondern als ein lesbarer erster Bericht funktionieren. Relevante Dateien: `result_causality.py`, `app.py`/Renderer-Vertrag, `api.py` über dasselbe Paket, `tests/test_result_causality.py`.
+
+### Project Manager
+Priorität: erste Ergebnisansicht auf eine einzige klare Briefing-Struktur reduzieren. Risiko: alte Helfer-/Vier-Fragen-Daten können von UI/API-Clients weiter als zweite erste Ansicht gerendert werden. Nächste Tasks: tatsächliche Streamlit-Optik weiter komprimieren, Legacy-Helfer schrittweise in die geschlossene Vertiefung verschieben, danach Browser-Screenshot/UX-Smoke.
+
+### Designer / UX
+Die erste Ansicht soll jetzt eine klare Reihenfolge behalten: Ergebnis → Eingriff → Warum es passiert → Relevante Kennzahlen → Anpassungen → Einordnung → Nächster Prüfschritt. Die bisherigen Fragezeilen bleiben inhaltlich im Kurztext/Briefing, aber nicht mehr als zusätzlicher Block neben dem Bericht.
+
+### Creative Agent
+Idee: im nächsten Schritt könnte ein einziger “Lese-Modus” die geschlossenen Detailbereiche wie Kapitel eines Gutachtens öffnen. Fit: gut für Verständlichkeit, aber erst nach visueller Prüfung; heute wurde bewusst keine neue Oberfläche zusätzlich gestapelt.
+
+### Political Health-System Strategist
+Für politische Interpretation ist wichtig, dass der Bericht nicht wie eine Siegerzahl wirkt. Die neue erste Ansicht betont verzögerte Kapazitätswirkung und nächste fachliche Prüfung, bevor politische Bewertung folgt.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Es wurden keine neuen Wirkbehauptungen oder Parameterwerte eingeführt; geändert wurde die öffentliche Ergebnis-Kommunikation und der API/UI-Vertrag für das bestehende causal result packet.
+
+### Integrator Decision
+Akzeptiert: `public_result_view.executive_brief.answer_rows` und `public_result_view.answer_rows` sind leer, damit keine überlappende zweite erste Ansicht entsteht. Die vier Kernfragen werden über `short_answer`, `result_sections`, `relevant_kpis` und `follow_up_question` beantwortet. Legacy-/Audit-Felder bleiben für geschlossene Vertiefung und ältere Tests verfügbar.
+
+### Question to Alex
+Keine wichtige Entscheidung offen. Empfehlung: als Nächstes die echte Streamlit-Seite visuell prüfen und die Detail-Expander weiter ausdünnen, falls sie immer noch zu viel Gewicht im ersten Lesen haben.
+
+### Verification / Git
+Lokal grün: `pytest -q` → 287 passed; `py_compile` für zentrale Dateien; 50-run Simulations-Smoke mit halbierten Medizinstudienplätzen und causal packet. Git-Sync/Commit/Push folgt in diesem Heartbeat.
