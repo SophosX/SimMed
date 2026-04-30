@@ -3637,3 +3637,33 @@ No important product decision is blocked; continue safely with packet-centered c
 
 ### Verification / Git
 TDD red observed: `tests/test_result_causality.py::test_causal_result_packet_exposes_changed_lever_evidence_and_assumption_limits` failed with missing `evidence_assumption_rows`. Focused verification passed: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients tests/test_simulation_core.py::test_medical_study_places_halving_creates_delayed_capacity_and_burnout_pressure -q` → 11 passed. Full verification passed: `python3 -m pytest -q` → 217 passed; `py_compile` plus 30-run/15-year causal packet smoke passed (`OK smoke (480, 30) (480, 6) A`). Commit `75a9c42` pushed to `origin/main`; follow-up log correction commit pending.
+
+
+## 2026-04-30 08:04 UTC — Relevant KPI Selection Rationale
+
+### Context
+Heartbeat continued the causal-output restructuring around `result_causality.py`: the first result view should show only relevant KPIs and explain why those KPIs matter inside the coherent Klartext story.
+
+### Project Manager
+Priority: make the causal packet more self-contained before further model dynamics work. Risk: a short KPI set can still feel arbitrary unless each selected KPI names its signal and mechanism link. Next tasks: add year-window KPI trace rows or continue adaptation-registry/model-regression slices.
+
+### Designer / UX
+The first result table now explains each selected KPI as an answer signal, why it was selected, which mechanism it audits, and what to open next. This reduces the feeling of a KPI wall because KPIs are no longer just numbers; they are entry points into the story.
+
+### Creative Agent
+Idea: later turn the KPI selection rationale into small cards under the Klartext paragraph. Fit is strong for mobile and storytelling, but the current table is safer and keeps one packet as source of truth.
+
+### Political Health-System Strategist
+Policy reading benefits from the explicit mechanism link: for medical-study-place scenarios, doctors, waiting time, burnout, and telemedicine are framed as pipeline/capacity/adaptation checks before any political interpretation. No new stakeholder or lobbying claim added.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. The change adds explanation structure only; evidence grades and caveats still come from the existing Registry rows in the causal packet. No new model coefficient, source claim, or policy-effect proof was introduced.
+
+### Integrator Decision
+Accepted: add `relevant_kpi_summary` to `build_causal_result_packet(...)` and `primary_result_view`, then render that summary in Streamlit instead of a bare KPI movement table. Deferred: changing model dynamics or adding new policy levers.
+
+### Question to Alex
+No important decision is blocked; continue safely with packet-centered causal output and delayed-adaptation model work.
+
+### Verification / Git
+TDD red observed: `tests/test_result_causality.py::test_causal_result_packet_explains_why_each_relevant_kpi_was_selected` failed with missing `relevant_kpi_summary`. Focused verification passed: `pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients tests/test_simulation_core.py::test_medical_study_places_halving_creates_delayed_capacity_and_burnout_pressure -q` → 12 passed. Full verification passed: `pytest -q` → 218 passed. Compile/smoke passed: `py_compile result_causality.py app.py api.py simulation_core.py` plus 30-run/15-year packet smoke (`OK smoke (480, 30) (480, 6) Ärzte pro 100k`). Commit/push pending in this heartbeat.

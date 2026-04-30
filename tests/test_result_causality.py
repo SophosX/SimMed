@@ -154,6 +154,7 @@ def test_causal_result_packet_has_sequential_free_text_blocks_before_optional_de
         "main_blocks": blocks,
         "sequential_plain_text": packet["sequential_plain_text"],
         "relevant_kpis": packet["relevant_kpis"],
+        "relevant_kpi_summary": packet["relevant_kpi_summary"],
         "evidence_assumption_rows": packet["evidence_assumption_rows"],
         "optional_details_after": ["KPI-Drilldowns", "Trend", "Policy-Briefing", "Politik/Stakeholder"],
     }
@@ -192,6 +193,24 @@ def test_causal_result_packet_exposes_changed_lever_evidence_and_assumption_limi
     assert "Annahme" in medical_row["interpretation_limit"]
     assert "Evidenzgrad A" in packet["sequential_plain_text"]
     assert "medizinstudienplaetze" in packet["primary_result_view"]["evidence_assumption_rows"][0]["parameter_key"]
+
+
+def test_causal_result_packet_explains_why_each_relevant_kpi_was_selected():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+
+    rows = packet["relevant_kpi_summary"]
+    assert len(rows) == len(packet["relevant_kpis"])
+    first = rows[0]
+    assert {"metric_key", "label", "answer_signal", "why_selected", "mechanism_link", "next_check"} <= set(first)
+    combined = " ".join(row["why_selected"] + " " + row["mechanism_link"] for row in rows)
+    assert "Medizinstudienplätze" in combined
+    assert "Ausbildungs-Pipeline" in combined
+    assert "Wartezeit" in combined or "Burnout" in combined
+    assert packet["primary_result_view"]["relevant_kpi_summary"] == rows
+    assert "nicht als KPI-Wand" in rows[0]["next_check"]
 
 
 def test_causal_result_layout_keeps_dense_kpis_optional_after_cleartext():

@@ -3544,15 +3544,14 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
 
     if packet["relevant_kpis"]:
         st.markdown("**Relevante KPI-Auswahl statt KPI-Wand**")
+        kpi_summary = packet.get("relevant_kpi_summary") or packet["relevant_kpis"]
+        summary_columns = [
+            column
+            for column in ["label", "answer_signal", "why_selected", "mechanism_link", "next_check"]
+            if column in pd.DataFrame(kpi_summary).columns
+        ]
         st.dataframe(
-            pd.DataFrame(packet["relevant_kpis"])[[
-                "label",
-                "start",
-                "end",
-                "direction",
-                "interpretation",
-                "why_relevant",
-            ]],
+            pd.DataFrame(kpi_summary)[summary_columns],
             use_container_width=True,
             hide_index=True,
         )

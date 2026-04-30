@@ -191,6 +191,51 @@ def _adaptation_mechanisms(params: Mapping[str, Any], kpis: Sequence[Mapping[str
     return mechanisms
 
 
+def _relevant_kpi_summary(
+    kpis: Sequence[Mapping[str, Any]],
+    changed_inputs: Sequence[Mapping[str, str]],
+) -> list[dict[str, str]]:
+    """Explain why each selected KPI belongs in the first result view.
+
+    This keeps the first result screen from becoming a KPI wall: every shown KPI
+    must state its signal, mechanism link, and next audit step.
+    """
+
+    changed_labels = [str(item.get("label", item.get("key", ""))) for item in changed_inputs]
+    changed_text = ", ".join(changed_labels) if changed_labels else "dem Standardpfad"
+    study_places_changed = any(item.get("key") == "medizinstudienplaetze" for item in changed_inputs)
+    mechanism_by_metric = {
+        "aerzte_pro_100k": "Ausbildungs-Pipeline und Kapazitätsreserve",
+        "wartezeit_fa": "Kapazitätsdruck übersetzt sich in Zugang/Wartezeit",
+        "burnout_rate": "Arbeitsdruck/Burnout reagiert auf nicht kompensierten Ärztemangel",
+        "telemedizin_rate": "Telemedizin ist ein sichtbarer Dämpfungs-/Anpassungsmechanismus",
+        "versorgungsindex_rural": "regionale Verteilung zeigt, ob Druck ländlich stärker ankommt",
+        "gkv_saldo": "Finanzierungsdruck zeigt politische Gegenreaktionen",
+    }
+    rows: list[dict[str, str]] = []
+    for row in kpis:
+        metric_key = str(row.get("metric_key", ""))
+        mechanism = mechanism_by_metric.get(metric_key, "bestehender SimMed-Wirkpfad")
+        if study_places_changed and metric_key in {"aerzte_pro_100k", "wartezeit_fa", "burnout_rate", "telemedizin_rate"}:
+            why_selected = (
+                f"Ausgewählt, weil {changed_text} die Ausbildungs-Pipeline und anschließenden "
+                "Kapazitäts-/Wartezeit-/Burnout-Druck direkt prüfen."
+            )
+        else:
+            why_selected = f"Ausgewählt, weil diese Kennzahl die Änderung {changed_text} im Modellpfad sichtbar macht."
+        rows.append(
+            {
+                "metric_key": metric_key,
+                "label": str(row.get("label", metric_key)),
+                "answer_signal": str(row.get("sentence", "")),
+                "why_selected": why_selected,
+                "mechanism_link": mechanism,
+                "next_check": "Als Teil der Klartext-Geschichte lesen, nicht als KPI-Wand; danach Detailkarte/Trend öffnen.",
+            }
+        )
+    return rows
+
+
 def _counterintuitive_findings(kpis: Sequence[Mapping[str, Any]], params: Mapping[str, Any]) -> list[dict[str, str]]:
     defaults = get_default_params()
     by_key = {row["metric_key"]: row for row in kpis}
@@ -289,6 +334,7 @@ def build_causal_result_packet(
     changed = _changed_inputs(params)
     evidence_rows = _evidence_assumption_rows(changed)
     kpis = _relevant_kpis(agg, max_kpis=max_kpis)
+    kpi_summary = _relevant_kpi_summary(kpis, changed)
     mechanisms = _adaptation_mechanisms(params, kpis)
     timeline_windows = _timeline_windows(params)
     counter = _counterintuitive_findings(kpis, params)
@@ -401,6 +447,7 @@ def build_causal_result_packet(
         "changed_inputs": changed,
         "evidence_assumption_rows": evidence_rows,
         "relevant_kpis": kpis,
+        "relevant_kpi_summary": kpi_summary,
         "adaptation_mechanisms": mechanisms,
         "timeline_windows": timeline_windows,
         "counterintuitive_findings": counter,
@@ -410,6 +457,7 @@ def build_causal_result_packet(
             "main_blocks": free_text_blocks,
             "sequential_plain_text": sequential_plain_text,
             "relevant_kpis": kpis,
+            "relevant_kpi_summary": kpi_summary,
             "evidence_assumption_rows": evidence_rows,
             "optional_details_after": ["KPI-Drilldowns", "Trend", "Policy-Briefing", "Politik/Stakeholder"],
         },
