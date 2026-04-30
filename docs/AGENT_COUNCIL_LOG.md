@@ -5927,3 +5927,32 @@ No important decision is blocked. Continue safely with visual hierarchy and read
 
 ### Verification / Git
 Focused RED/GREEN: updated `tests/test_result_causality.py::test_causal_result_layout_keeps_dense_kpis_optional_after_cleartext`, saw it fail on old `KPI-Details`/`Policy-Briefing` labels, then passed after the implementation. Focused suite: `pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 62 passed. Full verification: `pytest -q` → 289 passed; `py_compile` for `app.py`, `result_causality.py`, `api.py`, `simulation_core.py` passed; 50-run study-place smoke produced a causal packet and reader-friendly detail labels. Git: commit `9462d15` pushed to `origin/main`.
+
+## 2026-04-30 18:50 Europe/Berlin — Heartbeat: Ergebnisbriefing-Verifikation
+
+### Context
+Alexs aktuelle Korrektur bleibt maßgeblich: die Ergebnis-Seite muss als ein lesbares deutsches Briefing starten, nicht als Stapel konkurrierender Erklär-Widgets. In diesem Lauf wurde der vorhandene Umbau überprüft: `result_causality.py` liefert bereits `result_headline`, `short_answer`, höchstens sieben klare `result_sections`, kompakte `relevant_kpis`, `follow_up_question` und eine `public_result_view`; `app.py` rendert diese Lesefassung zuerst und hält Detailprüfungen geschlossen.
+
+### Project Manager
+Priorität: erst beweisen, dass der aktuelle erste Ergebnis-Screen den neuen Vertrag erfüllt, bevor weitere UI-Flächen ergänzt werden. Risiko: zusätzliche Hilfsblöcke würden Alexs Kritik verschärfen. Nächste Aufgaben: 1) visuelles Streamlit-Screenshot/Browser-Smoke, 2) falls nötig alte Detailabschnitte weiter ausdünnen, 3) danach gezielt freie Szenario-Vorschläge als Review-Objekte planen.
+
+### Designer / UX
+Die Hierarchie ist jetzt klarer: Headline, kurze Antwort, sieben sequenzielle Überschriften und kompakte relevante Kennzahlen vor allen Details. Der nächste UX-Check sollte nicht noch mehr Text hinzufügen, sondern prüfen, ob der erste Screen optisch wie ein Briefing wirkt.
+
+### Creative Agent
+Idee: später eine kleine „Ergebnis in einem Satz“-Zeile mit einer dezenten Ampel für Druck/Puffer/Prüfung. Fit: kann helfen, aber erst nach visuellem Check; aktuell keine neue Fläche einbauen.
+
+### Political Health-System Strategist
+Die politische Einordnung bleibt nachgelagert. Das ist richtig: erst Ergebnis, Eingriff, Wirkpfad und Annahmengrenze verstehen; danach erst Unterstützer/Blockierer oder Reformfähigkeit diskutieren.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Es wurden keine neuen realweltlichen Wirkbehauptungen oder Parameter eingeführt; die Arbeit betrifft Kommunikationsschicht/API-Paket und Guardrails.
+
+### Integrator Decision
+Akzeptiert: aktueller Ergebnisbriefing-Vertrag ist grün und bleibt die Basis. Keine weiteren konkurrierenden Ergebnis-Widgets hinzufügen. Kein Modellmechanismus geändert.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; sicher weiter mit visuellem Smoke und weiterer Reduktion der Detail-Dichte.
+
+### Verification / Git
+Verifiziert in `/opt/data/projects/health_simulation_app/source`: `python3 -m pytest tests/test_result_causality.py -q` → 61 passed; `python3 -m pytest -q` → 289 passed; `python3 -m py_compile app.py result_causality.py api.py simulation_core.py`; 50-run Simulation-Smoke mit halbierten Medizinstudienplätzen → OK `(200, 30)` / `(800, 6)`. Git-Status wird nach Sync/Commit dieses Logeintrags dokumentiert.
