@@ -2620,3 +2620,14 @@ Gezielt verifiziert: `pytest` für Safe-start API-Tests (3 passed) und `py_compi
 - **Integrator Decision:** `build_data_readiness_registry_integration_progress_timeline(...)` in `data_ingestion.py` ergänzt, API-Endpunkt `/data-readiness/registry-integration-progress-timeline` hinzugefügt und Learning Page in `app.py` verdrahtet.
 - **Question to Alex if needed:** Keine.
 - **Verification/Git:** Lokal: `pytest -q` 158 passed, `py_compile` für betroffene Dateien, Simulation-Smoke 20 Läufe × 2 Jahre OK. Commit/Push folgt im selben Heartbeat.
+
+## 2026-04-30T03:11Z — Registry-Integration Command-Palette
+- **Context:** Heartbeat-Priorität Core-Plattform; Timeline und Safe-start-Karten waren lesbar, aber Operatoren brauchten einen noch direkteren copy-safe Statusbefehls-Pfad ohne Ausführung.
+- **Project Manager:** Kleiner, testbarer API/UI-Slice statt neuer Evidenzrecherche; hält Registry-/Modellintegration weiter getrennt.
+- **Designer/UX:** Copy-Palette ergänzt die Timeline mit mobilen, tabellarisch kurzen Befehlen und einem sichtbaren STOP vor Codearbeit.
+- **Creative Agent:** Idee eines „Operator-Spickzettels“ akzeptiert, aber bewusst ohne Apply/Execute/PR-Automation umgesetzt.
+- **Political Health-System Strategist:** Guardrails verhindern, dass ein grüner Status als amtliche Prognose, Wirkungsbeweis oder politische Empfehlung gelesen wird.
+- **Evidence/Domain:** Keine neue Recherche; keine neuen Sachclaims. Bestehende Data-Readiness-/Registry-Gates bleiben Status-only.
+- **Integrator Decision:** `build_data_readiness_registry_integration_command_palette(...)` in `data_ingestion.py`, fokussierter API-Endpunkt `/data-readiness/registry-integration-command-palette`, Einbettung in Learning Page und Regressionstests ergänzt.
+- **Question to Alex:** Keine wichtige Entscheidung offen.
+- **Verification/Git:** Fokus-Tests, volle Pytest-Suite, py_compile und kleiner Simulation-Smoke bestanden; Commit/Push folgt.

@@ -2533,6 +2533,49 @@ def build_data_readiness_registry_integration_progress_timeline(
 
 
 
+def build_data_readiness_registry_integration_command_palette(progress_timeline: dict) -> dict:
+    """Return copy-safe status commands from the Registry integration timeline.
+
+    The progress timeline is readable, but operators often need the exact next API
+    calls. This palette extracts only read-only/status commands and adds an explicit
+    stop row before any branch or Registry/model integration work. It must never
+    include execute=true or a branch/PR creation command.
+    """
+
+    commands: list[dict] = []
+    for phase in progress_timeline.get("phases", []):
+        command = phase.get("what_to_open", "")
+        is_read_command = command.startswith("GET ")
+        commands.append(
+            {
+                "rank": phase.get("rank"),
+                "phase": phase.get("phase"),
+                "copyable_command": command if is_read_command else "STOP: erst menschliches Go außerhalb dieses Pakets dokumentieren",
+                "mode": "read_only_status" if is_read_command else "stop_no_command",
+                "expected_result": phase.get("plain_language_result"),
+                "guardrail": phase.get("guardrail"),
+            }
+        )
+    return {
+        "title": "Registry-Integration: Copy-Palette ohne Ausführung",
+        "plain_language_note": (
+            "Diese Palette macht die Timeline als kopierbare Statusbefehle nutzbar. "
+            "Sie ist bewusst nur Lesen/Status und enthält keinen execute=true-, Branch- oder PR-Befehl."
+        ),
+        "primary_parameter_key": progress_timeline.get("primary_parameter_key"),
+        "primary_label": progress_timeline.get("primary_label"),
+        "commands": commands,
+        "definition_of_done_before_branch": [
+            "Statusbefehle gelesen und Parameter-Workflow geöffnet",
+            "Audit-Checkliste ohne fehlende technische Checks nachvollzogen",
+            "Go/Hold/Reject-Entscheidung mit Rationale, Entscheider und Zeitpunkt separat dokumentiert",
+            "erst danach separaten, getesteten Registry-/Modell-PR planen",
+        ],
+        "guardrail": "Read-only/Command-palette-only: kein Branch, kein execute=true, keine Datenaktion, keine Review-Erzeugung, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    }
+
+
+
 def build_data_readiness_registry_integration_handoff_packet(decision_record: dict) -> dict:
     """Create a copy-safe operator handoff from the Go/Hold/Reject decision record.
 

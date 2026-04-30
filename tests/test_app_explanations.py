@@ -240,6 +240,15 @@ def test_learning_data_readiness_backlog_includes_integration_preflight():
     assert not any("execute=true" in phase["what_to_open"] for phase in progress_timeline["phases"])
     assert "kein Policy-Wirkungsbeweis" in progress_timeline["phases"][3]["guardrail"]
     assert "keine Registry-/Modellmutation" in progress_timeline["guardrail"]
+    command_palette = backlog["registry_integration_command_palette"]
+    assert command_palette["title"].startswith("Registry-Integration: Copy-Palette")
+    assert command_palette["primary_parameter_key"] == progress_timeline["primary_parameter_key"]
+    assert command_palette["commands"][1]["copyable_command"].startswith("GET /data-readiness/")
+    assert command_palette["commands"][-1]["mode"] == "stop_no_command"
+    assert command_palette["commands"][-1]["copyable_command"].startswith("STOP:")
+    assert not any("execute=true" in row["copyable_command"] for row in command_palette["commands"])
+    assert "kein Branch" in command_palette["guardrail"]
+    assert "keine Registry-/Modellmutation" in command_palette["guardrail"]
     handoff_packet = backlog["registry_integration_handoff_packet"]
     assert handoff_packet["title"].startswith("Registry-Integrations-Handoff")
     assert handoff_packet["summary"]["handoff_rows"] == decision_record["summary"]["decision_rows"]

@@ -1064,3 +1064,29 @@ def test_api_exposes_registry_integration_progress_timeline_without_actions():
     invalid = client.get("/data-readiness/registry-integration-progress-timeline?limit=0")
     assert invalid.status_code == 422
     assert invalid.json()["detail"]["status"] == "invalid_data_readiness_registry_integration_progress_timeline_limit"
+
+
+def test_api_exposes_registry_integration_command_palette_without_actions():
+    client = TestClient(api)
+    seed_response = client.post("/data-fixtures/seed-reference-review-demo")
+    assert seed_response.status_code == 200
+
+    response = client.get("/data-readiness/registry-integration-command-palette?limit=3")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "data_readiness_registry_integration_command_palette_not_applied"
+    assert "kein execute=true" in body["guardrail"]
+    assert "keine Registry-/Modellmutation" in body["guardrail"]
+    palette = body["registry_integration_command_palette"]
+    assert palette["primary_parameter_key"] == "bevoelkerung_mio"
+    assert palette["commands"][1]["copyable_command"] == "GET /data-readiness/bevoelkerung_mio"
+    assert palette["commands"][-1]["mode"] == "stop_no_command"
+    assert palette["commands"][-1]["copyable_command"].startswith("STOP:")
+    assert not any("execute=true" in command["copyable_command"] for command in palette["commands"])
+    assert "kein Branch" in palette["guardrail"]
+    assert "kein Policy-Wirkungsbeweis" in palette["guardrail"]
+
+    invalid = client.get("/data-readiness/registry-integration-command-palette?limit=0")
+    assert invalid.status_code == 422
+    assert invalid.json()["detail"]["status"] == "invalid_data_readiness_registry_integration_command_palette_limit"

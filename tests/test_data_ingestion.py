@@ -27,6 +27,7 @@ from data_ingestion import (
     build_data_readiness_platform_brief,
     build_data_readiness_registry_diff_preview,
     build_data_readiness_registry_integration_decision_record,
+    build_data_readiness_registry_integration_command_palette,
     build_data_readiness_registry_integration_decision_template,
     build_data_readiness_registry_integration_handoff_packet,
     build_data_readiness_registry_integration_operator_steps,
@@ -1490,3 +1491,20 @@ def test_registry_integration_progress_timeline_shows_safe_sequence_without_acti
     assert "kein execute=true" in timeline["phases"][0]["guardrail"]
     assert "keine Registry-/Modellmutation" in timeline["guardrail"]
     assert "kein Policy-Wirkungsbeweis" in timeline["phases"][3]["guardrail"]
+
+    palette = build_data_readiness_registry_integration_command_palette(timeline)
+
+    assert palette["title"].startswith("Registry-Integration: Copy-Palette")
+    assert palette["primary_parameter_key"] == timeline["primary_parameter_key"]
+    assert [command["mode"] for command in palette["commands"]] == [
+        "read_only_status",
+        "read_only_status",
+        "read_only_status",
+        "stop_no_command",
+    ]
+    assert palette["commands"][1]["copyable_command"] == timeline["phases"][1]["what_to_open"]
+    assert palette["commands"][3]["copyable_command"].startswith("STOP:")
+    assert not any("execute=true" in command["copyable_command"] for command in palette["commands"])
+    assert "kein Branch" in palette["guardrail"]
+    assert "keine Registry-/Modellmutation" in palette["guardrail"]
+    assert "kein Policy-Wirkungsbeweis" in palette["guardrail"]

@@ -53,6 +53,7 @@ from data_ingestion import (
     build_data_readiness_integration_plan,
     build_data_readiness_integration_pr_brief,
     build_data_readiness_registry_diff_preview,
+    build_data_readiness_registry_integration_command_palette,
     build_data_readiness_registry_integration_decision_audit_checklist,
     build_data_readiness_registry_integration_decision_record,
     build_data_readiness_registry_integration_decision_template,
@@ -4219,6 +4220,9 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
     safe_start_packet = build_data_readiness_registry_integration_safe_start_packet(operator_steps, status_board)
     safe_start_checklist = build_data_readiness_registry_integration_safe_start_checklist(safe_start_packet)
     safe_start_cards = build_data_readiness_registry_integration_safe_start_cards(safe_start_checklist)
+    progress_timeline = build_data_readiness_registry_integration_progress_timeline(
+        safe_start_cards, status_board
+    )
     return {
         "title": "Nächste Daten-Schritte: erst Cache, dann Review, dann Integration",
         "plain_language_note": (
@@ -4248,9 +4252,8 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         "registry_integration_safe_start_packet": safe_start_packet,
         "registry_integration_safe_start_checklist": safe_start_checklist,
         "registry_integration_safe_start_cards": safe_start_cards,
-        "registry_integration_progress_timeline": build_data_readiness_registry_integration_progress_timeline(
-            safe_start_cards, status_board
-        ),
+        "registry_integration_progress_timeline": progress_timeline,
+        "registry_integration_command_palette": build_data_readiness_registry_integration_command_palette(progress_timeline),
         "registry_integration_handoff_packet": build_data_readiness_registry_integration_handoff_packet(decision_record),
         "registry_integration_pr_runbook": pr_runbook,
         "rows": [
@@ -4639,6 +4642,23 @@ def render_learning_data_readiness_backlog():
         ]
         st.dataframe(pd.DataFrame(progress_rows), use_container_width=True, hide_index=True)
         st.caption(progress_timeline["guardrail"])
+        command_palette = backlog["registry_integration_command_palette"]
+        st.markdown(f"**{command_palette['title']}**")
+        st.caption(command_palette["plain_language_note"])
+        command_rows = [
+            {
+                "Rang": command["rank"],
+                "Phase": command["phase"],
+                "Befehl kopieren": command["copyable_command"],
+                "Modus": command["mode"],
+                "Erwartetes Ergebnis": command["expected_result"],
+                "Guardrail": command["guardrail"],
+            }
+            for command in command_palette["commands"]
+        ]
+        st.dataframe(pd.DataFrame(command_rows), use_container_width=True, hide_index=True)
+        st.caption("Definition of done vor Branch: " + " · ".join(command_palette["definition_of_done_before_branch"]))
+        st.caption(command_palette["guardrail"])
         st.markdown(f"**{safe_checklist['title']}**")
         st.caption(safe_checklist["plain_language_note"])
         safe_checklist_rows = [

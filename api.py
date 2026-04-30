@@ -39,6 +39,7 @@ from data_ingestion import (
     build_data_readiness_operator_handoff,
     build_data_readiness_registry_diff_preview,
     build_data_readiness_platform_brief,
+    build_data_readiness_registry_integration_command_palette,
     build_data_readiness_registry_integration_decision_audit_checklist,
     build_data_readiness_registry_integration_decision_record,
     build_data_readiness_registry_integration_decision_template,
@@ -877,11 +878,51 @@ def get_data_readiness_registry_integration_progress_timeline(limit: int = 3) ->
     safe_start_packet = build_data_readiness_registry_integration_safe_start_packet(operator_steps, status_board)
     safe_start_checklist = build_data_readiness_registry_integration_safe_start_checklist(safe_start_packet)
     safe_start_cards = build_data_readiness_registry_integration_safe_start_cards(safe_start_checklist)
+    timeline = build_data_readiness_registry_integration_progress_timeline(safe_start_cards, status_board)
     return {
         "status": "data_readiness_registry_integration_progress_timeline_not_applied",
         "guardrail": "Progress-Timeline ist read-only/status-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
         "summary": build_data_readiness_summary(items),
-        "registry_integration_progress_timeline": build_data_readiness_registry_integration_progress_timeline(safe_start_cards, status_board),
+        "registry_integration_progress_timeline": timeline,
+        "registry_integration_command_palette": build_data_readiness_registry_integration_command_palette(timeline),
+    }
+
+
+@api.get("/data-readiness/registry-integration-command-palette")
+def get_data_readiness_registry_integration_command_palette(limit: int = 3) -> dict:
+    """Return read-only copyable status commands for final Registry gates."""
+
+    if limit < 1 or limit > 10:
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "status": "invalid_data_readiness_registry_integration_command_palette_limit",
+                "limit": limit,
+                "guardrail": "Limit muss zwischen 1 und 10 liegen; kein Branch und keine Registry-/Modelländerung wurde ausgeführt.",
+            },
+        )
+    parameters = list_parameters()
+    items = build_data_readiness_backlog(parameters)
+    passport_rows = build_data_passport_rows(parameters)
+    preflight = build_data_readiness_integration_preflight(items, passport_rows, limit=10)
+    plan = build_data_readiness_integration_plan(preflight, limit=limit)
+    preview = build_data_readiness_registry_diff_preview(plan, parameters)
+    brief = build_data_readiness_integration_pr_brief(plan)
+    decision_record = build_data_readiness_registry_integration_decision_record(preview, brief)
+    audit_checklist = build_data_readiness_registry_integration_decision_audit_checklist(decision_record)
+    pr_runbook = build_data_readiness_registry_integration_pr_runbook(decision_record)
+    status_board = build_data_readiness_registry_integration_status_board(decision_record, audit_checklist, pr_runbook)
+    status_cards = build_data_readiness_registry_integration_status_cards(status_board)
+    operator_steps = build_data_readiness_registry_integration_operator_steps(status_board, status_cards)
+    safe_start_packet = build_data_readiness_registry_integration_safe_start_packet(operator_steps, status_board)
+    safe_start_checklist = build_data_readiness_registry_integration_safe_start_checklist(safe_start_packet)
+    safe_start_cards = build_data_readiness_registry_integration_safe_start_cards(safe_start_checklist)
+    timeline = build_data_readiness_registry_integration_progress_timeline(safe_start_cards, status_board)
+    return {
+        "status": "data_readiness_registry_integration_command_palette_not_applied",
+        "guardrail": "Command-Palette ist read-only/status-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+        "summary": build_data_readiness_summary(items),
+        "registry_integration_command_palette": build_data_readiness_registry_integration_command_palette(timeline),
     }
 
 
