@@ -1060,10 +1060,11 @@ def build_causal_result_packet(
         }
         for row in kpis
     ]
-    kpi_body = " ".join(
-        f"{row['label']}: {row['start']} → {row['end']} ({row['direction']})."
+    kpi_items = [
+        f"{row['label']}: {row['start']} → {row['end']} ({row['direction']})"
         for row in relevant_kpis_public[:4]
-    ) or "Keine priorisierten Kennzahlen verfügbar."
+    ]
+    kpi_body = "; ".join(kpi_items) + "." if kpi_items else "Keine priorisierten Kennzahlen verfügbar."
     if study_places_changed:
         result_body = (
             "Heraus kommt ein späterer Kapazitätsdruck. Anfangs bleibt die Versorgung fast unverändert; später werden weniger Ärzt:innen, längere Wartezeiten und höhere Belastung relevant."
@@ -1076,7 +1077,7 @@ def build_causal_result_packet(
         result_body = "Das Ergebnis beschreibt den Referenzpfad ohne zusätzlichen Eingriff."
     if study_places_changed:
         why_body = (
-            "Der Eingriff wirkt verzögert. In Jahr 0–5 ändert sich wenig. Ab etwa Jahr 6 kommt weniger Nachwuchs an; Richtung Jahr 11–15 zählt der Facharztpfad."
+            "Der Eingriff wirkt verzögert: In Jahr 0–5 ändert sich wenig; Ab etwa Jahr 6 kommt weniger Nachwuchs an, Richtung Jahr 11–15 zählt der Facharztpfad."
         )
     else:
         why_body = pathway_body[:180]
@@ -1085,12 +1086,11 @@ def build_causal_result_packet(
     for signal in adaptation_trace[:2]:
         label = str(signal.get("label", "Signal"))
         direction = str(signal.get("observed_direction", "ändert sich"))
-        observed_signals.append(f"{label} {direction}.")
-    observed_text = " ".join(observed_signals) or "Kein starkes Puffersignal sichtbar."
+        observed_signals.append(f"{label} {direction}")
+    observed_text = "; ".join(observed_signals) or "kein starkes Puffersignal sichtbar"
     adaptation_body = (
-        "Das Modell prüft Puffer wie Telemedizin. "
-        f"Beobachtet: {observed_text} "
-        "Fällt Belastung trotz Mangel, braucht es einen klaren Puffer; sonst ist es ein Plausibilitätscheck."
+        f"Das Modell prüft Puffer wie Telemedizin; beobachtet: {observed_text}. "
+        "Fällt Belastung trotz Mangel, braucht es einen klaren Puffer, sonst ist es ein Plausibilitätscheck."
     )
     result_sections = [
         {"heading": "Ergebnis", "body": result_body},

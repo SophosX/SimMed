@@ -5251,3 +5251,32 @@ Keine wichtige Entscheidung offen; weiter sicher in Richtung klarer Ergebnis-Sta
 
 ### Verification / Git
 Fokustests lokal grün: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients tests/test_app_explanations.py::test_result_storyboard_orders_sections_from_signal_to_politics -q` → 53 passed. Git-Sync/Full-Suite/Push folgen im Integrator-Schritt.
+
+## 2026-04-30 17:05 Europe/Berlin — Result briefing concision pass
+
+### Context
+Alex corrected that the result page must feel like one readable briefing, not another stack of generated explanation widgets. This heartbeat tightened the public causal result packet around the first-screen sequence `Ergebnis → Eingriff → Warum es passiert → Relevante Kennzahlen → Anpassungen → Einordnung → Nächster Prüfschritt`.
+
+### Project Manager
+Priority: keep the first result view clear before adding any new scenario levers. Risk: the older helper layers remain useful but can crowd the page if surfaced too early. Next tasks: continue moving dense legacy result helpers into collapsed audit surfaces and make the first screen visually calmer.
+
+### Designer / UX
+The first screen now uses shorter bodies and a single compact KPI sentence instead of multiple sentence fragments. This supports the intended reading path: answer first, audit later.
+
+### Creative Agent
+Idea: later add a one-page “Briefing mode” export that uses the same simplified packet, so the readable result can be shared without the full dashboard. Fit: strong for usefulness, but defer until the on-page hierarchy is stable.
+
+### Political Health-System Strategist
+No new stakeholder or policy claims were added. The public wording keeps the result as a checkable SimMed pathway, not an official forecast, vote forecast, lobbying recommendation, or policy proof.
+
+### Evidence / Domain
+No new external research in this run. The change is a communication-layer tightening only; model dynamics and evidence grading are unchanged.
+
+### Integrator Decision
+Accepted: make the public result section bodies more concise, especially the delayed study-place explanation, KPI summary, and adaptation plausibility check. Deferred: broader visual redesign and removal/extraction of older result helper surfaces beyond collapsed audit positioning.
+
+### Question to Alex
+No important decision open; continue safely with clearer first-screen result hierarchy.
+
+### Verification / Git
+Focused tests passed: `tests/test_result_causality.py::test_simplified_public_result_packet_is_short_clear_and_not_meta`, `tests/test_result_causality.py::test_public_result_view_has_single_follow_up_rendering_instruction`, `tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients`. Full-suite and Git push still pending at this log entry.

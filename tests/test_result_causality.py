@@ -83,6 +83,7 @@ def test_simplified_public_result_packet_is_short_clear_and_not_meta():
     ]
     assert len(packet["result_sections"]) <= 7
     assert all(len(section["body"]) <= 260 for section in packet["result_sections"])
+    assert all(section["body"].count(".") <= 2 for section in packet["result_sections"] if section["heading"] != "Eingriff")
     assert len(packet["short_answer"]) <= 520
     section_by_heading = {section["heading"]: section["body"] for section in packet["result_sections"]}
     assert section_by_heading["Ergebnis"] != packet["result_headline"]
@@ -143,13 +144,12 @@ def test_public_adaptation_section_is_not_truncated_mid_sentence():
     adaptation = section_by_heading["Anpassungen"]
     why = section_by_heading["Warum es passiert"]
 
-    assert "Beobachtet: Telemedizin steigt." in adaptation
-    assert "Burnout steigt." in adaptation
+    assert "beobachtet: Telemedizin steigt; Burnout steigt" in adaptation
     assert "dämpfender M" not in adaptation
     assert " M Fällt" not in adaptation
     assert adaptation.endswith("Plausibilitätscheck.")
     assert all(section["body"].endswith((".", "?", "!")) for section in packet["result_sections"])
-    assert why.startswith("Der Eingriff wirkt verzögert. In Jahr 0–5")
+    assert why.startswith("Der Eingriff wirkt verzögert: In Jahr 0–5")
     assert "Ab etwa Jahr 6" in why
 
 
