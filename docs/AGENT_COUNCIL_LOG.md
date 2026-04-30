@@ -5664,3 +5664,33 @@ No blocking decision. Keep progressing safely on result-page simplification.
 
 ### Verification / Git
 Focused verification passed locally: `pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients tests/test_app_explanations.py -q` → 124 passed. Full-suite, sync, commit, and push status are recorded in the heartbeat message after completion.
+
+
+## 2026-04-30 18:58 Europe/Berlin — Heartbeat: Ergebnisbriefing verifiziert
+
+### Context
+Dieser Lauf hat die aktuelle Result-Page-Arbeit gegen Alexs Korrektur geprüft: erste Ansicht als ein lesbares deutsches Briefing, keine konkurrierenden Antwortzeilen, relevante KPIs kompakt, Detail-/Evidenz-/Legacy-Flächen geschlossen darunter. Relevante Dateien bleiben `result_causality.py`, `app.py`, `api.py` und die Result/API/UI-Tests.
+
+### Project Manager
+Priorität bleibt die Verständlichkeit der ersten Ergebnisansicht. Der Code-Stand erfüllt die aktuelle Schnittstelle; nächster sinnvoller Schritt ist eine echte Streamlit-Visualprüfung/Screenshot-Runde und danach weiteres Ausdünnen der geschlossenen Detailbereiche, falls sie noch zu dominant wirken.
+
+### Designer / UX
+Die erste Lesespur ist jetzt klar: Ergebnis → Eingriff → Warum es passiert → Relevante Kennzahlen → Anpassungen → Einordnung → Nächster Prüfschritt. Die volle Kennzahlenfläche und ältere Erklärhelfer sind nicht mehr der Einstieg, sondern Audit.
+
+### Creative Agent
+Produktidee für später: aus demselben Packet eine ruhige Ein-Seiten-Ergebnisnotiz exportieren. Fit: gut für politische/expertennahe Gespräche; heute bewusst nicht umgesetzt, damit die Bildschirmhierarchie nicht wieder neue Schichten bekommt.
+
+### Political Health-System Strategist
+Die politische Bewertung bleibt nachgelagert: Bei weniger Medizinstudienplätzen zuerst verzögerten Pipeline-/Kapazitätspfad, Wartezeit, Belastung und Puffer prüfen; erst danach politische Machbarkeit oder Maßnahmenlogik bewerten.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Es wurden keine neuen externen Behauptungen, Datenquellen oder Modellparameter eingeführt. Die Änderung bleibt Kommunikations-/UI-Vertrag; Evidenz- und Annahmengrenzen bleiben im Audit sichtbar.
+
+### Integrator Decision
+Akzeptiert: aktueller Stand bleibt auf der vereinfachten Causal-Result-Struktur. Kein weiterer Code-Eingriff in diesem Lauf, weil fokussierte und volle Tests grün sind und die nächste Verbesserung eher visuelle Prüfung als neue Textschicht ist.
+
+### Question to Alex
+Keine wichtige Entscheidung offen. Weiter sicher mit visueller Result-Page-Prüfung und anschließendem Detailbereich-Cleanup.
+
+### Verification / Git
+Verifiziert: `pytest tests/test_result_causality.py -q` → 59 passed; `pytest -q` → 287 passed; `py_compile` für zentrale App/API/Core/Result-Dateien; 50-run Simulation-Smoke mit halbierten Medizinstudienplätzen und causal packet OK. Git-Sync/Commit/Push wird nach diesem Log-Eintrag geprüft und im finalen Status berichtet.
