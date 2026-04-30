@@ -1121,14 +1121,14 @@ def build_causal_result_packet(
     kpi_body = "; ".join(kpi_items) + "." if kpi_items else "Keine priorisierten Kennzahlen verfügbar."
     if study_places_changed:
         result_body = (
-            "Heraus kommt verzögerter Kapazitätsdruck: erst wenig Effekt, später weniger Ärzt:innen und längere Wartezeiten."
+            "Kapazitätsdruck: weniger Ärzt:innen, längere Wartezeiten, mehr Druck auf Facharztversorgung. Anfangs passiert wenig."
         )
     elif changed:
         result_body = (
-            "Das Ergebnis zeigt die wichtigste Bewegung des Szenarios, ohne daraus schon eine politische Entscheidung zu machen."
+            "Der Lauf zeigt die wichtigste Bewegung des Szenarios. Sie ist ein Modellbefund, noch keine politische Entscheidung."
         )
     else:
-        result_body = "Das Ergebnis beschreibt den Referenzpfad ohne zusätzlichen Eingriff."
+        result_body = "Der Lauf zeigt den Referenzpfad ohne zusätzlichen Eingriff."
     answer_rows = [
         {
             "question": "Was ist rausgekommen?",
@@ -1157,10 +1157,10 @@ def build_causal_result_packet(
     ]
     if study_places_changed:
         why_body = (
-            "Ausbildungs-Pipeline: Jahr 0–5 wenig Änderung. Ab etwa Jahr 6 weniger Nachwuchs; Jahr 11–15 zählt Facharztpfad."
+            "Ausbildungs-Pipeline: Jahr 0–5 wenig Änderung. Ab etwa Jahr 6 fehlt Nachwuchs; Jahr 11–15 zählt Facharztpfad."
         )
     else:
-        why_body = pathway_body[:145]
+        why_body = pathway_body[:120]
 
     observed_signals = []
     for signal in adaptation_trace[:2]:
@@ -1170,7 +1170,7 @@ def build_causal_result_packet(
     observed_text = "; ".join(observed_signals) or "kein starkes Puffersignal sichtbar"
     adaptation_body = (
         f"beobachtet: {observed_text}. "
-        "Sinkt Belastung ohne sichtbaren Entlastungsmechanismus: prüfen."
+        "Sinkt Belastung trotz Engpass, sichtbaren Entlastungsmechanismus prüfen."
     )
     result_sections = [
         {"heading": "Ergebnis", "body": result_body},

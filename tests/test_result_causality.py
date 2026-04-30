@@ -657,6 +657,42 @@ def test_short_answer_names_change_kpi_movement_why_and_next_check():
     assert "amtliche Prognose" not in short_answer
 
 
+def test_public_causal_result_packet_is_concise_and_free_of_internal_wording():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    public = packet["public_result_view"]["briefing"]
+    public_text = "\n".join(
+        [
+            public["headline"],
+            public["short_answer"],
+            *[section["heading"] + "\n" + section["body"] for section in public["sections"]],
+            public["next_check"],
+        ]
+    )
+
+    assert set(public) >= {"headline", "short_answer", "sections", "relevant_kpis", "next_check"}
+    assert len(public["short_answer"].split(". ")) <= 4
+    assert "Medizinstudienplätze" in public["short_answer"]
+    assert "Jahr 6" in public["short_answer"]
+    assert any(row["label"] in public["short_answer"] for row in public["relevant_kpis"][:2])
+    assert "prüf" in public["short_answer"].lower()
+    assert [section["heading"] for section in public["sections"]] == [
+        "Ergebnis",
+        "Eingriff",
+        "Warum es passiert",
+        "Relevante Kennzahlen",
+        "Anpassungen",
+        "Einordnung",
+        "Nächster Prüfschritt",
+    ]
+    assert len(public["sections"]) <= 7
+    assert all(len(section["body"]) <= 120 for section in public["sections"])
+    banned = ["random Internet", "Klartext", "KPI-Wand", "generated", "helper", "Meta", "Widget"]
+    assert all(term not in public_text for term in banned)
+
+
 def test_causal_result_packet_prioritizes_relevant_kpis_and_coherent_freetext():
     params = get_default_params()
     params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5

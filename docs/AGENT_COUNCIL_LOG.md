@@ -6403,3 +6403,33 @@ Keine wichtige Entscheidung offen; sicher weiter mit der nächsten UI-Ordnungsst
 
 ### Verification / Git
 Lokal grün: `python3 -m pytest tests/test_result_causality.py -q` → 73 passed; `python3 -m pytest -q` → 302 passed; `py_compile` für Kernmodule; Simulation-Smoke 50 Runs × 3 Jahre OK. Git-Sync/Commit/Push folgt in diesem Lauf.
+
+
+## 2026-04-30 21:58 Europe/Berlin — Heartbeat: Result-first clarity pass
+
+### Context
+Alexs neueste Korrektur: Die Result Page soll wie ein lesbarer Ergebnisbericht wirken, nicht wie gestapelte Hilfs-Widgets. Relevante Dateien: `result_causality.py`, `app.py`, `api.py`, `tests/test_result_causality.py`.
+
+### Project Manager
+Priorität: erste Ergebnisansicht weiter verdichten. Risiko: alte Audit-/Detail-Layer dürfen verfügbar bleiben, aber nicht wieder den Einstieg überladen. Nächste Schritte: First-screen weiter visuell glätten, danach Legacy-Blöcke in klar benannte Prüfabschnitte konsolidieren.
+
+### Designer / UX
+Die erste Ansicht braucht kurze Abschnitte mit stabiler Lesereihenfolge: Ergebnis → Eingriff → Warum es passiert → Relevante Kennzahlen → Anpassungen → Einordnung → Nächster Prüfschritt. Keine konkurrierende zweite Zusammenfassung im gleichen Screen.
+
+### Creative Agent
+Idee: später ein druckbares „Ein-Seiten-Briefing“ aus genau demselben Packet erzeugen. Fit: gut für politische/fachliche Gespräche, aber erst nach weiterer UI-Klärung.
+
+### Political Health-System Strategist
+Für Medizinstudienplätze bleibt die Verzögerung zentral: nicht Sofortwirkung behaupten, sondern Jahr 6 und Jahr 11–15 als Prüfpfad erklären. Politische Bewertung erst nach Kapazitäts-, Wartezeit-, Burnout- und Puffersignalprüfung.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Es wurden keine neuen Sach-/Quellenclaims oder Modellparameter eingeführt; die Änderung betrifft Kommunikation und Guardrails der Ergebnislesart.
+
+### Integrator Decision
+Akzeptiert: Test für ein kurzes, öffentliches `causal_result_packet` ohne interne/bannierte Begriffe und mit maximal sieben kurzen Abschnitten. Implementiert: kompaktere Ergebnis-, Warum- und Anpassungstexte im öffentlichen Packet; API nutzt weiterhin denselben Packet-Builder.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; weiter sicher/reversibel an der Ergebnis-Klarheit arbeiten.
+
+### Verification / Git
+Focused RED/GREEN: `python3 -m pytest tests/test_result_causality.py::test_public_causal_result_packet_is_concise_and_free_of_internal_wording tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` grün nach Kürzung. Full verification/commit follows in this heartbeat.
