@@ -86,8 +86,10 @@ def test_simplified_public_result_packet_is_short_clear_and_not_meta():
     assert len(packet["short_answer"]) <= 520
     section_by_heading = {section["heading"]: section["body"] for section in packet["result_sections"]}
     assert section_by_heading["Ergebnis"] != packet["result_headline"]
-    assert "Ärzte pro 100k" in section_by_heading["Ergebnis"]
-    assert "Facharzt-Wartezeit" in section_by_heading["Ergebnis"]
+    assert "Kapazitätsdruck" in section_by_heading["Ergebnis"]
+    assert "→" not in section_by_heading["Ergebnis"]
+    assert "Ärzte pro 100k" in section_by_heading["Relevante Kennzahlen"]
+    assert "Facharzt-Wartezeit" in section_by_heading["Relevante Kennzahlen"]
     assert "Ab etwa Jahr 6" in section_by_heading["Warum es passiert"]
     assert "bedeutet" in section_by_heading["Einordnung"].lower()
     assert "Detailkarten" not in packet["short_answer"]

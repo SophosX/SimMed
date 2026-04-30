@@ -4869,3 +4869,33 @@ Keine neue Entscheidung nötig. Ich gehe sicher weiter mit UI-Konsolidierung und
 
 ### Verification / Git
 Geprüft: `python3 -m pytest -q` → 269 passed; `python3 -m py_compile app.py result_causality.py api.py simulation_core.py tests/test_result_causality.py`; 50-run/15-year Simulation-Smoke mit halbierten Medizinstudienplätzen → OK. Commit/Push: `852b972` (`Clarify result briefing first view`) auf `origin/main` bestätigt.
+
+## 2026-04-30 15:14 Europe/Berlin — Result first-view clarity rebuild
+
+### Context
+Alex's latest correction was that the result page must feel like one clear, readable German briefing, not another stack of overlapping widgets. This heartbeat tightened the public causal result packet and first-screen result copy.
+
+### Project Manager
+Priority: make the first result screen answer outcome, changed input, why, meaning, and next check before any dense KPI/detail views. Risk: legacy result helpers remain useful but can overwhelm users if shown too early. Next tasks: (1) further consolidate the Streamlit first screen visually into one card, (2) move remaining legacy result widgets deeper into review expanders, (3) keep API packet stable for agent clients.
+
+### Designer / UX
+The first section now gives a qualitative result sentence instead of repeating the KPI list. Relevant KPI values stay in the dedicated Kennzahlen block, reducing duplication and making the hierarchy easier to scan on mobile.
+
+### Creative Agent
+Idea: treat the first result screen as a short physician-style Befund: Befund → Ursache → Bedeutung → nächste Kontrolle. Fit is strong for comprehension, but wording must stay policy-neutral and evidence-bounded.
+
+### Political Health-System Strategist
+The output remains careful: a delayed capacity-pressure reading is not presented as a final political verdict. For study-place cuts, political interpretation should wait until pipeline timing, buffers, and pressure signals are checked together.
+
+### Evidence / Domain
+No new external research was added in this run. No model dynamics or data assumptions changed; this is a communication-layer refinement. Existing guardrails still say no official forecast and no proof of policy effectiveness.
+
+### Integrator Decision
+Accepted: simplify the public first result section so “Ergebnis” gives the meaning of the run, while “Relevante Kennzahlen” holds the numerical KPI list. This preserves API fields and collapsed audit/detail structures for backward compatibility.
+
+### Question to Alex
+No important product decision is blocked. Continue safely with result-page consolidation.
+
+### Verification / Git
+Verified locally: `pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 42 passed; full `pytest -q` → 269 passed; `py_compile` for app/result/API/simulation/test files passed; 50-run simulation smoke test passed with simplified causal packet. Git sync/commit/push pending in this entry.
+

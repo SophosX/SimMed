@@ -995,11 +995,21 @@ def build_causal_result_packet(
         f"{row['label']}: {row['start']} → {row['end']} ({row['direction']})."
         for row in relevant_kpis_public[:4]
     ) or "Keine priorisierten Kennzahlen verfügbar."
-    result_body = (
-        f"Relevant sind vor allem: {kpi_body[:205]}"
-        if kpi_body != "Keine priorisierten Kennzahlen verfügbar."
-        else kpi_body
-    )
+    if study_places_changed:
+        result_body = (
+            "Das Ergebnis ist ein verzögerter Kapazitätsdruck: heute wirkt die Kürzung kaum, "
+            "später verschiebt sie Ärzteangebot, Wartezeit und Belastung. Die Zahl ist damit kein Soforturteil, sondern ein Prüfauftrag."
+        )
+    elif changed:
+        result_body = (
+            "Das Ergebnis zeigt die wichtigste Bewegung des Szenarios, ohne daraus schon eine politische Entscheidung zu machen. "
+            "Die relevanten Kennzahlen stehen direkt darunter."
+        )
+    else:
+        result_body = (
+            "Das Ergebnis beschreibt den Referenzpfad ohne zusätzlichen Eingriff. "
+            "Die relevanten Kennzahlen stehen direkt darunter."
+        )
     if study_places_changed:
         why_body = (
             "Der Eingriff wirkt verzögert. In Jahr 0–5 ändert sich die Versorgung kaum. "
