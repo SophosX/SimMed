@@ -4212,4 +4212,4 @@ Akzeptiert: `professional_briefing.narrative_blocks` und `reader_summary` als re
 Keine wichtige Entscheidung offen. Sicherer nächster Schritt: optionale Detail-/Legacy-Schichten weiter unter den Ergebnisbericht ordnen und den API-/Report-Export auf die neuen Narrative Blocks ausrichten.
 
 ### Verification / Git
-Targeted tests grün: `python3 -m pytest tests/test_result_causality.py tests/test_api.py tests/test_app_explanations.py -q` → 159 passed. Full verification/Git wird nach Sync im Abschlussbericht dokumentiert.
+Targeted tests grün: `python3 -m pytest tests/test_result_causality.py tests/test_api.py tests/test_app_explanations.py -q` → 159 passed. Full verification grün: `python3 -m pytest -q` → 254 passed; py_compile für berührte Module/Tests grün; Smoke-Test 30 Läufe × 15 Jahre grün (`df=(480, 30)`, `reg=(480, 6)`, Narrative Blocks vorhanden). Git: Commit `0879956` auf `main` gepusht; diese Verifikationszeile folgt als separater Log-Commit ohne Force-Push.
