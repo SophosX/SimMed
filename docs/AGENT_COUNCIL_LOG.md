@@ -4599,4 +4599,4 @@ Akzeptiert: `short_answer` und `result_sections` werden knapper; Tests erzwingen
 Keine wichtige Entscheidung offen. Sicher weiterarbeiten: visuelle Verdichtung der Streamlit-Ergebnis-Karte und ggf. API-/Download-Briefing aus demselben Paket.
 
 ### Verification / Git
-Vor Commit: fokussierte Tests grün: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 35 passed. Commit/Push wird nach Full-Suite und Sync ergänzt.
+Fokussierte Tests grün: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 35 passed. Full suite im Source-Baum grün: `python3 -m pytest -q` → 262 passed; Py-Compile und kleiner Simulation-/Packet-Smoke bestanden. GitHub-Push bestätigt: `ac510ed Clarify causal result first view` auf `origin/main` mit `docs/AGENT_COUNCIL_LOG.md`, `result_causality.py`, `tests/test_result_causality.py`.
