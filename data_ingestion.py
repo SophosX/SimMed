@@ -3139,6 +3139,49 @@ def build_data_readiness_registry_integration_operator_export_bundle_walkthrough
 
 
 
+def build_data_readiness_registry_integration_operator_export_next_review(
+    export_bundle: dict,
+    export_bundle_walkthrough: dict,
+) -> dict:
+    """Return the next read-only review action after opening the export bundle.
+
+    The bundle/walkthrough can still feel like many nested status surfaces. This
+    helper distills them into one safe next action for an operator or future
+    heartbeat while preserving the stop before branch/PR and model changes.
+    """
+
+    steps = export_bundle_walkthrough.get("steps", [])
+    first_blocking_step = next(
+        (step for step in steps if "copy" in step.get("label", "").lower()),
+        steps[0] if steps else {},
+    )
+    primary_key = export_bundle.get("primary_parameter_key")
+    return {
+        "title": "Nächste sichere Prüfung nach dem Registry-Export-Bundle",
+        "plain_language_note": (
+            "Diese Mini-Übergabe sagt genau, was nach dem Bundle als nächstes gelesen wird: "
+            "erst Copy-Safety, dann Parameterstatus, dann stoppen bis eine menschliche Go/Hold/Reject-Entscheidung dokumentiert ist."
+        ),
+        "primary_parameter_key": primary_key,
+        "primary_label": export_bundle.get("primary_label") or primary_key,
+        "next_safe_action": first_blocking_step.get("label", "Copy-Safety prüfen"),
+        "copyable_status_route": first_blocking_step.get(
+            "safe_route", "GET /data-readiness/registry-integration-operator-export-audit"
+        ),
+        "then_open_parameter_route": f"GET /data-readiness/{primary_key}" if primary_key else "GET /data-readiness/registry-integration-plan",
+        "stop_condition": export_bundle.get("stop_condition")
+        or "STOP: kein Branch/PR ohne dokumentierte Go/Hold/Reject-Entscheidung.",
+        "operator_checks": [
+            "copy_safe ist ja und Packet-SHA256 ist sichtbar",
+            "Statusroute zeigt Rohdaten/Review/Diff getrennt von Modellintegration",
+            "Decision-Template ist ausgefüllt oder bewusst Hold/Reject",
+            "Keine Route oder Kopiervorlage enthält execute=true, POST oder Git-Befehle",
+        ],
+        "definition_of_done_before_branch": export_bundle.get("definition_of_done_before_branch", []),
+        "guardrail": "Read-only/Next-review-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    }
+
+
 def build_data_readiness_registry_integration_handoff_packet(decision_record: dict) -> dict:
     """Create a copy-safe operator handoff from the Go/Hold/Reject decision record.
 

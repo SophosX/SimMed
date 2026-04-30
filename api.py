@@ -54,6 +54,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_operator_export_share_cards,
     build_data_readiness_registry_integration_operator_export_bundle,
     build_data_readiness_registry_integration_operator_export_bundle_walkthrough,
+    build_data_readiness_registry_integration_operator_export_next_review,
     build_data_readiness_registry_integration_operator_steps,
     build_data_readiness_registry_integration_safe_start_packet,
     build_data_readiness_registry_integration_safe_start_checklist,
@@ -996,6 +997,9 @@ def get_data_readiness_registry_integration_operator_briefing(limit: int = 3) ->
         export_packet, export_audit, export_digest, export_share_cards
     )
     export_bundle_walkthrough = build_data_readiness_registry_integration_operator_export_bundle_walkthrough(export_bundle)
+    export_next_review = build_data_readiness_registry_integration_operator_export_next_review(
+        export_bundle, export_bundle_walkthrough
+    )
     return {
         "status": "data_readiness_registry_integration_operator_briefing_not_applied",
         "guardrail": "Operator-Briefing ist read-only/status-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
@@ -1009,6 +1013,7 @@ def get_data_readiness_registry_integration_operator_briefing(limit: int = 3) ->
         "registry_integration_operator_export_share_cards": export_share_cards,
         "registry_integration_operator_export_bundle": export_bundle,
         "registry_integration_operator_export_bundle_walkthrough": export_bundle_walkthrough,
+        "registry_integration_operator_export_next_review": export_next_review,
     }
 
 
@@ -1113,6 +1118,19 @@ def get_data_readiness_registry_integration_operator_export_bundle_walkthrough(l
         "guardrail": "Operator-Export-Bundle-Walkthrough ist read-only/status-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
         "summary": response["summary"],
         "registry_integration_operator_export_bundle_walkthrough": response["registry_integration_operator_export_bundle_walkthrough"],
+    }
+
+
+@api.get("/data-readiness/registry-integration-operator-export-next-review")
+def get_data_readiness_registry_integration_operator_export_next_review(limit: int = 3) -> dict:
+    """Return the one-step read-only review handoff after the operator export bundle."""
+
+    response = get_data_readiness_registry_integration_operator_briefing(limit=limit)
+    return {
+        "status": "data_readiness_registry_integration_operator_export_next_review_not_applied",
+        "guardrail": "Operator-Export-Next-Review ist read-only/status-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+        "summary": response["summary"],
+        "registry_integration_operator_export_next_review": response["registry_integration_operator_export_next_review"],
     }
 
 

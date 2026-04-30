@@ -342,6 +342,13 @@ def test_learning_data_readiness_backlog_includes_integration_preflight():
     assert bundle_walkthrough["steps"][1]["safe_route"].startswith("GET /data-readiness/")
     assert "execute=true" not in " ".join(step["safe_route"] for step in bundle_walkthrough["steps"])
     assert "keine Registry-/Modellmutation" in bundle_walkthrough["guardrail"]
+    export_next_review = backlog["registry_integration_operator_export_next_review"]
+    assert export_next_review["title"].startswith("Nächste sichere Prüfung")
+    assert export_next_review["next_safe_action"] == "Copy-Safety prüfen"
+    assert export_next_review["copyable_status_route"].startswith("GET ")
+    assert "Decision-Template" in " ".join(export_next_review["operator_checks"])
+    assert "execute=true" not in export_next_review["copyable_status_route"]
+    assert "keine Registry-/Modellmutation" in export_next_review["guardrail"]
     handoff_packet = backlog["registry_integration_handoff_packet"]
     assert handoff_packet["title"].startswith("Registry-Integrations-Handoff")
     assert handoff_packet["summary"]["handoff_rows"] == decision_record["summary"]["decision_rows"]

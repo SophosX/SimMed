@@ -68,6 +68,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_operator_export_share_cards,
     build_data_readiness_registry_integration_operator_export_bundle,
     build_data_readiness_registry_integration_operator_export_bundle_walkthrough,
+    build_data_readiness_registry_integration_operator_export_next_review,
     build_data_readiness_registry_integration_pr_runbook,
     build_data_readiness_registry_integration_progress_timeline,
     build_data_readiness_registry_integration_status_board,
@@ -4258,6 +4259,9 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
     operator_export_bundle_walkthrough = build_data_readiness_registry_integration_operator_export_bundle_walkthrough(
         operator_export_bundle
     )
+    operator_export_next_review = build_data_readiness_registry_integration_operator_export_next_review(
+        operator_export_bundle, operator_export_bundle_walkthrough
+    )
     return {
         "title": "Nächste Daten-Schritte: erst Cache, dann Review, dann Integration",
         "plain_language_note": (
@@ -4298,6 +4302,7 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         "registry_integration_operator_export_share_cards": operator_export_share_cards,
         "registry_integration_operator_export_bundle": operator_export_bundle,
         "registry_integration_operator_export_bundle_walkthrough": operator_export_bundle_walkthrough,
+        "registry_integration_operator_export_next_review": operator_export_next_review,
         "registry_integration_handoff_packet": build_data_readiness_registry_integration_handoff_packet(decision_record),
         "registry_integration_pr_runbook": pr_runbook,
         "rows": [
@@ -4799,6 +4804,17 @@ def render_learning_data_readiness_backlog():
             for step in bundle_walkthrough["steps"]
         ]), use_container_width=True, hide_index=True)
         st.caption(bundle_walkthrough["guardrail"])
+        export_next_review = backlog["registry_integration_operator_export_next_review"]
+        st.markdown(f"**{export_next_review['title']}**")
+        st.caption(export_next_review["plain_language_note"])
+        st.info(
+            f"Nächste sichere Aktion: {export_next_review['next_safe_action']} über "
+            f"`{export_next_review['copyable_status_route']}`; danach "
+            f"`{export_next_review['then_open_parameter_route']}`."
+        )
+        st.caption("Operator-Checks: " + " · ".join(export_next_review["operator_checks"]))
+        st.caption(export_next_review["stop_condition"])
+        st.caption(export_next_review["guardrail"])
         command_palette = backlog["registry_integration_command_palette"]
         st.markdown(f"**{command_palette['title']}**")
         st.caption(command_palette["plain_language_note"])

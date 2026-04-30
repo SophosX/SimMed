@@ -1264,6 +1264,20 @@ def test_api_exposes_registry_integration_operator_briefing_without_actions():
     assert len(walkthrough_body["registry_integration_operator_export_bundle_walkthrough"]["steps"]) == 4
     assert "kein execute=true" in walkthrough_body["guardrail"]
 
+    next_review = body["registry_integration_operator_export_next_review"]
+    assert next_review["next_safe_action"] == "Copy-Safety prüfen"
+    assert next_review["copyable_status_route"] == "GET /data-readiness/registry-integration-operator-export-audit"
+    assert next_review["then_open_parameter_route"].startswith("GET /data-readiness/")
+    assert any("Decision-Template" in check for check in next_review["operator_checks"])
+    assert "keine Registry-/Modellmutation" in next_review["guardrail"]
+
+    next_review_response = client.get("/data-readiness/registry-integration-operator-export-next-review?limit=3")
+    assert next_review_response.status_code == 200
+    next_review_body = next_review_response.json()
+    assert next_review_body["status"] == "data_readiness_registry_integration_operator_export_next_review_not_applied"
+    assert next_review_body["registry_integration_operator_export_next_review"]["next_safe_action"] == "Copy-Safety prüfen"
+    assert "kein execute=true" in next_review_body["guardrail"]
+
     invalid = client.get("/data-readiness/registry-integration-operator-briefing?limit=0")
     assert invalid.status_code == 422
     assert invalid.json()["detail"]["status"] == "invalid_data_readiness_registry_integration_operator_briefing_limit"

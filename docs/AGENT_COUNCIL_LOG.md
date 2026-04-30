@@ -2945,3 +2945,32 @@ Vor Commit: gezielte Tests 3 passed; volle Suite `165 passed`; `py_compile app.p
 - **Integrator Decision:** Implementiert `build_data_readiness_registry_integration_operator_export_bundle_walkthrough(...)`, API `GET /data-readiness/registry-integration-operator-export-bundle-walkthrough`, Learning-Page-Surface und Regressionstests.
 - **Question to Alex if needed:** Keine.
 - **Verification/Git:** Full pytest 165 passed; py_compile für app/data_ingestion/api/tests; Simulation smoke 20 runs × 2 years OK `(60, 30)` / `(320, 6)`. Commit/Push folgt nach Mirror/Zip.
+
+## 2026-04-30 06:34 Europe/Berlin — Heartbeat: Registry-Export Next-Review
+
+### Context
+Alexs Priorität ist Core-Plattform statt KI-Recherche. Dieser Lauf setzte den bestehenden Registry-Export-Bundle-Pfad fort und reduzierte die letzte Operator-Übergabe auf eine klare nächste read-only Prüfung.
+
+### Project Manager
+Priorität: Daten-/Registry-Governance weiter operationalisieren, ohne Modellwerte zu mutieren. Nächstes: aus dem Export-/Next-Review-Pfad eine echte, aber weiterhin sichere Integrationsentscheidung vorbereiten.
+
+### Designer / UX
+Die neue Next-Review-Zeile gibt mobilen/ersten Operatoren einen einzigen nächsten Klick statt nur weiterer Tabellen: zuerst Copy-Safety, dann Parameterstatus, dann Stop-Gate.
+
+### Creative Agent
+Idee: später daraus eine kleine „Ampel vor PR“-Ansicht machen. Fit: nützlich, aber erst nach Alexs Go/Hold/Reject-Framing; aktuell bleibt es status-only.
+
+### Political Health-System Strategist
+Für sensible Register-/Datenänderungen bleibt der politische/kommunikative Schutz wichtig: kein automatischer Branch, keine Scheingenauigkeit, kein Wirkungsbeweis aus Cache/Review allein.
+
+### Evidence / Domain
+Keine neue externe Recherche; Änderung betrifft nur Governance/Provenance-Workflow. Guardrails trennen weiterhin Raw-Cache, Review, Registry-Integration und Modellwirkung.
+
+### Integrator Decision
+Akzeptiert: `build_data_readiness_registry_integration_operator_export_next_review(...)` plus API-/Learning-Page-Surface und Regressionstests. Keine Modell-/Registry-Wertänderung.
+
+### Question to Alex
+Keine wichtige neue Entscheidung offen.
+
+### Verification / Git
+Gezielte Tests bestanden; Full Suite läuft/folgt. Commit/Push und Zip-Refresh nach vollständiger Verifikation.
