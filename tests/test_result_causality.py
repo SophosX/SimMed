@@ -125,3 +125,33 @@ def test_causal_result_packet_exposes_delayed_timeline_windows_for_study_place_c
     assert "Telemedizin" in windows[1]["adaptation_to_check"]
     assert "keine amtliche Prognose" in windows[0]["guardrail"]
     assert "Jahr 6–10" in packet["coherent_story"]
+
+
+def test_causal_result_packet_has_sequential_free_text_blocks_before_optional_details():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+
+    blocks = packet["free_text_blocks"]
+    assert [block["step"] for block in blocks] == [
+        "1. Ergebnis",
+        "2. Änderung",
+        "3. Wirkmechanismus",
+        "4. Anpassung",
+        "5. Gegencheck",
+        "6. Evidenzgrenze",
+    ]
+    combined = " ".join(block["text"] for block in blocks)
+    assert "Ärzte pro 100k" in combined
+    assert "Medizinstudienplätze" in combined
+    assert "Ausbildungs-Pipeline" in combined
+    assert "Telemedizin" in combined
+    assert "keine amtliche Prognose" in combined
+    assert all("KPI-Wand" not in block["text"] for block in blocks)
+    assert packet["primary_result_view"] == {
+        "headline": "Erst Klartext, dann Details",
+        "main_blocks": blocks,
+        "relevant_kpis": packet["relevant_kpis"],
+        "optional_details_after": ["KPI-Drilldowns", "Trend", "Policy-Briefing", "Politik/Stakeholder"],
+    }

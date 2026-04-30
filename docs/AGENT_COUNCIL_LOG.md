@@ -3538,3 +3538,32 @@ No blocking decision. Recommendation: continue safely with observed year-window 
 
 ### Verification / Git
 Focused causal/API/model tests passed, full pytest passed, py_compile passed, and a 30-run/15-year smoke test built the causal packet with `Jahr 6–10` timeline window. Commit/push status recorded in the heartbeat message.
+
+## 2026-04-30 07:36 Europe/Berlin — Heartbeat causal output blocks
+
+### Context
+Alexs neue Richtung bleibt: keine verstreuten Ergebnis-Snippets, sondern ein zusammenhängender deutscher Ergebnislauf. Dieser Heartbeat erweitert `result_causality.py` um `free_text_blocks` und `primary_result_view`, damit UI/API dieselbe sequenzielle Klartextstruktur nutzen können.
+
+### Project Manager
+Priorität: primäre Ergebnisansicht stabilisieren, bevor weitere Levers oder Detail-Widgets entstehen. Risiko: alte KPI-Wand bleibt als optionaler Detailbereich sichtbar; nächster Schritt ist, die Detail-KPIs stärker hinter dem Causal Packet zu de-priorisieren.
+
+### Designer / UX
+Die Startansicht liest nun explizit Schritt für Schritt: Ergebnis → Änderung → Wirkmechanismus → Anpassung → Gegencheck → Evidenzgrenze. Das reduziert kognitive Last stärker als ein einzelner Infotext.
+
+### Creative Agent
+Idee: später den Klartext als „SimMed liest das Ergebnis vor“ mit ein-/ausklappbaren Evidenzmarkern darstellen. Fit: hilfreich für Sinnhaftigkeit, aber erst nach stabiler Packet-Struktur.
+
+### Political Health-System Strategist
+Die Anpassungs- und Gegencheck-Blöcke verhindern, dass politische Leser:innen eine KPI-Bewegung vorschnell als Gesetzesprognose oder Lobbyempfehlung lesen.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf; keine neuen externen Fakten. Guardrails bleiben: lokaler Modelllauf, keine amtliche Prognose, keine random Internet-Suche, kein Wirksamkeitsnachweis.
+
+### Integrator Decision
+Akzeptiert: eine kleine TDD-Scheibe im Causal Packet plus UI-Rendering der Blöcke. Keine Modelldynamik geändert.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; sicher weiter mit der nächsten kleinen Scheibe: relevante KPI-Auswahl stärker im Dashboard nutzen und alte KPI-Wand optionaler machen.
+
+### Verification / Git
+Vor Commit: neuer Test rot (`KeyError: free_text_blocks`), dann grün. Finale Tests/Git werden nach Suite und Push ergänzt.

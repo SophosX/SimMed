@@ -3521,9 +3521,14 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
     packet = build_result_causal_overview(agg, params)
     st.markdown(f"### {packet['title']}")
     st.caption(packet["subtitle"])
-    st.info(packet["coherent_story"])
+    primary_view = packet.get("primary_result_view", {})
+    if primary_view:
+        st.markdown(f"**{primary_view['headline']}**")
+    for block in packet.get("free_text_blocks", []):
+        st.markdown(f"**{block['step']}**")
+        st.write(block["text"])
 
-    if packet.get("story_sections"):
+    if packet.get("story_sections") and not packet.get("free_text_blocks"):
         for section in packet["story_sections"]:
             st.markdown(f"**{section['heading']}**")
             st.write(section["text"])

@@ -240,20 +240,17 @@ def build_causal_result_packet(
     ) or "Kein spezifisches verzögertes Zeitfenster aus den geänderten Haupthebeln abgeleitet."
     counter_text = " ".join(item["finding"] + " " + item["operator_action"] for item in counter) or "Keine harte Gegenintuition im kompakten KPI-Set erkannt."
 
-    story_sections = [
+    free_text_blocks = [
         {
-            "id": "output",
-            "heading": "Was ist der Output?",
-            "text": f"Die erste Leseschicht zeigt wenige relevante KPIs statt einer KPI-Wand: {kpi_text}",
+            "step": "1. Ergebnis",
+            "text": f"Der Lauf wird zuerst über wenige relevante KPIs gelesen: {kpi_text}",
         },
         {
-            "id": "changed_inputs",
-            "heading": "Was wurde geändert?",
+            "step": "2. Änderung",
             "text": changed_text,
         },
         {
-            "id": "mechanisms",
-            "heading": "Warum verändert sich das Ergebnis?",
+            "step": "3. Wirkmechanismus",
             "text": (
                 "SimMed verbindet Eingriffe über Kapazität, Nachfrage, Finanzierung und Zeitverzug. "
                 "Bei Medizinstudienplätzen ist der zentrale Mechanismus die Ausbildungs-Pipeline: "
@@ -262,22 +259,52 @@ def build_causal_result_packet(
             ),
         },
         {
-            "id": "adaptation",
-            "heading": "Welche Anpassungen werden sichtbar?",
+            "step": "4. Anpassung",
             "text": mechanism_text,
         },
         {
-            "id": "counterintuitive_checks",
-            "heading": "Was ist gegenintuitiv oder prüfpflichtig?",
+            "step": "5. Gegencheck",
             "text": counter_text,
         },
         {
-            "id": "evidence_assumptions",
-            "heading": "Welche Evidenz-/Annahmegrenze gilt?",
+            "step": "6. Evidenzgrenze",
             "text": (
                 f"{RESULT_CAUSALITY_GUARDRAIL} Evidenzgrade und Registry-Caveats begrenzen die Interpretation; "
                 "diese Erklärung ist ein lokaler Modelllauf, keine freie Web-Recherche und keine automatische Parameterintegration."
             ),
+        },
+    ]
+
+    story_sections = [
+        {
+            "id": "output",
+            "heading": "Was ist der Output?",
+            "text": free_text_blocks[0]["text"],
+        },
+        {
+            "id": "changed_inputs",
+            "heading": "Was wurde geändert?",
+            "text": free_text_blocks[1]["text"],
+        },
+        {
+            "id": "mechanisms",
+            "heading": "Warum verändert sich das Ergebnis?",
+            "text": free_text_blocks[2]["text"],
+        },
+        {
+            "id": "adaptation",
+            "heading": "Welche Anpassungen werden sichtbar?",
+            "text": free_text_blocks[3]["text"],
+        },
+        {
+            "id": "counterintuitive_checks",
+            "heading": "Was ist gegenintuitiv oder prüfpflichtig?",
+            "text": free_text_blocks[4]["text"],
+        },
+        {
+            "id": "evidence_assumptions",
+            "heading": "Welche Evidenz-/Annahmegrenze gilt?",
+            "text": free_text_blocks[5]["text"],
         },
     ]
 
@@ -305,6 +332,13 @@ def build_causal_result_packet(
         "adaptation_mechanisms": mechanisms,
         "timeline_windows": timeline_windows,
         "counterintuitive_findings": counter,
+        "free_text_blocks": free_text_blocks,
+        "primary_result_view": {
+            "headline": "Erst Klartext, dann Details",
+            "main_blocks": free_text_blocks,
+            "relevant_kpis": kpis,
+            "optional_details_after": ["KPI-Drilldowns", "Trend", "Policy-Briefing", "Politik/Stakeholder"],
+        },
         "story_sections": story_sections,
         "coherent_story": coherent_story,
         "method_note": RESULT_CAUSALITY_GUARDRAIL,
