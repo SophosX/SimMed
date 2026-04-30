@@ -616,6 +616,33 @@ def test_api_rejects_scenario_gallery_guided_apply_plan_out_of_bounds_without_ex
     assert "kein Simulationslauf" in detail["guardrail"]
 
 
+def test_api_exposes_scenario_gallery_run_readiness_without_execution():
+    client = TestClient(api)
+    response = client.get("/scenario-gallery/run-readiness?n_runs=100&n_years=15&seed=42")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "scenario_gallery_run_readiness_not_executed"
+    assert body["scenario_count"] >= 3
+    assert body["evidence_check_count"] >= body["scenario_count"]
+    assert body["ready_cards"]
+    assert body["operator_route"] == "GET /scenario-gallery/operator-run-packets"
+    assert "nichts wird automatisch angewendet" in body["first_safe_step"]
+    assert "kein Simulationslauf" in body["guardrail"]
+    assert "keine Registry-/Modellmutation" in body["guardrail"]
+    assert "kein Policy-Wirkungsbeweis" in body["guardrail"]
+
+
+def test_api_rejects_scenario_gallery_run_readiness_out_of_bounds_without_execution():
+    client = TestClient(api)
+    response = client.get("/scenario-gallery/run-readiness?n_runs=0")
+
+    assert response.status_code == 422
+    detail = response.json()["detail"]
+    assert detail["status"] == "invalid_scenario_gallery_run_readiness_bounds"
+    assert "kein Simulationslauf" in detail["guardrail"]
+
+
 def test_api_exposes_focused_scenario_gallery_operator_status_cards_without_execution():
     client = TestClient(api)
     response = client.get("/scenario-gallery/operator-status-cards?n_runs=100&n_years=15&seed=42")

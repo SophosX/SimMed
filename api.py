@@ -86,6 +86,7 @@ from scenario_gallery import (
     build_scenario_gallery_guided_apply_plan,
     build_scenario_gallery_operator_run_packets,
     build_scenario_gallery_operator_status_cards,
+    build_scenario_gallery_run_readiness_summary,
 )
 from simulation_core import MODEL_VERSION, build_scenario_manifest, get_default_params, run_scenario
 
@@ -1427,6 +1428,23 @@ def _validate_scenario_gallery_bounds(n_runs: int, n_years: int, seed: int, *, s
                 "guardrail": "Nur bounded Scenario-Gallery-Status/Payload-Vorschauen; kein Apply, kein Simulationslauf und keine Modellmutation.",
             },
         )
+
+
+@api.get("/scenario-gallery/run-readiness")
+def get_scenario_gallery_run_readiness(
+    n_runs: int = 100,
+    n_years: int = 15,
+    seed: int = 42,
+) -> dict:
+    """Expose first-contact scenario-gallery readiness without executing runs."""
+
+    _validate_scenario_gallery_bounds(
+        n_runs,
+        n_years,
+        seed,
+        status="invalid_scenario_gallery_run_readiness_bounds",
+    )
+    return build_scenario_gallery_run_readiness_summary(n_runs=n_runs, n_years=n_years, seed=seed)
 
 
 @api.get("/scenario-gallery/operator-status-cards")

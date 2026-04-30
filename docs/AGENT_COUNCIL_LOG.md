@@ -3127,3 +3127,32 @@ Gezielte API-Tests, volle Testsuite, py_compile und kleiner Simulation-Smoke sin
 - Integrator Decision: `GET /scenario-gallery/operator-status-cards` ergänzt und gemeinsame Bounds-Validierung für Statuskarten/Run-Packets eingeführt.
 - Question to Alex if needed: Keine.
 - Verification/Git: Gezielte API-Tests, volle Testsuite, py_compile und 20x2 Simulation-Smoke bestanden; Commit/Push folgt.
+
+## 2026-04-30 07:30 Europe/Berlin — Heartbeat: Scenario-Gallery Run-Readiness
+
+### Context
+Alex priorisiert Core-Platform-Änderungen. Dieser Lauf stärkt die Scenario-Gallery/Geführter-Workflow-Schiene mit einer ersten Run-Readiness-Zusammenfassung vor jedem bewussten Starter-Szenario.
+
+### Project Manager
+Nächster Wert liegt in Plattform-UX statt weiterer Evidenzaufnahme: Starterkarten brauchen eine klare Vor-dem-Lauf-Definition-of-Done, damit neue Nutzer:innen nicht direkt aus Beispielkarten Prognosen ableiten. Risiko bleibt Scope-Creep Richtung Apply-Button; deshalb read-only.
+
+### Designer / UX
+Die Landing Page zeigt nun oberhalb der einzelnen Karten eine kompakte Readiness-Zeile: Anzahl Starterkarten, Evidenzchecks, erster sicherer Schritt, Definition-of-Done und Guardrail. Das verbessert Mobile/Tablet-Scanbarkeit vor den detaillierten Karten.
+
+### Creative Agent
+Idee: Später könnte diese Readiness-Zusammenfassung als "Startampel" visualisiert werden. Fit: motivierend und verständlich, aber erst nach weiteren Daten-/Unsicherheits-Gates sinnvoll; aktuell bleibt es textlich und testbar.
+
+### Political Health-System Strategist
+Die Stop-Regel bleibt wichtig: Beispiel-Szenarien dürfen nicht als amtliche Prognose, Wirksamkeitsbeweis, Lobbying-Empfehlung oder automatische Modellentscheidung gelesen werden.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf; keine neuen Sach-/Wirkbehauptungen eingeführt. Die Änderung reassembliert vorhandene Scenario-Gallery-Payloads, Evidenzchecks und Guardrails.
+
+### Integrator Decision
+Akzeptiert: `build_scenario_gallery_run_readiness_summary(...)`, fokussierter API-Endpunkt `/scenario-gallery/run-readiness`, Landing-Page-Surfacing und Regressionstests. Deferred: echter Apply-Button bleibt bewusst offen und braucht separate Bestätigung/Sicherheitsdesign.
+
+### Question to Alex if needed
+Keine wichtige Entscheidung offen.
+
+### Verification / Git
+Gezielt: 3 Scenario-Gallery/API-Tests bestanden. Vollsuite: 182 passed. Py-Compile: app.py/api.py/scenario_gallery.py. Smoke: 20 Runs × 2 Jahre OK. Commit/Push folgt in diesem Heartbeat.

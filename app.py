@@ -1176,6 +1176,18 @@ def build_scenario_gallery_operator_status_cards(
     )
 
 
+def build_scenario_gallery_run_readiness_summary(
+    *, n_runs: int = 100, n_years: int = 15, seed: int = 42
+) -> dict[str, Any]:
+    """Return first-contact readiness before any scenario-gallery run."""
+
+    return scenario_gallery_module.build_scenario_gallery_run_readiness_summary(
+        n_runs=n_runs,
+        n_years=n_years,
+        seed=seed,
+    )
+
+
 def sidebar_quick_start_steps() -> List[str]:
     """Kurze Orientierung, damit neue Nutzer:innen sofort wissen, was zu tun ist."""
     return [
@@ -1202,6 +1214,13 @@ def render_landing_hero() -> None:
 
     with st.expander("Beispiel-Szenarien sicher starten", expanded=False):
         st.caption("Demo-Galerie: Die Karten geben eine Lesespur vor, ändern aber noch keine Parameter automatisch.")
+        readiness = build_scenario_gallery_run_readiness_summary()
+        st.caption(
+            f"Run-Readiness: {readiness['scenario_count']} Starterkarten · "
+            f"{readiness['evidence_check_count']} Evidenzchecks · {readiness['first_safe_step']}"
+        )
+        st.caption("Vor dem Lauf erledigt: " + " | ".join(readiness["definition_of_done_before_run"][:2]))
+        st.caption("Guardrail: " + readiness["guardrail"])
         guided_plans = {
             item["card_id"]: item for item in build_scenario_gallery_guided_apply_plan()
         }

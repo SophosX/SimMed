@@ -178,6 +178,51 @@ def build_scenario_gallery_operator_status_cards(
     return cards
 
 
+def build_scenario_gallery_run_readiness_summary(
+    *, n_runs: int = 100, n_years: int = 15, seed: int = 42
+) -> dict[str, Any]:
+    """Return a first-contact readiness summary before any scenario-gallery run.
+
+    This is the top-level safety layer for newcomers and agents: it explains
+    what is ready, what still needs manual checking, and where to go next,
+    without executing a simulation or mutating any parameter state.
+    """
+
+    status_cards = build_scenario_gallery_operator_status_cards(n_runs=n_runs, n_years=n_years, seed=seed)
+    packets = build_scenario_gallery_operator_run_packets(n_runs=n_runs, n_years=n_years, seed=seed)
+    evidence_checks = sum(len(packet["evidence_checks"]) for packet in packets)
+    return {
+        "status": "scenario_gallery_run_readiness_not_executed",
+        "scenario_count": len(status_cards),
+        "evidence_check_count": evidence_checks,
+        "first_safe_step": "Starterkarte wählen und die Parameter-/Evidenzchecks lesen; nichts wird automatisch angewendet.",
+        "operator_route": "GET /scenario-gallery/operator-run-packets",
+        "status_card_route": "GET /scenario-gallery/operator-status-cards",
+        "ready_cards": [
+            {
+                "card_id": card["card_id"],
+                "title": card["title"],
+                "primary_action": card["primary_action"],
+                "changed_parameters_plain": card["changed_parameters_plain"],
+                "first_safe_check": card["first_safe_check"],
+                "post_run_first_read": card["post_run_first_read"],
+            }
+            for card in status_cards
+        ],
+        "definition_of_done_before_run": [
+            "Parameteränderungen wurden bewusst geprüft; kein automatischer Apply-Button wurde verwendet.",
+            "Registry-Evidenzgrad und Caveat je geändertem Parameter wurden gelesen.",
+            "n_runs, n_years und seed sind als Reproduzierbarkeitsangaben bekannt.",
+            "Die Lesereihenfolge nach dem Lauf ist klar: Storyboard → KPI-Details → Annahmen-Check → Policy-Briefing.",
+        ],
+        "guardrail": (
+            "Readiness-Summary ist read-only: kein Apply-Button, keine Session-State-Mutation, "
+            "kein Simulationslauf, keine Registry-/Modellmutation, keine amtliche Prognose, "
+            "kein Policy-Wirkungsbeweis und keine Lobbying-Empfehlung."
+        ),
+    }
+
+
 def build_scenario_gallery_operator_run_packets(
     *, n_runs: int = 100, n_years: int = 15, seed: int = 42
 ) -> list[dict[str, Any]]:

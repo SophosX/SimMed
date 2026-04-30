@@ -26,6 +26,7 @@ from app import (
     build_scenario_gallery_guided_apply_plan,
     build_scenario_gallery_operator_run_packets,
     build_scenario_gallery_operator_status_cards,
+    build_scenario_gallery_run_readiness_summary,
     build_scenario_gallery_manifest_previews,
     build_political_lever_detail_sections,
     build_political_result_checkpoints,
@@ -679,6 +680,27 @@ def test_scenario_gallery_operator_status_cards_make_run_packets_mobile_scannabl
     medical_card = next(card for card in cards if card["card_id"] == "medical_training_pipeline")
     assert "Medizinstudienplätze" in medical_card["changed_parameters_plain"]
     assert "nichts wird automatisch angewendet" in medical_card["first_safe_check"]
+
+
+def test_scenario_gallery_run_readiness_summary_orients_newcomers_without_execution():
+    summary = build_scenario_gallery_run_readiness_summary(n_runs=100, n_years=15, seed=42)
+    combined = " ".join(str(value) for value in summary.values())
+
+    assert summary["status"] == "scenario_gallery_run_readiness_not_executed"
+    assert summary["scenario_count"] == len(build_scenario_gallery_cards())
+    assert summary["evidence_check_count"] >= summary["scenario_count"]
+    assert summary["ready_cards"]
+    assert summary["operator_route"] == "GET /scenario-gallery/operator-run-packets"
+    assert "Starterkarte wählen" in summary["first_safe_step"]
+    assert "nichts wird automatisch angewendet" in summary["first_safe_step"]
+    assert "Storyboard" in combined
+    assert "KPI-Details" in combined
+    assert "Annahmen-Check" in combined
+    assert "kein Apply-Button" in summary["guardrail"]
+    assert "kein Simulationslauf" in summary["guardrail"]
+    assert "keine Registry-/Modellmutation" in summary["guardrail"]
+    assert "keine amtliche Prognose" in summary["guardrail"]
+    assert "kein Policy-Wirkungsbeweis" in summary["guardrail"]
 
 
 def test_direction_word_uses_plain_language_and_preference_direction():
