@@ -2343,3 +2343,15 @@ Gezielt: `pytest tests/test_api.py::test_api_exposes_focused_registry_integratio
 - **Integrator Decision:** `build_cached_snapshot_integrity_action_plan(...)` hinzugefügt, API `/data-snapshots/integrity-action-plan` plus Integration in `/data-snapshots/integrity` und Learning-Page-Datenpass.
 - **Question to Alex if needed:** Keine; sicherer, read-only Plattform-Fortschritt.
 - **Verification/Git:** Fokus-Tests 4 passed; Full suite/py_compile 139 passed. Commit/Push folgt in diesem Lauf.
+
+## 2026-04-30 01:48 UTC – Rohcache-Integrität: Operator-Handoff
+
+- **Context:** Alex priorisiert Core-Plattform. Vorhanden waren SHA256-Integritätsreport und Action-Plan für Rohdaten-Snapshots; der nächste sichere Plattformschritt war ein kopierbarer Operator-Handoff ohne Ausführung.
+- **Project Manager:** Kleiner, testbarer Daten-Provenienz-Slice; keine neue KI/Evidence-Recherche, da keine neuen Sachclaims eingeführt wurden.
+- **Designer/UX:** Learning-Page zeigt jetzt im Rohcache-Expander einen konkreten ersten sicheren Schritt plus kopierbaren Status-Befehl statt nur Tabelle.
+- **Creative Agent:** Handoff als „Stoppschild + nächster Klick“ passt besser zu einer späteren Daten-Werkbank als ein weiterer abstrakter Guardrail-Text.
+- **Political Health-System Strategist:** Keine neuen politischen Claims; Guardrails verhindern, dass Rohcache-Integrität als Wirkungs- oder amtliche Prognose gelesen wird.
+- **Evidence/Domain:** Rohdatei-SHA256 bleibt nur Cache-Unverändertheit; Transformation, Denominator/Einheit/Jahr und Registry-/Modellintegration bleiben getrennte Gates.
+- **Integrator Decision:** `build_cached_snapshot_integrity_handoff_packet(...)` in `data_ingestion.py`, fokussiertes API `GET /data-snapshots/integrity-handoff`, Einbettung in Integritäts-Responses und Learning-Page-Datenpass.
+- **Question to Alex if needed:** Keine; sicherer, reversibler Infrastruktur-Slice.
+- **Verification/Git:** 141 Tests, py_compile für `app.py data_ingestion.py api.py`, 20×2 Simulation-Smoke OK; Commit/Push folgt.

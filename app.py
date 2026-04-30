@@ -31,6 +31,7 @@ from political_feasibility import assess_political_feasibility
 from expert_council import plain_language_workflow_summary
 from data_ingestion import (
     build_cached_snapshot_integrity_action_plan,
+    build_cached_snapshot_integrity_handoff_packet,
     build_cached_snapshot_integrity_report,
     build_connector_execution_plan,
     build_connector_snapshot_requests,
@@ -4092,6 +4093,7 @@ def build_learning_data_passport_overview(limit: int = 8) -> dict[str, Any]:
         },
         "snapshot_integrity": snapshot_integrity,
         "snapshot_integrity_action_plan": build_cached_snapshot_integrity_action_plan(snapshot_integrity),
+        "snapshot_integrity_handoff_packet": build_cached_snapshot_integrity_handoff_packet(snapshot_integrity),
         "rows": [
             {
                 "Parameter": row["label"],
@@ -4130,7 +4132,10 @@ def render_learning_data_passport_overview():
     if action_plan["rows"]:
         with st.expander("Rohcache: was darf als Nächstes passieren?", expanded=False):
             st.dataframe(pd.DataFrame(action_plan["rows"]), use_container_width=True, hide_index=True)
-            st.caption(action_plan["guardrail"])
+            handoff = overview["snapshot_integrity_handoff_packet"]
+            st.markdown(f"**Operator-Handoff:** {handoff['first_safe_step']}")
+            st.code(handoff["copyable_status_command"], language="bash")
+            st.caption(handoff["guardrail"])
     st.dataframe(pd.DataFrame(overview["rows"]), use_container_width=True, hide_index=True)
     st.caption("Guardrail: Rohdaten-Snapshot ≠ geprüfter Modelleffekt. Annahmen bleiben sichtbar, bis eine Transformation geprüft und dokumentiert wurde.")
 

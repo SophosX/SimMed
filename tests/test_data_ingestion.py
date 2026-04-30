@@ -4,6 +4,7 @@ from data_ingestion import (
     ReviewedTransformation,
     build_connector_execution_workbench,
     build_cached_snapshot_integrity_action_plan,
+    build_cached_snapshot_integrity_handoff_packet,
     build_cached_snapshot_integrity_report,
     build_connector_snapshot_requests,
     build_data_connector_queue,
@@ -138,6 +139,31 @@ def test_cached_snapshot_integrity_action_plan_blocks_bad_cache_before_review(tm
     assert bad_plan["rows"][0]["may_start_transformation_review"] is False
     assert "blockiert Review" in bad_plan["rows"][0]["guardrail"]
     assert "kein Netzwerkabruf" in bad_plan["guardrail"]
+
+
+def test_cached_snapshot_integrity_handoff_packet_is_copyable_and_read_only(tmp_path):
+    cache_source_payload(
+        source_id="destatis_genesis",
+        source_url="https://www-genesis.destatis.de/genesis/online",
+        payload=b"year,value\n2024,84.4\n",
+        filename="population.csv",
+        cache_root=tmp_path,
+        source_period="2024",
+        output_parameter_keys=("bevoelkerung_mio",),
+        transformation_note="raw fixture only; no model mutation",
+        retrieved_at="2026-04-29T20:00:00+00:00",
+    )
+    report = build_cached_snapshot_integrity_report(cache_root=tmp_path)
+
+    handoff = build_cached_snapshot_integrity_handoff_packet(report)
+
+    assert handoff["status"] == "integrity_ok_but_not_reviewed"
+    assert handoff["status_route"] == "GET /data-snapshots/integrity"
+    assert "curl -s" in handoff["copyable_status_command"]
+    assert "Transformation-Review" in handoff["first_safe_step"]
+    assert "Registry-/Modellintegration separat" in " ".join(handoff["operator_sequence"])
+    assert "kein execute=true" in handoff["guardrail"]
+    assert "keine Registry-/Modellmutation" in handoff["guardrail"]
 
 
 def test_snapshot_status_is_read_only_and_conservative(tmp_path):

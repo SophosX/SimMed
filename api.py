@@ -14,6 +14,7 @@ from pydantic import BaseModel, Field
 
 from data_ingestion import (
     build_cached_snapshot_integrity_action_plan,
+    build_cached_snapshot_integrity_handoff_packet,
     build_cached_snapshot_integrity_report,
     build_connector_execution_plan,
     build_connector_execution_workbench,
@@ -113,6 +114,20 @@ def get_data_snapshot_integrity() -> dict:
         "guardrail": "SHA256-Integrität prüft nur unveränderte Rohdateien; sie ist keine Transformation, kein Registry-/Modellimport und kein Wirkungsbeweis.",
         "snapshot_integrity": integrity,
         "integrity_action_plan": build_cached_snapshot_integrity_action_plan(integrity),
+        "integrity_handoff_packet": build_cached_snapshot_integrity_handoff_packet(integrity),
+    }
+
+
+@api.get("/data-snapshots/integrity-handoff")
+def get_data_snapshot_integrity_handoff() -> dict:
+    """Expose copyable raw-cache integrity handoff without executing any action."""
+
+    integrity = build_cached_snapshot_integrity_report()
+    return {
+        "status": "raw_snapshot_integrity_handoff_not_model_integration",
+        "guardrail": "Handoff ist read-only: kein Netzwerkabruf, kein Cache-Schreiben, keine Review-Erzeugung und keine Registry-/Modellmutation.",
+        "snapshot_integrity": integrity,
+        "integrity_handoff_packet": build_cached_snapshot_integrity_handoff_packet(integrity),
     }
 
 
@@ -126,6 +141,7 @@ def get_data_snapshot_integrity_action_plan() -> dict:
         "guardrail": "Action-Plan ist read-only: kein Netzwerkabruf, kein Cache-Schreiben, keine Review-Erzeugung und keine Registry-/Modellmutation.",
         "snapshot_integrity": integrity,
         "integrity_action_plan": build_cached_snapshot_integrity_action_plan(integrity),
+        "integrity_handoff_packet": build_cached_snapshot_integrity_handoff_packet(integrity),
     }
 
 

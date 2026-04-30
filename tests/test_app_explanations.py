@@ -87,6 +87,10 @@ def test_learning_data_passport_overview_separates_registry_cache_and_transforma
     }
     assert "first_safe_action" in overview["snapshot_integrity_action_plan"]
     assert "keine Registry-/Modellmutation" in overview["snapshot_integrity_action_plan"]["guardrail"]
+    handoff = overview["snapshot_integrity_handoff_packet"]
+    assert handoff["status_route"] == "GET /data-snapshots/integrity"
+    assert "curl -s" in handoff["copyable_status_command"]
+    assert "kein execute=true" in handoff["guardrail"]
     assert 1 <= len(overview["rows"]) <= 6
     first_row = overview["rows"][0]
     assert {"Parameter", "Register", "Evidenz", "Rohdaten-Cache", "Geprüfte Transformation", "Hinweis"} <= set(first_row)

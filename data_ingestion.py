@@ -590,6 +590,43 @@ def build_cached_snapshot_integrity_report(cache_root: Path | str = CACHE_ROOT) 
     }
 
 
+def build_cached_snapshot_integrity_handoff_packet(integrity_report: dict) -> dict:
+    """Create a copyable, read-only handoff for raw-cache integrity follow-up.
+
+    The packet translates the integrity report into operator-safe routes and a
+    definition of done before any transformation review. It deliberately avoids
+    network fetches, cache writes, review creation, registry/model mutation, or
+    policy-effect claims.
+    """
+
+    action_plan = build_cached_snapshot_integrity_action_plan(integrity_report)
+    status = action_plan["overall_status"]
+    if status == "integrity_blocker_before_review":
+        first_safe_step = "Integritätsblocker zuerst manuell klären; keine Transformation-Review starten."
+    elif status == "integrity_ok_but_not_reviewed":
+        first_safe_step = "Nur die passende Transformation-Review-Vorlage öffnen; noch keinen Modellwert ändern."
+    else:
+        first_safe_step = "Erst Connector-Planung/Dry-run prüfen; kein Live-Fetch aus diesem Handoff."
+
+    return {
+        "title": "Rohcache-Integrität: Operator-Handoff",
+        "status": status,
+        "first_safe_step": first_safe_step,
+        "status_route": "GET /data-snapshots/integrity",
+        "action_plan_route": "GET /data-snapshots/integrity-action-plan",
+        "copyable_status_command": "curl -s http://localhost:8000/data-snapshots/integrity-action-plan",
+        "operator_sequence": [
+            "Integritätsstatus lesen",
+            "Bei Mismatch/fehlender Rohdatei Review pausieren und Manifest/Rohdatei prüfen",
+            "Bei SHA256 ok nur Transformation-Review-Template öffnen",
+            "Registry-/Modellintegration separat planen, testen und dokumentieren",
+        ],
+        "definition_of_done_before_transformation_review": action_plan["definition_of_done_before_review"],
+        "rows": action_plan["rows"],
+        "guardrail": "Handoff ist read-only/status-only: kein execute=true, kein Netzwerkabruf, kein Cache-Schreiben, keine Review-Erzeugung, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    }
+
+
 def build_cached_snapshot_integrity_action_plan(integrity_report: dict) -> dict:
     """Turn raw-cache integrity status into safe operator next actions.
 

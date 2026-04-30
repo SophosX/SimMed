@@ -51,6 +51,21 @@ def test_api_exposes_focused_snapshot_integrity_without_fetch_or_import():
         "no_cached_snapshots_yet",
     }
     assert "keine Registry-/Modellmutation" in body["integrity_action_plan"]["guardrail"]
+    assert body["integrity_handoff_packet"]["status_route"] == "GET /data-snapshots/integrity"
+
+
+def test_api_exposes_focused_snapshot_integrity_handoff_without_execution():
+    client = TestClient(api)
+    response = client.get("/data-snapshots/integrity-handoff")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "raw_snapshot_integrity_handoff_not_model_integration"
+    packet = body["integrity_handoff_packet"]
+    assert packet["action_plan_route"] == "GET /data-snapshots/integrity-action-plan"
+    assert "curl -s" in packet["copyable_status_command"]
+    assert "kein execute=true" in packet["guardrail"]
+    assert "keine Registry-/Modellmutation" in packet["guardrail"]
 
 
 def test_api_exposes_focused_snapshot_integrity_action_plan_without_execution():
