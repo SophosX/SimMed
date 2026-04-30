@@ -69,6 +69,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_operator_export_bundle,
     build_data_readiness_registry_integration_operator_export_bundle_walkthrough,
     build_data_readiness_registry_integration_operator_export_next_review,
+    build_data_readiness_registry_integration_operator_export_review_stoplight,
     build_data_readiness_registry_integration_pr_runbook,
     build_data_readiness_registry_integration_progress_timeline,
     build_data_readiness_registry_integration_status_board,
@@ -4262,6 +4263,9 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
     operator_export_next_review = build_data_readiness_registry_integration_operator_export_next_review(
         operator_export_bundle, operator_export_bundle_walkthrough
     )
+    operator_export_review_stoplight = build_data_readiness_registry_integration_operator_export_review_stoplight(
+        operator_export_next_review, operator_export_audit
+    )
     return {
         "title": "Nächste Daten-Schritte: erst Cache, dann Review, dann Integration",
         "plain_language_note": (
@@ -4303,6 +4307,7 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         "registry_integration_operator_export_bundle": operator_export_bundle,
         "registry_integration_operator_export_bundle_walkthrough": operator_export_bundle_walkthrough,
         "registry_integration_operator_export_next_review": operator_export_next_review,
+        "registry_integration_operator_export_review_stoplight": operator_export_review_stoplight,
         "registry_integration_handoff_packet": build_data_readiness_registry_integration_handoff_packet(decision_record),
         "registry_integration_pr_runbook": pr_runbook,
         "rows": [
@@ -4815,6 +4820,20 @@ def render_learning_data_readiness_backlog():
         st.caption("Operator-Checks: " + " · ".join(export_next_review["operator_checks"]))
         st.caption(export_next_review["stop_condition"])
         st.caption(export_next_review["guardrail"])
+        export_review_stoplight = backlog["registry_integration_operator_export_review_stoplight"]
+        st.markdown(f"**{export_review_stoplight['title']}**")
+        st.caption(export_review_stoplight["plain_language_note"])
+        st.dataframe(pd.DataFrame([
+            {
+                "Status": export_review_stoplight["overall_status"],
+                "Darf Status-Handoff teilen?": "ja" if export_review_stoplight["may_share_status_handoff"] else "nein",
+                "Erste Aktion": export_review_stoplight["first_safe_action"],
+                "Stop-Gate": export_review_stoplight["stop_condition"],
+            }
+        ]), use_container_width=True, hide_index=True)
+        st.dataframe(pd.DataFrame(export_review_stoplight["checks"]), use_container_width=True, hide_index=True)
+        st.caption("Routen in Reihenfolge: " + " → ".join(export_review_stoplight["routes_to_open_in_order"]))
+        st.caption(export_review_stoplight["guardrail"])
         command_palette = backlog["registry_integration_command_palette"]
         st.markdown(f"**{command_palette['title']}**")
         st.caption(command_palette["plain_language_note"])

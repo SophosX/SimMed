@@ -3182,6 +3182,56 @@ def build_data_readiness_registry_integration_operator_export_next_review(
     }
 
 
+def build_data_readiness_registry_integration_operator_export_review_stoplight(
+    export_next_review: dict,
+    export_audit: dict,
+) -> dict:
+    """Return a one-screen stoplight for the next Registry export review.
+
+    The next-review object tells an operator what to open next; this stoplight makes
+    the go/no-go state visible before anyone copies routes into an issue or starts
+    code work. It remains read-only: no route execution, no branch, no cache/review
+    write, and no Registry/model mutation.
+    """
+
+    copy_safe = export_audit.get("copy_safe") is True and not export_audit.get("unsafe_findings")
+    has_status_route = str(export_next_review.get("copyable_status_route", "")).startswith("GET ")
+    has_parameter_route = str(export_next_review.get("then_open_parameter_route", "")).startswith("GET ")
+    has_stop_condition = bool(export_next_review.get("stop_condition"))
+    all_green = copy_safe and has_status_route and has_parameter_route and has_stop_condition
+    return {
+        "title": "Registry-Export-Review-Stoplight",
+        "plain_language_note": (
+            "Ampel vor der nächsten Registry-Export-Prüfung: Erst Copy-Safety, GET-Routen "
+            "und Stop-Gate prüfen; erst danach darf das Paket als Status-Handoff weitergegeben werden. "
+            "Auch Grün bedeutet nur lesen/prüfen, nicht integrieren."
+        ),
+        "primary_parameter_key": export_next_review.get("primary_parameter_key"),
+        "primary_label": export_next_review.get("primary_label"),
+        "overall_status": "gruen_nur_status_handoff" if all_green else "rot_stoppen_und_bundle_pruefen",
+        "may_share_status_handoff": all_green,
+        "first_safe_action": export_next_review.get("next_safe_action", "Copy-Safety prüfen"),
+        "routes_to_open_in_order": [
+            route
+            for route in [
+                export_next_review.get("copyable_status_route"),
+                export_next_review.get("then_open_parameter_route"),
+                "GET /data-readiness/registry-integration-decision-template",
+            ]
+            if route
+        ],
+        "checks": [
+            {"check": "Export-Audit ist copy-safe", "passed": copy_safe, "detail": export_audit.get("verdict_label", "nicht_geprueft")},
+            {"check": "Nächste Route ist GET/status-only", "passed": has_status_route, "detail": export_next_review.get("copyable_status_route", "")},
+            {"check": "Parameterroute ist GET/status-only", "passed": has_parameter_route, "detail": export_next_review.get("then_open_parameter_route", "")},
+            {"check": "Stop-Gate vor Branch/PR sichtbar", "passed": has_stop_condition, "detail": export_next_review.get("stop_condition", "")},
+        ],
+        "stop_condition": export_next_review.get("stop_condition") or "STOP: Bundle/Audit erst vervollständigen.",
+        "definition_of_done_before_branch": export_next_review.get("definition_of_done_before_branch", []),
+        "guardrail": "Read-only/Review-stoplight-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    }
+
+
 def build_data_readiness_registry_integration_handoff_packet(decision_record: dict) -> dict:
     """Create a copy-safe operator handoff from the Go/Hold/Reject decision record.
 

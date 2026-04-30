@@ -34,6 +34,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_operator_briefing_cards,
     build_data_readiness_registry_integration_operator_briefing_handoff_sheet,
     build_data_readiness_registry_integration_operator_export_share_cards,
+    build_data_readiness_registry_integration_operator_export_review_stoplight,
     build_data_readiness_registry_integration_operator_steps,
     build_data_readiness_registry_integration_pr_runbook,
     build_data_readiness_registry_integration_progress_timeline,
@@ -1645,3 +1646,35 @@ def test_registry_operator_export_share_cards_turn_digest_into_mobile_safe_hando
     assert "execute=true" not in cards["cards"][1]["body"]
     assert "kein Branch" in cards["guardrail"]
     assert "keine Registry-/Modellmutation" in cards["guardrail"]
+
+
+def test_registry_operator_export_review_stoplight_blocks_before_branch_and_model_changes():
+    next_review = {
+        "primary_parameter_key": "bevoelkerung_mio",
+        "primary_label": "Bevölkerung",
+        "next_safe_action": "Copy-Safety prüfen",
+        "copyable_status_route": "GET /data-readiness/registry-integration-operator-export-audit",
+        "then_open_parameter_route": "GET /data-readiness/bevoelkerung_mio",
+        "stop_condition": "STOP: vor Branch/PR menschliches Go/Hold/Reject dokumentieren.",
+        "definition_of_done_before_branch": ["Go/Hold/Reject dokumentiert"],
+    }
+    audit = {"copy_safe": True, "unsafe_findings": [], "verdict_label": "copy-safe_status_only"}
+
+    stoplight = build_data_readiness_registry_integration_operator_export_review_stoplight(next_review, audit)
+
+    assert stoplight["overall_status"] == "gruen_nur_status_handoff"
+    assert stoplight["may_share_status_handoff"] is True
+    assert stoplight["routes_to_open_in_order"][:2] == [
+        "GET /data-readiness/registry-integration-operator-export-audit",
+        "GET /data-readiness/bevoelkerung_mio",
+    ]
+    assert all(check["passed"] for check in stoplight["checks"])
+    assert "kein execute=true" in stoplight["guardrail"]
+    assert "keine Registry-/Modellmutation" in stoplight["guardrail"]
+
+    blocked = build_data_readiness_registry_integration_operator_export_review_stoplight(
+        {**next_review, "copyable_status_route": "POST /data-connectors/execute-planned-snapshot"},
+        audit,
+    )
+    assert blocked["overall_status"] == "rot_stoppen_und_bundle_pruefen"
+    assert blocked["may_share_status_handoff"] is False

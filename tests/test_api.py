@@ -1281,3 +1281,18 @@ def test_api_exposes_registry_integration_operator_briefing_without_actions():
     invalid = client.get("/data-readiness/registry-integration-operator-briefing?limit=0")
     assert invalid.status_code == 422
     assert invalid.json()["detail"]["status"] == "invalid_data_readiness_registry_integration_operator_briefing_limit"
+
+
+def test_api_exposes_registry_operator_export_review_stoplight_without_execution():
+    client = TestClient(api)
+    response = client.get("/data-readiness/registry-integration-operator-export-review-stoplight")
+
+    assert response.status_code == 200
+    payload = response.json()
+    stoplight = payload["registry_integration_operator_export_review_stoplight"]
+    assert payload["status"] == "data_readiness_registry_integration_operator_export_review_stoplight_not_applied"
+    assert stoplight["title"] == "Registry-Export-Review-Stoplight"
+    assert stoplight["routes_to_open_in_order"]
+    assert all(route.startswith("GET ") for route in stoplight["routes_to_open_in_order"])
+    assert "kein execute=true" in payload["guardrail"]
+    assert "keine Registry-/Modellmutation" in stoplight["guardrail"]

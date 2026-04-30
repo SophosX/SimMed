@@ -2974,3 +2974,16 @@ Keine wichtige neue Entscheidung offen.
 
 ### Verification / Git
 Gezielte Tests bestanden; Full Suite läuft/folgt. Commit/Push und Zip-Refresh nach vollständiger Verifikation.
+
+
+## 2026-04-30 — Registry-Export-Review-Stoplight
+
+- **Context:** Autonomer Heartbeat mit Alex-Korrektur: primär Core-Plattform statt KI/Evidence. Aktiver Branch `feat/platform-data-status-foundation`; vorherige Registry-Export-Handoff-Kette war vorhanden, aber die nächste Prüfung brauchte eine einfache Ampel vor Weitergabe/Codearbeit.
+- **Project Manager:** Kleine, sichere Plattform-Scheibe gewählt: ein read-only Stoplight statt neuer Datenannahmen oder Live-Connector-Ausführung.
+- **Designer/UX:** Learning Page zeigt jetzt nach dem Next-Review eine klare Ampel mit Status, erstem sicheren Schritt, Checkliste und Routenreihenfolge; mobile/tablet-sicher als Tabellen/Infotext, nicht Hover-only.
+- **Creative Agent:** Das Stoplight macht das komplexe Export-Bundle teilbarer: grün heißt nur Status-Handoff, rot heißt stoppen und Bundle/Audit prüfen.
+- **Political Health-System Strategist:** Keine neuen Politik-/Stakeholderclaims; Guardrails verhindern, dass ein technisches Go als politische/amtliche Prognose oder Wirkungsbeweis gelesen wird.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; Änderung ist Governance-/Provenance-UX und verwendet bestehende Registry/Data-Readiness-Objekte.
+- **Integrator Decision:** `build_data_readiness_registry_integration_operator_export_review_stoplight(...)` in `data_ingestion.py` ergänzt, in API und Learning Page verdrahtet, fokussierter GET-Endpunkt hinzugefügt.
+- **Question to Alex if needed:** Keine; nächster sinnvoller Plattform-Schritt ist die gleiche Ampellogik für echte Pre-Review/Cache-Start-Übergaben oder ein klarerer Daten-Werkbank-Einstieg.
+- **Verification/Git:** `pytest -q` → 167 passed; `py_compile` für `app.py`, `api.py`, `data_ingestion.py`, relevante Tests; Smoke `build_learning_data_readiness_backlog(limit=2)` → Stoplight grün/status-only. Commit/Push folgt in diesem Lauf.
