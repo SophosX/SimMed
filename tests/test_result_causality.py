@@ -115,7 +115,7 @@ def test_short_answer_reads_like_plain_first_screen_result_not_helper_text():
     sections = packet["result_sections"]
     public_view = packet["public_result_view"]
 
-    assert answer.startswith("Rausgekommen ist:")
+    assert answer.startswith("Das Ergebnis:")
     assert "Was bedeutet das?" in answer
     assert "Medizinstudienplätze" in answer
     assert "Ärzte pro 100k" in answer and "Facharzt-Wartezeit" in answer
@@ -139,6 +139,28 @@ def test_short_answer_reads_like_plain_first_screen_result_not_helper_text():
     combined_public = _public_text(packet) + "\n" + public_view["briefing_markdown"]
     for banned in ["random Internet", "Klartext", "KPI-Wand", "generated", "helper", "DataFrame", "Legacy"]:
         assert banned not in combined_public
+
+
+def test_public_result_view_answers_four_first_screen_questions_before_audit():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    view = packet["public_result_view"]
+    rows = view["answer_rows"]
+
+    assert [row["question"] for row in rows] == [
+        "Was ist rausgekommen?",
+        "Was hat sich relevant verändert?",
+        "Warum?",
+        "Was bedeutet das?",
+    ]
+    assert all(len(row["answer"]) <= 190 for row in rows)
+    assert "Kapazitätsdruck" in rows[0]["answer"]
+    assert "Ärzte pro 100k" in rows[1]["answer"] and "Facharzt-Wartezeit" in rows[1]["answer"]
+    assert "ab etwa Jahr 6" in rows[2]["answer"]
+    assert "prüfen" in rows[3]["answer"]
+    assert view["executive_brief"]["answer_rows"] == rows
 
 
 def test_public_result_view_has_single_follow_up_rendering_instruction():
@@ -295,6 +317,7 @@ def test_public_result_packet_is_minimal_and_does_not_expose_legacy_layers_first
             "headline",
             "briefing_markdown",
             "executive_brief",
+            "answer_rows",
             "short_answer",
         "result_sections",
         "first_screen_blocks",

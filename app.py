@@ -3526,6 +3526,12 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
         st.markdown(f"### {brief.get('title') or view.get('headline', packet.get('result_headline', packet['title']))}")
         st.write(brief.get("lead") or view.get("short_answer", packet.get("short_answer", "Der Modelllauf wurde berechnet; die Detailprüfung steht darunter.")))
 
+        answer_rows = brief.get("answer_rows") or view.get("answer_rows", [])
+        if answer_rows:
+            st.markdown("**Auf einen Blick**")
+            for row in answer_rows:
+                st.markdown(f"- **{row.get('question', 'Frage')}** {row.get('answer', '')}")
+
         blocks = brief.get("blocks") or view.get("result_sections") or packet.get("result_sections", [])
         for block in blocks:
             heading = block["heading"]

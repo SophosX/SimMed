@@ -5516,3 +5516,32 @@ Keine wichtige Entscheidung offen. Sicherer Default: weiter visuell vereinfachen
 
 ### Verification / Git
 Verifiziert lokal: `pytest tests/test_result_causality.py::test_causal_result_layout_keeps_dense_kpis_optional_after_cleartext -q` → passed; `pytest tests/test_result_causality.py tests/test_api.py -q` → 124 passed; `py_compile app.py result_causality.py api.py simulation_core.py`; `pytest -q` → 283 passed; 50-run/15-year Smoke mit halbierten Medizinstudienplätzen → OK. Git-Sync/Commit/Push folgt.
+
+## 2026-04-30 18:17 Europe/Berlin — Result-first briefing clarity slice
+
+### Context
+Alex corrected the result page direction: the first screen must answer plainly what happened, what changed, why, and what it means, without stacking more generated-looking widgets. This slice touched `result_causality.py`, `app.py`, and `tests/test_result_causality.py`.
+
+### Project Manager
+Priority: make the first result view easier to read before adding more scenario levers. Risk: the existing helper-rich result stack can still feel like too many layers, so the new answer rows must stay short and the audit/detail layers remain collapsed. Next tasks: keep reducing duplicate first-view blocks and make the briefing flow visually calmer in Streamlit.
+
+### Designer / UX
+The first card now gets an “Auf einen Blick” row set for the four user questions: result, relevant change, reason, meaning. This should help Alex see the answer before opening any audit tables.
+
+### Creative Agent
+Idea: later turn the same four-question answer rows into a printable/shareable mini-brief header. Fit: useful for serious policy communication, but only after the on-screen hierarchy feels settled.
+
+### Political Health-System Strategist
+The wording keeps political evaluation downstream: it says to check timing, burden, buffers, and evidence limits before political judgement. This avoids presenting a scenario as a ready-made policy recommendation.
+
+### Evidence / Domain
+No new external evidence or factual claims were added. The change is a communication layer over the existing SimMed model output and documented medical-training pipeline assumption.
+
+### Integrator Decision
+Accepted: add `public_result_view.answer_rows` / `executive_brief.answer_rows`, render them in the first result card, and tighten the short answer from “Rausgekommen ist” to the more serious “Das Ergebnis”. Deferred: deeper visual redesign beyond the first card hierarchy.
+
+### Question to Alex
+No important decision is open; continue safely with first-screen simplification and deduplication.
+
+### Verification / Git
+Focused tests passed: `tests/test_result_causality.py` (56 passed) and result/API/app explanation focus set (121 passed). Full verification passed: `python3 -m pytest -q` (284 passed), `py_compile`, and 50-run simulation smoke with causal packet assertion. Git sync/commit/push recorded by this heartbeat after verification.

@@ -1039,7 +1039,7 @@ def build_causal_result_packet(
     ) or "keine priorisierten Kennzahlen verfügbar"
     if study_places_changed:
         short_answer = (
-            f"Rausgekommen ist: Weniger Medizinstudienplätze erzeugen verzögerten Kapazitätsdruck; wichtigste Signale: {top_kpi_sentences}. "
+            f"Das Ergebnis: Weniger Medizinstudienplätze erzeugen verzögerten Kapazitätsdruck; wichtigste Signale: {top_kpi_sentences}. "
             "Warum? Über die Ausbildungs-Pipeline: ab etwa Jahr 6 kommt weniger Nachwuchs an, Richtung Jahr 11–15 wird der Facharztpfad wichtig. "
             "Was bedeutet das? Das bedeutet: als Nächstes Wartezeit, Belastung und Puffer prüfen, dann politisch bewerten."
         )
@@ -1091,6 +1091,32 @@ def build_causal_result_packet(
         )
     else:
         result_body = "Das Ergebnis beschreibt den Referenzpfad ohne zusätzlichen Eingriff."
+    answer_rows = [
+        {
+            "question": "Was ist rausgekommen?",
+            "answer": result_body,
+        },
+        {
+            "question": "Was hat sich relevant verändert?",
+            "answer": (
+                "; ".join(
+                    f"{row['label']} {row['direction']}: {row['start']} → {row['end']}"
+                    for row in relevant_kpis_public[:2]
+                )
+                or "Keine priorisierten Kennzahlen verfügbar."
+            ),
+        },
+        {
+            "question": "Warum?",
+            "answer": "ab etwa Jahr 6 wirkt die Ausbildungs-Pipeline; Richtung Jahr 11–15 zählt der Facharztpfad."
+            if study_places_changed
+            else "Die Bewegung folgt den dokumentierten SimMed-Pfaden für Kapazität, Nachfrage, Finanzierung und regionale Verteilung.",
+        },
+        {
+            "question": "Was bedeutet das?",
+            "answer": "Erst Wartezeit, Belastung, Puffer und Evidenzgrenzen prüfen; danach politisch bewerten.",
+        },
+    ]
     if study_places_changed:
         why_body = (
             "Der Eingriff wirkt verzögert: In Jahr 0–5 ändert sich wenig; Ab etwa Jahr 6 kommt weniger Nachwuchs an, Richtung Jahr 11–15 zählt der Facharztpfad."
@@ -1179,6 +1205,7 @@ def build_causal_result_packet(
     executive_brief = {
         "title": result_headline,
         "lead": short_answer,
+        "answer_rows": answer_rows,
         "blocks": executive_brief_blocks,
         "audit_hint": "Details bleiben darunter geschlossen: Zeitfenster, Evidenz, vollständige Kennzahlen und politische Einordnung.",
     }
@@ -1212,6 +1239,7 @@ def build_causal_result_packet(
         "short_answer": short_answer,
         "briefing_markdown": briefing_markdown,
         "executive_brief": executive_brief,
+        "answer_rows": answer_rows,
         "result_sections": result_sections,
         "first_screen_blocks": first_screen_blocks,
         "primary_blocks": first_screen_blocks,
