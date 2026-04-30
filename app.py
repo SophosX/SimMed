@@ -2700,7 +2700,7 @@ def render_result_narrative_summary(agg: pd.DataFrame, params: dict):
 
 
 def _changed_policy_lever_notes(params: dict) -> List[str]:
-    """Beschreibt veränderte Szenario-Hebel in Klartext.
+    """Beschreibt veränderte Szenario-Hebel in verständlicher Sprache.
 
     Diese Hinweise sind bewusst qualitativ. Sie helfen Nutzer:innen zu sehen,
     welche von ihnen geänderten Stellschrauben die Ergebnis-Erklärungen besonders
@@ -2746,7 +2746,7 @@ def _changed_policy_lever_notes(params: dict) -> List[str]:
 
 
 def build_kpi_explanations(agg: pd.DataFrame, params: dict) -> List[Dict[str, str]]:
-    """Erzeugt kurze Klartext-Erklärungen für zentrale Live-Ergebnisse.
+    """Erzeugt kurze, verständliche Erklärungen für zentrale Live-Ergebnisse.
 
     Die Texte sind bewusst keine zusätzliche Modelllogik. Sie übersetzen die
     bereits simulierten KPI-Trends in eine nachvollziehbare Ursache-Wirkungs-
@@ -2812,7 +2812,7 @@ def render_kpi_explanation_card(agg: pd.DataFrame, params: dict):
     st.markdown("---")
     st.markdown("### Warum verändern sich die Ergebnisse?")
     st.caption(
-        "Diese Erklärungen übersetzen die simulierten Trends in Klartext. Sie sind keine zusätzliche Prognose, "
+        "Diese Erklärungen übersetzen die simulierten Trends in einfache Sprache. Sie sind keine zusätzliche Prognose, "
         "sondern zeigen, welche Modellannahmen die Richtung treiben."
     )
     for explanation in build_kpi_explanations(agg, params):

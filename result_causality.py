@@ -803,7 +803,7 @@ def build_causal_result_packet(
         },
     ]
     lead_paragraph = (
-        "Kurz gesagt: Dieser Lauf wird nicht als Zahlenwand gelesen, sondern als Wirkungskette. "
+        "Kurz gesagt: Dieser Lauf wird als Wirkungskette gelesen. "
         "Die erste Ansicht konzentriert sich auf wenige relevante Kennzahlen, erklärt die gesetzte Änderung, "
         "ordnet den berechneten Wirkpfad ein und zeigt, welche Anpassungsreaktionen vor einer politischen Deutung geprüft werden müssen."
     )

@@ -4490,3 +4490,33 @@ Keine offene Entscheidung nötig; sicherer nächster Schritt ist weitere Layout-
 
 ### Verification / Git
 RED gesehen: neuer Test fiel zunächst mit `KeyError: 'first_screen_blocks'`. GREEN: fokussierter Test bestanden, anschließend `tests/test_result_causality.py` plus API-Causal-Packet-Test bestanden. Vollsuite/Git-Push folgen im selben Heartbeat nach dieser Log-Aktualisierung.
+
+
+## 2026-04-30 13:34 Europe/Berlin — Result first-screen wording cleanup
+
+### Context
+Alex's latest correction remains the top priority: the result page must feel like one readable German briefing, not overlapping helper/table layers. This run inspected the current simplified `result_causality.py` packet and Streamlit first-view renderer, then removed remaining public-facing/internal wording that could leak into the result/audit layers.
+
+### Project Manager
+Priority stays on a coherent first result screen: result, intervention, mechanism, relevant KPIs, adaptation, interpretation, next check. Risk: legacy collapsed sections can still feel dense, so the next larger slice should reduce or merge them rather than adding another block.
+
+### Designer / UX
+The first result card already leads with a headline, short answer, seven-section flow, and compact KPI cards. The wording cleanup keeps the tone more serious and less meta; the next UI step should make the page visually look like a single briefing sheet with fewer expanders.
+
+### Creative Agent
+Idea: turn the first result into a “Briefingbogen” with one left-column causal narrative and one right-column KPI strip. Fit: high for readability and mobile hierarchy if implemented carefully; defer until a full layout slice can be tested.
+
+### Political Health-System Strategist
+The result still correctly avoids treating model output as a vote forecast, lobbying recommendation, official forecast, or proof of effectiveness. Political interpretation should remain below the clinical/capacity/result explanation.
+
+### Evidence / Domain
+No new external factual claim or source was added. This was a communication-layer cleanup only; evidence/assumption rows remain available in the collapsed review section.
+
+### Integrator Decision
+Accepted: remove remaining user-visible/internal banned phrasing (`Klartext`, `Zahlenwand`) from the result explanation path while preserving the simplified causal packet and existing tests. Deferred: a larger visual consolidation of all legacy result expanders into one briefing layout.
+
+### Question to Alex
+No important decision needed in this run; continue safely with the readable-result-page consolidation.
+
+### Verification / Git
+Focused tests: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients tests/test_app_explanations.py -q` → 98 passed. Full suite: `python3 -m pytest -q` → 261 passed. Smoke: 50-run/3-year study-place-cut simulation plus causal packet build passed. Git commit/push status to be recorded after sync.
