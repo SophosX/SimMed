@@ -124,6 +124,10 @@ def test_api_exposes_transformation_review_draft_preflight_without_recording_rev
     assert "example_payload" in example
     assert "review-draft/validate" in example["copyable_validate_command"]
     assert "keine Registry-/Modellmutation" in example["guardrail"]
+    validation_packet = body["transformation_review_draft_validation_packet"]
+    assert validation_packet["validate_route"] == "POST /data-snapshots/review-draft/validate"
+    assert "curl -s" in validation_packet["copyable_validate_command"]
+    assert "keine Review-Erzeugung" in validation_packet["guardrail"]
     for row in preflight["rows"]:
         assert row["draft_status"] == "template_ready_not_recorded"
         assert "review_template_route" in row
@@ -192,6 +196,9 @@ def test_api_validates_transformation_review_draft_without_persisting():
     assert body["status"] == "transformation_review_draft_validation_not_persisted"
     validation = body["transformation_review_draft_validation"]
     assert validation["parameter_key"] == "bevoelkerung_mio"
+    validation_packet = body["transformation_review_draft_validation_packet"]
+    assert validation_packet["parameter_key"] == "bevoelkerung_mio"
+    assert validation_packet["validate_route"] == "POST /data-snapshots/review-draft/validate"
     assert validation["status"] in {
         "draft_validation_blocked_by_snapshot_mismatch",
         "draft_validation_blocked_no_preflight_row",

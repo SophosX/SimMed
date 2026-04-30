@@ -2661,3 +2661,32 @@ Keine wichtige Produktentscheidung offen; sicherer nächster Schritt ist, dieses
 
 ### Verification / Git
 Spezifischer API-Test, volle Testsuite, py_compile und kleiner Simulations-Smoke bestanden. Commit/Push folgt nach Zip-Refresh.
+## 2026-04-30 05:22 Europe/Berlin — Heartbeat: Review-Draft-Validierungspaket
+
+### Context
+Core-platform priority: Datenaufnahme/Provenienz. Existing review-draft validation was available as raw API output; this slice packages it into a copyable, mobile/API-safe operator validation packet before any persisted ReviewedTransformation.
+
+### Project Manager
+Priority bleibt Real-Data-Gates: raw cache → review draft → validation → separate review/integration. Risk: operators could confuse a formally valid draft with model integration; guardrails stay explicit. Next: focused endpoint/UI for persisted-review creation only after a stronger manual confirmation design.
+
+### Designer / UX
+Learning Page now shows a concrete next-safe-step and copyable validation command, not just status text, improving first-time operator flow on mobile/tablet.
+
+### Creative Agent
+Idea: later turn validation packets into a small “Datenwerkbank wizard”; fit is good if every step remains read-only until explicit human confirmation. Deferred.
+
+### Political Health-System Strategist
+No new stakeholder claims. The safety gate reduces risk that politically sensitive model outputs are treated as official proof before reviewed data and integration decisions exist.
+
+### Evidence / Domain
+No new external research; this is provenance workflow infrastructure. It keeps SHA256/preflight validation separate from transformation review, Registry changes, official forecasts, and policy-effect claims.
+
+### Integrator Decision
+Accepted: add `build_transformation_review_draft_validation_packet(...)`, expose it through API aggregate/validation responses and Learning Page overview, with regression tests.
+
+### Question to Alex
+Keine.
+
+### Verification / Git
+Local verification passed: `pytest -q` (161 passed), `py_compile` for touched files, and 30-run/3-year simulation smoke (`df=(120,30)`, `reg=(480,6)`). Commit/push status recorded in heartbeat.
+

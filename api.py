@@ -23,6 +23,7 @@ from data_ingestion import (
     build_transformation_review_draft_handoff_packet,
     build_transformation_review_draft_preflight,
     build_transformation_review_draft_status_cards,
+    build_transformation_review_draft_validation_packet,
     validate_transformation_review_draft_payload,
     build_connector_execution_plan,
     build_connector_execution_workbench,
@@ -158,6 +159,7 @@ def get_data_snapshot_review_start_checklist() -> dict:
         "transformation_review_draft_status_cards": build_transformation_review_draft_status_cards(preflight),
         "transformation_review_draft_handoff_packet": build_transformation_review_draft_handoff_packet(preflight),
         "transformation_review_draft_example_payload": build_transformation_review_draft_example_payload(preflight),
+        "transformation_review_draft_validation_packet": build_transformation_review_draft_validation_packet(preflight),
     }
 
 
@@ -176,6 +178,7 @@ def get_data_snapshot_review_draft_preflight() -> dict:
         "transformation_review_draft_status_cards": build_transformation_review_draft_status_cards(preflight),
         "transformation_review_draft_handoff_packet": build_transformation_review_draft_handoff_packet(preflight),
         "transformation_review_draft_example_payload": build_transformation_review_draft_example_payload(preflight),
+        "transformation_review_draft_validation_packet": build_transformation_review_draft_validation_packet(preflight),
     }
 
 
@@ -221,6 +224,7 @@ def validate_data_snapshot_review_draft(request: TransformationReviewDraftValida
         "status": "transformation_review_draft_validation_not_persisted",
         "guardrail": "Validierung ist read-only: keine Review-Erzeugung, kein Cache-Schreiben, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
         "transformation_review_draft_validation": validation,
+        "transformation_review_draft_validation_packet": build_transformation_review_draft_validation_packet(preflight, validation),
         "transformation_review_draft_preflight": preflight,
     }
 

@@ -114,6 +114,10 @@ def test_learning_data_passport_overview_separates_registry_cache_and_transforma
     draft_validation = overview["snapshot_review_draft_validation_example"]
     assert draft_validation["status"].startswith("draft_validation_")
     assert "keine Review-Erzeugung" in draft_validation["guardrail"]
+    validation_packet = overview["snapshot_review_draft_validation_packet"]
+    assert validation_packet["validate_route"] == "POST /data-snapshots/review-draft/validate"
+    assert "curl -s" in validation_packet["copyable_validate_command"]
+    assert "keine Registry-/Modellmutation" in validation_packet["guardrail"]
     draft_example = overview["snapshot_review_draft_example_payload"]
     assert "example_payload" in draft_example
     assert "review-draft/validate" in draft_example["copyable_validate_command"]

@@ -859,6 +859,69 @@ def validate_transformation_review_draft_payload(draft_preflight: dict, payload:
     }
 
 
+def build_transformation_review_draft_validation_packet(draft_preflight: dict, validation: dict | None = None) -> dict:
+    """Package draft validation results into a copyable, read-only operator step.
+
+    The packet turns the raw validation object into a concrete next action for
+    humans/agents: which fields are missing, which route to use, and what remains
+    forbidden. It deliberately does not persist a ReviewedTransformation or mutate
+    registry/model values.
+    """
+
+    rows = draft_preflight.get("rows", [])
+    first_row = rows[0] if rows else {}
+    if validation is None:
+        validation = validate_transformation_review_draft_payload(
+            draft_preflight,
+            {
+                "parameter_key": first_row.get("parameter_key", ""),
+                "source_snapshot_sha256": first_row.get("source_snapshot_sha256", ""),
+                "reviewer": "",
+                "method_note": "",
+                "output_value": None,
+                "output_unit": "",
+                "caveat": "",
+            },
+        )
+
+    status = validation.get("status", "draft_validation_unknown")
+    missing_fields = validation.get("missing_fields", [])
+    if status == "draft_validation_ready_for_manual_record_review":
+        first_safe_step = "Draft ist formal vollständig; Review-Erfassung bleibt ein separater manueller Schritt vor jeder Registry-/Modellintegration."
+    elif status == "draft_validation_blocked_by_snapshot_mismatch":
+        first_safe_step = "Parameter/SHA256 passt nicht zum Preflight; Rohdatei und Manifest erneut prüfen, nichts erfassen."
+    elif missing_fields:
+        first_safe_step = f"Fehlende Pflichtfelder ergänzen: {', '.join(missing_fields)}; danach erneut nur validieren."
+    else:
+        first_safe_step = "Erst Draft-Preflight herstellen; keine Platzhalter als Review erfassen."
+
+    example_payload = build_transformation_review_draft_example_payload(draft_preflight)["example_payload"]
+    return {
+        "title": "Transformation-Review-Draft: Validierungspaket",
+        "status": status,
+        "parameter_key": validation.get("parameter_key") or first_row.get("parameter_key", ""),
+        "matched_preflight_row": validation.get("matched_preflight_row", False),
+        "missing_fields": missing_fields,
+        "first_safe_step": first_safe_step,
+        "validate_route": "POST /data-snapshots/review-draft/validate",
+        "review_template_route": validation.get("matched_review_template_route") or first_row.get("review_template_route", ""),
+        "copyable_validate_command": (
+            "curl -s -X POST http://localhost:8000/data-snapshots/review-draft/validate "
+            "-H 'Content-Type: application/json' -d '"
+            + json.dumps(example_payload, ensure_ascii=False)
+            + "'"
+        ),
+        "operator_sequence": [
+            "Draft-Preflight und Rohcache-Integrität lesen",
+            "Payload-Felder mit Rohdatei, Manifest, SHA256 und Review-Template ausfüllen",
+            "Payload nur gegen den Validierungsendpoint prüfen",
+            "ReviewedTransformation separat erfassen; danach Integration separat planen und testen",
+        ],
+        "guardrail": "Validierungspaket ist read-only: keine Review-Erzeugung, kein Cache-Schreiben, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    }
+
+
+
 def build_transformation_review_draft_status_cards(draft_preflight: dict) -> list[dict]:
     """Return mobile-safe cards for the manual transformation-review draft gate.
 

@@ -13,6 +13,7 @@ from data_ingestion import (
     build_transformation_review_draft_handoff_packet,
     build_transformation_review_draft_preflight,
     build_transformation_review_draft_status_cards,
+    build_transformation_review_draft_validation_packet,
     validate_transformation_review_draft_payload,
     build_connector_snapshot_requests,
     build_data_connector_queue,
@@ -458,6 +459,50 @@ def test_transformation_review_draft_payload_validation_is_read_only_gate(tmp_pa
     )
     assert mismatch["status"] == "draft_validation_blocked_by_snapshot_mismatch"
     assert mismatch["matched_preflight_row"] is False
+
+
+
+def test_transformation_review_draft_validation_packet_guides_copyable_read_only_validation(tmp_path):
+    snapshot = cache_source_payload(
+        source_id="destatis_genesis",
+        source_url="https://www-genesis.destatis.de/genesis/online",
+        payload=b"year,value\n2024,84.4\n",
+        filename="population.csv",
+        cache_root=tmp_path,
+        source_period="2024",
+        output_parameter_keys=("bevoelkerung_mio",),
+        transformation_note="raw fixture only; no model mutation",
+        retrieved_at="2026-04-29T20:00:00+00:00",
+    )
+    checklist = build_cached_snapshot_review_start_checklist(
+        build_cached_snapshot_integrity_report(cache_root=tmp_path)
+    )
+    preflight = build_transformation_review_draft_preflight(checklist)
+    validation = validate_transformation_review_draft_payload(
+        preflight,
+        {
+            "parameter_key": "bevoelkerung_mio",
+            "source_snapshot_sha256": snapshot.sha256,
+            "reviewer": "",
+            "method_note": "GENESIS fixture row 2024 checked manually",
+            "output_value": 84.4,
+            "output_unit": "Mio. Personen",
+            "caveat": "Fixture-only; no live import and no model integration.",
+        },
+    )
+
+    packet = build_transformation_review_draft_validation_packet(preflight, validation)
+
+    assert packet["status"] == "draft_validation_incomplete"
+    assert packet["parameter_key"] == "bevoelkerung_mio"
+    assert packet["missing_fields"] == ["reviewer"]
+    assert packet["validate_route"] == "POST /data-snapshots/review-draft/validate"
+    assert "reviewer" in packet["first_safe_step"]
+    assert "review-draft/validate" in packet["copyable_validate_command"]
+    assert "bevoelkerung_mio" in packet["copyable_validate_command"]
+    assert "Payload nur gegen den Validierungsendpoint" in " ".join(packet["operator_sequence"])
+    assert "keine Review-Erzeugung" in packet["guardrail"]
+    assert "keine Registry-/Modellmutation" in packet["guardrail"]
 
 
 def test_snapshot_status_is_read_only_and_conservative(tmp_path):
