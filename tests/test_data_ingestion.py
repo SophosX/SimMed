@@ -11,6 +11,7 @@ from data_ingestion import (
     build_cached_snapshot_review_start_status_cards,
     build_transformation_review_draft_handoff_packet,
     build_transformation_review_draft_preflight,
+    build_transformation_review_draft_status_cards,
     build_connector_snapshot_requests,
     build_data_connector_queue,
     build_data_passport_rows,
@@ -323,6 +324,35 @@ def test_transformation_review_draft_preflight_lists_required_fields_without_rec
     assert "keine Review-Erzeugung" in row["guardrail"]
     assert "keine Registry-/Modellmutation" in preflight["guardrail"]
 
+
+def test_transformation_review_draft_status_cards_explain_manual_gate_without_writes(tmp_path):
+    cache_source_payload(
+        source_id="destatis_genesis",
+        source_url="https://www-genesis.destatis.de/genesis/online",
+        payload=b"year,value\n2024,84.4\n",
+        filename="population.csv",
+        cache_root=tmp_path,
+        source_period="2024",
+        output_parameter_keys=("bevoelkerung_mio",),
+        transformation_note="raw fixture only; no model mutation",
+        retrieved_at="2026-04-29T20:00:00+00:00",
+    )
+    checklist = build_cached_snapshot_review_start_checklist(
+        build_cached_snapshot_integrity_report(cache_root=tmp_path)
+    )
+    preflight = build_transformation_review_draft_preflight(checklist)
+
+    cards = build_transformation_review_draft_status_cards(preflight)
+
+    assert [card["order"] for card in cards] == [1, 2, 3]
+    assert cards[0]["route"] == "GET /data-snapshots/review-draft-preflight"
+    assert "1 vorbereitete Draft-Zeilen" in cards[0]["signal"]
+    assert "Reviewer" in cards[0]["first_action"]
+    assert cards[1]["status"] == "bereit für manuelle Draft-Prüfung"
+    assert cards[1]["route"] == "GET /data-snapshots/review-draft-handoff"
+    assert "keine Review-Erzeugung" in cards[1]["guardrail"]
+    assert "separater Integrationspfad" == cards[2]["status"]
+    assert "keine automatische Modellmutation" in cards[2]["guardrail"]
 
 
 def test_snapshot_status_is_read_only_and_conservative(tmp_path):

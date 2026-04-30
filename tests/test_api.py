@@ -108,6 +108,10 @@ def test_api_exposes_transformation_review_draft_preflight_without_recording_rev
     }
     assert "definition_of_done_before_record_review" in preflight
     assert "keine Registry-/Modellmutation" in preflight["guardrail"]
+    cards = body["transformation_review_draft_status_cards"]
+    assert [card["order"] for card in cards] == [1, 2, 3]
+    assert cards[0]["route"] == "GET /data-snapshots/review-draft-preflight"
+    assert "keinen Review" in cards[0]["guardrail"]
     packet = body["transformation_review_draft_handoff_packet"]
     assert packet["preflight_route"] == "GET /data-snapshots/review-draft-preflight"
     assert "curl -s" in packet["copyable_preflight_command"]
@@ -127,6 +131,9 @@ def test_api_exposes_focused_transformation_review_draft_handoff_without_executi
     assert body["status"] == "transformation_review_draft_handoff_not_executed"
     assert "kein execute=true" in body["guardrail"]
     assert "keine Review-Erzeugung" in body["guardrail"]
+    cards = body["transformation_review_draft_status_cards"]
+    assert cards[-1]["route"] == "GET /data-readiness/integration-preflight"
+    assert "kein Policy-Wirkungsbeweis" in cards[-1]["guardrail"]
     packet = body["transformation_review_draft_handoff_packet"]
     assert packet["preflight_route"] == "GET /data-snapshots/review-draft-preflight"
     assert packet["copyable_preflight_command"] == "curl -s http://localhost:8000/data-snapshots/review-draft-preflight"

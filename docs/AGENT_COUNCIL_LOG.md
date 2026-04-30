@@ -2464,3 +2464,32 @@ Keine wichtige Produktentscheidung offen; empfohlener nächster Schritt ist weit
 
 ### Verification / Git
 Targeted API/UI tests grün, Full suite `149 passed`, py_compile und Simulation-Smoke `20 runs × 2 years` grün; Commit/Push folgt.
+
+## 2026-04-30 04:27 Europe/Berlin — Heartbeat: Review-Draft Status Cards
+
+### Context
+Core-platform heartbeat on `feat/platform-data-status-foundation`: the raw-cache → manual transformation-review path already had preflight/handoff APIs, but the Learning Page jumped from text labels to dense rows.
+
+### Project Manager
+Priority: keep advancing data-ingestion/provenance UX before evidence side quests. Risk: operators may confuse a prepared draft with a persisted review or model integration. Next tasks: add focused API status cards for review drafts, then consider a write-protected review-record command schema only after Alex confirms governance.
+
+### Designer / UX
+Added mobile-safe, ordered status cards for the Transformation-Review-Draft gate so newcomers see: required fields, manual template route, and separate integration path before reading dense tables.
+
+### Creative Agent
+Idea: later turn these cards into a wizard-like "Datenwert aufnehmen" checklist. Fit is high for onboarding, but it must stay deliberately non-mutating until governance is settled.
+
+### Political Health-System Strategist
+For politically sensitive indicators, preserving the distinction between raw data, reviewed transformation, and model integration reduces overclaiming and protects against treating administrative numbers as immediate policy proof.
+
+### Evidence / Domain
+No new external research in this run. The slice only restructures existing provenance/workflow guardrails and keeps explicit caveats: no network fetch, no review creation, no Registry/model mutation, no official forecast, no policy-effect proof.
+
+### Integrator Decision
+Accepted: `build_transformation_review_draft_status_cards(...)`, API inclusion in review-draft endpoints, and Learning Page rendering. Deferred: any actual review persistence or model integration.
+
+### Question to Alex
+Keine.
+
+### Verification / Git
+Verified locally with focused tests, full pytest, py_compile, and 20-run simulation smoke. Commit/push status follows in heartbeat report.

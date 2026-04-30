@@ -762,6 +762,58 @@ def build_transformation_review_draft_preflight(review_start_checklist: dict) ->
 
 
 
+def build_transformation_review_draft_status_cards(draft_preflight: dict) -> list[dict]:
+    """Return mobile-safe cards for the manual transformation-review draft gate.
+
+    These cards make the preflight understandable before an operator fills a
+    ReviewedTransformation. They are deliberately read-only and do not create
+    reviews, write files, or change Registry/model values.
+    """
+
+    rows = draft_preflight.get("rows", [])
+    blocked_count = draft_preflight.get("blocked_snapshot_count", 0)
+    ready_count = draft_preflight.get("ready_draft_count", len(rows))
+    if blocked_count:
+        draft_gate_status = "blockiert"
+        first_action = "Integritätsblocker klären; keine Draft-Felder ausfüllen."
+    elif rows:
+        draft_gate_status = "bereit für manuelle Draft-Prüfung"
+        first_action = "Review-Template öffnen und Pflichtfelder mit Rohdatei/Manifest abgleichen."
+    else:
+        draft_gate_status = "noch kein Draft bereit"
+        first_action = "Erst Rohsnapshot-Integrität oder Review-Start-Checkliste prüfen."
+
+    return [
+        {
+            "order": 1,
+            "title": "1. Pflichtfelder vor Review",
+            "status": draft_preflight.get("status", "unknown"),
+            "signal": f"{ready_count} vorbereitete Draft-Zeilen, {blocked_count} Blocker",
+            "first_action": "Reviewer, Methode, Einheit, Jahr/Denominator, Output-Wert und Caveat müssen vor Persistenz geprüft sein.",
+            "route": "GET /data-snapshots/review-draft-preflight",
+            "guardrail": "Pflichtfelder ordnen nur die manuelle Prüfung; sie erzeugen keinen Review und keinen Modellwert.",
+        },
+        {
+            "order": 2,
+            "title": "2. Manuelles Review-Template",
+            "status": draft_gate_status,
+            "signal": f"{len(rows)} Template-Routen sind verknüpft",
+            "first_action": first_action,
+            "route": "GET /data-snapshots/review-draft-handoff",
+            "guardrail": "Handoff bleibt read-only: kein Netzwerkabruf, kein Cache-Schreiben, keine Review-Erzeugung.",
+        },
+        {
+            "order": 3,
+            "title": "3. Nach Review separat entscheiden",
+            "status": "separater Integrationspfad",
+            "signal": "Auch ein ausgefüllter Review ist noch keine Registry-/Modellintegration.",
+            "first_action": "Nach manueller Review erst Integrations-Preflight, Decision-Template und separaten getesteten PR nutzen.",
+            "route": "GET /data-readiness/integration-preflight",
+            "guardrail": "Keine amtliche Prognose, keine automatische Modellmutation und kein Policy-Wirkungsbeweis.",
+        },
+    ]
+
+
 def build_transformation_review_draft_handoff_packet(draft_preflight: dict) -> dict:
     """Create a copyable handoff for manually completing review drafts.
 
