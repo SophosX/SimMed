@@ -5427,3 +5427,32 @@ Keine wichtige Entscheidung offen. Sicherer Default: weiter die bestehende Brief
 
 ### Verification / Git
 Verifiziert lokal: `pytest tests/test_result_causality.py tests/test_api.py -q` → 123 passed; `py_compile app.py result_causality.py api.py simulation_core.py`; 50-run/15-year Smoke mit halbierten Medizinstudienplätzen und Causal-Packet; `pytest -q` → 282 passed. Git-Sync/Commit/Push folgt.
+
+## 2026-04-30 17:46 Europe/Berlin — Ergebnisseite als klares Briefing
+
+### Context
+Alexs jüngste Korrektur: Die Ergebnisseite soll nicht noch mehr übereinandergelegte Erklärungsschichten zeigen, sondern zuerst in seriösem Deutsch beantworten: Was kam heraus, was änderte sich relevant, warum, und was bedeutet das? Relevante Dateien: `result_causality.py`, `app.py`, `api.py`, `tests/test_result_causality.py`, `tests/test_api.py`.
+
+### Project Manager
+Priorität: erste Ergebnisansicht vereinfachen, ohne Modellwerte oder Evidenzbehauptungen zu verändern. Risiko: alte Audit-/Storyboard-Helfer dürfen nicht wieder oberhalb der Hauptantwort auftauchen. Nächste Aufgaben: API/UI weiter auf das vereinfachte Paket ausrichten, danach visuelle Feinschliff-Iteration mit realem Streamlit-Screenshot.
+
+### Designer / UX
+Die erste Ansicht folgt jetzt einer klaren Lesereihenfolge: Ergebnis → Eingriff → Warum es passiert → Relevante Kennzahlen → Anpassungen → Einordnung → Nächster Prüfschritt. Detailtabellen, Evidenzreihen und ältere Storyboard-/KPI-Layer bleiben als Vertiefung geschlossen.
+
+### Creative Agent
+Produktidee für später: eine sehr kurze “Was muss ich als Erstes wissen?”-Karte pro Szenario in der Scenario Gallery, die direkt mit demselben Ergebnis-Briefing-Stil endet. Fit: gut für Einstieg und Demo, aber erst nach Stabilisierung der Haupt-Ergebnisansicht.
+
+### Political Health-System Strategist
+Die neue Lesart trennt fachliche Prüfung von politischer Bewertung. Gerade beim Hebel Medizinstudienplätze bleibt wichtig: spätere Kapazitäts- und Facharztpfade erst prüfen, dann Stakeholder-/Umsetzungsfragen bewerten. Keine Lobbying- oder Wahlprognose ableiten.
+
+### Evidence / Domain
+Keine neuen Quellen oder externen Fakten in diesem Lauf. Die Änderung betrifft Kommunikation/Output-Struktur. Evidenzgrade, Registry-Caveats, Modellannahmen und “keine amtliche Prognose/kein Wirksamkeitsnachweis” bleiben sichtbar, aber nicht als Daten-Dump im ersten Screen.
+
+### Integrator Decision
+Akzeptiert: Das öffentliche Kausalpaket enthält `result_headline`, `short_answer`, höchstens sieben kurze `result_sections`, `relevant_kpis` und `follow_up_question`; Streamlit rendert zuerst eine einzelne Briefing-Karte und schiebt Audit-Layer in Expander. Modellmechanik bleibt unverändert.
+
+### Question to Alex
+Keine wichtige Entscheidung offen. Sicher weiter: nächste Runde sollte die visuelle Hierarchie im laufenden Streamlit prüfen und ggf. die KPI-Zeilen noch stärker wie ein Briefing statt wie Dashboard-Karten gestalten.
+
+### Verification / Git
+Verifiziert lokal: `python3 -m pytest -q` → 282 passed; `python3 -m py_compile app.py result_causality.py api.py simulation_core.py parameter_registry.py data_sources.py provenance.py`; Smoke-Test mit 50 Runs × 15 Jahre und halbierten Medizinstudienplätzen → OK, Headline “Weniger Medizinstudienplätze: der relevante Druck kommt verzögert”. Git-Sync/Commit/Push folgt nach dieser Log-Ergänzung.
