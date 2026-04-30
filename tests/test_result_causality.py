@@ -37,6 +37,38 @@ def _agg_frame():
     ])
 
 
+def test_causal_result_packet_public_summary_is_short_clear_and_result_first():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+
+    assert packet["result_headline"].startswith("Weniger Medizinstudienplätze")
+    short = packet["short_answer"]
+    assert "Medizinstudienplätze" in short
+    assert "Ärzte pro 100k" in short
+    assert "Wartezeit" in short
+    assert "ab Jahr 6" in short
+    assert len(short.split()) <= 95
+    assert "random Internet" not in short
+    assert "Klartext" not in short
+    assert "KPI-Wand" not in short
+    sections = packet["result_sections"]
+    assert [section["heading"] for section in sections] == [
+        "Ergebnis",
+        "Eingriff",
+        "Warum es passiert",
+        "Relevante Kennzahlen",
+        "Anpassungen",
+        "Einordnung",
+        "Nächster Prüfschritt",
+    ]
+    assert len(sections) == 7
+    assert all(len(section["body"].split()) <= 70 for section in sections)
+    assert packet["primary_result_view"]["result_sections"] == sections
+    assert packet["primary_result_view"]["short_answer"] == short
+
+
 def test_causal_result_packet_prioritizes_relevant_kpis_and_coherent_freetext():
     params = get_default_params()
     params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5

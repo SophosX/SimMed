@@ -732,10 +732,11 @@ def build_causal_result_packet(
 
     visible_kpi_sentence = "; ".join(row["sentence"] for row in kpis[:3])
     if study_places_changed:
+        compact_kpi_sentence = "; ".join(row["sentence"] for row in kpis[:2])
         short_answer = (
-            f"Die halbierten Medizinstudienplätze wirken nicht sofort, sondern über die Pipeline: ab Jahr 6 wird die kleinere Kohorte relevant. "
-            f"Im Ergebnis stehen vor allem Ärzte pro 100k, Wartezeit und Burnout im Mittelpunkt. {visible_kpi_sentence} "
-            "Wenn Entlastung durch Telemedizin oder andere Puffer sichtbar wird, gehört sie zur Erklärung; ohne solchen Puffer ist sinkender Druck prüfpflichtig."
+            "Die halbierten Medizinstudienplätze wirken nicht sofort: ab Jahr 6 wird die kleinere Kohorte relevant. "
+            f"Im Mittelpunkt stehen Ärzte pro 100k, Wartezeit und Burnout. {compact_kpi_sentence} "
+            "Telemedizin oder andere Puffer können dämpfen; ohne sichtbaren Puffer bleibt sinkender Druck prüfpflichtig."
         )
     else:
         changed_sentence = changed_text if changed else "Der Lauf folgt dem Standardpfad."
