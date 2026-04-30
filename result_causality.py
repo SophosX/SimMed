@@ -994,9 +994,10 @@ def build_causal_result_packet(
         for row in relevant_kpis_public[:4]
     ) or "Keine priorisierten Kennzahlen verfügbar."
     result_body = (
-        f"Relevant verändert haben sich vor allem: {kpi_body} "
-        "Das ist der erste Befund; die Ursache steht im nächsten Abschnitt."
-    )[:360]
+        f"Relevant verändert haben sich vor allem: {kpi_body}"
+        if kpi_body != "Keine priorisierten Kennzahlen verfügbar."
+        else kpi_body
+    )
     if study_places_changed:
         why_body = (
             "Der Eingriff wirkt verzögert. In Jahr 0–5 ändert sich die Versorgung kaum. "
@@ -1035,15 +1036,17 @@ def build_causal_result_packet(
         else "Welche Annahme begrenzt die wichtigste beobachtete Kennzahl am stärksten?"
     )
 
-    first_screen_blocks = [
-        {
+    first_screen_blocks = []
+    for section in result_sections:
+        block = {
             "heading": section["heading"],
             "body": section["body"][:320],
             "display": "kpi_rows" if section["heading"] == "Relevante Kennzahlen" else "text",
             "primary_answer": section["heading"] == "Ergebnis",
         }
-        for section in result_sections
-    ]
+        if section["heading"] == "Relevante Kennzahlen":
+            block["kpi_refs"] = [str(row.get("metric_key", "")) for row in relevant_kpis_public]
+        first_screen_blocks.append(block)
 
     public_result_view = {
         "render_order": [
@@ -1056,6 +1059,7 @@ def build_causal_result_packet(
         ],
         "headline": result_headline,
         "short_answer": short_answer,
+        "first_screen_note": "Die erste Ansicht ist ein fortlaufendes Ergebnis-Briefing; Detailprüfungen bleiben darunter geschlossen.",
         "sections": result_sections,
         "first_screen_blocks": first_screen_blocks,
         "relevant_kpis": relevant_kpis_public,

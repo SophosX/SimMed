@@ -103,6 +103,33 @@ def test_simplified_public_result_packet_is_short_clear_and_not_meta():
     assert "prüfbaren" in section_by_heading["Einordnung"]
 
 
+def test_first_result_view_has_one_sequential_briefing_with_kpis_in_place():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    view = packet["public_result_view"]
+    blocks = view["first_screen_blocks"]
+
+    assert len(blocks) == 7
+    assert [block["heading"] for block in blocks] == [
+        "Ergebnis",
+        "Eingriff",
+        "Warum es passiert",
+        "Relevante Kennzahlen",
+        "Anpassungen",
+        "Einordnung",
+        "Nächster Prüfschritt",
+    ]
+    kpi_block = blocks[3]
+    assert kpi_block["display"] == "kpi_rows"
+    assert kpi_block["kpi_refs"] == [row["metric_key"] for row in view["relevant_kpis"]]
+    assert "Ärzte pro 100k" in kpi_block["body"]
+    assert "Facharzt-Wartezeit" in kpi_block["body"]
+    assert "erste Befund" not in kpi_block["body"]
+    assert view["first_screen_note"] == "Die erste Ansicht ist ein fortlaufendes Ergebnis-Briefing; Detailprüfungen bleiben darunter geschlossen."
+
+
 def test_causal_result_packet_prioritizes_relevant_kpis_and_coherent_freetext():
     params = get_default_params()
     params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5

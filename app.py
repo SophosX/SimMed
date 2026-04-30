@@ -3523,25 +3523,25 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
     st.markdown(f"### {view.get('headline', packet.get('result_headline', packet['title']))}")
     st.info(view.get("short_answer", packet.get("short_answer", "Der Modelllauf wurde berechnet; die Detailprüfung steht darunter.")))
 
-    for section in view.get("first_screen_blocks", view.get("sections", packet.get("result_sections", []))):
-        # Kennzahlen werden direkt darunter als kompakte, scanbare Karten gezeigt.
-        if section.get("display") == "kpi_rows" or section.get("heading") == "Relevante Kennzahlen":
-            continue
-        st.markdown(f"**{section['heading']}**")
-        st.write(section["body"])
-
     relevant_kpis = view.get("relevant_kpis", packet.get("relevant_kpis", []))
-    if relevant_kpis:
-        st.markdown("**Relevante Kennzahlen**")
-        cols = st.columns(min(len(relevant_kpis), 4))
-        for idx, row in enumerate(relevant_kpis):
-            with cols[idx % len(cols)]:
-                st.metric(
-                    label=row.get("label", "Kennzahl"),
-                    value=f"{row.get('start', '–')} → {row.get('end', '–')}",
-                    delta=row.get("direction", "stabil"),
-                )
-                st.caption(row.get("meaning") or row.get("why_relevant", ""))
+    for section in view.get("first_screen_blocks", view.get("sections", packet.get("result_sections", []))):
+        st.markdown(f"**{section['heading']}**")
+        if section.get("display") == "kpi_rows" or section.get("heading") == "Relevante Kennzahlen":
+            kpi_refs = set(section.get("kpi_refs", []))
+            rows = [row for row in relevant_kpis if not kpi_refs or row.get("metric_key") in kpi_refs]
+            cols = st.columns(min(len(rows), 4) or 1)
+            for idx, row in enumerate(rows):
+                with cols[idx % len(cols)]:
+                    st.metric(
+                        label=row.get("label", "Kennzahl"),
+                        value=f"{row.get('start', '–')} → {row.get('end', '–')}",
+                        delta=row.get("direction", "stabil"),
+                    )
+                    st.caption(row.get("meaning") or row.get("why_relevant", ""))
+            if not rows:
+                st.write(section["body"])
+        else:
+            st.write(section["body"])
 
     if view.get("follow_up_question", packet.get("follow_up_question")):
         st.markdown("**Nächster Prüfschritt**")

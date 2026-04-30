@@ -4541,3 +4541,33 @@ Focused tests: `python3 -m pytest tests/test_result_causality.py tests/test_api.
 **Question to Alex if needed:** Keine blockierende Entscheidung offen. Nächster sicherer Schritt: alte überlappende Ergebnishelfer weiter zusammenführen bzw. aus der Default-Ansicht entfernen, ohne API-Kompatibilität zu brechen.
 
 **Verification/Git:** Fokus: 35 Ergebnis/API/App-Tests grün; vollständige Suite 261 passed; py_compile und 50-run Smoke-Test grün. Git-Sync/Push folgt in diesem Lauf.
+
+
+## 2026-04-30 13:47 Europe/Berlin — Result first-view sequencing cleanup
+
+### Context
+Alexs latest correction: the result page must read as one clear briefing, not as overlapping helper blocks. This heartbeat tightened the public causal result packet and Streamlit first-view rendering around the sequence Ergebnis → Eingriff → Warum es passiert → Relevante Kennzahlen → Anpassungen → Einordnung → Nächster Prüfschritt.
+
+### Project Manager
+Priority remains result clarity. Risk: old rich audit helpers are valuable but can overwhelm the first screen if rendered out of order. Next tasks: continue reducing duplicate first-view widgets, then make the relevant-KPI row visually more report-like on mobile.
+
+### Designer / UX
+Accepted: relevant KPIs now render in-place inside the briefing sequence instead of being repeated as a separate block after all text. The first screen should feel more like one readable briefing.
+
+### Creative Agent
+A useful next idea is a one-line “Lesedauer: 60 Sekunden” briefing mode, but only if it stays serious and does not add another widget layer.
+
+### Political Health-System Strategist
+The first view keeps political interpretation behind a fachliche Prüfung: timing, capacity pressure, adaptation buffers, then political assessment. This avoids turning a simulated KPI movement into a policy claim.
+
+### Evidence / Domain
+No new evidence claim was added. The change is communication/UI structure only; existing guardrails remain: not an official forecast and not proof of policy effectiveness.
+
+### Integrator Decision
+Implemented a small but coherent result-page cleanup: packet blocks now carry KPI references for in-place rendering; the public view has an explicit first-screen note; the result section no longer adds filler wording after the KPI movement. App rendering now follows the packet order.
+
+### Question to Alex
+No important decision open. Continue safely with clearer first-screen result UX.
+
+### Verification / Git
+Focused result/API/app tests passed: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients tests/test_app_explanations.py -q` → 99 passed. Full suite passed: `python3 -m pytest -q` → 262 passed. Runtime smoke passed: 50 runs × 3 years with causal packet assertion.
