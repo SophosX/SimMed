@@ -6015,3 +6015,5 @@ Keine wichtige Entscheidung offen. Sicher weiterarbeiten: als Nächstes die daru
 
 ### Verification / Git
 Vor Commit: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 64 passed; `python3 -m pytest -q` → 291 passed; `py_compile` für zentrale Module; 50-run Smoke-Test → OK. Git-Commit/Push wird nach Sync im GitHub-Clone dokumentiert.
+
+Nachtrag Verification/Git: Commit `a344354` (`Clarify causal result first screen`) wurde auf `origin/main` gepusht. `git show --name-only --oneline -1` bestätigt: `app.py`, `result_causality.py`, `tests/test_result_causality.py`, `docs/AGENT_COUNCIL_LOG.md`.
