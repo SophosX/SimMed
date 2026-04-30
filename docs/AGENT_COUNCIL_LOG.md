@@ -4689,4 +4689,4 @@ Accepted: add RED tests that fail when the public packet exposes briefing-summar
 No important decision open. Continue safely with Streamlit visual cleanup of the same briefing.
 
 ### Verification / Git
-Local verification passed in source tree: focused causal/API tests → 38 passed; full suite → 265 passed; `py_compile` for `app.py`, `result_causality.py`, `api.py`, `simulation_core.py` passed; 30-run simulation/packet smoke passed. Git commit/push pending in this same heartbeat.
+Local verification passed in source tree: focused causal/API tests → 38 passed; full suite → 265 passed; `py_compile` for `app.py`, `result_causality.py`, `api.py`, `simulation_core.py` passed; 30-run simulation/packet smoke passed. GitHub push confirmed: `b1a1314 Tighten result packet first view` on `origin/main` with `docs/AGENT_COUNCIL_LOG.md`, `result_causality.py`, and `tests/test_result_causality.py`.
