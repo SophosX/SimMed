@@ -82,7 +82,7 @@ from data_ingestion import (
 from data_sources import list_sources
 from parameter_registry import list_parameters
 from political_feasibility import assess_political_feasibility
-from result_uncertainty import build_uncertainty_band_summary_from_final
+from result_uncertainty import build_uncertainty_band_summary_from_final, build_uncertainty_result_questions
 from scenario_gallery import (
     build_scenario_gallery_guided_apply_plan,
     build_scenario_gallery_operator_run_packets,
@@ -1583,6 +1583,7 @@ def simulate(req: ScenarioRequest) -> dict:
     result["model"] = MODEL_VERSION
     result["political_feasibility"] = assess_political_feasibility(req.parameter_changes)
     result["uncertainty_band_summary"] = build_uncertainty_band_summary_from_final(result["final_year_summary"])
+    result["uncertainty_result_questions"] = build_uncertainty_result_questions(result["uncertainty_band_summary"])
     result["uncertainty_guardrail"] = (
         "P5/P95-Spannweiten stammen aus den Monte-Carlo-Läufen dieses Szenarios; "
         "sie sind keine amtliche Prognose, kein Wirksamkeitsnachweis und keine Konfidenzgarantie."

@@ -3268,3 +3268,32 @@ Lokal verifiziert: gezielte 3 Tests passed; vollständige Suite `191 passed`; `p
 - **Integrator Decision:** Neuer API-sicherer Helper `result_uncertainty.py`; `app.py` delegiert darauf, `/simulate` gibt `uncertainty_band_summary` und `uncertainty_guardrail` aus; Regressionstests ergänzt.
 - **Question to Alex if needed:** Keine wichtige Entscheidung offen.
 - **Verification/Git:** `pytest -q` 194 passed; `py_compile` für app/api/result_uncertainty/simulation_core/data_ingestion/parameter_registry; Simulation-Smoke `OK smoke (60, 30) (320, 6)`.
+
+## 2026-04-30 08:08 Europe/Berlin — Heartbeat: Unsicherheitsfragen vor KPI-Raster
+
+### Context
+Alex priorisiert wieder Core-Plattform. Dieser Lauf erweitert die bestehende Monte-Carlo-Unsicherheitsanzeige in UI/API um frageorientierte Lesepfade statt neuer Evidenzrecherche.
+
+### Project Manager
+Priorität: Ergebnis-UX robuster machen, damit Unsicherheit vor KPI-Entscheidungen sichtbar wird. Nächste Plattform-Schritte: Sensitivitäts-/Robustheitsansicht, dann Daten-/Provenance-Gates weiter operationalisieren.
+
+### Designer / UX
+P5/P95-Tabellen allein sind für Erstnutzer abstrakt. Die neue Schnellfragen-Schicht formuliert pro Kennzahl: Wie sicher ist das Signal, was bedeutet die Spannweite, welche KPI-Detailkarte als Nächstes öffnen?
+
+### Creative Agent
+Idee: spätere „Unsicherheits-Lupe“ als eigener Lesemodus. Fit: gut für Entscheidungshygiene, aber erst nach mehr Sensitivitätsstruktur sinnvoll.
+
+### Political Health-System Strategist
+Politische Schlussfolgerungen sollten nicht auf Punktwerten beruhen. Die neue Schicht stärkt die Trennung zwischen Modell-Spannweite, Wirkpfadprüfung und politischer Bewertung.
+
+### Evidence / Domain
+Keine neue externe Recherche in diesem Lauf. Die Änderung erzeugt keine neuen Realweltbehauptungen; sie nutzt bereits berechnete Monte-Carlo-P5/P95-Werte und bewahrt Guardrails gegen amtliche Prognose/Wirksamkeitsnachweis.
+
+### Integrator Decision
+Akzeptiert: `build_uncertainty_result_questions(...)` als zentrale API/UI-Hilfe, `/simulate` gibt `uncertainty_result_questions` aus, Streamlit rendert Schnellfragen im Unsicherheits-Expander.
+
+### Question to Alex
+Keine.
+
+### Verification / Git
+Gezielt verifiziert: `pytest tests/test_result_uncertainty.py tests/test_api.py::test_simulate_exposes_uncertainty_band_summary_for_agents tests/test_app_explanations.py::test_uncertainty_band_summary_surfaces_p5_p95_before_kpi_cards -q` → 4 passed. Commit/Push folgt im Integrator-Schritt.

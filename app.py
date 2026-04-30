@@ -90,7 +90,7 @@ from data_ingestion import (
     build_transformation_review_template,
 )
 from parameter_registry import PARAMETER_REGISTRY, list_parameters
-from result_uncertainty import build_uncertainty_band_summary_from_final
+from result_uncertainty import build_uncertainty_band_summary_from_final, build_uncertainty_result_questions
 import scenario_gallery as scenario_gallery_module
 from simulation_report import build_simulation_report as build_policy_briefing_report
 
@@ -3433,6 +3433,12 @@ def render_uncertainty_band_summary(agg: pd.DataFrame):
         return
     with st.expander("Unsicherheit zuerst lesen: Wie breit sind die Modell-Spannweiten?", expanded=False):
         st.caption("P5/P95 zeigen die Spannweite der Monte-Carlo-Läufe im Endjahr. Das ist Orientierung, keine amtliche Prognose.")
+        question_rows = build_uncertainty_result_questions(rows)
+        if question_rows:
+            st.markdown("**Schnellfragen vor dem KPI-Raster:**")
+            for item in question_rows:
+                st.markdown(f"- **{item['question']}** {item['answer_first']} {item['what_to_open_next']}")
+            st.caption(question_rows[0]["guardrail"])
         st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
 
 

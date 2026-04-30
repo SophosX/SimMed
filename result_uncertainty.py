@@ -32,6 +32,38 @@ def _classify_band(relative_width: float) -> tuple[str, str]:
     return "enges Band", "Mittelwert wirkt in den Modellläufen relativ stabil, bleibt aber Szenario- und Annahmen-getrieben."
 
 
+def build_uncertainty_result_questions(
+    band_rows: Sequence[Mapping[str, str]],
+    *,
+    limit: int = 3,
+) -> list[dict[str, str]]:
+    """Turn uncertainty bands into question-first reading prompts.
+
+    This is a UX/API helper only: it reuses precomputed band rows and never runs
+    a simulation or changes model/data state.
+    """
+
+    questions: list[dict[str, str]] = []
+    for row in list(band_rows)[:limit]:
+        label = row.get("label") or row.get("metric_key") or "Kennzahl"
+        signal = row.get("signal", "Spannweite prüfen")
+        p5 = row.get("p5", "?")
+        p95 = row.get("p95", "?")
+        mean = row.get("mean", "?")
+        questions.append(
+            {
+                "metric_key": row.get("metric_key", ""),
+                "question": f"Wie sicher ist das Signal bei {label}?",
+                "answer_first": f"{label}: Mittelwert {mean}, plausible Modell-Spannweite P5–P95 {p5}–{p95} ({signal}).",
+                "what_to_open_next": f"KPI-Detailkarte für {label} öffnen und P5/P95 zusammen mit Wirkpfad, Annahmen und Trend-Timing lesen.",
+                "safe_reading": "Breite Bänder als Unsicherheit/Robustheitsfrage lesen, nicht als eindeutige Punktprognose.",
+                "guardrail": UNCERTAINTY_GUARDRAIL,
+            }
+        )
+    return questions
+
+
+
 def build_uncertainty_band_summary_from_final(
     final_year_summary: Mapping[str, Any],
     *,
