@@ -6292,4 +6292,4 @@ Akzeptiert: öffentliche Ergebnisabschnitte weiter verdichten; „Ausbildungs-Pi
 Keine wichtige Entscheidung offen; weiter sicher am Ergebnisbriefing und an der reduzierten ersten Bildschirmansicht arbeiten.
 
 ### Verification / Git
-Lokal grün vor Sync: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` (70 passed), `python3 -m pytest -q` (298 passed), `py_compile result_causality.py app.py api.py`, 50-run/15-year smoke test OK. Git-Sync/Commit folgt nach dieser Log-Ergänzung.
+Verifiziert: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` (70 passed), `python3 -m pytest -q` (298 passed), `py_compile result_causality.py app.py api.py`, 50-run/15-year smoke test OK. Commit `d9414c9` wurde nach `origin/main` gepusht; Zip-Artefakt aktualisiert.
