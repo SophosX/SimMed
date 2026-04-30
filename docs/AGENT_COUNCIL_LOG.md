@@ -6141,3 +6141,6 @@ Keine wichtige Entscheidung offen. Ich arbeite sicher weiter in derselben Richtu
 
 ### Verification / Git
 TDD: neuer App-Test lief zuerst rot wegen fehlendem `first_view_contract`, danach grün. Fokussierte Tests: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients tests/test_app_explanations.py::test_result_causal_overview_exposes_briefing_quality_checks_for_first_view tests/test_app_explanations.py::test_result_causal_overview_declares_one_clean_first_view_before_audit_details -q` → 68 passed. Full Suite/Smoke/Git folgen nach dieser Log-Aktualisierung.
+
+
+Nachtrag Verification/Git: Full Suite `python3 -m pytest -q` → 294 passed; `py_compile` zentrale Module → OK; Runtime-Smoke 50 Runs × 3 Jahre inklusive Causal Packet → OK. Commit `5d03885` (`Clarify result first view contract`) wurde auf `origin/main` gepusht. `git show --name-only --oneline -1` bestätigt: `docs/AGENT_COUNCIL_LOG.md`, `result_causality.py`, `tests/test_app_explanations.py`, `tests/test_result_causality.py`.
