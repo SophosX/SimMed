@@ -4718,4 +4718,4 @@ Accepted now: fix the public adaptation section so observed Telemedizin/Burnout 
 Keine wichtige Entscheidung offen; weiter sicher an Klarheit und Hierarchie arbeiten.
 
 ### Verification / Git
-Focused RED/GREEN regression: `tests/test_result_causality.py::test_public_adaptation_section_is_not_truncated_mid_sentence`. Full verification and Git status follow after this entry.
+Focused RED/GREEN regression: `tests/test_result_causality.py::test_public_adaptation_section_is_not_truncated_mid_sentence` failed first on clipped text and passed after the fix. Focused causal/API verification passed: 39 passed. Full suite passed: 266 passed. Runtime smoke passed: 20 runs × 3 years produced a valid simplified packet. GitHub push confirmed: `bfa60ee Clarify causal result adaptation copy` on `origin/main` with `docs/AGENT_COUNCIL_LOG.md`, `result_causality.py`, and `tests/test_result_causality.py`.
