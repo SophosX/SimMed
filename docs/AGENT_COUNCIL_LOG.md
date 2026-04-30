@@ -5310,3 +5310,33 @@ No important product decision is required for this safe cleanup. Continue with t
 
 ### Verification / Git
 Local verification before sync: `python3 -m pytest -q` → 280 passed; `python3 -m py_compile app.py result_causality.py api.py simulation_core.py tests/test_result_causality.py tests/test_api.py`; 50-run/15-year simulation smoke test passed and confirmed the public packet style. Git commit/push status is recorded in the heartbeat report after clone sync.
+
+
+## 2026-04-30 17:20 Europe/Berlin — Heartbeat: Ergebnisbriefing verifiziert und stabilisiert
+
+### Context
+Alexs aktuelle Korrektur bleibt der Maßstab: erste Result Page als ein klares, ernstes deutsches Briefing. In diesem Lauf wurde der bereits umgebaute Kausal-Result-Pfad erneut gegen diese Anforderungen geprüft: Paket, Streamlit-First-View, API-Einbettung und Tests.
+
+### Project Manager
+Priorität: keine weitere Erklärungsschicht hinzufügen, solange die neue erste Ergebnisansicht noch stabilisiert wird. Risiko: alte Detailhelfer können wieder nach oben rutschen; deshalb bleiben sie unter geschlossenen Audit-Bereichen. Nächste Aufgaben: visuelle Report-Karte weiter beruhigen und die dichte Kennzahlenansicht noch klarer als Detailprüfung markieren.
+
+### Designer / UX
+Sinncheck: Der erste Block beantwortet jetzt zuerst Ergebnis, Eingriff, Ursache, relevante Kennzahlen, Anpassungen, Einordnung und nächsten Prüfschritt. Die Seite ist noch nicht endgültig schön, aber die Hierarchie ist deutlich näher an einem lesbaren Briefing als an einer Tabellenwand.
+
+### Creative Agent
+Idee: als nächstes den ersten Ergebnisblock typografisch wie einen kurzen Policy-Befund gestalten: Lead-Satz, drei Kennzahl-Zeilen, eine Prüf-Frage. Fit: sehr gut, wenn es die aktuelle Paketstruktur nutzt und keine neue Textschicht erzeugt.
+
+### Political Health-System Strategist
+Die politische Einordnung bleibt bewusst nachgelagert. Beim Szenario weniger Medizinstudienplätze ist die fachlich saubere Lesart weiterhin: verzögerter Kapazitätsdruck ab etwa Jahr 6, Facharztpfad Richtung Jahr 11–15, Puffer/Belastung vor politischer Bewertung prüfen.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Es wurden keine Parameter, Datenquellen oder Modellmechaniken geändert; die Verifikation betraf Kommunikations- und Darstellungslogik. Guardrails zu amtlicher Prognose und Wirksamkeitsnachweis bleiben im Paket erhalten.
+
+### Integrator Decision
+Akzeptiert: aktueller Result-Causality-Stand erfüllt die unmittelbaren Clarity-Tests; keine weitere Codeänderung in diesem Lauf, um nicht neue ungetestete UI-Schichten aufzubauen. Fortsetzung sicher über visuelle Vereinfachung und weitere Entkopplung alter Detailblöcke.
+
+### Question to Alex
+Keine wichtige Entscheidung offen. Empfehlung: weiter mit Option A — die bestehende neue Briefing-Struktur visuell/reportartig ausbauen — statt Option B, neue Ergebnis-Widgets hinzuzufügen.
+
+### Verification / Git
+Verifiziert: `pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 53 passed; `pytest -q` → 280 passed; `py_compile app.py result_causality.py api.py simulation_core.py`; 50-run/15-year smoke mit halbierten Medizinstudienplätzen und Causal-Packet-Build bestanden. Git-Sync/Commit/Push folgt als normaler Integrator-Schritt.
