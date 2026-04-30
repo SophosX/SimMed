@@ -1733,6 +1733,54 @@ def build_data_readiness_registry_integration_operator_steps(
     }
 
 
+def build_data_readiness_registry_integration_safe_start_packet(
+    operator_steps: dict,
+    status_board: dict,
+) -> dict:
+    """Return a one-screen safe-start packet for the final Registry gates.
+
+    The operator sequence is useful but still detailed. This packet is the shortest
+    possible handoff for a sleeping/next-shift integrator: which read-only command to
+    open first, which parameter to inspect next, what default decision to keep, and
+    what must not be inferred. It intentionally contains no execution command, branch
+    creation instruction, or model-integration action.
+    """
+
+    safe_start = operator_steps.get("safe_start", {})
+    rows = status_board.get("rows", [])
+    primary_key = operator_steps.get("primary_parameter_key")
+    primary_row = next((row for row in rows if row.get("parameter_key") == primary_key), rows[0] if rows else {})
+    next_commands = [
+        operator_steps.get("safe_start", {}).get("first_command", "GET /data-readiness/registry-integration-status-board"),
+        operator_steps.get("safe_start", {}).get("then_open", primary_row.get("status_route", "GET /data-readiness/{parameter_key}")),
+        primary_row.get("audit_route", "GET /data-readiness/registry-integration-decision-audit-checklist"),
+    ]
+    next_commands = [command for command in next_commands if "execute=true" not in command]
+    return {
+        "title": "Registry-Integration: sicherer Start in einem Bildschirm",
+        "plain_language_note": (
+            "Dieses Paket ist der kürzeste Einstieg für den nächsten Integrator: erst lesen, "
+            "dann einen Parameter einzeln prüfen, Default Hold behalten und keine Modelländerung ableiten."
+        ),
+        "primary_parameter_key": primary_row.get("parameter_key"),
+        "primary_label": primary_row.get("label", "kein Parameter"),
+        "current_status": primary_row.get("board_status", "kein_statusboard"),
+        "first_safe_command": safe_start.get("first_command", next_commands[0]),
+        "inspect_next_command": safe_start.get("then_open", next_commands[1] if len(next_commands) > 1 else "GET /data-readiness/{parameter_key}"),
+        "audit_command": primary_row.get("audit_route", "GET /data-readiness/registry-integration-decision-audit-checklist"),
+        "human_decision_default": safe_start.get("human_decision_default", "Hold, bis Decision/Audit vollständig sind."),
+        "blocked_or_waiting_count": status_board.get("summary", {}).get("rows_waiting_or_hold", 0),
+        "copyable_read_only_sequence": next_commands,
+        "do_not_do": safe_start.get("do_not_do", []) + [
+            "aus einem Statuspaket keinen Registry-/Modell-PR ableiten",
+            "keine amtliche Prognose oder keinen Policy-Wirkungsbeweis behaupten",
+        ],
+        "definition_of_done_before_branch": operator_steps.get("definition_of_done_before_branch", []),
+        "guardrail": "Read-only/Safe-start-only: kein Branch, kein execute=true, keine Datenaktion, keine Review-Erzeugung, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    }
+
+
+
 def build_data_readiness_registry_integration_handoff_packet(decision_record: dict) -> dict:
     """Create a copy-safe operator handoff from the Go/Hold/Reject decision record.
 

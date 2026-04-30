@@ -719,3 +719,40 @@ def test_api_exposes_registry_integration_operator_steps_without_apply():
     assert any("separatem getestetem PR" in item for item in steps["definition_of_done_before_branch"])
     assert "keine Registry-/Modellmutation" in steps["guardrail"]
     assert "kein Policy-Wirkungsbeweis" in steps["guardrail"]
+    packet = body["registry_integration_safe_start_packet"]
+    assert packet["primary_parameter_key"] == "bevoelkerung_mio"
+    assert packet["first_safe_command"] == "GET /data-readiness/registry-integration-status-board"
+    assert packet["inspect_next_command"] == "GET /data-readiness/bevoelkerung_mio"
+    assert not any("execute=true" in command for command in packet["copyable_read_only_sequence"])
+    assert "keine Registry-/Modellmutation" in packet["guardrail"]
+
+
+def test_api_exposes_focused_registry_integration_safe_start_without_apply():
+    client = TestClient(api)
+    seed_response = client.post("/data-fixtures/seed-reference-review-demo")
+    assert seed_response.status_code == 200
+
+    response = client.get("/data-readiness/registry-integration-safe-start?limit=3")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "data_readiness_registry_integration_safe_start_not_applied"
+    assert "kein Branch" in body["guardrail"]
+    assert "kein execute=true" in body["guardrail"]
+    packet = body["registry_integration_safe_start_packet"]
+    assert packet["title"].startswith("Registry-Integration: sicherer Start")
+    assert packet["primary_parameter_key"] == "bevoelkerung_mio"
+    assert packet["human_decision_default"].startswith("Hold")
+    assert packet["first_safe_command"] == "GET /data-readiness/registry-integration-status-board"
+    assert packet["inspect_next_command"] == "GET /data-readiness/bevoelkerung_mio"
+    assert packet["audit_command"] == "GET /data-readiness/registry-integration-decision-audit-checklist"
+    assert packet["blocked_or_waiting_count"] >= 0
+    assert packet["copyable_read_only_sequence"] == [
+        "GET /data-readiness/registry-integration-status-board",
+        "GET /data-readiness/bevoelkerung_mio",
+        "GET /data-readiness/registry-integration-decision-audit-checklist",
+    ]
+    assert any("keinen Registry-/Modell-PR" in item for item in packet["do_not_do"])
+    assert any("separatem getestetem PR" in item for item in packet["definition_of_done_before_branch"])
+    assert "keine amtliche Prognose" in packet["guardrail"]
+    assert "kein Policy-Wirkungsbeweis" in packet["guardrail"]

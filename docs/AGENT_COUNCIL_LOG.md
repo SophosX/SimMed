@@ -2259,3 +2259,32 @@ Verifiziert mit `pytest -q` (134 passed), `py_compile` für Kernmodule, kleinem 
 - **Integrator Decision:** `build_data_readiness_registry_integration_operator_steps(...)` erhält `safe_start`; Learning Page rendert es; API/UI-Tests sichern Befehle und Guardrails.
 - **Question to Alex if needed:** Keine wichtige Entscheidung offen; nächster sicherer Plattformschritt ist weiterhin Data-Readiness/Registry-Integration in kleine, geprüfte Operatorflächen zu übersetzen.
 - **Verification/Git:** `pytest -q` → 134 passed; `py_compile` für geänderte Dateien; Simulation-Smoke 20×2 Jahre OK. Commit/Push siehe aktueller Git-Stand.
+
+## 2026-04-30 03:25 Europe/Berlin — Heartbeat: Registry-Integration Safe-Start Packet
+
+### Context
+Alexs korrigierte Priorität bleibt Kernplattform statt KI-Recherche. Dieser Lauf verdichtet die letzten Datenintegrations-Gates in einen einbildschirmtauglichen Safe-Start für Operatoren/Agenten.
+
+### Project Manager
+Priorität: Data-Ingestion/Provenance-Governance. Risiko: die vielen Status-/Decision-/Runbook-Layer sind korrekt, aber für den nächsten Integrator zu verstreut. Nächste Aufgaben: Safe-Start im UI/API nutzen, danach echte Rohdaten-Connector-Ausführung nur bewusst und getrennt.
+
+### Designer / UX
+Mobile/Tablet-Sinncheck: Vor der langen Operatorfolge steht jetzt eine kurze Startkarte mit erstem Statusbefehl, nächstem Parameter, Hold-Default und Nicht-tun-Liste.
+
+### Creative Agent
+Idee: “Schichtübergabe-Karte” als Produktmuster für autonome SimMed-Agenten. Fit: erhöht Kontinuität und verhindert Aktionismus; keine neue Evidenz- oder Modellbehauptung.
+
+### Political Health-System Strategist
+Politische Einordnung bleibt konservativ: ein grüner technischer Status darf nicht als politisches Go, amtliche Prognose oder Wirksamkeitsnachweis gelesen werden. Default bleibt Hold bis auditiert.
+
+### Evidence / Domain
+Keine neue externe Recherche in diesem Lauf. Änderung betrifft nur Provenance-/Governance-Workflow und bewahrt die Trennung von Registry, Rohcache, Review, Decision, PR und Modellintegration.
+
+### Integrator Decision
+Akzeptiert: `build_data_readiness_registry_integration_safe_start_packet(...)`, fokussierter API-Endpunkt `/data-readiness/registry-integration-safe-start`, Einbettung in `/operator-steps` und Learning Page, Tests für API/UI-Helper.
+
+### Question to Alex if needed
+Keine wichtige Entscheidung offen; dies ist eine sichere, reversible UX/API-Verdichtung ohne Modellmutation.
+
+### Verification / Git
+Spezifische Tests: `tests/test_api.py::{test_api_exposes_registry_integration_operator_steps_without_apply,test_api_exposes_focused_registry_integration_safe_start_without_apply}` und `tests/test_app_explanations.py::test_learning_data_readiness_backlog_prioritizes_safe_data_gates`. Full suite/compile: 135 passed; `py_compile app.py data_ingestion.py api.py parameter_registry.py data_sources.py simulation_core.py`.

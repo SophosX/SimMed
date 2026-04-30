@@ -157,6 +157,13 @@ def test_learning_data_readiness_backlog_includes_integration_preflight():
     assert all("GET /data-readiness/" in step["copyable_status_command"] for step in operator_steps["steps"])
     assert "Go/Hold/Reject" in " ".join(operator_steps["definition_of_done_before_branch"])
     assert "kein Branch" in operator_steps["guardrail"] and "keine Registry-/Modellmutation" in operator_steps["guardrail"]
+    safe_packet = backlog["registry_integration_safe_start_packet"]
+    assert safe_packet["title"].startswith("Registry-Integration: sicherer Start")
+    assert safe_packet["first_safe_command"] == "GET /data-readiness/registry-integration-status-board"
+    assert safe_packet["inspect_next_command"].startswith("GET /data-readiness/")
+    assert not any("execute=true" in command for command in safe_packet["copyable_read_only_sequence"])
+    assert "Hold" in safe_packet["human_decision_default"]
+    assert "kein Branch" in safe_packet["guardrail"] and "keine Registry-/Modellmutation" in safe_packet["guardrail"]
     handoff_packet = backlog["registry_integration_handoff_packet"]
     assert handoff_packet["title"].startswith("Registry-Integrations-Handoff")
     assert handoff_packet["summary"]["handoff_rows"] == decision_record["summary"]["decision_rows"]

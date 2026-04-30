@@ -50,6 +50,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_status_board,
     build_data_readiness_registry_integration_status_cards,
     build_data_readiness_registry_integration_operator_steps,
+    build_data_readiness_registry_integration_safe_start_packet,
     build_data_readiness_gate_plan,
     build_data_readiness_operator_handoff,
     build_data_readiness_platform_brief,
@@ -4160,6 +4161,10 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         "registry_integration_status_board": status_board,
         "registry_integration_status_cards": status_cards,
         "registry_integration_operator_steps": build_data_readiness_registry_integration_operator_steps(status_board, status_cards),
+        "registry_integration_safe_start_packet": build_data_readiness_registry_integration_safe_start_packet(
+            build_data_readiness_registry_integration_operator_steps(status_board, status_cards),
+            status_board,
+        ),
         "registry_integration_handoff_packet": build_data_readiness_registry_integration_handoff_packet(decision_record),
         "registry_integration_pr_runbook": pr_runbook,
         "rows": [
@@ -4513,6 +4518,15 @@ def render_learning_data_readiness_backlog():
             st.caption("Noch kein Statusboard, weil kein Decision-Record vorliegt.")
         st.caption(status_board["guardrail"])
         operator_steps = backlog["registry_integration_operator_steps"]
+        safe_packet = backlog["registry_integration_safe_start_packet"]
+        st.markdown(f"**{safe_packet['title']}**")
+        st.caption(safe_packet["plain_language_note"])
+        st.info(
+            f"Start: `{safe_packet['first_safe_command']}` → `{safe_packet['inspect_next_command']}` · "
+            f"Default: {safe_packet['human_decision_default']}"
+        )
+        st.caption("Nicht tun: " + " · ".join(safe_packet["do_not_do"][:4]))
+        st.caption(safe_packet["guardrail"])
         st.markdown(f"**{operator_steps['title']}**")
         st.caption(operator_steps["plain_language_note"])
         safe_start = operator_steps.get("safe_start", {})
