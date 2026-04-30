@@ -1188,6 +1188,18 @@ def build_scenario_gallery_run_readiness_summary(
     )
 
 
+def build_scenario_gallery_run_handoff_sheet(
+    *, n_runs: int = 100, n_years: int = 15, seed: int = 42
+) -> dict[str, Any]:
+    """Return a compact read-only scenario-gallery run handoff."""
+
+    return scenario_gallery_module.build_scenario_gallery_run_handoff_sheet(
+        n_runs=n_runs,
+        n_years=n_years,
+        seed=seed,
+    )
+
+
 def sidebar_quick_start_steps() -> List[str]:
     """Kurze Orientierung, damit neue Nutzer:innen sofort wissen, was zu tun ist."""
     return [
@@ -1220,7 +1232,10 @@ def render_landing_hero() -> None:
             f"{readiness['evidence_check_count']} Evidenzchecks · {readiness['first_safe_step']}"
         )
         st.caption("Vor dem Lauf erledigt: " + " | ".join(readiness["definition_of_done_before_run"][:2]))
-        st.caption("Guardrail: " + readiness["guardrail"])
+        handoff = build_scenario_gallery_run_handoff_sheet()
+        st.caption("Run-Handoff: " + handoff["first_safe_step"])
+        st.caption("Nach dem Lauf lesen: " + " → ".join(handoff["post_run_reading_order"][:3]))
+        st.caption("Guardrail: " + handoff["guardrail"])
         guided_plans = {
             item["card_id"]: item for item in build_scenario_gallery_guided_apply_plan()
         }

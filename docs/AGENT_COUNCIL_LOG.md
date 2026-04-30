@@ -3156,3 +3156,32 @@ Keine wichtige Entscheidung offen.
 
 ### Verification / Git
 Gezielt: 3 Scenario-Gallery/API-Tests bestanden. Vollsuite: 182 passed. Py-Compile: app.py/api.py/scenario_gallery.py. Smoke: 20 Runs × 2 Jahre OK. Commit/Push folgt in diesem Heartbeat.
+
+## 2026-04-30 05:37 UTC — Heartbeat: Scenario-Gallery Run-Handoff
+
+### Context
+Alex corrected the heartbeat priority toward core platform implementation. This run stayed on the platform track and extended the Scenario Gallery workflow from readiness/status cards to a compact read-only run handoff sheet for operators/API consumers.
+
+### Project Manager
+Priority: make guided starter scenarios easier to execute deliberately without adding unsafe Apply behavior. Risk: scenario cards can look like recommendations if the pre-run and post-run sequence is not explicit. Next tasks: expose this handoff more visibly on the landing page, then move back to Data-Readiness/provenance gates as primary track.
+
+### Designer / UX
+The new handoff gives first-time and mobile users one short sequence: open safe status routes, check parameter/evidence caveats, run deliberately, then read Storyboard/KPI/Assumption/Policy sections. This reduces scattered instructions without adding another dense table.
+
+### Creative Agent
+Idea: later turn the handoff into a copyable “SimMed run ticket” QR/download for workshops. Fit is good for teaching/workshops, but it should remain read-only until a deliberate confirm-before-run UX exists.
+
+### Political Health-System Strategist
+Scenario starters must not look like policy endorsements. The handoff preserves STOP wording: no official forecast, no policy-effect proof, no lobbying recommendation, and political rubric only after result/evidence review.
+
+### Evidence / Domain
+No new factual/evidence claims were added. The change reuses existing registry evidence checks and guardrails; no YouTube/X/blog material was used.
+
+### Integrator Decision
+Accepted: add `build_scenario_gallery_run_handoff_sheet(...)`, expose it through `GET /scenario-gallery/run-handoff-sheet`, link it from readiness, and surface a short handoff cue on the landing page. Deferred: any automatic Apply/session-state mutation or live run button.
+
+### Question to Alex
+Keine wichtige Entscheidung offen.
+
+### Verification / Git
+Focused tests passed for new helper/API route, full suite passed (`185 passed`), py_compile passed, and API/helper smoke passed. Commit/push status will be recorded after git sync.

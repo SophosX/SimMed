@@ -627,6 +627,7 @@ def test_api_exposes_scenario_gallery_run_readiness_without_execution():
     assert body["evidence_check_count"] >= body["scenario_count"]
     assert body["ready_cards"]
     assert body["operator_route"] == "GET /scenario-gallery/operator-run-packets"
+    assert body["handoff_route"] == "GET /scenario-gallery/run-handoff-sheet"
     assert "nichts wird automatisch angewendet" in body["first_safe_step"]
     assert "kein Simulationslauf" in body["guardrail"]
     assert "keine Registry-/Modellmutation" in body["guardrail"]
@@ -640,6 +641,37 @@ def test_api_rejects_scenario_gallery_run_readiness_out_of_bounds_without_execut
     assert response.status_code == 422
     detail = response.json()["detail"]
     assert detail["status"] == "invalid_scenario_gallery_run_readiness_bounds"
+    assert "kein Simulationslauf" in detail["guardrail"]
+
+
+def test_api_exposes_scenario_gallery_run_handoff_sheet_without_execution():
+    client = TestClient(api)
+    response = client.get("/scenario-gallery/run-handoff-sheet?n_runs=100&n_years=15&seed=42")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "scenario_gallery_run_handoff_not_executed"
+    assert body["starter_rows"]
+    assert body["routes_to_open_before_run"] == [
+        "GET /scenario-gallery/run-readiness",
+        "GET /scenario-gallery/operator-status-cards",
+        "GET /scenario-gallery/operator-run-packets",
+    ]
+    assert "nichts wird automatisch angewendet" in body["first_safe_step"]
+    assert "Ergebnis-Storyboard" in " ".join(body["post_run_reading_order"])
+    assert body["starter_rows"][0]["copyable_payload_route"] == "POST /simulate"
+    assert "kein Simulationslauf" in body["guardrail"]
+    assert "keine Registry-/Modellmutation" in body["guardrail"]
+    assert "kein Policy-Wirkungsbeweis" in body["guardrail"]
+
+
+def test_api_rejects_scenario_gallery_run_handoff_out_of_bounds_without_execution():
+    client = TestClient(api)
+    response = client.get("/scenario-gallery/run-handoff-sheet?n_runs=1001")
+
+    assert response.status_code == 422
+    detail = response.json()["detail"]
+    assert detail["status"] == "invalid_scenario_gallery_run_handoff_bounds"
     assert "kein Simulationslauf" in detail["guardrail"]
 
 

@@ -26,6 +26,7 @@ from app import (
     build_scenario_gallery_guided_apply_plan,
     build_scenario_gallery_operator_run_packets,
     build_scenario_gallery_operator_status_cards,
+    build_scenario_gallery_run_handoff_sheet,
     build_scenario_gallery_run_readiness_summary,
     build_scenario_gallery_manifest_previews,
     build_political_lever_detail_sections,
@@ -691,6 +692,7 @@ def test_scenario_gallery_run_readiness_summary_orients_newcomers_without_execut
     assert summary["evidence_check_count"] >= summary["scenario_count"]
     assert summary["ready_cards"]
     assert summary["operator_route"] == "GET /scenario-gallery/operator-run-packets"
+    assert summary["handoff_route"] == "GET /scenario-gallery/run-handoff-sheet"
     assert "Starterkarte wählen" in summary["first_safe_step"]
     assert "nichts wird automatisch angewendet" in summary["first_safe_step"]
     assert "Storyboard" in combined
@@ -701,6 +703,43 @@ def test_scenario_gallery_run_readiness_summary_orients_newcomers_without_execut
     assert "keine Registry-/Modellmutation" in summary["guardrail"]
     assert "keine amtliche Prognose" in summary["guardrail"]
     assert "kein Policy-Wirkungsbeweis" in summary["guardrail"]
+
+
+def test_scenario_gallery_run_handoff_sheet_orients_operator_before_and_after_run():
+    handoff = build_scenario_gallery_run_handoff_sheet(n_runs=100, n_years=15, seed=42)
+    combined = " ".join(str(value) for value in handoff.values())
+
+    assert handoff["status"] == "scenario_gallery_run_handoff_not_executed"
+    assert handoff["starter_rows"]
+    assert handoff["routes_to_open_before_run"] == [
+        "GET /scenario-gallery/run-readiness",
+        "GET /scenario-gallery/operator-status-cards",
+        "GET /scenario-gallery/operator-run-packets",
+    ]
+    first = handoff["starter_rows"][0]
+    assert {
+        "rank",
+        "card_id",
+        "title",
+        "status",
+        "changed_parameters_plain",
+        "first_check",
+        "copyable_status_route",
+        "copyable_payload_route",
+        "post_run_first_read",
+        "stop_rule",
+    } <= set(first)
+    assert first["copyable_payload_route"] == "POST /simulate"
+    assert "nichts wird automatisch angewendet" in combined
+    assert "Ergebnis-Storyboard" in combined
+    assert "KPI-Detailkarte" in combined
+    assert "Annahmen-/Evidenzcheck" in combined
+    assert "kein Apply-Button" in handoff["guardrail"]
+    assert "kein Simulationslauf" in handoff["guardrail"]
+    assert "keine Registry-/Modellmutation" in handoff["guardrail"]
+    assert "keine amtliche Prognose" in handoff["guardrail"]
+    assert "kein Policy-Wirkungsbeweis" in handoff["guardrail"]
+    assert "keine Lobbying-Empfehlung" in handoff["guardrail"]
 
 
 def test_direction_word_uses_plain_language_and_preference_direction():

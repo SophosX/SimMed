@@ -198,6 +198,7 @@ def build_scenario_gallery_run_readiness_summary(
         "first_safe_step": "Starterkarte wählen und die Parameter-/Evidenzchecks lesen; nichts wird automatisch angewendet.",
         "operator_route": "GET /scenario-gallery/operator-run-packets",
         "status_card_route": "GET /scenario-gallery/operator-status-cards",
+        "handoff_route": "GET /scenario-gallery/run-handoff-sheet",
         "ready_cards": [
             {
                 "card_id": card["card_id"],
@@ -217,6 +218,60 @@ def build_scenario_gallery_run_readiness_summary(
         ],
         "guardrail": (
             "Readiness-Summary ist read-only: kein Apply-Button, keine Session-State-Mutation, "
+            "kein Simulationslauf, keine Registry-/Modellmutation, keine amtliche Prognose, "
+            "kein Policy-Wirkungsbeweis und keine Lobbying-Empfehlung."
+        ),
+    }
+
+
+def build_scenario_gallery_run_handoff_sheet(
+    *, n_runs: int = 100, n_years: int = 15, seed: int = 42
+) -> dict[str, Any]:
+    """Return a compact operator handoff for deliberate starter-scenario runs.
+
+    The handoff is designed for mobile/API consumers that need one copy-safe
+    overview: what can be started, which status routes to open, which checks must
+    happen before running, and where to read results afterwards. It remains
+    planning-only and does not execute or apply scenario parameters.
+    """
+
+    readiness = build_scenario_gallery_run_readiness_summary(n_runs=n_runs, n_years=n_years, seed=seed)
+    packets = build_scenario_gallery_operator_run_packets(n_runs=n_runs, n_years=n_years, seed=seed)
+    starter_rows = [
+        {
+            "rank": index,
+            "card_id": packet["card_id"],
+            "title": packet["title"],
+            "status": packet["status"],
+            "changed_parameters_plain": packet["changed_parameters_plain"],
+            "first_check": packet["pre_run_checklist"][0],
+            "copyable_status_route": "GET /scenario-gallery/run-readiness",
+            "copyable_payload_route": packet["copyable_api_route"],
+            "post_run_first_read": packet["post_run_reading_order"][1],
+            "stop_rule": packet["operator_stop_rule"],
+        }
+        for index, packet in enumerate(packets, start=1)
+    ]
+    return {
+        "status": "scenario_gallery_run_handoff_not_executed",
+        "title": "Scenario-Gallery Run-Handoff: bewusst starten, danach richtig lesen",
+        "first_safe_step": readiness["first_safe_step"],
+        "routes_to_open_before_run": [
+            "GET /scenario-gallery/run-readiness",
+            "GET /scenario-gallery/operator-status-cards",
+            "GET /scenario-gallery/operator-run-packets",
+        ],
+        "starter_rows": starter_rows,
+        "definition_of_done_before_run": readiness["definition_of_done_before_run"],
+        "post_run_reading_order": [
+            "Ergebnis-Storyboard öffnen",
+            "KPI-Detailkarte für den stärksten Ausschlag lesen",
+            "Geänderte Hebel als Fragen lesen",
+            "Annahmen-/Evidenzcheck prüfen",
+            "Policy-Briefing und politische Rubrik als qualitative Einordnung lesen",
+        ],
+        "guardrail": (
+            "Run-Handoff ist read-only/status-only: kein Apply-Button, keine Session-State-Mutation, "
             "kein Simulationslauf, keine Registry-/Modellmutation, keine amtliche Prognose, "
             "kein Policy-Wirkungsbeweis und keine Lobbying-Empfehlung."
         ),
