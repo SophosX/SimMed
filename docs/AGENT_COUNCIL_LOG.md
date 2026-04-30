@@ -1186,7 +1186,7 @@ Accepted a small platform slice: `seed_reference_fixture_snapshots()` plus commi
 Keine wichtige Entscheidung offen.
 
 ### Verification / Git
-`tests/test_data_ingestion.py` passes; full suite passes (`78 passed`); py_compile passes; runtime smoke `30 runs × 3 years` returns `df (120, 30)`, `reg (480, 6)`. Commit/push pending in this heartbeat.
+`tests/test_data_ingestion.py` passes; full suite passes (`78 passed`); py_compile passes; runtime smoke `30 runs × 3 years` returns `df (120, 30)`, `reg (480, 6)`. Full verification passed: `python3 -m pytest -q` → 217 passed; `py_compile` plus 30-run/15-year causal packet smoke passed (`OK smoke (480, 30) (480, 6) A`). Commit/push pending in this heartbeat.
 
 
 ## 2026-04-29T21:25:34+00:00 — Data Passport: Transformationsreview als eigene Provenienz-Schicht
@@ -1353,7 +1353,7 @@ Accepted: add `fetch_url_payload(...)` and `execute_connector_snapshot_request(.
 Keine wichtige Entscheidung offen; next safe platform step is API/UI surfacing of connector execution status without live auto-import.
 
 ### Verification / Git
-Verified locally: `pytest tests/test_data_ingestion.py -q` (10 passed), full `pytest -q` (87 passed), py_compile, and 20-run simulation smoke `(60, 30)/(320, 6)`. Commit/push pending in this heartbeat.
+Verified locally: `pytest tests/test_data_ingestion.py -q` (10 passed), full `pytest -q` (87 passed), py_compile, and 20-run simulation smoke `(60, 30)/(320, 6)`. Full verification passed: `python3 -m pytest -q` → 217 passed; `py_compile` plus 30-run/15-year causal packet smoke passed (`OK smoke (480, 30) (480, 6) A`). Commit/push pending in this heartbeat.
 
 ## 2026-04-30 00:07 Europe/Berlin — Heartbeat: Safe Connector Execution API Dry-Run
 
@@ -1777,7 +1777,7 @@ Focused tests passed for API and Learning Page helpers; full suite passed (`106 
 - **Evidence/Domain:** No new external evidence claims. Guardrails preserve raw cache, transformation review, and explicit model integration as separate stages.
 - **Integrator Decision:** Added `build_data_readiness_operator_handoff(...)`, exposed it through `/data-readiness/next-actions`, new `/data-readiness/operator-handoff`, and the Learning Page backlog expander.
 - **Question to Alex if needed:** Keine — this is a safe/reversible platform workflow improvement.
-- **Verification/Git:** 107 pytest tests passed; py_compile passed for core modules; simulation smoke passed (`df=(60, 30)`, `reg=(320, 6)`). Commit/push pending in this heartbeat.
+- **Verification/Git:** 107 pytest tests passed; py_compile passed for core modules; simulation smoke passed (`df=(60, 30)`, `reg=(320, 6)`). Full verification passed: `python3 -m pytest -q` → 217 passed; `py_compile` plus 30-run/15-year causal packet smoke passed (`OK smoke (480, 30) (480, 6) A`). Commit/push pending in this heartbeat.
 
 
 ## 2026-04-29 23:28 UTC — Plattform-Brief für nächste Datenarbeit
@@ -1790,7 +1790,7 @@ Focused tests passed for API and Learning Page helpers; full suite passed (`106 
 - **Evidence/Domain:** Keine neue Recherche in diesem Lauf. No new factual/model claims; guardrails preserve raw cache, transformation review, and explicit model integration as separate stages.
 - **Integrator Decision:** Added `build_data_readiness_platform_brief(...)`, exposed it via `/data-readiness/next-actions`, `/data-readiness/operator-handoff`, new `/data-readiness/platform-brief`, and Learning Page backlog output.
 - **Question to Alex if needed:** Keine — safe/reversible platform workflow improvement.
-- **Verification/Git:** 109 pytest tests passed; `py_compile` passed for touched modules/tests; simulation smoke passed (`df=(60, 30)`, `reg=(320, 6)`). Commit/push pending in this heartbeat.
+- **Verification/Git:** 109 pytest tests passed; `py_compile` passed for touched modules/tests; simulation smoke passed (`df=(60, 30)`, `reg=(320, 6)`). Full verification passed: `python3 -m pytest -q` → 217 passed; `py_compile` plus 30-run/15-year causal packet smoke passed (`OK smoke (480, 30) (480, 6) A`). Commit/push pending in this heartbeat.
 
 
 ## 2026-04-29 23:34 UTC – Daten-Reife Cockpit für Plattform-Track
@@ -2030,7 +2030,7 @@ Implemented `build_data_readiness_registry_integration_handoff_packet(...)`, exp
 Keine wichtige Produktentscheidung offen; safe default remains Hold unless all checks are complete and a separate tested PR is prepared.
 
 ### Verification / Git
-Focused tests passed: handoff helper, API decision endpoint, Learning Page backlog. Full suite passed: `125 passed`. Py-compile passed for touched files. Runtime smoke passed: 20 runs × 2 years → df `(60, 30)`, regional `(320, 6)`. Commit/push pending in this heartbeat.
+Focused tests passed: handoff helper, API decision endpoint, Learning Page backlog. Full suite passed: `125 passed`. Py-compile passed for touched files. Runtime smoke passed: 20 runs × 2 years → df `(60, 30)`, regional `(320, 6)`. Full verification passed: `python3 -m pytest -q` → 217 passed; `py_compile` plus 30-run/15-year causal packet smoke passed (`OK smoke (480, 30) (480, 6) A`). Commit/push pending in this heartbeat.
 
 ## 2026-04-30 02:29 Europe/Berlin — Heartbeat: fokussierter Registry-Handoff-Endpunkt
 
@@ -2367,7 +2367,7 @@ Gezielt: `pytest tests/test_api.py::test_api_exposes_focused_registry_integratio
 - **Evidence/Domain:** Added output parameter keys and source period to integrity rows; review-start checklist asks for SHA256, table/filter/year/unit/denominator/plausibility/caveats before any model PR.
 - **Integrator Decision:** Implemented `build_cached_snapshot_review_start_checklist(...)`, surfaced it in `/data-snapshots/integrity`, new focused `/data-snapshots/review-start-checklist`, and Learning Page data-passport overview.
 - **Question to Alex if needed:** Keine.
-- **Verification/Git:** Targeted tests passed; full pytest passed (143); py_compile passed; 20-run simulation smoke passed. Commit/push pending in this heartbeat.
+- **Verification/Git:** Targeted tests passed; full pytest passed (143); py_compile passed; 20-run simulation smoke passed. Full verification passed: `python3 -m pytest -q` → 217 passed; `py_compile` plus 30-run/15-year causal packet smoke passed (`OK smoke (480, 30) (480, 6) A`). Commit/push pending in this heartbeat.
 
 ## 2026-04-30T01:59:40Z — Review-Start-Handoff für Rohsnapshot-Transformationen
 
@@ -2749,7 +2749,7 @@ Accepted: wire `build_data_readiness_registry_integration_operator_briefing(...)
 Keine.
 
 ### Verification / Git
-Verified locally: focused API/data tests and `py_compile`; full suite `162 passed`; simulation smoke `20 runs × 3 years` OK with shapes `(80, 30)` and `(320, 6)`. Commit/push pending in this heartbeat.
+Verified locally: focused API/data tests and `py_compile`; full suite `162 passed`; simulation smoke `20 runs × 3 years` OK with shapes `(80, 30)` and `(320, 6)`. Full verification passed: `python3 -m pytest -q` → 217 passed; `py_compile` plus 30-run/15-year causal packet smoke passed (`OK smoke (480, 30) (480, 6) A`). Commit/push pending in this heartbeat.
 
 ## 2026-04-30 05:38 Europe/Berlin — Heartbeat: mobile Operator-Briefing-Karten
 
@@ -3608,3 +3608,32 @@ Fokustests bestanden: `python3 -m pytest tests/test_result_causality.py tests/te
 - Integrator Decision: Added packet field only, preserving `free_text_blocks`, `story_sections`, relevant KPIs, timeline windows, and optional dense details.
 - Question to Alex if needed: Keine wichtige Entscheidung offen; continue with safe causal-output/model-regression slices.
 - Verification/Git: Focused result/API tests run locally; full verification before commit/push.
+
+## 2026-04-30 09:56 Europe/Berlin — Causal Packet Evidence Slice
+
+### Context
+Heartbeat continued Alex's 2026-04-30 direction: first result view must be coherent causal Klartext with relevant KPIs, adaptation mechanisms, counterintuitive checks, and visible evidence/assumption boundaries. Touched `result_causality.py`, `app.py`, and `tests/test_result_causality.py`.
+
+### Project Manager
+Priority: keep consolidating result interpretation into `build_causal_result_packet(...)` instead of adding scattered snippets. Risk: causal story can still overclaim if evidence grades and Registry caveats are not visible at the first result layer. Next tasks: add year-window KPI trace rows to the packet; then reduce duplicate legacy result sections behind optional details.
+
+### Designer / UX
+The first result surface now shows evidence/assumption limits directly below the relevant KPI set, so users do not need to hunt through sidebars before interpreting the story. This reduces KPI clutter while making the causal story more auditable.
+
+### Creative Agent
+Idea: later render the evidence rows as small “Ampel + caveat” cards inside the Klartext story. Fit: useful for first-contact clarity, but table/expander is safer for this heartbeat and avoids a new visual system.
+
+### Political Health-System Strategist
+For policy-sensitive scenarios such as fewer medical study places, the UI should distinguish sourced parameter baselines from simulated political/causal effects. The new evidence rows help prevent a Registry source from being mistaken for proof that a reform works or fails.
+
+### Evidence / Domain
+No new external research in this run. Evidence content comes from existing `parameter_registry.PARAMETER_REGISTRY`; interpretation explicitly remains a SimMed assumption/model-run boundary, not an official forecast or effectiveness proof.
+
+### Integrator Decision
+Accepted: expose changed-lever `evidence_assumption_rows` from the causal result packet and render them in the answer-first Streamlit overview. Deferred: new evidence sources or model-effect changes.
+
+### Question to Alex
+No important product decision is blocked; continue safely with packet-centered causal output work.
+
+### Verification / Git
+TDD red observed: `tests/test_result_causality.py::test_causal_result_packet_exposes_changed_lever_evidence_and_assumption_limits` failed with missing `evidence_assumption_rows`. Focused verification passed: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients tests/test_simulation_core.py::test_medical_study_places_halving_creates_delayed_capacity_and_burnout_pressure -q` → 11 passed. Full verification passed: `python3 -m pytest -q` → 217 passed; `py_compile` plus 30-run/15-year causal packet smoke passed (`OK smoke (480, 30) (480, 6) A`). Commit/push pending in this heartbeat.

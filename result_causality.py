@@ -13,6 +13,7 @@ from typing import Any, Mapping, Sequence
 import pandas as pd
 
 from simulation_core import get_default_params
+from parameter_registry import PARAMETER_REGISTRY
 
 RESULT_CAUSALITY_GUARDRAIL = (
     "Klartext-Erklärung eines SimMed-Modelllaufs: keine random Internet-Suche, "
@@ -87,6 +88,33 @@ def _changed_inputs(params: Mapping[str, Any]) -> list[dict[str, str]]:
             }
         )
     return changed
+
+
+def _evidence_assumption_rows(changed_inputs: Sequence[Mapping[str, str]]) -> list[dict[str, Any]]:
+    """Expose registry evidence/caveats for changed levers in the causal packet."""
+
+    rows: list[dict[str, Any]] = []
+    for item in changed_inputs:
+        key = str(item.get("key", ""))
+        spec = PARAMETER_REGISTRY.get(key)
+        if spec is None:
+            continue
+        rows.append(
+            {
+                "parameter_key": key,
+                "label": spec.label,
+                "evidence_grade": spec.evidence_grade,
+                "source_ids": list(spec.source_ids),
+                "model_role": spec.model_role,
+                "uncertainty": spec.uncertainty,
+                "caveat": spec.caveat,
+                "interpretation_limit": (
+                    f"Evidenzgrad {spec.evidence_grade}: Registry/Quellen stützen den Parameterrahmen, "
+                    "aber der konkrete Szenarioeffekt bleibt eine SimMed-Annahme und kein Wirksamkeitsnachweis."
+                ),
+            }
+        )
+    return rows
 
 
 def _metric_movement(agg: pd.DataFrame, key: str) -> dict[str, Any] | None:
@@ -259,6 +287,7 @@ def build_causal_result_packet(
     """
 
     changed = _changed_inputs(params)
+    evidence_rows = _evidence_assumption_rows(changed)
     kpis = _relevant_kpis(agg, max_kpis=max_kpis)
     mechanisms = _adaptation_mechanisms(params, kpis)
     timeline_windows = _timeline_windows(params)
@@ -272,6 +301,10 @@ def build_causal_result_packet(
         f"{item['window']}: {item['expected_signal']} ({item['pressure_check']})." for item in timeline_windows
     ) or "Kein spezifisches verzögertes Zeitfenster aus den geänderten Haupthebeln abgeleitet."
     counter_text = " ".join(item["finding"] + " " + item["operator_action"] for item in counter) or "Keine harte Gegenintuition im kompakten KPI-Set erkannt."
+    evidence_text = " ".join(
+        f"{row['label']} ({row['parameter_key']}): Evidenzgrad {row['evidence_grade']}; {row['interpretation_limit']}"
+        for row in evidence_rows
+    ) or "Keine geänderte Stellschraube mit Registry-Evidenzzeile im aktuellen Lauf."
 
     free_text_blocks = [
         {
@@ -302,7 +335,7 @@ def build_causal_result_packet(
         {
             "step": "6. Evidenzgrenze",
             "text": (
-                f"{RESULT_CAUSALITY_GUARDRAIL} Evidenzgrade und Registry-Caveats begrenzen die Interpretation; "
+                f"{evidence_text} {RESULT_CAUSALITY_GUARDRAIL} Evidenzgrade und Registry-Caveats begrenzen die Interpretation; "
                 "diese Erklärung ist ein lokaler Modelllauf, keine freie Web-Recherche und keine automatische Parameterintegration."
             ),
         },
@@ -366,6 +399,7 @@ def build_causal_result_packet(
             "5 · Gegencheck/Caveat",
         ],
         "changed_inputs": changed,
+        "evidence_assumption_rows": evidence_rows,
         "relevant_kpis": kpis,
         "adaptation_mechanisms": mechanisms,
         "timeline_windows": timeline_windows,
@@ -376,6 +410,7 @@ def build_causal_result_packet(
             "main_blocks": free_text_blocks,
             "sequential_plain_text": sequential_plain_text,
             "relevant_kpis": kpis,
+            "evidence_assumption_rows": evidence_rows,
             "optional_details_after": ["KPI-Drilldowns", "Trend", "Policy-Briefing", "Politik/Stakeholder"],
         },
         "story_sections": story_sections,

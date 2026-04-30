@@ -3557,6 +3557,20 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
             hide_index=True,
         )
 
+    if packet.get("evidence_assumption_rows"):
+        with st.expander("Evidenz-/Annahmegrenzen der geänderten Hebel", expanded=True):
+            st.dataframe(
+                pd.DataFrame(packet["evidence_assumption_rows"])[[
+                    "label",
+                    "evidence_grade",
+                    "source_ids",
+                    "uncertainty",
+                    "interpretation_limit",
+                ]],
+                use_container_width=True,
+                hide_index=True,
+            )
+
     if packet["counterintuitive_findings"]:
         with st.expander("Gegenintuition prüfen", expanded=True):
             st.dataframe(pd.DataFrame(packet["counterintuitive_findings"]), use_container_width=True, hide_index=True)

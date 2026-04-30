@@ -154,6 +154,7 @@ def test_causal_result_packet_has_sequential_free_text_blocks_before_optional_de
         "main_blocks": blocks,
         "sequential_plain_text": packet["sequential_plain_text"],
         "relevant_kpis": packet["relevant_kpis"],
+        "evidence_assumption_rows": packet["evidence_assumption_rows"],
         "optional_details_after": ["KPI-Drilldowns", "Trend", "Policy-Briefing", "Politik/Stakeholder"],
     }
 
@@ -175,6 +176,22 @@ def test_causal_result_packet_exposes_one_sequential_plain_text_story_for_api_cl
     assert "keine random Internet-Suche" in story
     assert "KPI-Wand" not in story
     assert packet["primary_result_view"]["sequential_plain_text"] == story
+
+
+def test_causal_result_packet_exposes_changed_lever_evidence_and_assumption_limits():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+
+    evidence_rows = packet["evidence_assumption_rows"]
+    medical_row = next(row for row in evidence_rows if row["parameter_key"] == "medizinstudienplaetze")
+    assert medical_row["evidence_grade"] == "A"
+    assert medical_row["source_ids"]
+    assert "6" in medical_row["model_role"] or "6" in medical_row["caveat"]
+    assert "Annahme" in medical_row["interpretation_limit"]
+    assert "Evidenzgrad A" in packet["sequential_plain_text"]
+    assert "medizinstudienplaetze" in packet["primary_result_view"]["evidence_assumption_rows"][0]["parameter_key"]
 
 
 def test_causal_result_layout_keeps_dense_kpis_optional_after_cleartext():
