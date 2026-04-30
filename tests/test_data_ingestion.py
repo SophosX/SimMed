@@ -18,6 +18,9 @@ from data_ingestion import (
     build_data_readiness_registry_integration_decision_record,
     build_data_readiness_registry_integration_decision_template,
     build_data_readiness_registry_integration_handoff_packet,
+    build_data_readiness_registry_integration_pr_runbook,
+    build_data_readiness_registry_integration_status_board,
+    build_data_readiness_registry_integration_decision_audit_checklist,
     build_data_readiness_summary,
     build_next_data_readiness_actions,
     build_parameter_data_workflow_card,
@@ -976,4 +979,53 @@ def test_registry_integration_handoff_packet_is_copy_safe_and_read_only():
     assert "Review-Wert fehlt" in blocked["missing_checks_before_go"]
     assert "PR-Brief fehlt" in blocked["missing_checks_before_go"]
     assert "kein Branch" in packet["guardrail"]
+    assert "keine Registry-/Modellmutation" in ready["guardrail"]
+
+
+def test_registry_integration_status_board_compacts_final_gates_without_actions():
+    decision_record = {
+        "rows": [
+            {
+                "parameter_key": "bevoelkerung_mio",
+                "label": "Bevölkerung",
+                "status": "human_go_no_go_required_before_pr",
+                "checks": {
+                    "reviewed_value_present": True,
+                    "source_snapshot_sha256_present": True,
+                    "unit_matches_registry": True,
+                    "within_registry_bounds": True,
+                    "pr_brief_available": True,
+                },
+                "branch_name_if_go": "feat/integrate-reviewed-bevoelkerung_mio",
+            },
+            {
+                "parameter_key": "krankenhausbetten",
+                "label": "Krankenhausbetten",
+                "status": "blocked_before_human_go_no_go",
+                "checks": {
+                    "reviewed_value_present": False,
+                    "source_snapshot_sha256_present": False,
+                    "unit_matches_registry": False,
+                    "within_registry_bounds": None,
+                    "pr_brief_available": False,
+                },
+            },
+        ]
+    }
+    audit = build_data_readiness_registry_integration_decision_audit_checklist(decision_record)
+    runbook = build_data_readiness_registry_integration_pr_runbook(decision_record)
+
+    board = build_data_readiness_registry_integration_status_board(decision_record, audit, runbook)
+
+    assert board["title"].startswith("Registry-Integrations-Statusboard")
+    assert board["summary"] == {"decision_rows_seen": 2, "board_rows": 2, "rows_waiting_or_hold": 1}
+    ready = board["rows"][0]
+    assert ready["board_status"] == "bereit_fuer_menschliches_go_audit"
+    assert ready["green_check_count"] == 5
+    assert ready["status_route"] == "GET /data-readiness/bevoelkerung_mio"
+    assert ready["runbook_route"] == "GET /data-readiness/registry-integration-pr-runbook"
+    blocked = board["rows"][1]
+    assert blocked["board_status"] == "hold_bis_technical_checks_gruen"
+    assert "reviewed_value_present" in blocked["missing_checks_before_go"]
+    assert "kein Branch" in board["guardrail"]
     assert "keine Registry-/Modellmutation" in ready["guardrail"]

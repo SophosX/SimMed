@@ -33,6 +33,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_decision_template,
     build_data_readiness_registry_integration_handoff_packet,
     build_data_readiness_registry_integration_pr_runbook,
+    build_data_readiness_registry_integration_status_board,
     build_data_readiness_gate_plan,
     build_data_readiness_summary,
     build_next_data_readiness_actions,
@@ -373,6 +374,8 @@ def get_data_readiness_registry_integration_decision_record(limit: int = 3) -> d
     preview = build_data_readiness_registry_diff_preview(plan, parameters)
     brief = build_data_readiness_integration_pr_brief(plan)
     decision_record = build_data_readiness_registry_integration_decision_record(preview, brief)
+    audit_checklist = build_data_readiness_registry_integration_decision_audit_checklist(decision_record)
+    pr_runbook = build_data_readiness_registry_integration_pr_runbook(decision_record)
     return {
         "status": "data_readiness_registry_integration_decision_record_not_applied",
         "guardrail": "Decision-Record ist read-only: kein Branch, kein execute=true, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
@@ -381,9 +384,10 @@ def get_data_readiness_registry_integration_decision_record(limit: int = 3) -> d
         "integration_pr_brief": brief,
         "registry_integration_decision_record": decision_record,
         "registry_integration_decision_template": build_data_readiness_registry_integration_decision_template(decision_record),
-        "registry_integration_decision_audit_checklist": build_data_readiness_registry_integration_decision_audit_checklist(decision_record),
+        "registry_integration_decision_audit_checklist": audit_checklist,
+        "registry_integration_status_board": build_data_readiness_registry_integration_status_board(decision_record, audit_checklist, pr_runbook),
         "registry_integration_handoff_packet": build_data_readiness_registry_integration_handoff_packet(decision_record),
-        "registry_integration_pr_runbook": build_data_readiness_registry_integration_pr_runbook(decision_record),
+        "registry_integration_pr_runbook": pr_runbook,
     }
 
 
@@ -471,6 +475,37 @@ def get_data_readiness_registry_integration_pr_runbook(limit: int = 3) -> dict:
         "guardrail": "PR-Runbook ist read-only/status-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
         "summary": build_data_readiness_summary(items),
         "registry_integration_pr_runbook": build_data_readiness_registry_integration_pr_runbook(decision_record),
+    }
+
+
+@api.get("/data-readiness/registry-integration-status-board")
+def get_data_readiness_registry_integration_status_board(limit: int = 3) -> dict:
+    """Return a compact read-only board for final Registry integration gates."""
+
+    if limit < 1 or limit > 10:
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "status": "invalid_data_readiness_registry_integration_status_board_limit",
+                "limit": limit,
+                "guardrail": "Limit muss zwischen 1 und 10 liegen; kein Branch und keine Registry-/Modelländerung wurde ausgeführt.",
+            },
+        )
+    parameters = list_parameters()
+    items = build_data_readiness_backlog(parameters)
+    passport_rows = build_data_passport_rows(parameters)
+    preflight = build_data_readiness_integration_preflight(items, passport_rows, limit=10)
+    plan = build_data_readiness_integration_plan(preflight, limit=limit)
+    preview = build_data_readiness_registry_diff_preview(plan, parameters)
+    brief = build_data_readiness_integration_pr_brief(plan)
+    decision_record = build_data_readiness_registry_integration_decision_record(preview, brief)
+    audit_checklist = build_data_readiness_registry_integration_decision_audit_checklist(decision_record)
+    pr_runbook = build_data_readiness_registry_integration_pr_runbook(decision_record)
+    return {
+        "status": "data_readiness_registry_integration_status_board_not_applied",
+        "guardrail": "Statusboard ist read-only/status-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+        "summary": build_data_readiness_summary(items),
+        "registry_integration_status_board": build_data_readiness_registry_integration_status_board(decision_record, audit_checklist, pr_runbook),
     }
 
 

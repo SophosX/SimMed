@@ -47,6 +47,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_decision_template,
     build_data_readiness_registry_integration_handoff_packet,
     build_data_readiness_registry_integration_pr_runbook,
+    build_data_readiness_registry_integration_status_board,
     build_data_readiness_gate_plan,
     build_data_readiness_operator_handoff,
     build_data_readiness_platform_brief,
@@ -4127,6 +4128,8 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
     registry_diff_preview = build_data_readiness_registry_diff_preview(integration_plan, parameters)
     integration_pr_brief = build_data_readiness_integration_pr_brief(integration_plan)
     decision_record = build_data_readiness_registry_integration_decision_record(registry_diff_preview, integration_pr_brief)
+    audit_checklist = build_data_readiness_registry_integration_decision_audit_checklist(decision_record)
+    pr_runbook = build_data_readiness_registry_integration_pr_runbook(decision_record)
     return {
         "title": "Nächste Daten-Schritte: erst Cache, dann Review, dann Integration",
         "plain_language_note": (
@@ -4149,9 +4152,10 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         "integration_pr_brief": integration_pr_brief,
         "registry_integration_decision_record": decision_record,
         "registry_integration_decision_template": build_data_readiness_registry_integration_decision_template(decision_record),
-        "registry_integration_decision_audit_checklist": build_data_readiness_registry_integration_decision_audit_checklist(decision_record),
+        "registry_integration_decision_audit_checklist": audit_checklist,
+        "registry_integration_status_board": build_data_readiness_registry_integration_status_board(decision_record, audit_checklist, pr_runbook),
         "registry_integration_handoff_packet": build_data_readiness_registry_integration_handoff_packet(decision_record),
-        "registry_integration_pr_runbook": build_data_readiness_registry_integration_pr_runbook(decision_record),
+        "registry_integration_pr_runbook": pr_runbook,
         "rows": [
             {
                 "Parameter": item["label"],
@@ -4466,6 +4470,27 @@ def render_learning_data_readiness_backlog():
         else:
             st.caption("Noch keine Ausfüllvorlage, weil kein Decision-Record vorliegt.")
         st.caption(decision_template["guardrail"])
+        status_board = backlog["registry_integration_status_board"]
+        st.markdown(f"**{status_board['title']}**")
+        st.caption(status_board["plain_language_note"])
+        status_board_rows = [
+            {
+                "Rang": row["rank"],
+                "Parameter": row["label"],
+                "Status": row["board_status"],
+                "Grüne Checks": row["green_check_count"],
+                "Nächstes Gate": row["next_gate"],
+                "Status-Route": row["status_route"],
+                "Audit-Route": row["audit_route"],
+                "Guardrail": row["guardrail"],
+            }
+            for row in status_board["rows"]
+        ]
+        if status_board_rows:
+            st.dataframe(pd.DataFrame(status_board_rows), use_container_width=True, hide_index=True)
+        else:
+            st.caption("Noch kein Statusboard, weil kein Decision-Record vorliegt.")
+        st.caption(status_board["guardrail"])
         audit_checklist = backlog["registry_integration_decision_audit_checklist"]
         st.markdown(f"**{audit_checklist['title']}**")
         st.caption(audit_checklist["plain_language_note"])

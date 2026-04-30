@@ -2161,3 +2161,16 @@ Vor Commit: 129 Tests grün, py_compile grün, Simulation-Smoke 20 Runs × 2 Jah
 - **Integrator Decision:** `build_data_readiness_registry_integration_pr_runbook(...)` in `data_ingestion.py`, focused API `GET /data-readiness/registry-integration-pr-runbook`, aggregate Decision-Record response und Learning-Page Builder/Renderer ergänzt.
 - **Question to Alex if needed:** Keine wichtige Entscheidung offen; sichere Default-Linie bleibt Hold bis auditiertes Go.
 - **Verification/Git:** Targeted pytest, full pytest (130 passed), py_compile und kleiner Simulation-Smoke OK; Commit/Push folgt in diesem Lauf.
+
+
+## 2026-04-30 00:57 UTC — Registry-Integrations-Statusboard
+
+- **Context:** Alex priorisiert Core-Plattform; nächster sicherer Slice im Data-Readiness-/Provenienzpfad vor echter Registry-/Modellintegration.
+- **Project Manager:** Verdichtet die vielen finalen Gates (Decision, Audit, PR-Runbook) zu einer operator-freundlichen Status-Ampel, ohne Modellwerte zu ändern.
+- **Designer/UX:** Learning Page bekommt ein mobiles, tabellarisches Statusboard vor Audit/Handoff, damit Neulinge sofort sehen: Statusroute öffnen → Decision/Audit prüfen → PR erst nach Go.
+- **Creative Agent:** Kein neuer Effekt/Claim; bessere Orchestrierung statt weiterer Detailtabelle.
+- **Political Health-System Strategist:** Governance bleibt konservativ: kein automatisches Go, keine amtliche Prognose, kein Policy-Wirkungsbeweis.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; nur bestehende Provenienz-/Review-Gates neu zusammengeführt.
+- **Integrator Decision:** Implementiert `build_data_readiness_registry_integration_status_board(...)`, API `GET /data-readiness/registry-integration-status-board`, Learning-Page-Surfacing und Regressionstests.
+- **Question to Alex if needed:** Keine wichtige Entscheidung offen; sicherer Default bleibt Hold bis dokumentiertes menschliches Go.
+- **Verification/Git:** 132 pytest passed, py_compile passed, 20-run/2-year smoke OK; Commit/Push folgt.

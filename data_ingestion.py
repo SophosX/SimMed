@@ -1509,6 +1509,69 @@ def build_data_readiness_registry_integration_pr_runbook(decision_record: dict) 
     }
 
 
+def build_data_readiness_registry_integration_status_board(
+    decision_record: dict,
+    audit_checklist: dict,
+    pr_runbook: dict,
+) -> dict:
+    """Return a compact read-only board for the last Registry integration gates.
+
+    The Decision-Record, Audit-Checklist and PR-Runbook are intentionally detailed.
+    This board compresses them into one newcomer/operator view: what is the current
+    state, which gate blocks a Registry/model PR, and which status route should be
+    opened next. It never persists decisions, starts branches, executes connectors,
+    writes reviews, or mutates Registry/model defaults.
+    """
+
+    audit_by_key = {row["parameter_key"]: row for row in audit_checklist.get("rows", [])}
+    runbook_by_key = {row["parameter_key"]: row for row in pr_runbook.get("rows", [])}
+    rows: list[dict] = []
+    for idx, row in enumerate(decision_record.get("rows", []), start=1):
+        parameter_key = row["parameter_key"]
+        audit_row = audit_by_key.get(parameter_key, {})
+        runbook_row = runbook_by_key.get(parameter_key, {})
+        checks = row.get("checks", {})
+        missing_checks = audit_row.get("missing_technical_checks_before_go", [])
+        if missing_checks:
+            board_status = "hold_bis_technical_checks_gruen"
+            next_gate = "Fehlende technische Checks schließen und Decision=Hold dokumentieren"
+        elif row.get("status") != "human_go_no_go_required_before_pr":
+            board_status = "hold_bis_decision_record_vollstaendig"
+            next_gate = "Go/Hold/Reject-Entscheidung vollständig ausfüllen"
+        else:
+            board_status = "bereit_fuer_menschliches_go_audit"
+            next_gate = "Menschliches Go/Hold/Reject auditieren; PR erst danach"
+        rows.append({
+            "rank": idx,
+            "parameter_key": parameter_key,
+            "label": row.get("label", parameter_key),
+            "board_status": board_status,
+            "green_check_count": sum(1 for ok in checks.values() if ok is True),
+            "missing_checks_before_go": missing_checks,
+            "next_gate": next_gate,
+            "status_route": f"GET /data-readiness/{parameter_key}",
+            "decision_route": "GET /data-readiness/registry-integration-decision-record",
+            "audit_route": "GET /data-readiness/registry-integration-decision-audit-checklist",
+            "runbook_route": "GET /data-readiness/registry-integration-pr-runbook",
+            "branch_name_if_go": runbook_row.get("branch_name_if_go"),
+            "guardrail": "Status-Board ist read-only: keine Entscheidungsspeicherung, kein Branch, kein execute=true, kein Netzwerkabruf, keine Cache-/Review-Aktion, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+        })
+    return {
+        "title": "Registry-Integrations-Statusboard vor jedem PR",
+        "plain_language_note": (
+            "Dieses Board ist die kompakte Ampel vor echter Registry-/Modellarbeit: erst Status und Decision-Record lesen, "
+            "dann Audit prüfen, und nur nach dokumentiertem Go einen separaten PR planen."
+        ),
+        "summary": {
+            "decision_rows_seen": len(decision_record.get("rows", [])),
+            "board_rows": len(rows),
+            "rows_waiting_or_hold": sum(1 for row in rows if row["board_status"] != "bereit_fuer_menschliches_go_audit"),
+        },
+        "rows": rows,
+        "guardrail": "Read-only/Statusboard-only: kein Branch, kein execute=true, keine Datenaktion, keine Review-Erzeugung, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
+    }
+
+
 def build_data_readiness_registry_integration_handoff_packet(decision_record: dict) -> dict:
     """Create a copy-safe operator handoff from the Go/Hold/Reject decision record.
 
