@@ -3184,4 +3184,4 @@ Accepted: add `build_scenario_gallery_run_handoff_sheet(...)`, expose it through
 Keine wichtige Entscheidung offen.
 
 ### Verification / Git
-Focused tests passed for new helper/API route, full suite passed (`185 passed`), py_compile passed, and API/helper smoke passed. Commit/push status will be recorded after git sync.
+Focused tests passed for new helper/API route, full suite passed (`185 passed`), py_compile passed, and API/helper smoke passed. Git commit `802f2a0` was pushed to `feat/platform-data-status-foundation`; updated zip artifact: `/opt/data/cache/documents/health_simulation_app_updated.zip`.
