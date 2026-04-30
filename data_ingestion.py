@@ -1699,6 +1699,21 @@ def build_data_readiness_registry_integration_operator_steps(
             "guardrail": "Kein Branch aus diesem Paket: keine automatische Integration, kein official forecast, kein Policy-Wirkungsbeweis.",
         },
     ]
+    safe_start = {
+        "title": "Sicherer Start für den nächsten Integrator",
+        "first_command": steps[0]["copyable_status_command"],
+        "then_open": steps[2]["copyable_status_command"],
+        "human_decision_default": "Hold, bis Audit-Checklist und Go/Hold/Reject-Begründung vollständig sind.",
+        "do_not_do": [
+            "kein execute=true aus dieser Folge ableiten",
+            "keinen Branch oder PR starten, bevor ein auditiertes Go dokumentiert ist",
+            "Raw-Cache, Review und Registry-/Modellintegration nicht vermischen",
+        ],
+        "why_this_matters": (
+            "So kann ein Operator weiterarbeiten, ohne aus einem grünen Status versehentlich "
+            "eine Modellintegration, amtliche Prognose oder einen Policy-Wirkungsbeweis zu machen."
+        ),
+    }
     return {
         "title": "Registry-Integrations-Operatorfolge: lesen → auditieren → einzeln prüfen → PR separat",
         "plain_language_note": (
@@ -1706,6 +1721,7 @@ def build_data_readiness_registry_integration_operator_steps(
             "Alle Befehle sind Status-/Lesewege; sie enthalten bewusst kein execute=true und starten keinen Branch."
         ),
         "primary_parameter_key": primary_row.get("parameter_key") if primary_row else None,
+        "safe_start": safe_start,
         "steps": steps,
         "definition_of_done_before_branch": [
             "Statusboard gelesen und Parameter einzeln geöffnet",

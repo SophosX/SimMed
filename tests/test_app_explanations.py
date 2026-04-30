@@ -148,6 +148,10 @@ def test_learning_data_readiness_backlog_includes_integration_preflight():
     assert "keine Registry-/Modellmutation" in " ".join(card["guardrail"] for card in status_cards["cards"])
     operator_steps = backlog["registry_integration_operator_steps"]
     assert operator_steps["title"].startswith("Registry-Integrations-Operatorfolge")
+    assert operator_steps["safe_start"]["first_command"] == "GET /data-readiness/registry-integration-status-board"
+    assert operator_steps["safe_start"]["then_open"].startswith("GET /data-readiness/")
+    assert "kein execute=true" in " ".join(operator_steps["safe_start"]["do_not_do"])
+    assert "Policy-Wirkungsbeweis" in operator_steps["safe_start"]["why_this_matters"]
     assert [step["rank"] for step in operator_steps["steps"]] == [1, 2, 3, 4]
     assert operator_steps["steps"][0]["copyable_status_command"] == "GET /data-readiness/registry-integration-status-board"
     assert all("GET /data-readiness/" in step["copyable_status_command"] for step in operator_steps["steps"])

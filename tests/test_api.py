@@ -705,6 +705,12 @@ def test_api_exposes_registry_integration_operator_steps_without_apply():
     steps = body["registry_integration_operator_steps"]
     assert steps["title"].startswith("Registry-Integrations-Operatorfolge")
     assert steps["primary_parameter_key"] == "bevoelkerung_mio"
+    safe_start = steps["safe_start"]
+    assert safe_start["first_command"] == "GET /data-readiness/registry-integration-status-board"
+    assert safe_start["then_open"] == "GET /data-readiness/bevoelkerung_mio"
+    assert "Hold" in safe_start["human_decision_default"]
+    assert any("kein execute=true" in item for item in safe_start["do_not_do"])
+    assert "Policy-Wirkungsbeweis" in safe_start["why_this_matters"]
     assert [step["rank"] for step in steps["steps"]] == [1, 2, 3, 4]
     commands = [step["copyable_status_command"] for step in steps["steps"]]
     assert commands[0] == "GET /data-readiness/registry-integration-status-board"

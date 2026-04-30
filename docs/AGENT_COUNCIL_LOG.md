@@ -2246,3 +2246,16 @@ Verifiziert mit `pytest -q` (134 passed), `py_compile` für Kernmodule, kleinem 
 - **Integrator Decision:** `build_learning_data_readiness_backlog()` bettet `registry_integration_operator_steps` ein; `render_learning_data_readiness_backlog()` rendert die Operatorfolge; `build_data_readiness_registry_integration_status_cards()` ist robust, wenn noch keine ready row existiert.
 - **Question to Alex if needed:** Keine wichtige Entscheidung offen.
 - **Verification/Git:** Geprüft mit fokussierten Tests, voller Suite und Simulation-Smoke; Commit/Push folgt in diesem Heartbeat.
+
+
+## 2026-04-30 — Heartbeat: Registry-Integrationsfolge sicherer Start
+
+- **Context:** Alex priorisiert Core-Plattform; aktueller Slice bleibt im Data-Readiness/Registry-Integration-Governance-Pfad und macht den letzten read-only Operator-Schritt verständlicher.
+- **Project Manager:** Kleine, testbare Plattformverbesserung statt neuer Evidence-Recherche; reduziert Risiko, dass Operatoren aus Status-Views direkt Branch/PR/Modellmutation ableiten.
+- **Designer/UX:** Ergänzt eine kurze „Sicherer Start“-Zusammenfassung vor der Operator-Schritt-Tabelle: erster Status-Befehl, nächster Parameter-Workflow, Hold-Default und klare „Nicht tun“-Liste für mobile/erste Nutzer.
+- **Creative Agent:** Produktfit: weniger Tabellen-Friktion, mehr „wo fange ich an?“-Antwort ohne neue Modellclaims.
+- **Political Health-System Strategist:** Governance bleibt konservativ: grüner technischer Status ist keine politische Entscheidungsreife, kein Wirkungsbeweis und kein Lobbying-/Vote-Forecast.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; keine neuen Sach-/Quellenclaims. Guardrails zu Registry, Raw-Cache, Review und Modellintegration bleiben getrennt.
+- **Integrator Decision:** `build_data_readiness_registry_integration_operator_steps(...)` erhält `safe_start`; Learning Page rendert es; API/UI-Tests sichern Befehle und Guardrails.
+- **Question to Alex if needed:** Keine wichtige Entscheidung offen; nächster sicherer Plattformschritt ist weiterhin Data-Readiness/Registry-Integration in kleine, geprüfte Operatorflächen zu übersetzen.
+- **Verification/Git:** `pytest -q` → 134 passed; `py_compile` für geänderte Dateien; Simulation-Smoke 20×2 Jahre OK. Commit/Push siehe aktueller Git-Stand.

@@ -4515,6 +4515,14 @@ def render_learning_data_readiness_backlog():
         operator_steps = backlog["registry_integration_operator_steps"]
         st.markdown(f"**{operator_steps['title']}**")
         st.caption(operator_steps["plain_language_note"])
+        safe_start = operator_steps.get("safe_start", {})
+        if safe_start:
+            st.info(
+                f"{safe_start['title']}: zuerst `{safe_start['first_command']}`, "
+                f"danach `{safe_start['then_open']}`. Default: {safe_start['human_decision_default']}"
+            )
+            st.caption("Nicht tun: " + " · ".join(safe_start["do_not_do"]))
+            st.caption(safe_start["why_this_matters"])
         operator_step_rows = [
             {
                 "Rang": step["rank"],
