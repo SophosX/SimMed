@@ -2455,6 +2455,84 @@ def build_data_readiness_registry_integration_safe_start_cards(safe_start_checkl
 
 
 
+def build_data_readiness_registry_integration_progress_timeline(
+    safe_start_cards: dict,
+    status_board: dict,
+) -> dict:
+    """Return a plain-language progress timeline for the final Registry gates.
+
+    Safe-start cards answer the next click; the status board answers technical state.
+    This timeline joins both into a first-contact/mobile reading path so operators see
+    where they are in the sequence without mistaking a green card for model import.
+    It remains status-only and never creates decisions, branches, reviews, or model changes.
+    """
+
+    board_rows = status_board.get("rows", [])
+    waiting = status_board.get("summary", {}).get("rows_waiting_or_hold", 0)
+    ready = status_board.get("summary", {}).get(
+        "ready_for_human_audit",
+        sum(1 for row in board_rows if row.get("board_status") == "bereit_fuer_menschliches_go_audit"),
+    )
+    primary_key = safe_start_cards.get("primary_parameter_key")
+    primary_label = safe_start_cards.get("primary_label") or "kein Parameter"
+    first_card = next((card for card in safe_start_cards.get("cards", []) if not card.get("is_stop_gate")), {})
+    stop_card = next((card for card in safe_start_cards.get("cards", []) if card.get("is_stop_gate")), {})
+    phases = [
+        {
+            "rank": 1,
+            "phase": "Orientieren",
+            "status": "read_only_start",
+            "what_to_open": first_card.get("primary_action", "GET /data-readiness/registry-integration-status-board"),
+            "plain_language_result": "Statusboard und sichere Karten zeigen, welcher Parameter zuerst geprüft wird.",
+            "guardrail": "Nur lesen: kein execute=true, kein Branch und keine Registry-/Modellmutation.",
+        },
+        {
+            "rank": 2,
+            "phase": "Parameter einzeln prüfen",
+            "status": "primary_parameter_selected" if primary_key else "no_parameter_selected",
+            "what_to_open": f"GET /data-readiness/{primary_key or '{parameter_key}'}",
+            "plain_language_result": f"{primary_label}: Data-Passport, Cache, Review, Diff und Caveats zusammen ansehen.",
+            "guardrail": "Ein Workflow-Status ist noch keine Datenintegration, Prognose oder Wirkungsaussage.",
+        },
+        {
+            "rank": 3,
+            "phase": "Menschliche Entscheidung vorbereiten",
+            "status": "human_audit_possible" if ready else "hold_or_blocker_expected",
+            "what_to_open": "GET /data-readiness/registry-integration-decision-audit-checklist",
+            "plain_language_result": (
+                f"{ready} Kandidat(en) auditierbar; {waiting} Kandidat(en) bleiben Hold/blockiert, bis Pflichtchecks vollständig sind."
+            ),
+            "guardrail": "Audit-Vorbereitung speichert kein Go/Hold/Reject und startet keinen PR.",
+        },
+        {
+            "rank": 4,
+            "phase": "Vor Codearbeit stoppen",
+            "status": "stop_before_branch",
+            "what_to_open": stop_card.get("primary_action", "kein Befehl: erst menschliches Go dokumentieren"),
+            "plain_language_result": "Branch/PR bleibt ein separater, getesteter Integrationsschritt nach dokumentiertem Go.",
+            "guardrail": "Kein Modellwert, keine amtliche Prognose, kein Policy-Wirkungsbeweis und keine Lobbying-Empfehlung.",
+        },
+    ]
+    return {
+        "title": "Registry-Integrationsfortschritt: wo stehen wir?",
+        "plain_language_note": (
+            "Diese Timeline übersetzt Safe-start-Karten und Statusboard in eine kurze Lesereihenfolge: "
+            "orientieren, Parameter prüfen, Entscheidung auditieren, vor Codearbeit stoppen."
+        ),
+        "primary_parameter_key": primary_key,
+        "primary_label": primary_label,
+        "summary": {
+            "status_rows_seen": len(board_rows),
+            "ready_for_human_audit": ready,
+            "waiting_or_hold": waiting,
+            "timeline_phases": len(phases),
+        },
+        "phases": phases,
+        "guardrail": "Read-only/Timeline-only: kein Branch, kein execute=true, keine Datenaktion, keine Review-Erzeugung, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    }
+
+
+
 def build_data_readiness_registry_integration_handoff_packet(decision_record: dict) -> dict:
     """Create a copy-safe operator handoff from the Go/Hold/Reject decision record.
 

@@ -227,6 +227,19 @@ def test_learning_data_readiness_backlog_includes_integration_preflight():
     assert safe_cards["cards"][3]["is_stop_gate"] is True
     assert "kein execute=true" in safe_cards["guardrail"]
     assert "keine Registry-/Modellmutation" in safe_cards["guardrail"]
+    progress_timeline = backlog["registry_integration_progress_timeline"]
+    assert progress_timeline["title"].startswith("Registry-Integrationsfortschritt")
+    assert progress_timeline["primary_parameter_key"] == safe_cards["primary_parameter_key"]
+    assert [phase["phase"] for phase in progress_timeline["phases"]] == [
+        "Orientieren",
+        "Parameter einzeln prüfen",
+        "Menschliche Entscheidung vorbereiten",
+        "Vor Codearbeit stoppen",
+    ]
+    assert progress_timeline["phases"][1]["what_to_open"].startswith("GET /data-readiness/")
+    assert not any("execute=true" in phase["what_to_open"] for phase in progress_timeline["phases"])
+    assert "kein Policy-Wirkungsbeweis" in progress_timeline["phases"][3]["guardrail"]
+    assert "keine Registry-/Modellmutation" in progress_timeline["guardrail"]
     handoff_packet = backlog["registry_integration_handoff_packet"]
     assert handoff_packet["title"].startswith("Registry-Integrations-Handoff")
     assert handoff_packet["summary"]["handoff_rows"] == decision_record["summary"]["decision_rows"]

@@ -1034,3 +1034,33 @@ def test_api_exposes_focused_registry_integration_safe_start_cards_without_apply
     invalid = client.get("/data-readiness/registry-integration-safe-start-cards?limit=0")
     assert invalid.status_code == 422
     assert invalid.json()["detail"]["status"] == "invalid_data_readiness_registry_integration_safe_start_cards_limit"
+
+
+def test_api_exposes_registry_integration_progress_timeline_without_actions():
+    client = TestClient(api)
+    seed_response = client.post("/data-fixtures/seed-reference-review-demo")
+    assert seed_response.status_code == 200
+
+    response = client.get("/data-readiness/registry-integration-progress-timeline?limit=3")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "data_readiness_registry_integration_progress_timeline_not_applied"
+    assert "kein execute=true" in body["guardrail"]
+    assert "keine Registry-/Modellmutation" in body["guardrail"]
+    timeline = body["registry_integration_progress_timeline"]
+    assert timeline["primary_parameter_key"] == "bevoelkerung_mio"
+    assert timeline["summary"]["timeline_phases"] == 4
+    assert [phase["phase"] for phase in timeline["phases"]] == [
+        "Orientieren",
+        "Parameter einzeln prüfen",
+        "Menschliche Entscheidung vorbereiten",
+        "Vor Codearbeit stoppen",
+    ]
+    assert timeline["phases"][1]["what_to_open"] == "GET /data-readiness/bevoelkerung_mio"
+    assert not any("execute=true" in phase["what_to_open"] for phase in timeline["phases"])
+    assert "kein Policy-Wirkungsbeweis" in timeline["phases"][3]["guardrail"]
+
+    invalid = client.get("/data-readiness/registry-integration-progress-timeline?limit=0")
+    assert invalid.status_code == 422
+    assert invalid.json()["detail"]["status"] == "invalid_data_readiness_registry_integration_progress_timeline_limit"

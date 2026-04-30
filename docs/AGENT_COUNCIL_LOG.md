@@ -2607,3 +2607,16 @@ Gezielt verifiziert: `pytest` für Safe-start API-Tests (3 passed) und `py_compi
 - **Integrator Decision:** `build_transformation_review_draft_example_payload(...)` in `data_ingestion.py`, API `GET /data-snapshots/review-draft/example-payload`, Einbettung in Data-Passport/Learning-Page und Regressionstests.
 - **Question to Alex if needed:** Keine wichtige Produktentscheidung offen; nächster sicherer Schritt bleibt weitere echte Dateningestion-/Review-Operator-Führung.
 - **Verification/Git:** Gezielte Tests 3 passed; Full suite 156 passed; py_compile ok; Simulation smoke 20x2 ok. Commit/Push folgt.
+
+
+## 2026-04-30T03:04Z — Registry-Integration Progress-Timeline
+
+- **Context:** Heartbeat-Priorität auf Core-Plattform; finaler Data-Readiness/Registry-Integrationspfad hatte Safe-start-Karten und Statusboard, aber noch keine kurze Fortschritts-Timeline für Erstnutzer/Operatoren.
+- **Project Manager:** Sinnvoller kleiner Plattform-Slice: bessere Übergabe zwischen Status lesen, Parameter prüfen, Audit vorbereiten und vor Codearbeit stoppen.
+- **Designer/UX:** Mobile/tablet-safe Timeline als vier Phasen ergänzt, damit Nutzer nicht breite Tabellen interpretieren müssen.
+- **Creative Agent:** Kein neues Gimmick; bestehende Gates werden als Lesepfad neu zusammengesetzt.
+- **Political Health-System Strategist:** Guardrails bleiben sichtbar: kein Policy-Wirkungsbeweis, keine amtliche Prognose, keine Lobbying-Empfehlung.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; keine neuen Realwelt-Claims, nur Plattform-/Governance-Status.
+- **Integrator Decision:** `build_data_readiness_registry_integration_progress_timeline(...)` in `data_ingestion.py` ergänzt, API-Endpunkt `/data-readiness/registry-integration-progress-timeline` hinzugefügt und Learning Page in `app.py` verdrahtet.
+- **Question to Alex if needed:** Keine.
+- **Verification/Git:** Lokal: `pytest -q` 158 passed, `py_compile` für betroffene Dateien, Simulation-Smoke 20 Läufe × 2 Jahre OK. Commit/Push folgt im selben Heartbeat.

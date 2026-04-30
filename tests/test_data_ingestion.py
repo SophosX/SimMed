@@ -29,7 +29,12 @@ from data_ingestion import (
     build_data_readiness_registry_integration_decision_record,
     build_data_readiness_registry_integration_decision_template,
     build_data_readiness_registry_integration_handoff_packet,
+    build_data_readiness_registry_integration_operator_steps,
     build_data_readiness_registry_integration_pr_runbook,
+    build_data_readiness_registry_integration_progress_timeline,
+    build_data_readiness_registry_integration_safe_start_cards,
+    build_data_readiness_registry_integration_safe_start_checklist,
+    build_data_readiness_registry_integration_safe_start_packet,
     build_data_readiness_registry_integration_status_board,
     build_data_readiness_registry_integration_status_cards,
     build_data_readiness_registry_integration_decision_audit_checklist,
@@ -1428,3 +1433,60 @@ def test_registry_integration_status_board_compacts_final_gates_without_actions(
     assert "keine Registry-/Modellmutation" in cards["cards"][0]["guardrail"]
     assert "kein Branch" in board["guardrail"]
     assert "keine Registry-/Modellmutation" in ready["guardrail"]
+
+
+def test_registry_integration_progress_timeline_shows_safe_sequence_without_actions():
+    decision_record = {
+        "rows": [
+            {
+                "parameter_key": "bevoelkerung_mio",
+                "label": "Bevölkerung",
+                "status": "human_go_no_go_required_before_pr",
+                "checks": {
+                    "reviewed_value_present": True,
+                    "source_snapshot_sha256_present": True,
+                    "unit_matches_registry": True,
+                    "within_registry_bounds": True,
+                    "pr_brief_available": True,
+                },
+                "branch_name_if_go": "feat/integrate-reviewed-bevoelkerung_mio",
+            },
+            {
+                "parameter_key": "krankenhausbetten",
+                "label": "Krankenhausbetten",
+                "status": "blocked_before_human_go_no_go",
+                "checks": {
+                    "reviewed_value_present": False,
+                    "source_snapshot_sha256_present": False,
+                    "unit_matches_registry": False,
+                    "within_registry_bounds": None,
+                    "pr_brief_available": False,
+                },
+            },
+        ]
+    }
+    audit = build_data_readiness_registry_integration_decision_audit_checklist(decision_record)
+    runbook = build_data_readiness_registry_integration_pr_runbook(decision_record)
+    board = build_data_readiness_registry_integration_status_board(decision_record, audit, runbook)
+    status_cards = build_data_readiness_registry_integration_status_cards(board)
+    operator_steps = build_data_readiness_registry_integration_operator_steps(board, status_cards)
+    packet = build_data_readiness_registry_integration_safe_start_packet(operator_steps, board)
+    checklist = build_data_readiness_registry_integration_safe_start_checklist(packet)
+    safe_cards = build_data_readiness_registry_integration_safe_start_cards(checklist)
+
+    timeline = build_data_readiness_registry_integration_progress_timeline(safe_cards, board)
+
+    assert timeline["title"].startswith("Registry-Integrationsfortschritt")
+    assert timeline["summary"]["ready_for_human_audit"] == 1
+    assert timeline["summary"]["waiting_or_hold"] == 1
+    assert [phase["phase"] for phase in timeline["phases"]] == [
+        "Orientieren",
+        "Parameter einzeln prüfen",
+        "Menschliche Entscheidung vorbereiten",
+        "Vor Codearbeit stoppen",
+    ]
+    assert timeline["phases"][1]["what_to_open"].startswith("GET /data-readiness/")
+    assert timeline["phases"][2]["status"] == "human_audit_possible"
+    assert "kein execute=true" in timeline["phases"][0]["guardrail"]
+    assert "keine Registry-/Modellmutation" in timeline["guardrail"]
+    assert "kein Policy-Wirkungsbeweis" in timeline["phases"][3]["guardrail"]
