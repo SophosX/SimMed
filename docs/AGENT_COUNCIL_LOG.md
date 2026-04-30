@@ -3918,3 +3918,32 @@ Keine wichtige Entscheidung offen. Sicher weiter: als nächstes echte Zeitfenste
 
 ### Verification / Git
 RED beobachtet: neue/verschärfte Tests scheiterten zunächst wegen 5 statt 4 KPI-Zeilen und fehlendem „Was daraus folgt“-Abschnitt. GREEN: `tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients` → 19 passed; Full Suite → 245 passed; py_compile OK; 50-run Simulation + causal packet smoke OK. Commit wird im finalen Heartbeat nach `git show` gemeldet; Push folgt nach finaler Commit-Verifikation.
+
+## 2026-04-30 11:16 Europe/Berlin — Heartbeat: Ergebnisbericht-Lead und erste Ergebnisansicht
+
+### Context
+Alex wollte die Ergebnisansicht weiter weg von KPI-Wand und technischer Meta-Sprache hin zu einem seriösen, menschlich lesbaren Ergebnisbericht. Relevante Dateien: `result_causality.py`, `app.py`, `tests/test_result_causality.py`.
+
+### Project Manager
+Priorität: die neue kausale Ergebnisstruktur stabilisieren, bevor weitere Ergebnis-Snippets entstehen. Risiko: zu viele Detailhilfen können die erste Ansicht wieder zerfasern. Nächste Aufgaben: API-/UI-Konsumenten stärker auf den `professional_briefing`-Block ausrichten; relevante KPI-Auswahl weiter szenariospezifisch schärfen; danach Policy-Briefing nur als nachgelagerte Vertiefung halten.
+
+### Designer / UX
+Die erste Ergebnisansicht bekommt einen kurzen menschlichen Lead (`Kurz gesagt:`), bevor die Abschnitte folgen. Das hilft, den Bericht als Lesepfad zu verstehen: erst Wirkungskette, dann Kennzahlen, dann Annahmenprüfung — nicht andersherum.
+
+### Creative Agent
+Idee: später könnte der Ergebnisbericht wie ein ärztlicher Konsilbrief lesbar werden: knappe Zusammenfassung, dann Befund, Verlauf, Plausibilitätscheck. Fit: gut für Ernsthaftigkeit und Vertrauen; heute nur als kleiner Lead umgesetzt, ohne neue Modellbehauptungen.
+
+### Political Health-System Strategist
+Politische Deutung bleibt bewusst nachgelagert. Gerade bei Studienplatz-Kürzungen darf die erste Lesart nicht sein: „eine KPI entscheidet“. Erst Pipeline-Lag, Puffer, Drucksignal und Evidenzgrenze prüfen, dann über Umsetzbarkeit oder Stakeholder sprechen.
+
+### Evidence / Domain
+Keine neue externe Recherche in diesem Lauf; es wurden keine neuen Realweltbehauptungen oder Parameterwerte eingeführt. Die Änderung ist eine Darstellungs-/Strukturverbesserung. Guardrails zu Modelllauf, Annahmen, Monte-Carlo-Spannweiten, nicht amtlicher Prognose und nicht Wirksamkeitsnachweis bleiben erhalten.
+
+### Integrator Decision
+Akzeptiert: `professional_briefing` erhält `lead_paragraph` und `section_flow`; `primary_result_view` reicht diese Felder an UI/API-Clients weiter; Streamlit rendert den Lead vor den Berichtsteilen. Verworfener Weg: Lead direkt in `sequential_text` einzubauen, weil bestehende API-Tests und Lesereihenfolge sonst durch frühere Wörter wie „Eingriff“ verfälscht werden.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; sicher weiterarbeiten an der Ergebnisbriefing-Lesbarkeit.
+
+### Verification / Git
+TDD: neuer Test für Lead/Section-Flow zuerst rot (`KeyError: 'lead_paragraph'`), danach grün. Verifikation vor Git: `python3 -m pytest -q` → 245 passed; `py_compile` für Kernmodule/Tests; 30×3-Jahre Simulation-Smoke mit `build_causal_result_packet` → OK. Git-Commit/Push folgt in diesem Lauf.

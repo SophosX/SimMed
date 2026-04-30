@@ -3525,6 +3525,8 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
     professional = packet.get("professional_briefing", {})
     if professional:
         st.markdown(f"**{primary_view.get('headline', 'Ergebnisbericht')}**")
+        if professional.get("lead_paragraph"):
+            st.info(professional["lead_paragraph"])
         for section in professional.get("sections", []):
             st.markdown(f"**{section['heading']}**")
             st.write(section["body"])

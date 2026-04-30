@@ -622,8 +622,29 @@ def build_causal_result_packet(
             ),
         },
     ]
+    lead_paragraph = (
+        "Kurz gesagt: Dieser Lauf wird nicht als Zahlenwand gelesen, sondern als Wirkungskette. "
+        "Die erste Ansicht konzentriert sich auf wenige relevante Kennzahlen, erklärt die gesetzte Änderung, "
+        "ordnet den berechneten Wirkpfad ein und zeigt, welche Anpassungsreaktionen vor einer politischen Deutung geprüft werden müssen."
+    )
+    if study_places_changed:
+        lead_paragraph += (
+            " Bei weniger Medizinstudienplätzen ist der kritische Punkt nicht das Startjahr, "
+            "sondern die Pipeline: erst ab Jahr 6 kommt die kleinere Kohorte spürbar am Arbeitsmarkt an."
+        )
+    section_flow = [
+        "Ausgangslage",
+        "Eingriff",
+        "berechneter Wirkpfad",
+        "relevante KPIs",
+        "Anpassungsreaktionen",
+        "Einordnung",
+        "nächste Prüfentscheidung",
+    ]
     professional_briefing = {
         "title": "Ergebnisbericht",
+        "lead_paragraph": lead_paragraph,
+        "section_flow": section_flow,
         "sections": professional_sections,
         "first_view_kpi_cards": first_view_kpi_cards,
         "sequential_text": "\n\n".join(
@@ -674,6 +695,8 @@ def build_causal_result_packet(
             "legacy_numbered_story": legacy_numbered_story,
             "sequential_plain_text": sequential_plain_text,
             "professional_briefing": professional_briefing,
+            "lead_paragraph": lead_paragraph,
+            "section_flow": section_flow,
             "first_view_kpi_cards": first_view_kpi_cards,
             "next_check": {
                 "label": "Was daraus folgt",

@@ -370,6 +370,19 @@ def test_professional_briefing_has_human_first_view_kpi_cards_without_meta_table
     packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
 
     briefing = packet["professional_briefing"]
+    assert briefing["lead_paragraph"].startswith("Kurz gesagt:")
+    assert "wenige relevante Kennzahlen" in briefing["lead_paragraph"]
+    assert "erst ab Jahr 6" in briefing["lead_paragraph"]
+    assert briefing["section_flow"] == [
+        "Ausgangslage",
+        "Eingriff",
+        "berechneter Wirkpfad",
+        "relevante KPIs",
+        "Anpassungsreaktionen",
+        "Einordnung",
+        "nächste Prüfentscheidung",
+    ]
+    assert packet["primary_result_view"]["lead_paragraph"] == briefing["lead_paragraph"]
     cards = briefing["first_view_kpi_cards"]
     assert 1 <= len(cards) <= 4
     assert {"label", "movement", "why_it_matters", "what_to_check_next"} <= set(cards[0])
