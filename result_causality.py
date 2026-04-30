@@ -954,25 +954,28 @@ def build_causal_result_packet(
             f"Anpassungsmechanismen: {mechanism_text} Beobachtete Signale: {adaptation_trace_text} Gegencheck: {counter_text}"
         )
 
-    result_headline = "Ergebnis: weniger Ausbildungskapazität wird später zum Versorgungsdruck" if study_places_changed else "Ergebnis: der Lauf zeigt die wichtigsten Veränderungen im Standardpfad"
+    result_headline = (
+        "Weniger Medizinstudienplätze: der relevante Druck kommt verzögert"
+        if study_places_changed
+        else "Ergebnis: die wichtigsten Veränderungen im Modelllauf"
+    )
     top_kpi_sentences = " ".join(item["sentence"] for item in kpis[:3]) or "Es liegen keine priorisierten Kennzahlen vor."
     if study_places_changed:
         short_answer = (
-            f"Geändert wurden die Medizinstudienplätze. {top_kpi_sentences} "
-            "Das passiert nicht sofort, weil die ärztliche Versorgung erst über die Ausbildungs-Pipeline reagiert: "
-            "ab etwa Jahr 6 wird die kleinere Kohorte sichtbar, Richtung Jahr 11–15 wird der Facharzt- und Kapazitätspfad entscheidend. "
-            "Der nächste Check ist, ob Telemedizin, Delegation oder Zuwanderung den Druck im Modell plausibel puffern."
+            f"Die Medizinstudienplätze wurden gesenkt; sichtbar werden vor allem {top_kpi_sentences} "
+            "Der Grund ist die Ausbildungs-Pipeline, weil nicht das Startjahr die Versorgung kippt, sondern die kleinere Kohorte ab etwa Jahr 6 und der Facharztpfad Richtung Jahr 11–15. "
+            "Der nächste Check ist, ob Telemedizin, Delegation oder Zuwanderung diesen Druck im Modell plausibel abfedern."
         )
     elif changed:
         short_answer = (
             f"Geändert wurde: {changed_text} {top_kpi_sentences} "
             "Die Bewegung entsteht über die dokumentierten SimMed-Pfade für Kapazität, Nachfrage, Finanzierung und regionale Verteilung. "
-            "Der nächste Check ist, ob die passenden Annahmen und Evidenzgrenzen diese Lesart tragen."
+            "Als Nächstes sollten die stärkste Kennzahl und ihre Annahmengrenze geprüft werden."
         )
     else:
         short_answer = (
             f"Es wurde kein zusätzlicher Hebel verändert. {top_kpi_sentences} "
-            "Der Lauf zeigt damit den Referenzpfad selbst und sollte zuerst entlang der sichtbaren Kennzahlen und Annahmen geprüft werden."
+            "Der Lauf zeigt den Referenzpfad selbst; als Nächstes sollten die stärkste Kennzahl und ihre Annahmengrenze geprüft werden."
         )
 
     relevant_kpis_public = [
@@ -989,34 +992,33 @@ def build_causal_result_packet(
     ) or "Keine priorisierten Kennzahlen verfügbar."
     if study_places_changed:
         why_body = (
-            "Der Eingriff wirkt verzögert. In Jahr 0–5 ändert sich die ärztliche Versorgung kaum; "
-            "ab etwa Jahr 6 kommt die kleinere Ausbildungskohorte näher an den Arbeitsmarkt. "
-            "Richtung Jahr 11–15 wird der Facharzt- und Kapazitätsdruck deshalb zum zentralen Prüfpunkt."
+            "Der Eingriff wirkt verzögert. In Jahr 0–5 ändert sich die Versorgung kaum. "
+            "Ab etwa Jahr 6 kommt die kleinere Kohorte näher an den Arbeitsmarkt; Richtung Jahr 11–15 wird der Facharzt- und Kapazitätspfad entscheidend."
         )
     else:
-        why_body = pathway_body
+        why_body = pathway_body[:340]
     adaptation_body = (
-        "Das Modell prüft, ob Druck durch Telemedizin, Delegation, Zuwanderung oder veränderte Nutzung abgefedert wird. "
-        f"Beobachtet: {adaptation_trace_text} "
-        "Sinken Burnout oder Wartezeit trotz Ärztemangel, braucht es dafür einen sichtbaren Puffer; sonst ist es ein Modellprüfpunkt."
+        "Das Modell sucht nach Puffern: Telemedizin, Delegation, Zuwanderung oder veränderte Nutzung. "
+        f"Beobachtet: {adaptation_trace_text[:190]} "
+        "Sinken Burnout oder Wartezeit trotz Ärztemangel, ist das ein Prüfpunkt, solange kein Puffer sichtbar trägt."
     )
     result_sections = [
         {"heading": "Ergebnis", "body": result_headline},
-        {"heading": "Eingriff", "body": changed_text},
+        {"heading": "Eingriff", "body": changed_text[:340]},
         {"heading": "Warum es passiert", "body": why_body},
-        {"heading": "Relevante Kennzahlen", "body": kpi_body},
-        {"heading": "Anpassungen", "body": adaptation_body},
+        {"heading": "Relevante Kennzahlen", "body": kpi_body[:340]},
+        {"heading": "Anpassungen", "body": adaptation_body[:360]},
         {
             "heading": "Einordnung",
             "body": (
-                "Die Werte sind eine SimMed-Modellrechnung mit dokumentierten Parametern und Annahmen. "
-                "Sie helfen beim Verstehen des Wirkpfads, sind aber keine amtliche Prognose und kein Nachweis realer politischer Wirkung."
+                "Das ist eine SimMed-Modellrechnung mit dokumentierten Parametern und Annahmen. "
+                "Sie erklärt einen Wirkpfad; sie ist keine amtliche Prognose und kein Nachweis realer politischer Wirkung."
             ),
         },
         {
             "heading": "Nächster Prüfschritt",
             "body": (
-                "Zuerst die Zeitfenster und die relevanten KPI-Details öffnen. Danach prüfen, ob Evidenzgrad, Registry-Caveat und Anpassungsmechanismen zur beobachteten Bewegung passen."
+                "Zuerst Zeitfenster, relevante KPI-Details und Evidenzgrenzen prüfen. Danach erst politisch bewerten."
             ),
         },
     ]
@@ -1026,12 +1028,35 @@ def build_causal_result_packet(
         else "Welche Annahme begrenzt die wichtigste beobachtete Kennzahl am stärksten?"
     )
 
+    public_result_view = {
+        "render_order": [
+            "headline",
+            "short_answer",
+            "sections",
+            "relevant_kpis",
+            "follow_up_question",
+            "audit_expanders",
+        ],
+        "headline": result_headline,
+        "short_answer": short_answer,
+        "sections": result_sections,
+        "relevant_kpis": relevant_kpis_public,
+        "follow_up_question": follow_up_question,
+        "audit_expanders": [
+            "Zeitfenster, Annahmen und Plausibilität",
+            "vollständige Kennzahlen und Detailkarten",
+            "Trend, Policy-Briefing und politische Einordnung",
+        ],
+        "guardrail": RESULT_CAUSALITY_GUARDRAIL,
+    }
+
     return {
         "title": "Ergebnisbericht",
         "result_headline": result_headline,
         "short_answer": short_answer,
         "result_sections": result_sections,
         "follow_up_question": follow_up_question,
+        "public_result_view": public_result_view,
         "subtitle": "Relevante Kennzahlen und ein zusammenhängender Wirkpfad von Ausgangslage bis Einordnung.",
         "reading_order": [
             "1 · geänderte Eingriffe",

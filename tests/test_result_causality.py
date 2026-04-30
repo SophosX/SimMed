@@ -37,6 +37,50 @@ def _agg_frame():
     ])
 
 
+def _public_text(packet):
+    parts = [packet.get("result_headline", ""), packet.get("short_answer", ""), packet.get("follow_up_question", "")]
+    parts.extend(section.get("body", "") for section in packet.get("result_sections", []))
+    parts.extend(row.get("meaning", "") for row in packet.get("relevant_kpis", []))
+    return "\n".join(parts)
+
+
+def test_simplified_public_result_packet_is_short_clear_and_not_meta():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+
+    assert packet["result_headline"].startswith("Weniger Medizinstudienplätze")
+    assert packet["public_result_view"]["render_order"] == [
+        "headline",
+        "short_answer",
+        "sections",
+        "relevant_kpis",
+        "follow_up_question",
+        "audit_expanders",
+    ]
+    assert [section["heading"] for section in packet["result_sections"]] == [
+        "Ergebnis",
+        "Eingriff",
+        "Warum es passiert",
+        "Relevante Kennzahlen",
+        "Anpassungen",
+        "Einordnung",
+        "Nächster Prüfschritt",
+    ]
+    assert len(packet["result_sections"]) <= 7
+    assert all(len(section["body"]) <= 360 for section in packet["result_sections"])
+    assert len(packet["short_answer"]) <= 650
+    text = _public_text(packet)
+    for banned in ["random Internet", "Klartext", "KPI-Wand", "generated", "helper", "Meta", "Zahlenwand"]:
+        assert banned not in text
+    assert "Medizinstudienplätze" in packet["short_answer"]
+    assert "Ärzte pro 100k" in packet["short_answer"]
+    assert "Facharzt-Wartezeit" in packet["short_answer"]
+    assert "ab etwa Jahr 6" in packet["short_answer"]
+    assert "nächste" in packet["short_answer"].lower()
+
+
 def test_causal_result_packet_prioritizes_relevant_kpis_and_coherent_freetext():
     params = get_default_params()
     params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5

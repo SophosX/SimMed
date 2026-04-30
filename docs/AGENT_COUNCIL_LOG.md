@@ -4360,3 +4360,33 @@ Keine wichtige Entscheidung offen; nächster sicherer Schritt ist weitere Konsol
 
 ### Verification / Git
 Rot-Test zuerst ergänzt; fokussierte Tests grün. Vollständige Tests: `pytest -q` → 259 passed; `py_compile app.py result_causality.py api.py simulation_core.py` → OK; 50-run Smoke → OK. GitHub Push bestätigt: `eda07dc Clarify first result briefing` auf `origin/main`; Commit enthält `app.py`, `result_causality.py`, `tests/test_result_causality.py`, `docs/AGENT_COUNCIL_LOG.md`.
+
+
+## 2026-04-30 11:03 UTC — Heartbeat: klare Ergebnis-Erstansicht
+
+### Context
+Alexs aktuelle Korrektur war eindeutig: die Resultatseite soll nicht weitere Erklärungsschichten stapeln, sondern zuerst in ernstem, gut lesbarem Deutsch beantworten, was herausgekommen ist, was sich relevant verändert hat, warum und was das bedeutet. Betroffen: `result_causality.py`, `app.py`, `tests/test_result_causality.py`.
+
+### Project Manager
+Priorität: erster Ergebnis-Screen vor allen Detail-/Audit-Layern. Risiko: alte Helper bleiben nützlich, dürfen aber nicht mehr die erste Ansicht dominieren. Nächste Aufgaben: 1) UI weiter visuell zu einem Briefing-Block verdichten, 2) relevante-KPI-Auswahl je Szenario prüfen, 3) danach breitere Hebelgruppen planen.
+
+### Designer / UX
+Die neue öffentliche Packet-Schicht hat eine klare Lesereihenfolge: Headline, Kurzantwort, wenige Abschnitte, relevante Kennzahlen, nächster Prüfschritt. Relevante Kennzahlen werden nicht mehr zusätzlich als Textabschnitt plus Karten doppelt gerendert; die Tabelle-/Audit-Welt bleibt eingeklappt.
+
+### Creative Agent
+Idee: später eine "Briefing-Seite" wie ein sauberer Policy-Vermerk mit Seitennavigation statt Dashboard-Fragmenten. Fit: sehr gut für Alexs Lesbarkeitsziel, aber erst nach Stabilisierung der neuen Ergebnis-Erstansicht.
+
+### Political Health-System Strategist
+Die Ergebnisinterpretation bleibt vorpolitisch: erst Wirkpfad und Plausibilität, dann politische Bewertung. Das schützt vor vorschnellen Aussagen bei sensiblen Hebeln wie Ausbildungsplätzen.
+
+### Evidence / Domain
+Keine neuen externen Fakten oder Modellwirkungen ergänzt. Die Änderung betrifft Kommunikation und Struktur. Guardrails bleiben sichtbar: Modellrechnung, keine amtliche Prognose, kein Wirksamkeitsnachweis.
+
+### Integrator Decision
+Akzeptiert: `public_result_view` als klare öffentliche Rendering-Schicht im causal packet; knappe `result_headline`, `short_answer`, maximal sieben `result_sections`, relevante KPIs und Follow-up-Frage. Alte Detailstrukturen bleiben für API/Legacy/Audit kompatibel.
+
+### Question to Alex
+Keine neue Entscheidung nötig; die sichere Richtung ist weiter: weniger erste Screens, mehr zusammenhängendes Briefing.
+
+### Verification / Git
+Verifiziert lokal: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 33 passed; `python3 -m pytest -q` → 260 passed; `py_compile` für `app.py`, `result_causality.py`, `api.py`, `simulation_core.py`; 50-run Simulation-Smoke mit causal packet OK. Git-Sync/Commit/Push folgt im selben Heartbeat.

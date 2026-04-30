@@ -3519,14 +3519,18 @@ def build_result_causal_overview(agg: pd.DataFrame, params: dict) -> dict:
 def render_result_causal_overview(agg: pd.DataFrame, params: dict):
     """Render the simplified first result briefing before any dense audit layer."""
     packet = build_result_causal_overview(agg, params)
-    st.markdown(f"### {packet.get('result_headline', packet['title'])}")
-    st.info(packet.get("short_answer", "Der Modelllauf wurde berechnet; die Detailprüfung steht darunter."))
+    view = packet.get("public_result_view", packet)
+    st.markdown(f"### {view.get('headline', packet.get('result_headline', packet['title']))}")
+    st.info(view.get("short_answer", packet.get("short_answer", "Der Modelllauf wurde berechnet; die Detailprüfung steht darunter.")))
 
-    for section in packet.get("result_sections", []):
+    for section in view.get("sections", packet.get("result_sections", [])):
+        # Kennzahlen werden direkt darunter als kompakte, scanbare Karten gezeigt.
+        if section.get("heading") == "Relevante Kennzahlen":
+            continue
         st.markdown(f"**{section['heading']}**")
         st.write(section["body"])
 
-    relevant_kpis = packet.get("relevant_kpis", [])
+    relevant_kpis = view.get("relevant_kpis", packet.get("relevant_kpis", []))
     if relevant_kpis:
         st.markdown("**Relevante Kennzahlen**")
         cols = st.columns(min(len(relevant_kpis), 4))
@@ -3539,11 +3543,11 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
                 )
                 st.caption(row.get("meaning") or row.get("why_relevant", ""))
 
-    if packet.get("follow_up_question"):
+    if view.get("follow_up_question", packet.get("follow_up_question")):
         st.markdown("**Nächster Prüfschritt**")
-        st.write(packet["follow_up_question"])
+        st.write(view.get("follow_up_question", packet.get("follow_up_question")))
 
-    st.caption(packet["guardrail"])
+    st.caption(view.get("guardrail", packet["guardrail"]))
 
     with st.expander("Audit: Zeitfenster, Annahmen und Plausibilität", expanded=False):
         if packet.get("timeline_windows"):
