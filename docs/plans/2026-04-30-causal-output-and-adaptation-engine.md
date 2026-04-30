@@ -610,3 +610,10 @@ Guardrail remains unchanged: the trace is local SimMed model behavior from selec
 The causal packet now adds `primary_result_view["cleartext_reading_cards"]` plus direct `adaptation_mechanisms` and `timeline_windows` mirrors inside `primary_result_view`. This is an output/UI organization slice, not a model-equation change. The intent is to make the first result screen read as answer-first German cards: Ergebnis → Änderung → Wirkmechanismus → Anpassung → Gegencheck → Evidenzgrenze.
 
 Guardrail: these cards only reorganize existing packet content and Registry evidence/caveats. They do not fetch data, mutate parameters, create new source claims, or prove policy effectiveness. Next stronger slice should derive observed KPI values per time window from `annual_summary` so the narrative can say where the year-6-to-15 pressure actually appears in the run.
+
+
+## 2026-04-30 heartbeat note: optional layers after causal packet
+
+The result layout now explicitly marks old interpretation helpers as `optional_interpretation_layers` with mode `collapsed_after_primary_causal_packet`. Streamlit keeps the causal packet as the first result experience, then collapses the older narrative/checkpoint/storyboard/uncertainty helpers under “Optionale Vertiefungen erst nach dem Klartext,” and keeps the dense KPI wall collapsed after that.
+
+This is still output restructuring only: no model equation, data source, Registry parameter, evidence grade, or free-text parser changed. It reduces the risk that SimMed shows multiple competing “first result” surfaces after Alex asked for one coherent German causal output. Next stronger slice should derive observed 0–5 / 6–10 / 11–15 KPI window traces from actual simulation output.

@@ -275,4 +275,13 @@ def test_causal_result_layout_keeps_dense_kpis_optional_after_cleartext():
     assert layout["dense_kpi_wall"]["default_expanded"] is False
     assert "nicht die erste Ansicht" in layout["dense_kpi_wall"]["reason"]
     assert "KPI-Wand" in layout["dense_kpi_wall"]["label"]
+    assert layout["optional_interpretation_layers"]["mode"] == "collapsed_after_primary_causal_packet"
+    assert layout["optional_interpretation_layers"]["default_expanded"] is False
+    assert layout["optional_interpretation_layers"]["sections"] == [
+        "Narrative Zusammenfassung",
+        "Entscheidungs-Checkpoints",
+        "Storyboard",
+        "Unsicherheitsband",
+    ]
+    assert "keine zweite erste Ergebnisansicht" in layout["optional_interpretation_layers"]["reason"]
     assert layout["guardrail"] == packet["guardrail"]

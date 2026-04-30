@@ -3623,10 +3623,13 @@ def render_dashboard(agg: pd.DataFrame, params: dict):
 
     render_result_causal_overview(agg, params)
     causal_layout = build_causal_result_layout(build_result_causal_overview(agg, params))
-    render_result_narrative_summary(agg, params)
-    render_result_decision_checkpoints(agg, params)
-    render_result_storyboard(agg, params)
-    render_uncertainty_band_summary(agg)
+    optional_layers = causal_layout["optional_interpretation_layers"]
+    with st.expander(optional_layers["label"], expanded=optional_layers["default_expanded"]):
+        st.caption(optional_layers["reason"])
+        render_result_narrative_summary(agg, params)
+        render_result_decision_checkpoints(agg, params)
+        render_result_storyboard(agg, params)
+        render_uncertainty_band_summary(agg)
 
     dense = causal_layout["dense_kpi_wall"]
     with st.expander(dense["label"], expanded=dense["default_expanded"]):

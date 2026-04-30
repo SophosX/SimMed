@@ -3727,3 +3727,33 @@ Keine wichtige Entscheidung offen; sichere nächste Arbeit ist beobachtete 0–5
 
 ### Verification / Git
 TDD red beobachtet: `tests/test_result_causality.py::test_causal_result_packet_builds_cleartext_reading_cards_for_first_view` fiel zunächst mit `KeyError: 'cleartext_reading_cards'`. Verifikation grün: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 13 passed; `python3 -m pytest -q` → 220 passed; `python3 -m py_compile app.py api.py result_causality.py simulation_core.py` passed; 50-run/15-year causal smoke passed (`OK smoke (800, 30) (800, 6) 6`). Commit/push pending.
+
+
+## 2026-04-30 08:22 UTC — Heartbeat: Klartext-first layout discipline
+
+### Context
+Alex wants SimMed results restructured around one coherent causal German output, not another layer of scattered snippets or a KPI wall. The current causal packet already exists; this slice makes the UI/layout contract stricter.
+
+### Project Manager
+Priority: protect the new causal packet as the first result surface. Risk: older result helpers remain useful but can visually recreate clutter if shown before or beside the packet. Next tasks: add observed year-window traces, then model/adaptation-registry work.
+
+### Designer / UX
+The first view should now be: Klartext packet first, optional interpretation helpers collapsed, dense KPI wall collapsed. This reduces visual competition and makes the reading path clearer for newcomers.
+
+### Creative Agent
+Idea: future “SimMed erzählt den Lauf” mode can use the same packet as a narrated report/export. Fit is high because it reuses structured packet fields; defer until actual year-window traces exist.
+
+### Political Health-System Strategist
+Political interpretation remains an audit layer, not the opening frame. This avoids making stakeholder feasibility look like a vote forecast before the model output and assumptions are understood.
+
+### Evidence / Domain
+No new factual/evidence claim was added. The change is layout/structure only and preserves the guardrail: local SimMed model output, no official forecast, no policy-effect proof.
+
+### Integrator Decision
+Accepted: add `optional_interpretation_layers` to `build_causal_result_layout(...)` and wrap legacy result helpers in a collapsed Streamlit expander after the causal overview. Deferred: observed 0–5/6–10/11–15 KPI traces and stronger adaptation dynamics.
+
+### Question to Alex
+No blocking product decision. Continue safely toward observed timeline traces and adaptation-mechanism registry.
+
+### Verification / Git
+Focused causal/API tests run before full verification. Commit/push status recorded in heartbeat response.

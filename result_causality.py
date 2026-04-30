@@ -360,6 +360,21 @@ def build_causal_result_layout(packet: Mapping[str, Any]) -> dict[str, Any]:
                 "Wirkpfad, Anpassung und Caveat als zusammenhängende Geschichte lesen soll."
             ),
         },
+        "optional_interpretation_layers": {
+            "label": "Optionale Vertiefungen erst nach dem Klartext",
+            "mode": "collapsed_after_primary_causal_packet",
+            "default_expanded": False,
+            "sections": [
+                "Narrative Zusammenfassung",
+                "Entscheidungs-Checkpoints",
+                "Storyboard",
+                "Unsicherheitsband",
+            ],
+            "reason": (
+                "Diese bestehenden Hilfen bleiben als Audit-Layer erhalten, sind aber keine zweite erste Ergebnisansicht; "
+                "die primäre Interpretation kommt aus dem causal_result_packet."
+            ),
+        },
         "optional_details_after": packet.get("primary_result_view", {}).get(
             "optional_details_after",
             ["KPI-Drilldowns", "Trend", "Policy-Briefing", "Politik/Stakeholder"],
