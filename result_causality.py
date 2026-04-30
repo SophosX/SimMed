@@ -70,6 +70,17 @@ def _fmt_de(value: Any, *, decimals: int = 2) -> str:
     return f"{number:,.{decimals}f}".replace(",", "X").replace(".", ",").replace("X", ".")
 
 
+def _fmt_de_fixed(value: Any, *, decimals: int = 2) -> str:
+    """Format German numbers with fixed decimals for KPI rows."""
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return str(value)
+    if decimals == 0:
+        return f"{int(round(number)):,}".replace(",", ".")
+    return f"{number:,.{decimals}f}".replace(",", "X").replace(".", ",").replace("X", ".")
+
+
 def _changed_inputs(params: Mapping[str, Any]) -> list[dict[str, str]]:
     defaults = get_default_params()
     changed: list[dict[str, str]] = []
@@ -164,6 +175,24 @@ def _metric_movement(agg: pd.DataFrame, key: str) -> dict[str, Any] | None:
         ),
         "sort_strength": abs(pct_delta),
     }
+
+
+def _public_kpi_reading(metric_key: str, direction: str) -> str:
+    """Short first-screen reading for a KPI row, without adding new causal claims."""
+
+    if metric_key == "aerzte_pro_100k":
+        return "Weniger Kapazität: Zugang und Belastung danach gemeinsam prüfen."
+    if metric_key == "wartezeit_fa":
+        return "Längere Wartezeit heißt: Zugang wird für Patient:innen schwerer."
+    if metric_key == "burnout_rate":
+        return "Belastungssignal: passt es zur Kapazitäts- und Wartezeitbewegung?"
+    if metric_key == "telemedizin_rate":
+        return "Puffer-Signal: kann Druck dämpfen, ersetzt aber keine Kapazitätsprüfung."
+    if metric_key == "versorgungsindex_rural":
+        return "Regionaler Check: verschlechtert sich Zugang außerhalb der Zentren?"
+    if metric_key == "gkv_saldo":
+        return "Finanzsignal: zeigt Spielraum oder zusätzlichen politischen Druck."
+    return f"{direction.capitalize()}: diese Kennzahl begrenzt die Deutung des Laufs."
 
 
 def _changed_key_set(params: Mapping[str, Any]) -> set[str]:
@@ -1014,11 +1043,19 @@ def build_causal_result_packet(
     relevant_kpis_public = [
         {
             **row,
-            "start": _fmt_de(row.get("start"), decimals=2),
-            "end": _fmt_de(row.get("end"), decimals=2),
-            "abs_delta": _fmt_de(row.get("abs_delta"), decimals=2),
-            "pct_delta": _fmt_de(row.get("pct_delta"), decimals=2),
+            "start": _fmt_de_fixed(row.get("start"), decimals=2),
+            "end": _fmt_de_fixed(row.get("end"), decimals=2),
+            "abs_delta": _fmt_de_fixed(row.get("abs_delta"), decimals=2),
+            "pct_delta": _fmt_de_fixed(row.get("pct_delta"), decimals=2),
             "direction": "stabil" if row.get("direction") == "bleibt stabil" else row.get("direction", "stabil"),
+            "plain_change": (
+                f"{_fmt_de_fixed(row.get('start'), decimals=2)} auf {_fmt_de_fixed(row.get('end'), decimals=2)}"
+                f" ({'+' if str(row.get('abs_delta', '')).replace(',', '.').strip().startswith('-') is False else ''}{_fmt_de_fixed(row.get('abs_delta'), decimals=2)})"
+            ),
+            "reading": _public_kpi_reading(
+                str(row.get("metric_key", "")),
+                "stabil" if row.get("direction") == "bleibt stabil" else str(row.get("direction", "stabil")),
+            ),
             "meaning": row.get("meaning") or row.get("why_relevant", "Diese Kennzahl ordnet den Modelllauf ein."),
         }
         for row in kpis

@@ -3535,8 +3535,8 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
                 if rows:
                     for row in rows:
                         st.markdown(
-                            f"- **{row.get('label', 'Kennzahl')}**: {row.get('start', '–')} → {row.get('end', '–')} "
-                            f"({row.get('direction', 'stabil')}). {row.get('meaning') or row.get('why_relevant', '')}"
+                            f"- **{row.get('label', 'Kennzahl')}**: {row.get('plain_change') or (str(row.get('start', '–')) + ' → ' + str(row.get('end', '–')))} "
+                            f"({row.get('direction', 'stabil')}). {row.get('reading') or row.get('meaning') or row.get('why_relevant', '')}"
                         )
                 else:
                     st.write(section["body"])

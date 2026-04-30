@@ -5222,3 +5222,32 @@ Keine wichtige Entscheidung offen. Sicher weiter: Result-Rendering in `app.py` w
 
 ### Verification / Git
 Lokal grün vor Sync: `python3 -m pytest -q` → 277 passed; `py_compile app.py result_causality.py api.py simulation_core.py`; kleiner 30-run Smoke-Test mit halbierten Medizinstudienplätzen bestanden. Git-Sync/Commit/Push folgt im Anschluss an diese Log-Ergänzung.
+
+## 2026-04-30 16:58 Europe/Berlin — Result first-view KPI rows
+
+### Context
+Alexs aktuelle Korrektur bleibt maßgeblich: die Ergebnisansicht soll wie ein lesbares deutsches Briefing wirken, nicht wie übereinandergelegte Erklärungsebenen. Dieser Lauf hat die bereits vereinfachte Kausalergebnis-Schicht weiter auf die erste Bildschirmansicht fokussiert.
+
+### Project Manager
+Priorität: weniger Interpretationslast im ersten Ergebnisblock. Risiko: neue Felder dürfen API/UI nicht brechen und dürfen keine neuen Modellbehauptungen einführen. Nächste Aufgaben: die visuelle Hierarchie im Streamlit-Block weiter entschlacken und alte Detailhelfer nur noch klar als Vertiefung zeigen.
+
+### Designer / UX
+Die relevanten Kennzahlen bekommen jetzt eine kurze Lesart pro Zeile: Zahlbewegung zuerst, dann ein Satz, was man daraus vorsichtig lesen soll. Das reduziert die bisher lange KPI-Bedeutung im ersten Blick.
+
+### Creative Agent
+Idee: Die erste Ergebnisansicht kann später wie ein ärztlicher Kurzbrief funktionieren: Befund, Ursache, Verlauf, Risiko, nächster Check. Fit: gut für Verständlichkeit; nur umsetzen, wenn die bestehenden Detailsektionen darunter sauber auditierbar bleiben.
+
+### Political Health-System Strategist
+Politische Bewertung bleibt nachgelagert. Die kurze KPI-Lesart verhindert, dass einzelne Kennzahlen sofort als Reformbeweis gelesen werden; sie zwingt zu Zugang/Belastung/Finanzdruck als zusammenhängender Prüfung.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Es wurden keine neuen realweltlichen Effektbehauptungen eingeführt; die Änderung betrifft nur die Darstellung bereits berechneter SimMed-Kennzahlen.
+
+### Integrator Decision
+Akzeptiert: `relevant_kpis` im öffentlichen Kausalpaket enthalten jetzt `plain_change` und `reading`; Streamlit nutzt diese Felder für kompaktere KPI-Zeilen im ersten Ergebnisblock. Modellmechanik unverändert.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; weiter sicher in Richtung klarer Ergebnis-Startseite arbeiten.
+
+### Verification / Git
+Fokustests lokal grün: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients tests/test_app_explanations.py::test_result_storyboard_orders_sections_from_signal_to_politics -q` → 53 passed. Git-Sync/Full-Suite/Push folgen im Integrator-Schritt.

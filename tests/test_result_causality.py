@@ -119,6 +119,21 @@ def test_public_result_view_has_single_follow_up_rendering_instruction():
     assert section_by_heading["Nächster Prüfschritt"] != view["follow_up_question"]
 
 
+def test_relevant_kpis_are_public_rows_with_plain_change_and_reading():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    rows = packet["public_result_view"]["relevant_kpis"]
+
+    assert rows
+    assert all("plain_change" in row for row in rows)
+    assert all("reading" in row for row in rows)
+    assert all(len(row["reading"].split()) <= 18 for row in rows)
+    assert rows[0]["plain_change"].startswith("430,00 auf 360,00")
+    assert rows[0]["reading"] == "Weniger Kapazität: Zugang und Belastung danach gemeinsam prüfen."
+
+
 def test_public_adaptation_section_is_not_truncated_mid_sentence():
     params = get_default_params()
     params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
