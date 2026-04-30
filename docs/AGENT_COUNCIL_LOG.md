@@ -6204,4 +6204,4 @@ Akzeptiert: neue Tests für klare öffentliche Ergebnisantwort, weniger Meta-Spr
 Keine wichtige Entscheidung offen. Sicher weiter: die Detail-/Audit-Ebene weiter reduzieren, ohne Evidenz und Annahmen zu verstecken.
 
 ### Verification / Git
-Verifiziert lokal: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q`, `python3 -m py_compile result_causality.py app.py api.py`, kleiner Simulation/Packet-Smoke-Test, und `python3 -m pytest -q` mit 297 passed. Commit/Push folgt im GitHub-Sync-Schritt.
+Verifiziert lokal: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q`, `python3 -m py_compile result_causality.py app.py api.py`, kleiner Simulation/Packet-Smoke-Test, und `python3 -m pytest -q` mit 297 passed. Commit `3d63f43` (`Clarify causal result first view`) wurde auf `origin/main` gepusht; `git show --name-only --oneline -1` bestätigt `docs/AGENT_COUNCIL_LOG.md`, `result_causality.py`, `tests/test_result_causality.py`.
