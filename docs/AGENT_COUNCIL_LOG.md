@@ -4897,5 +4897,5 @@ Accepted: simplify the public first result section so “Ergebnis” gives the m
 No important product decision is blocked. Continue safely with result-page consolidation.
 
 ### Verification / Git
-Verified locally: `pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 42 passed; full `pytest -q` → 269 passed; `py_compile` for app/result/API/simulation/test files passed; 50-run simulation smoke test passed with simplified causal packet. Git sync/commit/push pending in this entry.
+Verified locally: `pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 42 passed; full `pytest -q` → 269 passed; `py_compile` for app/result/API/simulation/test files passed; 50-run simulation smoke test passed with simplified causal packet. Commit/push confirmed: `5210ddd` (`Clarify result briefing outcome section`) on `origin/main`; touched `result_causality.py`, `tests/test_result_causality.py`, and this council log.
 
