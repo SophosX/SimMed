@@ -539,6 +539,18 @@ def build_causal_result_packet(
         },
     ]
 
+    first_view_kpi_cards = [
+        {
+            "label": str(row.get("label", "")),
+            "movement": str(row.get("sentence", "")),
+            "why_it_matters": str(summary.get("mechanism_link", row.get("why_relevant", ""))),
+            "what_to_check_next": (
+                "Zeitverlauf und Annahmen prüfen, bevor diese Kennzahl politisch interpretiert wird."
+            ),
+        }
+        for row, summary in zip(kpis, kpi_summary, strict=False)
+    ]
+
     professional_sections = [
         {
             "heading": "Ausgangslage",
@@ -591,6 +603,7 @@ def build_causal_result_packet(
     professional_briefing = {
         "title": "Ergebnisbericht",
         "sections": professional_sections,
+        "first_view_kpi_cards": first_view_kpi_cards,
         "sequential_text": "\n\n".join(
             ["Ergebnisbericht"]
             + [f"{section['heading']}\n{section['body']}" for section in professional_sections]
@@ -628,9 +641,31 @@ def build_causal_result_packet(
         "free_text_blocks": free_text_blocks,
         "primary_result_view": {
             "headline": "Ergebnisbericht und anschließende Detailprüfung",
+            "render_sequence": [
+                "professional_briefing",
+                "first_view_kpi_cards",
+                "next_check",
+                "optional_audit_layers",
+            ],
             "main_blocks": free_text_blocks,
             "sequential_plain_text": sequential_plain_text,
             "professional_briefing": professional_briefing,
+            "first_view_kpi_cards": first_view_kpi_cards,
+            "next_check": {
+                "label": "Was daraus folgt",
+                "text": (
+                    "Zuerst die Anpassungsreaktionen gegen den berechneten Wirkpfad prüfen: "
+                    "passen Telemedizin, Delegation, Zuwanderung oder Arbeitsdruck zur KPI-Bewegung? "
+                    "Erst danach sollten Detailkarten, Trend und politische Einordnung als Prüf- und Entscheidungsgrundlage gelesen werden."
+                ),
+            },
+            "optional_audit_layers": {
+                "expanded_by_default": False,
+                "reason": (
+                    "Detailprüfungen bleiben verfügbar, kommen aber nach dem zusammenhängenden Ergebnisbericht, "
+                    "damit die erste Ansicht nicht wieder in einzelne Kennzahlen zerfällt."
+                ),
+            },
             "cleartext_reading_cards": cleartext_reading_cards,
             "relevant_kpis": kpis,
             "relevant_kpi_summary": kpi_summary,

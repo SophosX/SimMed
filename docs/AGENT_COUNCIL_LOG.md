@@ -3816,3 +3816,33 @@ Keine wichtige Entscheidung offen. Sicher weiter: nächste Scheibe sollte die re
 
 ### Verification / Git
 RED-Test zuerst: `tests/test_result_causality.py::test_causal_result_packet_reads_like_professional_sequential_briefing` schlug erwartungsgemäß mit `KeyError: 'professional_briefing'` fehl. Danach grün: gezielter Result-/API-Testblock 14 passed, Full Suite 240 passed, py_compile und Simulation-Smoke 50 Runs × 3 Jahre OK. Commit `59b4abc` wurde nach `origin/main` gepusht; erwartete Dateien im Commit verifiziert: `app.py`, `result_causality.py`, `tests/test_result_causality.py`, `docs/AGENT_COUNCIL_LOG.md`.
+
+
+## 2026-04-30 08:47 UTC — Ergebnisbericht first-view KPI cards
+
+### Context
+Alexs aktuelle Priorität bleibt die große Result-Experience: kein Zahlenwall, sondern ein ernsthafter deutscher Ergebnisbericht. Dieser Lauf baut auf dem vorhandenen `professional_briefing` auf und macht die erste KPI-Auswahl selbst briefingfähig statt meta-/auditsprachlich.
+
+### Project Manager
+Priorität: die nächste kohärente Scheibe im Output-Track liefern, ohne neue Modellbehauptungen einzubauen. Risiko: alte Hilfstabellen mit Begriffen wie Lesekarten/Audit könnten trotz gutem Packet wieder nach Dashboard-Bausteinkasten aussehen; daher wird die erste Ansicht auf Bericht → relevante Kennzahlen → nächste Prüfentscheidung reduziert.
+
+### Designer / UX
+Die relevanten KPIs werden jetzt als menschlich lesbare erste Ergebnis-Karten gedacht: Bewegung, warum sie zählt, was als Nächstes geprüft werden muss. Das ersetzt die bisher eher interne Lesekarten-/Lesereihenfolge-Metastruktur in der sichtbaren ersten Ansicht.
+
+### Creative Agent
+Produktidee: später kann derselbe Briefing-Block als druckbarer Kurzbericht oder Telegram-tauglicher Szenariobefund dienen. Fit ist hoch, weil keine neue Prosaquelle entsteht; die strukturierten Felder bleiben die Quelle.
+
+### Political Health-System Strategist
+Politik bleibt absichtlich nachgelagert: erst Wirkpfad und Anpassungsreaktionen plausibilisieren, dann Stakeholder und Machbarkeit bewerten. Sonst würde man politische Schlüsse aus möglicherweise noch ungeklärten Modellkompensationen ziehen.
+
+### Evidence / Domain
+Keine neue externe Recherche in diesem Lauf. Keine neuen Wirksamkeits- oder Quellenclaims. Die Änderung ist Output-Struktur und Sprache; Evidenzgrade/Registry-Caveats bleiben die fachliche Grenze.
+
+### Integrator Decision
+Akzeptiert: `professional_briefing.first_view_kpi_cards`, `primary_result_view.render_sequence`, `next_check` und `optional_audit_layers` als strukturierte erste Ergebnisansicht. `render_result_causal_overview()` zeigt nun Bericht, relevante KPI-Karten und nächste Prüfentscheidung, statt sichtbarer Lesekarten-/Lesereihenfolge-Metablocks.
+
+### Question to Alex
+Keine wichtige Entscheidung offen. Sicher weiter: als nächstes die tatsächlichen 0–5/6–10/11–15 KPI-Verläufe aus dem Aggregat in den Bericht ziehen, damit die Wirkpfade nicht nur beschrieben, sondern zeitlich beobachtbar werden.
+
+### Verification / Git
+RED beobachtet: zwei neue Tests in `tests/test_result_causality.py` scheiterten erwartungsgemäß mit fehlenden Feldern `first_view_kpi_cards` und `render_sequence`. Vollständige Verifikation/Git folgt im Heartbeat-Status.

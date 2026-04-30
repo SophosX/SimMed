@@ -3535,43 +3535,26 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
             st.markdown(f"**{block['step']}**")
             st.write(block["text"])
 
-    reading_cards = primary_view.get("cleartext_reading_cards", []) if primary_view else []
-    if reading_cards:
-        st.markdown("**Lesekarten: Ergebnis zuerst, Prüfung danach**")
-        st.dataframe(
-            pd.DataFrame(reading_cards)[["stage", "answer_first", "audit_focus", "next_step"]],
-            use_container_width=True,
-            hide_index=True,
-        )
-        st.caption(reading_cards[-1]["guardrail"])
-
     if packet.get("story_sections") and not packet.get("free_text_blocks"):
         for section in packet["story_sections"]:
             st.markdown(f"**{section['heading']}**")
             st.write(section["text"])
 
-    cols = st.columns(2)
-    with cols[0]:
-        st.markdown("**Lesereihenfolge**")
-        for step in packet["reading_order"]:
-            st.markdown(f"- {step}")
-    with cols[1]:
-        st.markdown("**Einordnung**")
-        st.caption(packet["guardrail"])
-
-    if packet["relevant_kpis"]:
+    first_view_cards = primary_view.get("first_view_kpi_cards", []) if primary_view else []
+    if first_view_cards:
         st.markdown("**Relevante Kennzahlen für die erste Einordnung**")
-        kpi_summary = packet.get("relevant_kpi_summary") or packet["relevant_kpis"]
-        summary_columns = [
-            column
-            for column in ["label", "answer_signal", "why_selected", "mechanism_link", "next_check"]
-            if column in pd.DataFrame(kpi_summary).columns
-        ]
         st.dataframe(
-            pd.DataFrame(kpi_summary)[summary_columns],
+            pd.DataFrame(first_view_cards)[["label", "movement", "why_it_matters", "what_to_check_next"]],
             use_container_width=True,
             hide_index=True,
         )
+
+    next_check = primary_view.get("next_check") if primary_view else None
+    if next_check:
+        st.markdown(f"**{next_check['label']}**")
+        st.write(next_check["text"])
+
+    st.caption(packet["guardrail"])
 
     if packet.get("adaptation_signal_trace"):
         st.markdown("**Beobachtete Anpassungs- und Drucksignale**")

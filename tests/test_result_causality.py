@@ -331,3 +331,47 @@ def test_causal_result_packet_reads_like_professional_sequential_briefing():
     assert "Klartext" not in text
     assert "KPI-Wand" not in text
     assert packet["primary_result_view"]["professional_briefing"] == briefing
+
+
+def test_professional_briefing_has_human_first_view_kpi_cards_without_meta_table_language():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+
+    briefing = packet["professional_briefing"]
+    cards = briefing["first_view_kpi_cards"]
+    assert 1 <= len(cards) <= 4
+    assert {"label", "movement", "why_it_matters", "what_to_check_next"} <= set(cards[0])
+    assert any(card["label"] == "Facharzt-Wartezeit" for card in cards)
+    assert any("Ausbildungs-Pipeline" in card["why_it_matters"] for card in cards)
+    combined = " ".join(
+        card["movement"] + " " + card["why_it_matters"] + " " + card["what_to_check_next"]
+        for card in cards
+    )
+    assert "answer_first" not in combined
+    assert "Audit" not in combined
+    assert "Lesekarten" not in combined
+    assert "KPI-Wand" not in combined
+    assert packet["primary_result_view"]["first_view_kpi_cards"] == cards
+
+
+def test_primary_result_view_declares_single_sequential_briefing_before_optional_audit_layers():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    first_view = packet["primary_result_view"]
+
+    assert first_view["render_sequence"] == [
+        "professional_briefing",
+        "first_view_kpi_cards",
+        "next_check",
+        "optional_audit_layers",
+    ]
+    assert first_view["next_check"]["label"] == "Was daraus folgt"
+    assert "Anpassungsreaktionen" in first_view["next_check"]["text"]
+    assert "erst danach" in first_view["next_check"]["text"].lower()
+    assert first_view["optional_audit_layers"]["expanded_by_default"] is False
+    assert first_view["optional_audit_layers"]["reason"].startswith("Detailprüfungen bleiben verfügbar")
+    assert "keine zweite erste Ergebnisansicht" not in first_view["optional_audit_layers"]["reason"]
