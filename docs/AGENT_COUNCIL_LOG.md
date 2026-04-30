@@ -5866,4 +5866,4 @@ Accepted: simplify first-screen language in `result_causality.py`, add a clarity
 No important decision is blocked. Continue with safe UI/briefing cleanup.
 
 ### Verification / Git
-Focused tests currently passing before full-suite run: `pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients tests/test_app_explanations.py -q` → 125 passed. Full verification/git status to be updated after final test/sync/push.
+Focused tests currently passing before full-suite run: `pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients tests/test_app_explanations.py -q` → 125 passed. Full verification: `pytest -q` → 288 passed; py_compile + 50-run simulation smoke passed. Git: commit `3111209` pushed to `origin/main` with `result_causality.py`, `tests/test_result_causality.py`, and council log.
