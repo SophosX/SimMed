@@ -4418,4 +4418,4 @@ Accepted: public packet layout keys and UI labels now favor plain reader-facing 
 No immediate product decision required; continue safely toward a cleaner single-briefing result page.
 
 ### Verification / Git
-Verified locally: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients tests/test_app_explanations.py -q` (98 passed), full `python3 -m pytest -q` (261 passed), `py_compile`, and a 50-run simulation/result-packet smoke test. Git commit/push pending at time of this entry.
+Verified locally and in the GitHub clone: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients tests/test_app_explanations.py -q` (98 passed), full `python3 -m pytest -q` (261 passed), `py_compile`, and a 50-run simulation/result-packet smoke test. Pushed commit `2f057db` to `origin/main`; follow-up council-log verification note pending.
