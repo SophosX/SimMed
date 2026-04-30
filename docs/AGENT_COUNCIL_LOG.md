@@ -2550,4 +2550,4 @@ Accepted: add `GET /data-readiness/registry-integration-safe-start-checklist` as
 Keine wichtige Entscheidung offen.
 
 ### Verification / Git
-Verified focused API regression (`1 passed`), full suite (`153 passed`), `py_compile`, and 20x2 simulation smoke (`df=(60,30)`, `reg=(320,6)`). Commit/push and zip refresh follow in this heartbeat.
+Verified focused API regression (`1 passed`), full suite (`153 passed`), `py_compile`, and 20x2 simulation smoke (`df=(60,30)`, `reg=(320,6)`). Implemented in commit `b45b806`, pushed to `feat/platform-data-status-foundation`; zip refreshed at `/opt/data/cache/documents/health_simulation_app_updated.zip`.
