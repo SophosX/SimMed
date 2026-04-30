@@ -3520,31 +3520,28 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
     """Render the simplified first result briefing before any dense audit layer."""
     packet = build_result_causal_overview(agg, params)
     view = packet.get("public_result_view", packet)
-    briefing_markdown = view.get("briefing_markdown")
-    if briefing_markdown:
-        st.markdown(briefing_markdown)
-    else:
-        st.markdown(f"### {view.get('headline', packet.get('result_headline', packet['title']))}")
-        st.write(view.get("short_answer", packet.get("short_answer", "Der Modelllauf wurde berechnet; die Detailprüfung steht darunter.")))
-        relevant_kpis = view.get("relevant_kpis", packet.get("relevant_kpis", []))
-        primary_blocks = view.get("result_sections") or packet.get("result_sections", [])
-        for section in primary_blocks:
-            heading = section["heading"]
-            st.markdown(f"**{heading}**")
-            if heading == "Relevante Kennzahlen":
-                rows = relevant_kpis[:4]
-                if rows:
-                    for row in rows:
-                        st.markdown(
-                            f"- **{row.get('label', 'Kennzahl')}**: {row.get('start', '–')} → {row.get('end', '–')} "
-                            f"({row.get('direction', 'stabil')}). {row.get('meaning') or row.get('why_relevant', '')}"
-                        )
-                else:
-                    st.write(section["body"])
+    st.markdown(f"### {view.get('headline', packet.get('result_headline', packet['title']))}")
+    st.write(view.get("short_answer", packet.get("short_answer", "Der Modelllauf wurde berechnet; die Detailprüfung steht darunter.")))
+
+    relevant_kpis = view.get("relevant_kpis", packet.get("relevant_kpis", []))
+    primary_blocks = view.get("result_sections") or packet.get("result_sections", [])
+    for section in primary_blocks:
+        heading = section["heading"]
+        st.markdown(f"**{heading}**")
+        if heading == "Relevante Kennzahlen":
+            rows = relevant_kpis[:4]
+            if rows:
+                for row in rows:
+                    st.markdown(
+                        f"- **{row.get('label', 'Kennzahl')}**: {row.get('start', '–')} → {row.get('end', '–')} "
+                        f"({row.get('direction', 'stabil')}). {row.get('meaning') or row.get('why_relevant', '')}"
+                    )
             else:
                 st.write(section["body"])
+        else:
+            st.write(section["body"])
 
-    if view.get("follow_up_question", packet.get("follow_up_question")) and not briefing_markdown:
+    if view.get("follow_up_question", packet.get("follow_up_question")):
         st.markdown("**Nächster Prüfschritt**")
         st.write(view.get("follow_up_question", packet.get("follow_up_question")))
 

@@ -4928,3 +4928,32 @@ Keine wichtige Entscheidung offen. Safe next step: reduce or reorganize the rema
 
 ### Verification / Git
 Verified before sync: `pytest -q` → 270 passed; `py_compile app.py result_causality.py api.py simulation_core.py` passed; 50-run simulation smoke passed and produced a `briefing_markdown` public result view. GitHub sync verified: commit `224e9b9` (`Clarify causal result first view`) pushed to `origin/main`; touched `app.py`, `result_causality.py`, `tests/test_result_causality.py`, and this council log.
+
+## 2026-04-30 15:33 Europe/Berlin — Heartbeat Result Page First-View Simplification
+
+### Context
+Alex's latest correction was that the result page still felt like stacked explanation widgets. This heartbeat focused on the public causal result packet and the first Streamlit rendering path: `result_causality.py`, `app.py`, and clarity/API regression tests. No new external research was needed because the change is communication/UX only and adds no new factual claims.
+
+### Project Manager
+Priority: make the first screen answer the scenario before any dense KPI/detail layers. Risk: many legacy result helpers still exist and must remain collapsed so the page does not feel like competing openings. Next tasks: add a visual first-result card style, reduce older expanders further if the page still feels heavy, and later wire broader reform levers through the same packet.
+
+### Designer / UX
+The first view now follows one readable German briefing order: Ergebnis → Eingriff → Warum es passiert → Relevante Kennzahlen → Anpassungen → Einordnung → Nächster Prüfschritt. The renderer no longer uses a prebuilt long Markdown dump as the main path; it renders the same sections directly and keeps deeper checks below.
+
+### Creative Agent
+Idea: later make the first result feel like a compact “policy memo front page” with one headline, three signal rows, and a single next-check callout. Fit: strong for understanding and mobile use, but should be implemented as styling around the simplified packet, not as new prose.
+
+### Political Health-System Strategist
+The output keeps political interpretation downstream: the first result says what changed and why, then explicitly says it is not an official forecast or proof of effectiveness. That is important for contested levers like reducing medical study places, where timing and workforce pipeline assumptions can be politically misread.
+
+### Evidence / Domain
+No model dynamics changed. The medical-study-place explanation remains a SimMed pipeline assumption with year 6 / year 11–15 timing, not an official forecast. Evidence/assumption detail remains available in collapsed audit sections rather than dumped into the first screen.
+
+### Integrator Decision
+Accepted: tighter public packet bodies (<=190 chars in the new clarity test), banned public meta terms, clearer short answer, and direct section rendering in `render_result_causal_overview`. Deferred: larger visual redesign/CSS and broader reform-lever modeling.
+
+### Question to Alex
+No immediate decision required. Continue safely with result-page clarity/styling and reduce remaining legacy clutter only if tests keep the audit layers available.
+
+### Verification / Git
+Verified locally before Git sync: `python3 -m pytest tests/test_result_causality.py tests/test_api.py tests/test_app_explanations.py -q` → 177 passed; full `python3 -m pytest -q` → 272 passed; `python3 -m py_compile app.py result_causality.py api.py simulation_core.py`; 30-run simulation/result-packet smoke test passed. Git commit/push status added in final heartbeat report after sync.

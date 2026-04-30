@@ -997,26 +997,20 @@ def build_causal_result_packet(
     ) or "Keine priorisierten Kennzahlen verfügbar."
     if study_places_changed:
         result_body = (
-            "Das Ergebnis ist ein verzögerter Kapazitätsdruck: heute wirkt die Kürzung kaum, "
-            "später verschiebt sie Ärzteangebot, Wartezeit und Belastung. Die Zahl ist damit kein Soforturteil, sondern ein Prüfauftrag."
+            "Das Ergebnis ist ein verzögerter Kapazitätsdruck. Am Anfang ändert sich wenig; später geraten Ärzteangebot, Wartezeit und Belastung stärker in den Blick."
         )
     elif changed:
         result_body = (
-            "Das Ergebnis zeigt die wichtigste Bewegung des Szenarios, ohne daraus schon eine politische Entscheidung zu machen. "
-            "Die relevanten Kennzahlen stehen direkt darunter."
+            "Das Ergebnis zeigt die wichtigste Bewegung des Szenarios, ohne daraus schon eine politische Entscheidung zu machen."
         )
     else:
-        result_body = (
-            "Das Ergebnis beschreibt den Referenzpfad ohne zusätzlichen Eingriff. "
-            "Die relevanten Kennzahlen stehen direkt darunter."
-        )
+        result_body = "Das Ergebnis beschreibt den Referenzpfad ohne zusätzlichen Eingriff."
     if study_places_changed:
         why_body = (
-            "Der Eingriff wirkt verzögert. In Jahr 0–5 ändert sich die Versorgung kaum. "
-            "Ab etwa Jahr 6 kommt die kleinere Kohorte näher an den Arbeitsmarkt; Richtung Jahr 11–15 wird der Facharzt- und Kapazitätspfad entscheidend."
+            "Der Eingriff wirkt verzögert. In Jahr 0–5 ändert sich wenig. Ab etwa Jahr 6 kommt weniger Nachwuchs an; Richtung Jahr 11–15 zählt der Facharztpfad."
         )
     else:
-        why_body = pathway_body[:340]
+        why_body = pathway_body[:180]
 
     observed_signals = []
     for signal in adaptation_trace[:2]:
@@ -1030,23 +1024,21 @@ def build_causal_result_packet(
         "Fällt Burnout trotz Ärztemangel, ist das ein Plausibilitätscheck."
     )
     result_sections = [
-        {"heading": "Ergebnis", "body": result_body[:260]},
-        {"heading": "Eingriff", "body": changed_text[:260]},
-        {"heading": "Warum es passiert", "body": why_body[:260]},
-        {"heading": "Relevante Kennzahlen", "body": kpi_body[:260]},
-        {"heading": "Anpassungen", "body": adaptation_body[:260]},
+        {"heading": "Ergebnis", "body": result_body[:190]},
+        {"heading": "Eingriff", "body": changed_text[:190]},
+        {"heading": "Warum es passiert", "body": why_body[:190]},
+        {"heading": "Relevante Kennzahlen", "body": kpi_body[:190]},
+        {"heading": "Anpassungen", "body": adaptation_body[:190]},
         {
             "heading": "Einordnung",
             "body": (
-                "Das bedeutet: einen prüfbaren SimMed-Wirkpfad, keine fertige politische Entscheidung. "
-                "Die Aussage gilt innerhalb der dokumentierten Parameter und Spannweiten; keine amtliche Prognose, kein Wirksamkeitsnachweis."
+                "Das bedeutet: einen prüfbaren SimMed-Wirkpfad, keine fertige politische Entscheidung; "
+                "keine amtliche Prognose, kein Wirksamkeitsnachweis."
             ),
         },
         {
             "heading": "Nächster Prüfschritt",
-            "body": (
-                "Zuerst Zeitfenster, relevante KPI-Details und Evidenzgrenzen prüfen; danach erst politisch bewerten."
-            ),
+            "body": "Zuerst Zeitfenster, relevante KPI-Details und Evidenzgrenzen prüfen; danach politisch bewerten.",
         },
     ]
     follow_up_question = (

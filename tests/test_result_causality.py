@@ -1249,3 +1249,60 @@ def test_public_result_packet_is_short_clear_and_not_meta_language():
     assert not any(term in public_text for term in banned)
     assert "keine amtliche Prognose" in public_text
     assert "kein Wirksamkeitsnachweis" in public_text
+
+
+def test_public_causal_packet_is_short_clear_and_not_meta_layered():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    public = packet["public_result_view"]
+
+    assert [section["heading"] for section in public["result_sections"]] == [
+        "Ergebnis",
+        "Eingriff",
+        "Warum es passiert",
+        "Relevante Kennzahlen",
+        "Anpassungen",
+        "Einordnung",
+        "Nächster Prüfschritt",
+    ]
+    assert len(public["result_sections"]) <= 7
+    assert all(len(section["body"]) <= 190 for section in public["result_sections"])
+    assert len(public["short_answer"].split(". ")) <= 4
+
+    public_text = " ".join(
+        [public["headline"], public["short_answer"], public["follow_up_question"], public["briefing_markdown"]]
+        + [section["body"] for section in public["result_sections"]]
+        + [row["meaning"] for row in public["relevant_kpis"]]
+    )
+    for banned in [
+        "random Internet",
+        "Klartext",
+        "KPI-Wand",
+        "generated",
+        "helper",
+        "Meta",
+        "Audit",
+        "Lesekarten",
+    ]:
+        assert banned not in public_text
+
+    assert "Medizinstudienplätze" in public["short_answer"]
+    assert "Facharzt" in public["short_answer"] or "Wartezeit" in public["short_answer"]
+    assert "ab etwa Jahr 6" in public["short_answer"]
+    assert "nächster Check" in public["short_answer"] or "Nächster" in public["follow_up_question"]
+
+
+def test_public_relevant_kpis_are_compact_rows_with_plain_meaning():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    rows = packet["public_result_view"]["relevant_kpis"]
+
+    assert 1 <= len(rows) <= 4
+    assert {"label", "start", "end", "direction", "meaning"} <= set(rows[0])
+    assert all(len(row["meaning"]) <= 150 for row in rows)
+    assert any(row["label"] == "Facharzt-Wartezeit" for row in rows)
+    assert all("Tabelle" not in row["meaning"] and "Widget" not in row["meaning"] for row in rows)
