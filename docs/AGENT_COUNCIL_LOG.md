@@ -6174,3 +6174,5 @@ Keine wichtige Entscheidung offen. Ich gehe weiter sicher in Richtung: ein Ergeb
 
 ### Verification / Git
 TDD: neuer Test `test_relevant_kpis_show_units_and_one_sentence_meaning_for_first_screen` lief zuerst rot (`KeyError: 'unit_label'`), danach grün. Fokussierte Tests: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients tests/test_app_explanations.py::test_result_causal_overview_declares_one_clean_first_view_before_audit_details -q` → 68 passed. Full Suite: `python3 -m pytest -q` → 295 passed. `py_compile` zentrale Module → OK. Runtime-Smoke 50 Runs × 3 Jahre inklusive Causal Packet → OK. Git-Commit/Push folgt nach Source→GitHub-Sync.
+
+Nachtrag Verification/Git: Commit `bf383f3` (`Clarify result KPI units`) wurde auf `origin/main` gepusht. `git show --name-only --oneline -1` bestätigt: `app.py`, `docs/AGENT_COUNCIL_LOG.md`, `result_causality.py`, `tests/test_result_causality.py`.
