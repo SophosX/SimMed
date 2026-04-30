@@ -3512,8 +3512,8 @@ def render_uncertainty_band_summary(agg: pd.DataFrame):
 
 
 def build_result_causal_overview(agg: pd.DataFrame, params: dict) -> dict:
-    """Return the compact causal result packet used before the KPI wall."""
-    return build_causal_result_packet(agg, params, max_kpis=5)
+    """Return the compact causal result packet used before dense KPI details."""
+    return build_causal_result_packet(agg, params, max_kpis=4)
 
 
 def render_result_causal_overview(agg: pd.DataFrame, params: dict):

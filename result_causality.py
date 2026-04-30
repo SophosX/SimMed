@@ -607,11 +607,18 @@ def build_causal_result_packet(
             ),
         },
         {
+            "heading": "Was daraus folgt",
+            "body": (
+                "Der Bericht liefert damit keine einzelne Siegerzahl, sondern eine prüfbare Linie: Eingriff → Wirkpfad → beobachtete Kennzahlen → Anpassungsreaktionen → Belastbarkeitsgrenze. "
+                "Für diesen Lauf heißt das: Kapazitätsdruck darf erst dann politisch interpretiert werden, wenn die sichtbaren Puffer und Drucksignale gemeinsam zu prüfen sind."
+            ),
+        },
+        {
             "heading": "Nächste Prüfentscheidung",
             "body": (
                 "Als nächste fachliche Prüfung sollte zuerst geklärt werden, ob die Anpassungsreaktionen den Kapazitätsdruck plausibel erklären: "
                 "Telemedizin/Delegation/Zuwanderung als Puffer, Burnout als Drucksignal und Wartezeit als Patient:innen-Signal. "
-                "Erst danach lohnt die politische Bewertung; vorher würde man elegant rechnen, aber möglicherweise am Kern vorbeisegeln."
+                "Erst danach lohnt die politische Bewertung; sonst wäre die Zahl präzise, aber die Entscheidung zu früh."
             ),
         },
     ]

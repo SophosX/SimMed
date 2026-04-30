@@ -3888,3 +3888,33 @@ RED beobachtet: `test_packet_primary_plain_text_is_the_professional_briefing_not
 - **Integrator Decision:** Added a regression test and made `result_causality.py` choose the professional Wirkpfad paragraph conditionally: study-place-specific when that lever changes, generic changed-lever framing for other interventions, and reference-path framing when no lever changed.
 - **Question to Alex if needed:** Keine wichtige Entscheidung offen; safe to continue with result briefing polish and broader lever coverage.
 - **Verification/Git:** RED observed for the no-lever briefing test; GREEN after patch. Verified `python -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 18 passed; `python -m pytest -q` → 244 passed; `py_compile` for result/API/app files; 50-run simulation + causal packet smoke passed. Commit/push status recorded in final heartbeat.
+
+
+## 2026-04-30 09:08 UTC — Ergebnisbericht mit Konsequenzschritt und weniger KPI-Clutter
+
+### Context
+Alexs Korrektur zielt weiter auf eine größere, zusammenhängende Result-Experience: ein professioneller Ergebnisbericht zuerst, Detailkarten danach. Dieser Lauf ergänzt den primären Briefing-Fluss um einen expliziten Konsequenzschritt und begrenzt die erste KPI-Auswahl in der App auf vier relevante Kennzahlen.
+
+### Project Manager
+Priorität: die neue Ergebnislogik weiter als ein kohärentes Stück stabilisieren, nicht wieder in Mikro-Snippets zerlegen. Risiko: Ohne einen eigenen „Was daraus folgt“-Abschnitt springt die Lesereise zu schnell von Belastbarkeit zur nächsten Prüfentscheidung; ohne KPI-Limit kann die erste Ansicht wieder nach Kennzahlenwand aussehen.
+
+### Designer / UX
+Die erste Ansicht folgt nun sichtbar: Ausgangslage → Eingriff → berechnete Wirkpfade → relevante KPIs → Anpassungsreaktionen → Einordnung/Belastbarkeit → Was daraus folgt → nächste Prüfentscheidung. Vier KPI-Zeilen sind genug für Orientierung; der Rest bleibt im optionalen Detailbereich.
+
+### Creative Agent
+Produktfit: Der neue Konsequenzabschnitt macht den Bericht weniger tabellarisch und mehr wie eine kurze fachliche Lagebeurteilung. Er hilft später auch für Telegram-/PDF-Exports, weil die Pointe nicht in Tabellen versteckt ist.
+
+### Political Health-System Strategist
+Politische Bewertung bleibt nachgelagert. Der Bericht sagt erst, was fachlich aus dem Wirkpfad folgt: Puffer und Drucksignale gemeinsam prüfen, bevor aus Wartezeit/Burnout/Telemedizin eine politische Schlussfolgerung gebaut wird.
+
+### Evidence / Domain
+Keine neue externe Recherche in diesem Lauf. Es wurden keine neuen Wirksamkeits- oder Quellenclaims eingeführt; die Änderung betrifft Struktur, Sprache und Sichtbarkeit. Guardrails bleiben: SimMed-Modelllauf, dokumentierte Annahmen, keine amtliche Prognose, kein Policy-Wirksamkeitsnachweis.
+
+### Integrator Decision
+Akzeptiert: `professional_briefing.sections` erhält „Was daraus folgt“ vor der nächsten Prüfentscheidung; `build_result_causal_overview()` nutzt `max_kpis=4`, damit die erste Ergebnisansicht kompakt bleibt. Alte Detail-/Audit-Layer bleiben verfügbar, aber nachgeordnet.
+
+### Question to Alex
+Keine wichtige Entscheidung offen. Sicher weiter: als nächstes echte Zeitfenster-KPI-Spuren 0–5/6–10/11–15 in den Bericht einbauen, damit der Wirkpfad nicht nur beschrieben, sondern am Verlauf geprüft wird.
+
+### Verification / Git
+RED beobachtet: neue/verschärfte Tests scheiterten zunächst wegen 5 statt 4 KPI-Zeilen und fehlendem „Was daraus folgt“-Abschnitt. GREEN: `tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients` → 19 passed; Full Suite → 245 passed; py_compile OK; 50-run Simulation + causal packet smoke OK. Commit wird im finalen Heartbeat nach `git show` gemeldet; Push folgt nach finaler Commit-Verifikation.

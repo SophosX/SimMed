@@ -71,10 +71,38 @@ def test_app_causal_overview_reuses_packet_before_dense_kpi_wall():
 
     assert overview["title"] == "Ergebnisbericht"
     assert "Relevante Kennzahlen" in overview["subtitle"]
-    assert len(overview["relevant_kpis"]) <= 5
+    assert len(overview["relevant_kpis"]) <= 4
     assert "KPI-Wand" not in overview["coherent_story"]
     assert "nicht als amtliche Prognose" in overview["guardrail"]
     assert overview["timeline_windows"][0]["window"] == "Jahr 0–5"
+
+
+def test_professional_briefing_is_single_human_readable_flow_with_consequence_section():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    briefing = packet["professional_briefing"]
+
+    headings = [section["heading"] for section in briefing["sections"]]
+    assert headings == [
+        "Ausgangslage",
+        "Eingriff",
+        "Berechnete Wirkpfade",
+        "Relevante KPIs",
+        "Anpassungsreaktionen",
+        "Einordnung und Belastbarkeit",
+        "Was daraus folgt",
+        "Nächste Prüfentscheidung",
+    ]
+    text = briefing["sequential_text"]
+    assert text.index("Ausgangslage") < text.index("Eingriff") < text.index("Berechnete Wirkpfade")
+    assert text.index("Relevante KPIs") < text.index("Anpassungsreaktionen") < text.index("Einordnung und Belastbarkeit")
+    assert text.index("Was daraus folgt") < text.index("Nächste Prüfentscheidung")
+    assert "KPI-Wand" not in text
+    assert "random Internet" not in text
+    assert "Klartext" not in text
+    assert "prüfen" in text
 
 
 def test_causal_result_packet_flags_counterintuitive_burnout_drop_under_physician_shortage():
@@ -314,6 +342,7 @@ def test_causal_result_packet_reads_like_professional_sequential_briefing():
         "Relevante KPIs",
         "Anpassungsreaktionen",
         "Einordnung und Belastbarkeit",
+        "Was daraus folgt",
         "Nächste Prüfentscheidung",
     ]
     text = briefing["sequential_text"]
