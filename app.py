@@ -3541,7 +3541,7 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
         else:
             st.write(section["body"])
 
-    if view.get("follow_up_question", packet.get("follow_up_question")):
+    if view.get("follow_up_question", packet.get("follow_up_question")) and view.get("render_follow_up_after_sections", True):
         st.markdown("**Nächster Prüfschritt**")
         st.write(view.get("follow_up_question", packet.get("follow_up_question")))
 

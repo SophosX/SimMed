@@ -5103,3 +5103,33 @@ Keine wichtige Entscheidung offen; safely continue with the clearer first-screen
 
 ### Verification / Git
 Focused RED test failed first for the duplicate render order, then passed after implementation. Verification run: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients tests/test_app_explanations.py::test_result_causal_overview_exposes_briefing_quality_checks_for_first_view -q` → 50 passed; full `python3 -m pytest -q` → 276 passed; py_compile + 50-run simulation smoke passed. Git: committed and pushed `abd4261` (`Clarify result first-view render order`) to `origin/main`; verified with `git show --name-only --oneline -1`.
+
+
+## 2026-04-30 16:20 Europe/Berlin — Result first-view single next step
+
+### Context
+Alex's latest correction remains the active product constraint: the result page must read as one clear German briefing, not a pile of overlapping explanation widgets. This run found one remaining first-view duplication: “Nächster Prüfschritt” existed as a result section and was also rendered again below the sections.
+
+### Project Manager
+Priority: remove duplicate first-screen signals before adding more visual polish. Risk: changing packet shape can break older API/UI clients, so the change adds an explicit render instruction while keeping the existing follow-up text available for clients.
+
+### Designer / UX
+The first result now has one place for the next check in the sequence. That keeps the reading path calm: Ergebnis → Eingriff → Warum → Kennzahlen → Anpassungen → Einordnung → Nächster Prüfschritt.
+
+### Creative Agent
+Small fit idea: once the content is stable, make the first block look like a compact policy memo card rather than a dashboard. Not implemented here; the safe step was de-duplication.
+
+### Political Health-System Strategist
+For sensitive scenarios, a single professional next-check prompt is better than repeated prompts. It keeps the user in verification mode before political interpretation.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. No model dynamics, parameter values, data-source claims, or evidence grades changed; this is presentation logic only.
+
+### Integrator Decision
+Accepted: add `render_follow_up_after_sections=False` to the public result view and make Streamlit respect it, so the next step is not repeated after already appearing in the briefing sequence. Deferred: broader visual card redesign.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; continue safely with clearer first-screen visual grouping next.
+
+### Verification / Git
+RED/GREEN focused test completed locally: `tests/test_result_causality.py::test_public_result_view_has_single_follow_up_rendering_instruction` failed first on the missing render instruction and passed after implementation. Full verification/Git sync follows in this heartbeat.

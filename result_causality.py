@@ -1137,6 +1137,7 @@ def build_causal_result_packet(
         "primary_blocks": first_screen_blocks,
         "relevant_kpis": relevant_kpis_public,
         "follow_up_question": follow_up_question,
+        "render_follow_up_after_sections": False,
         "audit_sections": audit_sections,
         "deeper_review_default_expanded": False,
         "legacy_detail_default_expanded": False,

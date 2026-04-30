@@ -105,6 +105,20 @@ def test_simplified_public_result_packet_is_short_clear_and_not_meta():
     assert "prüfbaren" in section_by_heading["Einordnung"]
 
 
+def test_public_result_view_has_single_follow_up_rendering_instruction():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    view = packet["public_result_view"]
+
+    assert view["render_follow_up_after_sections"] is False
+    section_by_heading = {section["heading"]: section["body"] for section in view["result_sections"]}
+    assert "Nächster Prüfschritt" in section_by_heading
+    assert view["follow_up_question"] == packet["follow_up_question"]
+    assert section_by_heading["Nächster Prüfschritt"] != view["follow_up_question"]
+
+
 def test_public_adaptation_section_is_not_truncated_mid_sentence():
     params = get_default_params()
     params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
@@ -208,6 +222,7 @@ def test_public_result_packet_is_minimal_and_does_not_expose_legacy_layers_first
         "primary_blocks",
         "relevant_kpis",
         "follow_up_question",
+        "render_follow_up_after_sections",
         "audit_sections",
         "deeper_review_default_expanded",
         "legacy_detail_default_expanded",
