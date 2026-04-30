@@ -4629,4 +4629,4 @@ Accepted: add regression coverage that the public result view is one briefing, n
 No important product decision required in this heartbeat; continue safely toward visual cleanup of the same briefing.
 
 ### Verification / Git
-Focused tests passed: `tests/test_result_causality.py` plus API causal packet test. Full suite passed: 263 tests. Runtime smoke passed: 50 runs × 3 years with simplified causal packet. Git commit/push pending at time of this entry.
+Focused tests passed: `tests/test_result_causality.py` plus API causal packet test. Full suite passed: 263 tests. Runtime smoke passed: 50 runs × 3 years with simplified causal packet. GitHub push confirmed: `4594e03 Clarify result page as single briefing` on `origin/main` with `app.py`, `result_causality.py`, `tests/test_result_causality.py`, and this council log.
