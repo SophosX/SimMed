@@ -4779,3 +4779,33 @@ Keine wichtige Entscheidung offen. Sicher weiter: Ergebnis-First-View weiter red
 
 ### Verification / Git
 Lokal grün: `python3 -m pytest -q` (267 passed), `py_compile` für zentrale Dateien, Smoke-Test `run_simulation(... n_runs=50, n_years=3)` plus `build_causal_result_packet(...)`. Commit `9ee3686` (`Clarify result briefing audit sections`) wurde auf `origin/main` gepusht; `git show --name-only --oneline -1` bestätigte `app.py`, `result_causality.py`, `tests/test_result_causality.py` und diesen Council Log.
+
+
+## 2026-04-30 14:52 Europe/Berlin — Heartbeat: Ergebnis-Seite klarer erster Bericht
+
+### Context
+Alex' neueste Korrektur: Die Ergebnisse sollen nicht wie mehrere überlagerte Hilfsblöcke wirken, sondern als ein klarer erster deutscher Bericht: Ergebnis → Eingriff → Warum es passiert → Relevante Kennzahlen → Anpassungen → Einordnung → Nächster Prüfschritt.
+
+### Project Manager
+Priorität: erster Ergebnis-Screen statt weiterer Zusatzschicht. Risiko: alte API/UI-Caller brauchen weiterhin Diagnosefelder; deshalb bleiben Legacy-Felder verfügbar, aber die öffentliche `primary_result_view` startet jetzt mit Headline, Kurzantwort, Ergebnisabschnitten und kompakten relevanten KPIs.
+
+### Designer / UX
+Die erste Ansicht muss die Frage beantworten, bevor sie Zahlen zeigt. Der neue öffentliche Packet-Pfad nutzt weniger Blöcke, kurze Texte und einen klaren Collapsed-Detailpfad; vollständige KPI-Karten, Zeitfenster und Evidenz bleiben darunter prüfbar.
+
+### Creative Agent
+Produktidee: Ergebnis als ärztlicher Übergabebericht lesen — kurz, ernst, prüfbar. Passt, weil es Entscheidungssicherheit erhöht, ohne neue Behauptungen oder Effektschätzungen zu erfinden.
+
+### Political Health-System Strategist
+Politische Bewertung bleibt nachgeordnet. Gerade bei Medizinstudienplätzen muss der Bericht den verzögerten Kapazitätspfad und mögliche Puffer zeigen, bevor daraus eine Reformposition gemacht wird.
+
+### Evidence / Domain
+Keine neue externe Recherche in diesem Lauf; es wurden keine neuen Fakten oder Modellparameter behauptet. Die Änderung betrifft Kommunikation/API-Struktur der bestehenden SimMed-Ergebnisse. Guardrails zu Modellannahmen, keiner amtlichen Prognose und keinem Wirksamkeitsnachweis bleiben erhalten.
+
+### Integrator Decision
+Akzeptiert: `primary_result_view` folgt jetzt derselben vereinfachten öffentlichen Struktur wie `public_result_view`; API-Tests erwarten die klare Render-Sequenz statt der alten professionellen/Legacy-Reihenfolge. Deferred: echte visuelle Streamlit-Neugestaltung mit CSS/Card-Komponenten über die aktuelle Renderfunktion hinaus.
+
+### Question to Alex
+Keine blockierende Entscheidung offen. Sicher weiter: nächste Scheibe sollte die sichtbare Streamlit-Ergebnisfläche selbst stärker entrümpeln und alte Detailblöcke klarer in eine einzige "Vertiefung" packen.
+
+### Verification / Git
+Focused tests grün: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 41 passed. Full verification/Git folgt nach Gesamttest und Sync.

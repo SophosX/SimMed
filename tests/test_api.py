@@ -53,14 +53,17 @@ def test_simulate_embeds_causal_result_packet_for_answer_first_clients():
     ]
     assert packet["primary_result_view"]["first_view_briefing_cards"] == packet["first_view_briefing_cards"]
     assert "keine amtliche Prognose" in packet["first_view_briefing_cards"][5]["why_it_matters"]
+    assert packet["primary_result_view"]["headline"] == packet["result_headline"]
+    assert packet["primary_result_view"]["short_answer"] == packet["short_answer"]
     assert packet["primary_result_view"]["render_sequence"] == [
-        "professional_briefing_text",
-        "first_view_kpi_cards",
-        "adaptation_and_plausibility",
-        "briefing_quality_checks",
-        "optional_audit_layers",
+        "headline",
+        "short_answer",
+        "result_sections",
+        "relevant_kpis",
+        "follow_up_question",
+        "collapsed_detailprüfung",
     ]
-    assert packet["primary_result_view"]["professional_briefing_text"].startswith("Ausgangslage: ")
+    assert packet["primary_result_view"]["result_sections"] == packet["result_sections"]
     assert packet["professional_briefing"]["public_storyline"].startswith("Ergebnisbericht\n\nAusgangslage\n")
     assert packet["public_briefing_text"] == packet["professional_briefing"]["public_storyline"]
     assert "Was daraus folgt\n" in packet["public_briefing_text"]

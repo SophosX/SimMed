@@ -1130,14 +1130,25 @@ def build_causal_result_packet(
         "counterintuitive_findings": counter,
         "free_text_blocks": free_text_blocks,
         "primary_result_view": {
-            "headline": "Ergebnisbericht und anschließende Detailprüfung",
+            "briefing_style": "single_readable_briefing",
+            "headline": result_headline,
+            "short_answer": short_answer,
+            "result_sections": result_sections,
+            "first_screen_blocks": first_screen_blocks,
+            "primary_blocks": first_screen_blocks,
+            "relevant_kpis": relevant_kpis_public,
+            "follow_up_question": follow_up_question,
+            "audit_sections": audit_sections,
+            "deeper_review_default_expanded": False,
             "render_sequence": [
-                "professional_briefing_text",
-                "first_view_kpi_cards",
-                "adaptation_and_plausibility",
-                "briefing_quality_checks",
-                "optional_audit_layers",
+                "headline",
+                "short_answer",
+                "result_sections",
+                "relevant_kpis",
+                "follow_up_question",
+                "collapsed_detailprüfung",
             ],
+            # Legacy/diagnostic fields stay available for collapsed review surfaces and older callers.
             "main_blocks": free_text_blocks,
             "legacy_numbered_story": legacy_numbered_story,
             "sequential_plain_text": sequential_plain_text,
@@ -1151,22 +1162,17 @@ def build_causal_result_packet(
             "first_view_kpi_cards": first_view_kpi_cards,
             "policy_readiness_summary": policy_readiness_summary,
             "next_check": {
-                "label": "Was daraus folgt",
-                "text": (
-                    "Zuerst die Anpassungsreaktionen gegen den berechneten Wirkpfad prüfen: "
-                    "passen Telemedizin, Delegation, Zuwanderung oder Arbeitsdruck zur KPI-Bewegung? "
-                    "Erst danach sollten Detailkarten, Trend und politische Einordnung als Prüf- und Entscheidungsgrundlage gelesen werden."
-                ),
+                "label": "Nächster Prüfschritt",
+                "text": follow_up_question,
             },
             "optional_audit_layers": {
                 "expanded_by_default": False,
                 "reason": (
-                    "Detailprüfungen bleiben verfügbar, kommen aber nach dem zusammenhängenden Ergebnisbericht, "
-                    "damit die erste Ansicht nicht wieder in einzelne Kennzahlen zerfällt."
+                    "Detailprüfungen bleiben verfügbar, stehen aber unter dem kurzen Ergebnisbericht. "
+                    "So bleibt die erste Ansicht lesbar: erst Ergebnis, dann Prüfung."
                 ),
             },
             "cleartext_reading_cards": cleartext_reading_cards,
-            "relevant_kpis": relevant_kpis_public,
             "relevant_kpi_summary": kpi_summary,
             "adaptation_mechanisms": mechanisms,
             "adaptation_signal_trace": adaptation_trace,
@@ -1174,6 +1180,7 @@ def build_causal_result_packet(
             "evidence_assumption_rows": evidence_rows,
             "briefing_quality_checks": briefing_quality_checks,
             "optional_details_after": ["KPI-Drilldowns", "Trend", "Policy-Briefing", "Politik/Stakeholder"],
+            "guardrail": RESULT_CAUSALITY_GUARDRAIL,
         },
         "story_sections": story_sections,
         "professional_briefing": professional_briefing,

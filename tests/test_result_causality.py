@@ -347,7 +347,8 @@ def test_causal_result_packet_has_sequential_free_text_blocks_before_optional_de
     assert "Klartext" not in combined
     assert all("KPI-Wand" not in block["text"] for block in blocks)
     primary = packet["primary_result_view"]
-    assert primary["headline"] == "Ergebnisbericht und anschließende Detailprüfung"
+    assert primary["headline"] == packet["result_headline"]
+    assert primary["short_answer"] == packet["short_answer"]
     assert primary["main_blocks"] == blocks
     assert primary["sequential_plain_text"] == packet["sequential_plain_text"]
     assert primary["relevant_kpis"] == packet["relevant_kpis"]
@@ -582,16 +583,17 @@ def test_primary_result_view_declares_single_sequential_briefing_before_optional
     first_view = packet["primary_result_view"]
 
     assert first_view["render_sequence"] == [
-        "professional_briefing_text",
-        "first_view_kpi_cards",
-        "adaptation_and_plausibility",
-        "briefing_quality_checks",
-        "optional_audit_layers",
+        "headline",
+        "short_answer",
+        "result_sections",
+        "relevant_kpis",
+        "follow_up_question",
+        "collapsed_detailprüfung",
     ]
     assert first_view["first_view_briefing_cards"][0]["stage"] == "Ausgangslage"
-    assert first_view["next_check"]["label"] == "Was daraus folgt"
-    assert "Anpassungsreaktionen" in first_view["next_check"]["text"]
-    assert "erst danach" in first_view["next_check"]["text"].lower()
+    assert first_view["next_check"]["label"] == "Nächster Prüfschritt"
+    assert first_view["next_check"]["text"] == first_view["follow_up_question"]
+    assert "Puffer" in first_view["next_check"]["text"] or "Kapazitätslücke" in first_view["next_check"]["text"]
     assert first_view["optional_audit_layers"]["expanded_by_default"] is False
     assert first_view["optional_audit_layers"]["reason"].startswith("Detailprüfungen bleiben verfügbar")
     assert "keine zweite erste Ergebnisansicht" not in first_view["optional_audit_layers"]["reason"]
@@ -646,7 +648,7 @@ def test_professional_briefing_does_not_invent_study_place_path_when_no_lever_ch
     assert "ab Jahr 6 erreicht die kleinere Kohorte" not in text
     assert packet["timeline_windows"] == []
     assert packet["adaptation_mechanisms"] == []
-    assert packet["primary_result_view"]["next_check"]["label"] == "Was daraus folgt"
+    assert packet["primary_result_view"]["next_check"]["label"] == "Nächster Prüfschritt"
 
 
 def test_financing_scenario_prioritizes_finance_kpis_without_pipeline_language():
@@ -728,6 +730,59 @@ def test_causal_result_packet_exposes_compact_briefing_cards_for_first_view():
     assert "Klartext" not in combined
 
 
+def test_simplified_public_causal_packet_is_concise_and_serious():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    public = packet["public_result_view"]
+    public_text = " ".join(
+        [
+            packet["result_headline"],
+            packet["short_answer"],
+            public["headline"],
+            public["short_answer"],
+            public.get("follow_up_question", ""),
+        ]
+        + [section["heading"] + " " + section["body"] for section in packet["result_sections"]]
+        + [row["label"] + " " + row.get("meaning", "") for row in packet["relevant_kpis"]]
+    )
+
+    assert packet["result_headline"] == public["headline"]
+    assert packet["short_answer"] == public["short_answer"]
+    assert packet["primary_result_view"]["headline"] == packet["result_headline"]
+    assert packet["primary_result_view"]["short_answer"] == packet["short_answer"]
+    assert [section["heading"] for section in packet["result_sections"]] == [
+        "Ergebnis",
+        "Eingriff",
+        "Warum es passiert",
+        "Relevante Kennzahlen",
+        "Anpassungen",
+        "Einordnung",
+        "Nächster Prüfschritt",
+    ]
+    assert len(packet["result_sections"]) <= 7
+    assert all(len(section["body"]) <= 300 for section in packet["result_sections"])
+    assert len(packet["short_answer"].split(". ")) <= 4
+    assert "Medizinstudienplätze" in packet["short_answer"]
+    assert "Jahr 6" in packet["short_answer"] and "Jahr 11" in packet["short_answer"]
+    assert "Wartezeit" in public_text or "Ärzte" in public_text
+    assert "Puffer" in packet["follow_up_question"] or "Kapazitätslücke" in packet["follow_up_question"]
+    banned_terms = [
+        "random Internet",
+        "Klartext",
+        "KPI-Wand",
+        "causal_result_packet",
+        "generated",
+        "helper",
+        "Audit-Layer",
+        "Kurz gesagt",
+        "Zahlen zu tapezieren",
+    ]
+    for term in banned_terms:
+        assert term not in public_text
+
+
 def test_first_view_public_copy_avoids_internal_packet_and_wall_jargon():
     params = get_default_params()
     params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
@@ -804,7 +859,8 @@ def test_causal_packet_has_plain_consequence_and_readiness_summary_for_first_vie
     assert summary["recommended_next_step"].startswith("Zuerst")
     assert "keine amtliche Prognose" in summary["guardrail"]
     assert packet["primary_result_view"]["policy_readiness_summary"] == summary
-    assert "adaptation_and_plausibility" in packet["primary_result_view"]["render_sequence"]
+    assert "result_sections" in packet["primary_result_view"]["render_sequence"]
+    assert "collapsed_detailprüfung" in packet["primary_result_view"]["render_sequence"]
 
 
 def test_first_view_briefing_cards_include_consequence_card_without_jargon():
