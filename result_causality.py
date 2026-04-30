@@ -24,31 +24,37 @@ RESULT_CAUSALITY_GUARDRAIL = (
 KPI_SPECS: dict[str, dict[str, Any]] = {
     "aerzte_pro_100k": {
         "label": "Ärzte pro 100k",
+        "unit_label": "je 100.000 Einwohner:innen",
         "higher_is_better": True,
         "why_relevant": "zeigt die verfügbare ärztliche Kapazität relativ zur Bevölkerung",
     },
     "wartezeit_fa": {
         "label": "Facharzt-Wartezeit",
+        "unit_label": "Tage",
         "higher_is_better": False,
         "why_relevant": "übersetzt Kapazitätsdruck in Zugang für Patient:innen",
     },
     "burnout_rate": {
         "label": "Burnout",
+        "unit_label": "%",
         "higher_is_better": False,
         "why_relevant": "zeigt, ob Kapazitätsdruck auf die Belegschaft zurückschlägt",
     },
     "telemedizin_rate": {
         "label": "Telemedizin",
+        "unit_label": "%",
         "higher_is_better": True,
         "why_relevant": "ist ein plausibler Anpassungsmechanismus bei Wartezeit- oder Ärztemangel",
     },
     "versorgungsindex_rural": {
         "label": "ländliche Versorgung",
+        "unit_label": "Indexpunkte",
         "higher_is_better": True,
         "why_relevant": "zeigt, ob Druck regional ungleich verteilt wird",
     },
     "gkv_saldo": {
         "label": "GKV-Saldo",
+        "unit_label": "Mrd. €",
         "higher_is_better": True,
         "why_relevant": "zeigt Finanzierungsspielraum und politischen Reaktionsdruck",
     },
@@ -1063,27 +1069,34 @@ def build_causal_result_packet(
         )
 
     public_kpi_limit = min(max_kpis, 3)
-    relevant_kpis_public = [
-        {
-            **row,
-            "start": _fmt_de_fixed(row.get("start"), decimals=2),
-            "end": _fmt_de_fixed(row.get("end"), decimals=2),
-            "abs_delta": _fmt_de_fixed(row.get("abs_delta"), decimals=2),
-            "pct_delta": _fmt_de_fixed(row.get("pct_delta"), decimals=2),
-            "direction": "stabil" if row.get("direction") == "bleibt stabil" else row.get("direction", "stabil"),
-            "plain_change": (
-                f"{_fmt_de_fixed(row.get('start'), decimals=2)} auf {_fmt_de_fixed(row.get('end'), decimals=2)}"
-                f" ({'+' if str(row.get('abs_delta', '')).replace(',', '.').strip().startswith('-') is False else ''}{_fmt_de_fixed(row.get('abs_delta'), decimals=2)})"
-            ),
-            "display_value": f"{_fmt_de_fixed(row.get('start'), decimals=2)} → {_fmt_de_fixed(row.get('end'), decimals=2)}",
-            "reading": _public_kpi_reading(
-                str(row.get("metric_key", "")),
-                "stabil" if row.get("direction") == "bleibt stabil" else str(row.get("direction", "stabil")),
-            ),
-            "meaning": row.get("meaning") or row.get("why_relevant", "Diese Kennzahl ordnet den Modelllauf ein."),
-        }
-        for row in kpis[:public_kpi_limit]
-    ]
+    relevant_kpis_public = []
+    for row in kpis[:public_kpi_limit]:
+        metric_key = str(row.get("metric_key", ""))
+        unit_label = str(KPI_SPECS.get(metric_key, {}).get("unit_label", "")).strip()
+        start = _fmt_de_fixed(row.get("start"), decimals=2)
+        end = _fmt_de_fixed(row.get("end"), decimals=2)
+        direction = "stabil" if row.get("direction") == "bleibt stabil" else row.get("direction", "stabil")
+        display_value = f"{start} → {end}"
+        reading = _public_kpi_reading(metric_key, str(direction))
+        relevant_kpis_public.append(
+            {
+                **row,
+                "start": start,
+                "end": end,
+                "abs_delta": _fmt_de_fixed(row.get("abs_delta"), decimals=2),
+                "pct_delta": _fmt_de_fixed(row.get("pct_delta"), decimals=2),
+                "direction": direction,
+                "unit_label": unit_label,
+                "plain_change": (
+                    f"{start} auf {end}"
+                    f" ({'+' if str(row.get('abs_delta', '')).replace(',', '.').strip().startswith('-') is False else ''}{_fmt_de_fixed(row.get('abs_delta'), decimals=2)})"
+                ),
+                "display_value": display_value,
+                "reading_line": f"{display_value} {unit_label}".strip(),
+                "reading": reading,
+                "meaning": row.get("meaning") or row.get("why_relevant", "Diese Kennzahl ordnet den Modelllauf ein."),
+            }
+        )
     relevant_kpis_all = [
         {
             **row,
@@ -1229,7 +1242,7 @@ def build_causal_result_packet(
     }
 
     kpi_lines = "\n".join(
-        f"- **{row.get('label', 'Kennzahl')}**: {row.get('start', '–')} → {row.get('end', '–')} "
+        f"- **{row.get('label', 'Kennzahl')}**: {row.get('reading_line') or (str(row.get('start', '–')) + ' → ' + str(row.get('end', '–')))} "
         f"({row.get('direction', 'stabil')}). {row.get('meaning') or row.get('why_relevant', '')}"
         for row in relevant_kpis_public[:4]
     ) or "- Keine priorisierten Kennzahlen verfügbar."

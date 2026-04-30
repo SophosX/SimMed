@@ -162,6 +162,23 @@ def test_public_result_view_answers_first_screen_questions_inside_one_briefing_n
     assert "Das bedeutet" in packet["short_answer"]
 
 
+def test_relevant_kpis_show_units_and_one_sentence_meaning_for_first_screen():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    public_rows = packet["public_result_view"]["briefing"]["relevant_kpis"]
+    by_key = {row["metric_key"]: row for row in public_rows}
+
+    assert by_key["wartezeit_fa"]["unit_label"] == "Tage"
+    assert by_key["burnout_rate"]["unit_label"] == "%"
+    assert by_key["aerzte_pro_100k"]["unit_label"] == "je 100.000 Einwohner:innen"
+    assert by_key["wartezeit_fa"]["reading_line"].startswith("25,00 → 45,00 Tage")
+    assert by_key["burnout_rate"]["reading_line"].startswith("12,00 → 23,00 %")
+    assert all("KPI" not in row["reading_line"] for row in public_rows)
+    assert all(len(row["meaning"].split(".")) <= 3 for row in public_rows)
+
+
 def test_public_result_view_exposes_one_lean_briefing_contract_for_ui_and_api():
     params = get_default_params()
     params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5

@@ -6144,3 +6144,33 @@ TDD: neuer App-Test lief zuerst rot wegen fehlendem `first_view_contract`, danac
 
 
 Nachtrag Verification/Git: Full Suite `python3 -m pytest -q` → 294 passed; `py_compile` zentrale Module → OK; Runtime-Smoke 50 Runs × 3 Jahre inklusive Causal Packet → OK. Commit `5d03885` (`Clarify result first view contract`) wurde auf `origin/main` gepusht. `git show --name-only --oneline -1` bestätigt: `docs/AGENT_COUNCIL_LOG.md`, `result_causality.py`, `tests/test_app_explanations.py`, `tests/test_result_causality.py`.
+
+
+## 2026-04-30 20:40 Europe/Berlin — Heartbeat: Einheiten in relevanten Ergebnis-Kennzahlen
+
+### Context
+Alexs aktuelle Korrektur bleibt: Die erste Ergebnisansicht muss ohne Zahlenraten verständlich sein. Dieser Lauf ergänzt die schlanke Result-Card um Einheiten direkt in den relevanten Kennzahlen, damit „25 → 45“ nicht mehr ohne Kontext gelesen wird.
+
+### Project Manager
+Priorität: First Screen weiter konkretisieren, ohne neue Erklärschichten aufzubauen. Risiko: zu viele Detailfelder im Packet bleiben intern verfügbar; der öffentliche Briefing-Block darf nur die knappe Lesefassung zeigen. Nächster Schritt: reale Streamlit-Erstansicht visuell prüfen und die geschlossenen Detailbereiche weiter entlasten.
+
+### Designer / UX
+Die relevanten Kennzahlen bekommen jetzt `unit_label` und `reading_line` wie „25,00 → 45,00 Tage“. Das ist eine kleine, aber wichtige Lesbarkeitsverbesserung: Nutzer:innen sehen sofort, was die Zahl bedeutet, ohne Hover, Tabelle oder Detailkarte.
+
+### Creative Agent
+Spätere Idee: Die relevante-Kennzahlen-Zeile kann als Mini-„Befundstreifen“ im Ergebnisbriefing funktionieren. Fit: gut, weil es dieselbe Card stärkt; kein neuer Widget-Stapel.
+
+### Political Health-System Strategist
+Die politische Deutung bleibt nachgeordnet. Gerade Wartezeit in Tagen und Burnout in Prozent sollten fachlich klar gelesen werden, bevor daraus Unterstützer-/Blocker- oder Umsetzungsfragen abgeleitet werden.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Keine neuen Wirkbehauptungen oder Modelländerungen; nur Kommunikationspräzision vorhandener SimMed-Ausgaben. Einheiten stammen aus bestehenden SimMed-Kennzahlkonventionen und bleiben im Modell-/Annahmenrahmen.
+
+### Integrator Decision
+Akzeptiert: `KPI_SPECS` führt öffentliche Einheiten für die relevanten Ergebnis-Kennzahlen; `public_result_view.briefing.relevant_kpis` liefert `unit_label` und `reading_line`; die Streamlit-Erstansicht nutzt diese Zeile. Modell-Dynamik unverändert.
+
+### Question to Alex
+Keine wichtige Entscheidung offen. Ich gehe weiter sicher in Richtung: ein Ergebnisbriefing, wenige relevante Kennzahlen, Details geschlossen darunter.
+
+### Verification / Git
+TDD: neuer Test `test_relevant_kpis_show_units_and_one_sentence_meaning_for_first_screen` lief zuerst rot (`KeyError: 'unit_label'`), danach grün. Fokussierte Tests: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients tests/test_app_explanations.py::test_result_causal_overview_declares_one_clean_first_view_before_audit_details -q` → 68 passed. Full Suite: `python3 -m pytest -q` → 295 passed. `py_compile` zentrale Module → OK. Runtime-Smoke 50 Runs × 3 Jahre inklusive Causal Packet → OK. Git-Commit/Push folgt nach Source→GitHub-Sync.

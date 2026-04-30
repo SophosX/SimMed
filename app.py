@@ -3542,7 +3542,7 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
                     with col:
                         st.markdown(f"**{row.get('label', 'Kennzahl')}**")
                         st.markdown(
-                            f"{row.get('display_value') or (str(row.get('start', '–')) + ' → ' + str(row.get('end', '–')))}"
+                            f"{row.get('reading_line') or row.get('display_value') or (str(row.get('start', '–')) + ' → ' + str(row.get('end', '–')))}"
                         )
                         st.caption(row.get("reading") or row.get("meaning") or row.get("why_relevant", ""))
             else:
