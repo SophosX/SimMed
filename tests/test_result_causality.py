@@ -1517,9 +1517,11 @@ def test_public_result_view_exposes_single_executive_brief_for_first_screen():
         "Nächster Prüfschritt",
     ]
     assert len(brief["blocks"]) <= 7
-    assert all(block["kind"] in {"text", "kpi_rows"} for block in brief["blocks"])
-    assert brief["blocks"][3]["kind"] == "kpi_rows"
+    assert all(block["kind"] in {"text", "compact_kpi_rows"} for block in brief["blocks"])
+    assert brief["blocks"][3]["kind"] == "compact_kpi_rows"
+    assert brief["blocks"][3]["component"] == "readable_metric_cards"
     assert brief["blocks"][3]["rows"] == packet["public_result_view"]["relevant_kpis"][:4]
+    assert all("display_value" in row for row in brief["blocks"][3]["rows"])
     assert brief["audit_hint"] == "Details bleiben darunter geschlossen: Zeitfenster, Evidenz, vollständige Kennzahlen und politische Einordnung."
 
     visible_text = " ".join(

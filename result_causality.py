@@ -1052,6 +1052,7 @@ def build_causal_result_packet(
                 f"{_fmt_de_fixed(row.get('start'), decimals=2)} auf {_fmt_de_fixed(row.get('end'), decimals=2)}"
                 f" ({'+' if str(row.get('abs_delta', '')).replace(',', '.').strip().startswith('-') is False else ''}{_fmt_de_fixed(row.get('abs_delta'), decimals=2)})"
             ),
+            "display_value": f"{_fmt_de_fixed(row.get('start'), decimals=2)} → {_fmt_de_fixed(row.get('end'), decimals=2)}",
             "reading": _public_kpi_reading(
                 str(row.get("metric_key", "")),
                 "stabil" if row.get("direction") == "bleibt stabil" else str(row.get("direction", "stabil")),
@@ -1154,9 +1155,10 @@ def build_causal_result_packet(
         block = {
             "heading": section["heading"],
             "body": section["body"],
-            "kind": "kpi_rows" if section["heading"] == "Relevante Kennzahlen" else "text",
+            "kind": "compact_kpi_rows" if section["heading"] == "Relevante Kennzahlen" else "text",
         }
         if section["heading"] == "Relevante Kennzahlen":
+            block["component"] = "readable_metric_cards"
             block["rows"] = relevant_kpis_public[:4]
         executive_brief_blocks.append(block)
     executive_brief = {

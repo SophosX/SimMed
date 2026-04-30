@@ -5398,3 +5398,32 @@ Keine offene Entscheidung nötig; sinnvoller Default ist weiter sichere Vereinfa
 
 ### Verification / Git
 Verifikation lokal grün: `python3 -m pytest -q` (282 passed), `python3 -m py_compile app.py result_causality.py api.py simulation_core.py`, 50-run Smoke-Test mit causal packet. Git-Sync/Commit/Push erfolgt im Anschluss an diesen Logeintrag.
+
+## 2026-04-30 15:40 UTC — Heartbeat: Kennzahlen im Erstbriefing als lesbare Karten
+
+### Context
+Alexs Korrektur bleibt maßgeblich: erste Ergebnisansicht als ein ruhiger, verständlicher Bericht statt gestapelter Tabellen/Erklärblöcke. Relevante Dateien: `result_causality.py`, `app.py`, `tests/test_result_causality.py`.
+
+### Project Manager
+Priorität: die neue erste Ergebnisansicht weiter vereinfachen, ohne Modelllogik anzufassen. Risiko: Kennzahlen im ersten Block dürfen nicht wieder wie eine dichte Tabelle wirken. Nächster Schritt: alte Detail-/Auditbereiche weiter konsolidieren und optisch klar als Vertiefung markieren.
+
+### Designer / UX
+Die relevanten Kennzahlen im Executive Brief sind nun explizit als kompakte, lesbare Metric-Cards deklariert und werden in Streamlit als kurze Karten/Spalten gerendert, nicht als Dataframe-Tabelle. Das unterstützt den gewünschten Lesefluss: erst Befund, dann wenige Zahlen, dann Prüfung.
+
+### Creative Agent
+Idee: Wenn diese Erstansicht stabil ist, kann daraus ein kopierbarer 1-Minuten-Brief entstehen. Fit: gut für Weitergabe; aktuell nicht umgesetzt, damit die Hauptseite nicht wieder überladen wird.
+
+### Political Health-System Strategist
+Die politische Einordnung bleibt nachgelagert. Bei halbierten Medizinstudienplätzen bleibt die seriöse Lesart: verzögerter Kapazitätsdruck, relevante Kennzahlen prüfen, dann erst politische Bewertung.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Keine neuen Parameter, Datenquellen oder Modellannahmen; nur Kommunikations-/Darstellungsschicht. Guardrails zu amtlicher Prognose und Wirksamkeitsnachweis bleiben erhalten.
+
+### Integrator Decision
+Akzeptiert: `executive_brief` nutzt `compact_kpi_rows`/`readable_metric_cards`, relevante KPI-Zeilen enthalten `display_value`, und der Renderer nutzt Karten statt einer ersten Dataframe-Tabelle. Deferred: weitere Entfernung alter Legacy-Felder aus Kompatibilitätsflächen.
+
+### Question to Alex
+Keine wichtige Entscheidung offen. Sicherer Default: weiter die bestehende Briefing-Struktur beruhigen, keine neuen Ergebnis-Widgets hinzufügen.
+
+### Verification / Git
+Verifiziert lokal: `pytest tests/test_result_causality.py tests/test_api.py -q` → 123 passed; `py_compile app.py result_causality.py api.py simulation_core.py`; 50-run/15-year Smoke mit halbierten Medizinstudienplätzen und Causal-Packet; `pytest -q` → 282 passed. Git-Sync/Commit/Push folgt.

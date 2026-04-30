@@ -3530,20 +3530,15 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
         for block in blocks:
             heading = block["heading"]
             st.markdown(f"**{heading}**")
-            if block.get("kind") == "kpi_rows" or heading == "Relevante Kennzahlen":
+            if block.get("kind") in {"kpi_rows", "compact_kpi_rows"} or heading == "Relevante Kennzahlen":
                 rows = block.get("rows") or view.get("relevant_kpis", packet.get("relevant_kpis", []))[:4]
                 if rows:
-                    kpi_df = pd.DataFrame([
-                        {
-                            "Kennzahl": row.get("label", "Kennzahl"),
-                            "Start": row.get("start", "–"),
-                            "Ende": row.get("end", "–"),
-                            "Richtung": row.get("direction", "stabil"),
-                            "Bedeutung": row.get("reading") or row.get("meaning") or row.get("why_relevant", ""),
-                        }
-                        for row in rows
-                    ])
-                    st.dataframe(kpi_df, use_container_width=True, hide_index=True)
+                    columns = st.columns(min(len(rows), 4))
+                    for col, row in zip(columns, rows):
+                        with col:
+                            st.markdown(f"**{row.get('label', 'Kennzahl')}**")
+                            st.markdown(f"{row.get('display_value') or (str(row.get('start', '–')) + ' → ' + str(row.get('end', '–')))}")
+                            st.caption(row.get("reading") or row.get("meaning") or row.get("why_relevant", ""))
                 else:
                     st.write(block["body"])
             else:
