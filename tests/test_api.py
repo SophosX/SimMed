@@ -616,6 +616,39 @@ def test_api_rejects_scenario_gallery_guided_apply_plan_out_of_bounds_without_ex
     assert "kein Simulationslauf" in detail["guardrail"]
 
 
+def test_api_exposes_focused_scenario_gallery_operator_status_cards_without_execution():
+    client = TestClient(api)
+    response = client.get("/scenario-gallery/operator-status-cards?n_runs=100&n_years=15&seed=42")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "scenario_gallery_operator_status_cards_not_executed"
+    assert "kein automatischer Apply-Button" in body["guardrail"]
+    assert "kein Simulationslauf" in body["guardrail"]
+    assert "keine Registry-/Modellmutation" in body["guardrail"]
+    assert "packets" not in body
+    cards = body["status_cards"]
+    assert cards
+    medical_status = next(card for card in cards if card["card_id"] == "medical_training_pipeline")
+    assert medical_status["status_label"] == "Bereit zur bewussten Prüfung, nicht ausgeführt"
+    assert medical_status["primary_action"] == "Payload prüfen: POST /simulate"
+    assert "Medizinstudienplätze" in medical_status["changed_parameters_plain"]
+    assert "nichts wird automatisch angewendet" in medical_status["first_safe_check"]
+    assert "Ergebnis-Storyboard" in medical_status["post_run_first_read"]
+    assert "keine Registry-/Modellmutation" in medical_status["guardrail"]
+    assert "Wirkungsbeweis" in medical_status["stop_rule_short"]
+
+
+def test_api_rejects_scenario_gallery_operator_status_card_out_of_bounds_without_execution():
+    client = TestClient(api)
+    response = client.get("/scenario-gallery/operator-status-cards?seed=1000000")
+
+    assert response.status_code == 422
+    detail = response.json()["detail"]
+    assert detail["status"] == "invalid_scenario_gallery_status_card_bounds"
+    assert "kein Simulationslauf" in detail["guardrail"]
+
+
 def test_api_exposes_scenario_gallery_operator_run_packets_without_execution():
     client = TestClient(api)
     response = client.get("/scenario-gallery/operator-run-packets?n_runs=100&n_years=15&seed=42")

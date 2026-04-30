@@ -3114,3 +3114,16 @@ Gezielte API-Tests, volle Testsuite, py_compile und kleiner Simulation-Smoke sin
 - **Integrator Decision:** `build_scenario_gallery_operator_status_cards(...)` in `scenario_gallery.py`, App-Wrapper/Rendering und API-Feld `status_cards` ergänzt; bestehende Run-Packets bleiben read-only.
 - **Question to Alex if needed:** Keine – niedrigriskante Plattform-/Onboarding-Verbesserung.
 - **Verification/Git:** pytest vollständig 177 passed; py_compile für Kernmodule; 20-run Smoke OK. Commit/Push folgt in diesem Heartbeat.
+
+
+## 2026-04-30T05:24:20Z – Scenario-Gallery Statuskarten als fokussierte API
+
+- Context: Alex priorisiert Core-Plattform statt KI/Evidence; sicherer nächster Slice war eine fokussierte, mobile/agentenfreundliche Statusfläche für Scenario-Gallery-Run-Packets ohne Full-Packet-Rauschen.
+- Project Manager: Kleine Plattform-API-Ergänzung mit Wiederverwendung bestehender Run-Packet-Statuskarten; kein größerer UX-Umbau und kein Apply/Run-Risiko.
+- Designer/UX: Neue fokussierte Route liefert nur Statuskarten für schnelle Erstorientierung auf Mobile/Agenten: Status, erster sicherer Check, KPI-Lesepfad, Stop-Regel.
+- Creative Agent: MiroFish-Inspiration bleibt Demo-first, aber SimMed behält Guardrails: bewusst prüfen statt automatisch starten.
+- Political Health-System Strategist: Statuskarten erinnern vor jeder politischen Lesart an keine Prognose, keinen Wirkungsbeweis und keine Lobbying-Empfehlung.
+- Evidence/Domain: Keine neue Recherche in diesem Lauf; keine neuen Fakten/Wirksamkeitsclaims, nur Reassemblierung vorhandener Registry-/Scenario-Gallery-Felder.
+- Integrator Decision: `GET /scenario-gallery/operator-status-cards` ergänzt und gemeinsame Bounds-Validierung für Statuskarten/Run-Packets eingeführt.
+- Question to Alex if needed: Keine.
+- Verification/Git: Gezielte API-Tests, volle Testsuite, py_compile und 20x2 Simulation-Smoke bestanden; Commit/Push folgt.

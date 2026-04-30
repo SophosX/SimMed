@@ -1416,6 +1416,41 @@ def get_scenario_gallery_guided_apply_plans(
     }
 
 
+def _validate_scenario_gallery_bounds(n_runs: int, n_years: int, seed: int, *, status: str) -> None:
+    """Keep scenario-gallery planning endpoints bounded and read-only."""
+
+    if not 1 <= n_runs <= 1000 or not 1 <= n_years <= 30 or not 0 <= seed <= 999999:
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "status": status,
+                "guardrail": "Nur bounded Scenario-Gallery-Status/Payload-Vorschauen; kein Apply, kein Simulationslauf und keine Modellmutation.",
+            },
+        )
+
+
+@api.get("/scenario-gallery/operator-status-cards")
+def get_scenario_gallery_operator_status_cards(
+    n_runs: int = 100,
+    n_years: int = 15,
+    seed: int = 42,
+) -> dict:
+    """Expose focused mobile-safe status cards without returning full run packets."""
+
+    _validate_scenario_gallery_bounds(
+        n_runs,
+        n_years,
+        seed,
+        status="invalid_scenario_gallery_status_card_bounds",
+    )
+    status_cards = build_scenario_gallery_operator_status_cards(n_runs=n_runs, n_years=n_years, seed=seed)
+    return {
+        "status": "scenario_gallery_operator_status_cards_not_executed",
+        "guardrail": "Read-only Statuskarten: kein automatischer Apply-Button, keine Session-State-Mutation, kein Simulationslauf, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+        "status_cards": status_cards,
+    }
+
+
 @api.get("/scenario-gallery/operator-run-packets")
 def get_scenario_gallery_operator_run_packets(
     n_runs: int = 100,
@@ -1424,14 +1459,12 @@ def get_scenario_gallery_operator_run_packets(
 ) -> dict:
     """Expose read-only run packets for deliberate scenario execution without executing them."""
 
-    if not 1 <= n_runs <= 1000 or not 1 <= n_years <= 30 or not 0 <= seed <= 999999:
-        raise HTTPException(
-            status_code=422,
-            detail={
-                "status": "invalid_scenario_gallery_run_packet_bounds",
-                "guardrail": "Nur bounded Run-Packet-/Payload-Vorschauen; kein Apply, kein Simulationslauf und keine Modellmutation.",
-            },
-        )
+    _validate_scenario_gallery_bounds(
+        n_runs,
+        n_years,
+        seed,
+        status="invalid_scenario_gallery_run_packet_bounds",
+    )
     packets = build_scenario_gallery_operator_run_packets(n_runs=n_runs, n_years=n_years, seed=seed)
     status_cards = build_scenario_gallery_operator_status_cards(n_runs=n_runs, n_years=n_years, seed=seed)
     return {
