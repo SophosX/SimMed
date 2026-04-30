@@ -162,6 +162,44 @@ def test_public_result_view_answers_first_screen_questions_inside_one_briefing_n
     assert "Das bedeutet" in packet["short_answer"]
 
 
+def test_public_result_view_exposes_one_lean_briefing_contract_for_ui_and_api():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    briefing = packet["public_result_view"]["briefing"]
+
+    assert list(briefing) == [
+        "headline",
+        "short_answer",
+        "sections",
+        "relevant_kpis",
+        "next_check",
+        "guardrail",
+    ]
+    assert briefing["headline"] == packet["result_headline"]
+    assert briefing["short_answer"] == packet["short_answer"]
+    assert [section["heading"] for section in briefing["sections"]] == [
+        "Ergebnis",
+        "Eingriff",
+        "Warum es passiert",
+        "Relevante Kennzahlen",
+        "Anpassungen",
+        "Einordnung",
+        "Nächster Prüfschritt",
+    ]
+    assert len(briefing["sections"]) <= 7
+    assert all(len(section["body"].split()) <= 38 for section in briefing["sections"])
+    assert all({"label", "display_value", "direction", "reading", "meaning"} <= set(row) for row in briefing["relevant_kpis"])
+    public_brief_text = "\n".join(
+        [briefing["headline"], briefing["short_answer"], briefing["next_check"]]
+        + [section["body"] for section in briefing["sections"]]
+        + [row["reading"] for row in briefing["relevant_kpis"]]
+    )
+    for forbidden in ["random Internet", "Klartext", "KPI-Wand", "generated", "helper", "Widget", "Legacy", "DataFrame", "Audit-Layer"]:
+        assert forbidden not in public_brief_text
+
+
 def test_public_result_view_keeps_only_one_first_screen_briefing_before_audit():
     params = get_default_params()
     params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
@@ -366,6 +404,7 @@ def test_public_result_packet_is_minimal_and_does_not_expose_legacy_layers_first
     view = packet["public_result_view"]
 
     allowed_public_keys = {
+        "briefing",
         "briefing_style",
         "render_order",
         "first_screen_render_blocks",

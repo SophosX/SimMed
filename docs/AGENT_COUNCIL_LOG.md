@@ -5867,3 +5867,33 @@ No important decision is blocked. Continue with safe UI/briefing cleanup.
 
 ### Verification / Git
 Focused tests currently passing before full-suite run: `pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients tests/test_app_explanations.py -q` → 125 passed. Full verification: `pytest -q` → 288 passed; py_compile + 50-run simulation smoke passed. Git: commit `3111209` pushed to `origin/main` with `result_causality.py`, `tests/test_result_causality.py`, and council log.
+
+
+## 2026-04-30 19:39 Europe/Berlin — Result first-screen briefing contract
+
+### Context
+Alexs latest correction: the result page must feel like one clear German briefing, not like stacked explanation widgets. This slice added a lean public result briefing contract to `result_causality.py` and made the Streamlit renderer consume that contract first.
+
+### Project Manager
+Priority remains the first result screen. Risk: legacy result helpers still exist and are useful as audit layers, but must not compete with the first answer. Next tasks: (1) visually polish the single result card, (2) reduce/rename collapsed audit labels, (3) smoke-test a real study-place scenario in Streamlit/runtime data.
+
+### Designer / UX
+The first view now has one primary source: headline, short answer, seven ordered sections, compact relevant KPIs, next check. This supports the requested reading path: Ergebnis → Eingriff → Warum es passiert → Relevante Kennzahlen → Anpassungen → Einordnung → Nächster Prüfschritt.
+
+### Creative Agent
+Idea: next pass could turn the seven sections into a printable “one-page result memo” with a quiet left rail, not more widgets. Fit is good because it reinforces briefing quality without new model claims.
+
+### Political Health-System Strategist
+The wording keeps political interpretation after mechanism and evidence checks. For Medizinstudienplätze, delayed pipeline effects remain explicit; no lobbying recommendation or vote forecast is added.
+
+### Evidence / Domain
+No new external claims or model effects were added. This is a communication/API contract change only. Evidence, caveats, and model limits remain in the packet and in collapsed review layers.
+
+### Integrator Decision
+Accepted: add `public_result_view["briefing"]` as the lean UI/API contract and update `render_result_causal_overview()` to use it before legacy fields. Deferred: deeper visual redesign and screenshot/browser QA.
+
+### Question to Alex
+No decision needed in this run; keep progressing safely on first-screen clarity.
+
+### Verification / Git
+Focused RED/GREEN test added and verified: `tests/test_result_causality.py::test_public_result_view_exposes_one_lean_briefing_contract_for_ui_and_api`. Focused suite passed: `pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 62 passed. Commit/push pending at time of log entry.

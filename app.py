@@ -3522,22 +3522,23 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
     view = packet.get("public_result_view", packet)
     card = st.container(border=True)
     with card:
-        brief = view.get("executive_brief") or packet.get("executive_brief", {})
-        st.markdown(f"### {brief.get('title') or view.get('headline', packet.get('result_headline', packet['title']))}")
-        st.write(brief.get("lead") or view.get("short_answer", packet.get("short_answer", "Der Modelllauf wurde berechnet; die Detailprüfung steht darunter.")))
+        briefing = view.get("briefing") or {
+            "headline": view.get("headline", packet.get("result_headline", packet["title"])),
+            "short_answer": view.get("short_answer", packet.get("short_answer", "Der Modelllauf wurde berechnet; die Detailprüfung steht darunter.")),
+            "sections": view.get("result_sections", packet.get("result_sections", [])),
+            "relevant_kpis": view.get("relevant_kpis", packet.get("relevant_kpis", [])),
+            "guardrail": view.get("guardrail", packet.get("guardrail", "")),
+        }
+        st.markdown(f"### {briefing['headline']}")
+        st.write(briefing["short_answer"])
 
-        answer_rows = brief.get("answer_rows") or view.get("answer_rows", [])
-        if answer_rows and "answer_rows" not in view.get("suppressed_overlapping_widgets", []):
-            st.markdown("**Auf einen Blick**")
-            for row in answer_rows:
-                st.markdown(f"- **{row.get('question', 'Frage')}** {row.get('answer', '')}")
-
-        blocks = brief.get("blocks") or view.get("result_sections") or packet.get("result_sections", [])
+        blocks = briefing.get("sections", [])
+        relevant_kpis = briefing.get("relevant_kpis", [])
         for block in blocks:
             heading = block["heading"]
             st.markdown(f"**{heading}**")
             if block.get("kind") in {"kpi_rows", "compact_kpi_rows"} or heading == "Relevante Kennzahlen":
-                rows = block.get("rows") or view.get("relevant_kpis", packet.get("relevant_kpis", []))[:4]
+                rows = block.get("rows") or relevant_kpis[:4]
                 if rows:
                     columns = st.columns(min(len(rows), 4))
                     for col, row in zip(columns, rows):
@@ -3550,7 +3551,7 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
             else:
                 st.write(block["body"])
 
-        st.caption(brief.get("audit_hint") or view.get("guardrail", packet["guardrail"]))
+        st.caption(view.get("executive_brief", {}).get("audit_hint") or briefing.get("guardrail") or view.get("guardrail", packet["guardrail"]))
 
     audit_sections = view.get("audit_sections", [])
     audit_label = "Vertiefung: Wirkpfad, Evidenz und Details"

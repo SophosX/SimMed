@@ -1217,7 +1217,17 @@ def build_causal_result_packet(
             briefing_parts.append(section["body"])
     briefing_markdown = "\n\n".join(briefing_parts)
 
+    lean_public_briefing = {
+        "headline": result_headline,
+        "short_answer": short_answer,
+        "sections": result_sections,
+        "relevant_kpis": relevant_kpis_public,
+        "next_check": follow_up_question,
+        "guardrail": RESULT_CAUSALITY_GUARDRAIL,
+    }
+
     public_result_view = {
+        "briefing": lean_public_briefing,
         "briefing_style": "single_readable_briefing",
         "first_screen_policy": "one_briefing_then_collapsed_audit",
         "render_order": [
