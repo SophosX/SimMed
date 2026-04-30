@@ -603,3 +603,10 @@ A safe incremental slice now adds `adaptation_signal_trace` to `result_causality
 - observed compact-KPI signals (e.g. Telemedizin steigt as buffer; Burnout steigt as pressure signal).
 
 Guardrail remains unchanged: the trace is local SimMed model behavior from selected KPIs, not an official forecast, not a new evidence claim, not a web search, and not proof of reform effectiveness. Next stronger slice should either add year-window KPI trace rows from real simulation years (0–5/6–10/11–15) or start the explicit adaptation-mechanism registry described above.
+
+
+## 2026-04-30 heartbeat note: cleartext reading cards
+
+The causal packet now adds `primary_result_view["cleartext_reading_cards"]` plus direct `adaptation_mechanisms` and `timeline_windows` mirrors inside `primary_result_view`. This is an output/UI organization slice, not a model-equation change. The intent is to make the first result screen read as answer-first German cards: Ergebnis → Änderung → Wirkmechanismus → Anpassung → Gegencheck → Evidenzgrenze.
+
+Guardrail: these cards only reorganize existing packet content and Registry evidence/caveats. They do not fetch data, mutate parameters, create new source claims, or prove policy effectiveness. Next stronger slice should derive observed KPI values per time window from `annual_summary` so the narrative can say where the year-6-to-15 pressure actually appears in the run.

@@ -149,16 +149,15 @@ def test_causal_result_packet_has_sequential_free_text_blocks_before_optional_de
     assert "Telemedizin" in combined
     assert "keine amtliche Prognose" in combined
     assert all("KPI-Wand" not in block["text"] for block in blocks)
-    assert packet["primary_result_view"] == {
-        "headline": "Erst Klartext, dann Details",
-        "main_blocks": blocks,
-        "sequential_plain_text": packet["sequential_plain_text"],
-        "relevant_kpis": packet["relevant_kpis"],
-        "relevant_kpi_summary": packet["relevant_kpi_summary"],
-        "adaptation_signal_trace": packet["adaptation_signal_trace"],
-        "evidence_assumption_rows": packet["evidence_assumption_rows"],
-        "optional_details_after": ["KPI-Drilldowns", "Trend", "Policy-Briefing", "Politik/Stakeholder"],
-    }
+    primary = packet["primary_result_view"]
+    assert primary["headline"] == "Erst Klartext, dann Details"
+    assert primary["main_blocks"] == blocks
+    assert primary["sequential_plain_text"] == packet["sequential_plain_text"]
+    assert primary["relevant_kpis"] == packet["relevant_kpis"]
+    assert primary["relevant_kpi_summary"] == packet["relevant_kpi_summary"]
+    assert primary["adaptation_signal_trace"] == packet["adaptation_signal_trace"]
+    assert primary["evidence_assumption_rows"] == packet["evidence_assumption_rows"]
+    assert primary["optional_details_after"] == ["KPI-Drilldowns", "Trend", "Policy-Briefing", "Politik/Stakeholder"]
 
 
 def test_causal_result_packet_exposes_one_sequential_plain_text_story_for_api_clients():
@@ -232,6 +231,29 @@ def test_causal_result_packet_traces_observed_adaptation_signals_inside_main_sto
     assert packet["primary_result_view"]["adaptation_signal_trace"] == trace
     assert "Telemedizin steigt" in packet["sequential_plain_text"]
     assert "Burnout steigt" in packet["sequential_plain_text"]
+
+
+def test_causal_result_packet_builds_cleartext_reading_cards_for_first_view():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+
+    cards = packet["primary_result_view"]["cleartext_reading_cards"]
+    assert [card["stage"] for card in cards] == [
+        "Ergebnis",
+        "Änderung",
+        "Wirkmechanismus",
+        "Anpassung",
+        "Gegencheck",
+        "Evidenzgrenze",
+    ]
+    assert cards[0]["answer_first"].startswith("Der Lauf wird zuerst")
+    assert cards[2]["audit_focus"] == "Zeitfenster 0–5 / 6–10 / 11–15 prüfen"
+    assert "Telemedizin" in cards[3]["audit_focus"]
+    assert "keine amtliche Prognose" in cards[-1]["guardrail"]
+    assert packet["primary_result_view"]["adaptation_mechanisms"] == packet["adaptation_mechanisms"]
+    assert packet["primary_result_view"]["timeline_windows"] == packet["timeline_windows"]
 
 
 def test_causal_result_layout_keeps_dense_kpis_optional_after_cleartext():

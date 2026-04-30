@@ -3697,3 +3697,33 @@ No important decision is blocked; continue safely with packet-centered causal ou
 
 ### Verification / Git
 TDD red observed: `tests/test_result_causality.py::test_causal_result_packet_traces_observed_adaptation_signals_inside_main_story` failed with missing `adaptation_signal_trace`. Focused verification passed: `python3 -m pytest tests/test_result_causality.py -q` → 11 passed. Full verification passed: `python3 -m pytest -q` → 219 passed; `py_compile result_causality.py app.py api.py simulation_core.py` passed; 30-run/15-year causal smoke passed (`OK smoke (480, 30) (480, 6) ['telemedizin_rate', 'burnout_rate']`). Commit/push pending.
+
+
+## 2026-04-30 10:17 Europe/Berlin — Heartbeat: Klartext-Lesekarten für Ergebnis-Start
+
+### Context
+Alexs aktuelle Priorität bleibt: weg von verstreuten Snippets/KPI-Wand, hin zu einem kohärenten deutschen Ergebnistext. Dieser Lauf erweitert `result_causality.py`/`app.py` um Klartext-Lesekarten im bestehenden causal packet.
+
+### Project Manager
+Priorität: die vorhandene causal-packet-Schicht als zentrale Quelle weiter stärken, nicht neue Einzelblöcke erfinden. Risiko: ohne klare erste Lesekarten bleibt der Output trotz causal packet noch tabellarisch. Nächste Aufgaben: beobachtete Jahresfenster aus `annual_summary`, danach Adaptationsmechanismus-Registry.
+
+### Designer / UX
+Die erste Ergebnisansicht bekommt eine einfache Reihenfolge: Antwort zuerst, dann Audit. Das reduziert KPI-Clutter, weil die dichte KPI-Wand weiterhin optional bleibt.
+
+### Creative Agent
+Idee: später kann jede Lesekarte einen „Warum glaube ich das?“ Aufklapp-Check bekommen. Fit: gut für Vertrauen, aber erst nach beobachteten Jahresfenstern sinnvoll.
+
+### Political Health-System Strategist
+Politische Bewertung darf erst nach Mechanismus, Gegencheck und Evidenzgrenze kommen. Die neue Kartenfolge unterstützt diese Reihenfolge und verhindert voreilige Lobby-/Vote-Interpretation.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf und keine neuen Sachbehauptungen. Die Karten reassemblieren bestehende Registry-Evidenzgrade, SimMed-Annahmen und Guardrails.
+
+### Integrator Decision
+Akzeptiert: `primary_result_view["cleartext_reading_cards"]` plus UI-Rendering direkt nach dem Freitext. Zurückgestellt: Modellgleichungen und neue breite Policy-Hebel.
+
+### Question to Alex
+Keine wichtige Entscheidung offen; sichere nächste Arbeit ist beobachtete 0–5/6–10/11–15-Jahresfenster aus echten Simulationsergebnissen abzuleiten.
+
+### Verification / Git
+TDD red beobachtet: `tests/test_result_causality.py::test_causal_result_packet_builds_cleartext_reading_cards_for_first_view` fiel zunächst mit `KeyError: 'cleartext_reading_cards'`. Verifikation grün: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 13 passed; `python3 -m pytest -q` → 220 passed; `python3 -m py_compile app.py api.py result_causality.py simulation_core.py` passed; 50-run/15-year causal smoke passed (`OK smoke (800, 30) (800, 6) 6`). Commit/push pending.

@@ -3528,6 +3528,16 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
         st.markdown(f"**{block['step']}**")
         st.write(block["text"])
 
+    reading_cards = primary_view.get("cleartext_reading_cards", []) if primary_view else []
+    if reading_cards:
+        st.markdown("**Klartext-Lesekarten: Antwort zuerst, Audit danach**")
+        st.dataframe(
+            pd.DataFrame(reading_cards)[["stage", "answer_first", "audit_focus", "next_step"]],
+            use_container_width=True,
+            hide_index=True,
+        )
+        st.caption(reading_cards[-1]["guardrail"])
+
     if packet.get("story_sections") and not packet.get("free_text_blocks"):
         for section in packet["story_sections"]:
             st.markdown(f"**{section['heading']}**")

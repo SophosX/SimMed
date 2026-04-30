@@ -445,6 +445,51 @@ def build_causal_result_packet(
         + [f"{block['step']}\n{block['text']}" for block in free_text_blocks]
     )
 
+    cleartext_reading_cards = [
+        {
+            "stage": "Ergebnis",
+            "answer_first": free_text_blocks[0]["text"],
+            "audit_focus": "nur die priorisierten relevanten KPIs lesen",
+            "next_step": "Danach Änderung und Wirkpfad öffnen, nicht die KPI-Wand zuerst.",
+            "guardrail": RESULT_CAUSALITY_GUARDRAIL,
+        },
+        {
+            "stage": "Änderung",
+            "answer_first": free_text_blocks[1]["text"],
+            "audit_focus": "geänderte Hebel gegen Standardpfad prüfen",
+            "next_step": "Für jeden geänderten Hebel Evidenzgrad und Caveat prüfen.",
+            "guardrail": RESULT_CAUSALITY_GUARDRAIL,
+        },
+        {
+            "stage": "Wirkmechanismus",
+            "answer_first": free_text_blocks[2]["text"],
+            "audit_focus": "Zeitfenster 0–5 / 6–10 / 11–15 prüfen",
+            "next_step": "Bei Ausbildungshebeln besonders auf verzögerte Kapazität und Facharzt-Effekt achten.",
+            "guardrail": RESULT_CAUSALITY_GUARDRAIL,
+        },
+        {
+            "stage": "Anpassung",
+            "answer_first": free_text_blocks[3]["text"],
+            "audit_focus": "Telemedizin, Delegation, Zuwanderung oder Arbeitsdruck als sichtbare Puffer/Drucksignale prüfen",
+            "next_step": "Wenn ein Drucksignal fällt, muss ein Entlastungsmechanismus sichtbar benannt sein.",
+            "guardrail": RESULT_CAUSALITY_GUARDRAIL,
+        },
+        {
+            "stage": "Gegencheck",
+            "answer_first": free_text_blocks[4]["text"],
+            "audit_focus": "gegenintuitive Bewegungen vor politischer Deutung markieren",
+            "next_step": "Bei ungeklärter Gegenintuition Modellkopplung oder Annahme prüfen, nicht überinterpretieren.",
+            "guardrail": RESULT_CAUSALITY_GUARDRAIL,
+        },
+        {
+            "stage": "Evidenzgrenze",
+            "answer_first": free_text_blocks[5]["text"],
+            "audit_focus": "Evidenzgrade, Quellen und SimMed-Annahmen trennen",
+            "next_step": "Erst nach dieser Grenze Detailkarten, Trend und Policy-Briefing als Audit-Layer öffnen.",
+            "guardrail": f"{RESULT_CAUSALITY_GUARDRAIL} Keine amtliche Prognose und kein Policy-Wirksamkeitsnachweis.",
+        },
+    ]
+
     story_sections = [
         {
             "id": "output",
@@ -510,9 +555,12 @@ def build_causal_result_packet(
             "headline": "Erst Klartext, dann Details",
             "main_blocks": free_text_blocks,
             "sequential_plain_text": sequential_plain_text,
+            "cleartext_reading_cards": cleartext_reading_cards,
             "relevant_kpis": kpis,
             "relevant_kpi_summary": kpi_summary,
+            "adaptation_mechanisms": mechanisms,
             "adaptation_signal_trace": adaptation_trace,
+            "timeline_windows": timeline_windows,
             "evidence_assumption_rows": evidence_rows,
             "optional_details_after": ["KPI-Drilldowns", "Trend", "Policy-Briefing", "Politik/Stakeholder"],
         },
