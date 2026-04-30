@@ -5015,3 +5015,32 @@ No important decision is blocked. Continue safely with first-screen visual simpl
 
 ### Verification / Git
 Focused verification passed locally: `tests/test_result_causality.py` (45 passed), `tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients` plus `tests/test_app_explanations.py` (65 passed). Full suite passed (`273 passed`), py_compile passed, and a 50-run simulation/result-packet smoke test passed. Commit/push status is recorded in the heartbeat report after repository sync.
+
+## 2026-04-30 15:58 Europe/Berlin — Result-first briefing jargon cleanup
+
+### Context
+Alex's latest correction prioritizes a rebuilt result page: one readable German briefing first, fewer overlapping widgets, and no internal/jargony wording in the visible result copy. This slice tightens the public `public_result_view` copy and tests around the simplified causal result packet.
+
+### Project Manager
+Priority: keep the result-first communication work focused on the first screen rather than adding more explanation layers. Risk: old helper/layout fields can leak technical terms into public copy. Next: continue collapsing legacy result widgets behind one audit section and make the visible Streamlit block look like a briefing page, not a diagnostics console.
+
+### Designer / UX
+The first view should say Ergebnis → Eingriff → Warum → Kennzahlen → Anpassungen → Einordnung → nächster Prüfschritt. Public copy should use “Kennzahlen” and “Einzelprüfungen,” not KPI/internal product language.
+
+### Creative Agent
+Idea: later turn the first result into a printable one-page “Ergebnisblatt” with the same seven headings. Fit: strong for policy readers and sharing, but only after the Streamlit first screen is visibly calm.
+
+### Political Health-System Strategist
+Political interpretation must remain downstream of the result briefing. The page should not imply a ready-made policy decision; it should state the capacity path and then ask for the next professional plausibility check.
+
+### Evidence / Domain
+No model dynamics or evidence claims changed. The guardrail remains: SimMed output is a model-based interpretation within assumptions, not an official forecast or proof of policy effectiveness.
+
+### Integrator Decision
+Accepted: add a regression test that recursively scans `public_result_view` visible strings and rejects KPI/internal detail-card jargon; patch public audit wording from “KPI-Details/Detailkarten” to “Kennzahlen/Einzelprüfungen.”
+
+### Question to Alex
+No important decision open in this run; continue safely with result-page simplification.
+
+### Verification / Git
+Focused RED/GREEN completed locally: new test first failed on leaked `KPI-Details`/`Detailkarten`, then passed after the wording patch. Full verification and Git sync follow in this heartbeat.

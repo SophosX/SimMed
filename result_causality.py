@@ -1057,8 +1057,8 @@ def build_causal_result_packet(
         },
         {
             "heading": "Nächster Prüfschritt",
-            "body": "Zuerst Zeitfenster, relevante KPI-Details und Evidenzgrenzen prüfen; danach politisch bewerten.",
-        },
+            "body": "Zuerst Zeitfenster, relevante Kennzahlen und Evidenzgrenzen prüfen; danach politisch bewerten.",
+        }
     ]
     follow_up_question = (
         "Passen die sichtbaren Puffer im Modell zur späteren Kapazitätslücke — oder muss der Ausbildungs-/Facharztpfad nachgeschärft werden?"
@@ -1139,7 +1139,7 @@ def build_causal_result_packet(
         "dense_kpi_default_expanded": False,
         "audit_expanders": [
             "Zeitfenster, Annahmen und Plausibilität",
-            "vollständige Kennzahlen und Detailkarten",
+            "vollständige Kennzahlen und Einzelprüfungen",
             "Trend, Policy-Briefing und politische Einordnung",
         ],
         "guardrail": RESULT_CAUSALITY_GUARDRAIL,

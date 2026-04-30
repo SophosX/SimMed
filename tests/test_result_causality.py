@@ -950,6 +950,28 @@ def test_public_result_view_is_one_short_briefing_without_duplicate_opening_widg
         assert term not in text
 
 
+def test_public_result_view_uses_kennzahlen_not_kpi_jargon_in_visible_copy():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    public = packet["public_result_view"]
+
+    def collect_strings(value):
+        if isinstance(value, str):
+            return [value]
+        if isinstance(value, dict):
+            return [item for nested in value.values() for item in collect_strings(nested)]
+        if isinstance(value, list):
+            return [item for nested in value for item in collect_strings(nested)]
+        return []
+
+    visible_text = " ".join(collect_strings(public))
+    assert "Kennzahlen" in visible_text
+    assert "KPI" not in visible_text
+    assert "Detailkarten" not in visible_text
+
+
 def test_professional_briefing_exposes_single_public_storyline_for_first_result_view():
     params = get_default_params()
     params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
