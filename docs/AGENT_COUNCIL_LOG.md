@@ -2890,3 +2890,32 @@ Implemented `build_data_readiness_registry_integration_operator_export_digest(..
 
 ### Verification / Git
 Focused tests passed: `pytest tests/test_api.py::test_api_exposes_registry_integration_operator_briefing_without_actions tests/test_app_explanations.py::test_learning_data_readiness_backlog_prioritizes_safe_data_gates -q`. Full verification and Git sync follow in this heartbeat.
+
+## 2026-04-30 06:15 Europe/Berlin — Registry-Export mobile Share-Cards
+
+### Context
+Alex hat den Primärtrack auf Core-Plattform gesetzt. Dieser Lauf blieb im Data-Readiness/Registry-Governance-Pfad und machte den bereits vorhandenen Operator-Export-Digest besser als mobile/touch-sichere Übergabe nutzbar.
+
+### Project Manager
+Priorität: Datenintegration/Provenance weiter operationalisieren, ohne Registry- oder Modellwerte zu mutieren. Nächste Plattform-Schritte: Share-Cards in späteren Operator-Flows wiederverwenden, danach echte Review-/Integrationsentscheidungen weiterhin getrennt halten.
+
+### Designer / UX
+Der Markdown-Digest ist kopierbar, aber auf Mobile schwer scannbar. Die neuen Karten führen in vier klaren Schritten: Copy-Safety → sichere GET-Routen → Stop-Gate → Definition of Done vor Branch.
+
+### Creative Agent
+Idee: diese Share-Cards später als Telegram-/Issue-Handoff-Schnipsel verwenden. Fit: hilfreich für Übergaben; nicht als Ausführungsbutton verwenden.
+
+### Political Health-System Strategist
+Politisch relevant ist die Stop-Logik: Daten-/Registry-Integration bleibt auditierbar und kann nicht als voreiliger Policy-Wirkungsbeweis erscheinen.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf; keine neuen Sach-/Wirksamkeitsbehauptungen. Guardrails halten Rohdaten, Review, Registry-Integration, amtliche Prognose und Policy-Wirkungsbeweis getrennt.
+
+### Integrator Decision
+Akzeptiert: `build_data_readiness_registry_integration_operator_export_share_cards(...)`, API-Fokusroute und Learning-Page-Datenstruktur/Rendering. Kein Branch, kein execute=true, keine Registry-/Modellmutation.
+
+### Question to Alex
+Keine.
+
+### Verification / Git
+Vor Commit: gezielte Tests 3 passed; volle Suite `165 passed`; `py_compile app.py data_ingestion.py api.py`; Smoke `OK share cards smoke`. Commit/Push folgen in diesem Lauf.

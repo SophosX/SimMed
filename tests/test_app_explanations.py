@@ -313,6 +313,19 @@ def test_learning_data_readiness_backlog_includes_integration_preflight():
     assert "execute=true" not in export_digest["markdown"]
     assert export_digest["unsafe_findings"] == []
     assert "keine Registry-/Modellmutation" in export_digest["guardrail"]
+    export_share_cards = backlog["registry_integration_operator_export_share_cards"]
+    assert export_share_cards["title"] == "Registry-Operator-Export als teilbare Karten"
+    assert export_share_cards["copy_safe"] is True
+    assert [card["id"] for card in export_share_cards["cards"]] == [
+        "copy_safety",
+        "status_routes",
+        "stop_gate",
+        "definition_of_done",
+    ]
+    assert operator_briefing["next_parameter_command"] in export_share_cards["cards"][1]["body"]
+    assert export_share_cards["cards"][2]["is_stop_gate"] is True
+    assert "execute=true" not in export_share_cards["cards"][1]["body"]
+    assert "keine Registry-/Modellmutation" in export_share_cards["guardrail"]
     handoff_packet = backlog["registry_integration_handoff_packet"]
     assert handoff_packet["title"].startswith("Registry-Integrations-Handoff")
     assert handoff_packet["summary"]["handoff_rows"] == decision_record["summary"]["decision_rows"]

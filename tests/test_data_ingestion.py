@@ -33,6 +33,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_handoff_packet,
     build_data_readiness_registry_integration_operator_briefing_cards,
     build_data_readiness_registry_integration_operator_briefing_handoff_sheet,
+    build_data_readiness_registry_integration_operator_export_share_cards,
     build_data_readiness_registry_integration_operator_steps,
     build_data_readiness_registry_integration_pr_runbook,
     build_data_readiness_registry_integration_progress_timeline,
@@ -1610,3 +1611,37 @@ def test_registry_operator_briefing_handoff_sheet_is_copy_safe_and_stop_first():
     assert "kein Branch" in sheet["guardrail"]
     assert "kein execute=true" in sheet["guardrail"]
     assert "keine Registry-/Modellmutation" in sheet["guardrail"]
+
+
+def test_registry_operator_export_share_cards_turn_digest_into_mobile_safe_handoff():
+    export_digest = {
+        "title": "Registry-Operator-Export-Digest",
+        "primary_parameter_key": "bevoelkerung_mio",
+        "primary_label": "Bevölkerung",
+        "packet_sha256": "a" * 64,
+        "copy_safe": True,
+        "safe_route_count": 2,
+        "markdown": "# Digest\n\nStatusrouten:\n- GET /data-readiness/registry-integration-status-board\n- GET /data-readiness/bevoelkerung_mio\n\nStop-Gate: STOP: kein Branch ohne dokumentiertes Go.",
+        "unsafe_findings": [],
+        "definition_of_done_before_branch": ["Go/Hold/Reject dokumentiert", "Tests laufen separat"],
+        "guardrail": "Read-only/Export-digest-only: kein Branch, kein execute=true, keine Registry-/Modellmutation.",
+    }
+
+    cards = build_data_readiness_registry_integration_operator_export_share_cards(export_digest)
+
+    assert cards["title"] == "Registry-Operator-Export als teilbare Karten"
+    assert cards["primary_parameter_key"] == "bevoelkerung_mio"
+    assert cards["copy_safe"] is True
+    assert [card["id"] for card in cards["cards"]] == [
+        "copy_safety",
+        "status_routes",
+        "stop_gate",
+        "definition_of_done",
+    ]
+    assert cards["cards"][0]["value"] == "copy-safe_status_only"
+    assert "GET /data-readiness/bevoelkerung_mio" in cards["cards"][1]["body"]
+    assert cards["cards"][2]["is_stop_gate"] is True
+    assert "Go/Hold/Reject" in cards["cards"][3]["body"]
+    assert "execute=true" not in cards["cards"][1]["body"]
+    assert "kein Branch" in cards["guardrail"]
+    assert "keine Registry-/Modellmutation" in cards["guardrail"]

@@ -2970,6 +2970,65 @@ def build_data_readiness_registry_integration_operator_export_digest(
         "guardrail": "Read-only/Export-digest-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
     }
 
+def build_data_readiness_registry_integration_operator_export_share_cards(export_digest: dict) -> dict:
+    """Turn the copy-safe export digest into mobile/touch-friendly cards.
+
+    The markdown digest is useful for copy/paste, but Learning Page and mobile users
+    need a short answer-first breakdown: whether the packet is safe to share, which
+    status routes can be opened, where the Stop-Gate is, and what must be true before
+    any separate branch/PR. This helper is read-only and never adds execution commands.
+    """
+
+    markdown = export_digest.get("markdown", "")
+    safe_routes = [line.removeprefix("- ").strip() for line in markdown.splitlines() if line.strip().startswith("- GET ")]
+    stop_line = next(
+        (line.strip() for line in markdown.splitlines() if line.strip().startswith("Stop-Gate:")),
+        "Stop-Gate: STOP: erst dokumentiertes menschliches Go außerhalb dieses Pakets.",
+    )
+    definition = export_digest.get("definition_of_done_before_branch", [])
+    copy_safe = export_digest.get("copy_safe") is True and not export_digest.get("unsafe_findings")
+    return {
+        "title": "Registry-Operator-Export als teilbare Karten",
+        "plain_language_note": (
+            "Mobile/touch-sichere Kurzfassung des Export-Digests: erst Copy-Safety prüfen, "
+            "dann nur GET-/Statusrouten öffnen, Stop-Gate sichtbar lassen und vor jeder Codearbeit stoppen."
+        ),
+        "primary_parameter_key": export_digest.get("primary_parameter_key"),
+        "primary_label": export_digest.get("primary_label"),
+        "copy_safe": copy_safe,
+        "cards": [
+            {
+                "id": "copy_safety",
+                "title": "1. Darf dieses Paket geteilt werden?",
+                "value": "copy-safe_status_only" if copy_safe else "nicht_copy_safe_stoppen",
+                "body": f"SHA256 {export_digest.get('packet_sha256', 'nicht vorhanden')} · {export_digest.get('safe_route_count', 0)} geprüfte Statusrouten.",
+                "is_stop_gate": not copy_safe,
+            },
+            {
+                "id": "status_routes",
+                "title": "2. Welche Routen sind sicher?",
+                "value": "Nur GET-/Statusrouten",
+                "body": "\n".join(safe_routes) if safe_routes else "Keine sichere GET-Route im Digest gefunden.",
+                "is_stop_gate": False,
+            },
+            {
+                "id": "stop_gate",
+                "title": "3. Wo muss gestoppt werden?",
+                "value": "Vor Branch/PR stoppen",
+                "body": stop_line,
+                "is_stop_gate": True,
+            },
+            {
+                "id": "definition_of_done",
+                "title": "4. Was muss vor Codearbeit erfüllt sein?",
+                "value": "Definition of Done vor Branch",
+                "body": " · ".join(definition) if definition else "Go/Hold/Reject und Evidenzchecks separat dokumentieren.",
+                "is_stop_gate": False,
+            },
+        ],
+        "guardrail": "Read-only/Export-share-cards-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    }
+
 
 
 def build_data_readiness_registry_integration_handoff_packet(decision_record: dict) -> dict:

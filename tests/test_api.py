@@ -1197,6 +1197,12 @@ def test_api_exposes_registry_integration_operator_briefing_without_actions():
     assert "execute=true" not in export_digest["markdown"]
     assert export_digest["unsafe_findings"] == []
     assert "keine Registry-/Modellmutation" in export_digest["guardrail"]
+    share_cards = body["registry_integration_operator_export_share_cards"]
+    assert share_cards["copy_safe"] is True
+    assert share_cards["cards"][0]["value"] == "copy-safe_status_only"
+    assert "GET /data-readiness/bevoelkerung_mio" in share_cards["cards"][1]["body"]
+    assert share_cards["cards"][2]["is_stop_gate"] is True
+    assert "kein execute=true" in share_cards["guardrail"]
 
     export_response = client.get("/data-readiness/registry-integration-operator-export-packet?limit=3")
     assert export_response.status_code == 200
@@ -1219,6 +1225,14 @@ def test_api_exposes_registry_integration_operator_briefing_without_actions():
     assert digest_body["registry_integration_operator_export_digest"]["copy_safe"] is True
     assert "GET /data-readiness/bevoelkerung_mio" in digest_body["registry_integration_operator_export_digest"]["markdown"]
     assert "kein execute=true" in digest_body["guardrail"]
+
+    share_cards_response = client.get("/data-readiness/registry-integration-operator-export-share-cards?limit=3")
+    assert share_cards_response.status_code == 200
+    share_cards_body = share_cards_response.json()
+    assert share_cards_body["status"] == "data_readiness_registry_integration_operator_export_share_cards_not_applied"
+    assert share_cards_body["registry_integration_operator_export_share_cards"]["copy_safe"] is True
+    assert share_cards_body["registry_integration_operator_export_share_cards"]["cards"][2]["is_stop_gate"] is True
+    assert "kein execute=true" in share_cards_body["guardrail"]
 
     invalid = client.get("/data-readiness/registry-integration-operator-briefing?limit=0")
     assert invalid.status_code == 422
