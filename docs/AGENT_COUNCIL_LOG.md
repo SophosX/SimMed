@@ -3595,7 +3595,7 @@ Akzeptiert: `briefing_quality_checks` vermeidet nun „Meta“-Sprache und teste
 Keine wichtige Entscheidung offen; sicher weiter mit der nächsten großen Ergebnisseite-Scheibe: weniger Alt-Blöcke, stärkerer einzelner Briefing-Fluss.
 
 ### Verification / Git
-Vorläufig: Fokustest ergänzt; finale Suite/Commit/Push folgt unten im Heartbeat-Verifikationsschritt.
+Fokustests bestanden: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 51 passed. Full suite bestanden: `python3 -m pytest -q` → 278 passed. Compile/Smoke bestanden: `py_compile result_causality.py app.py api.py simulation_core.py` plus 30-run/15-year Smoke (`df=(480, 30)`, `reg=(480, 6)`). Commit `472e755` wurde auf `origin/main` gepusht; diese Verifikationsnotiz wird als Follow-up-Logcommit nachgezogen.
 
 ## 2026-04-30 09:45 Europe/Berlin — Heartbeat: Klartext-first result layout
 
