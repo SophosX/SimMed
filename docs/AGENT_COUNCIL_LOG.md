@@ -2233,3 +2233,16 @@ Keine.
 
 ### Verification / Git
 Verifiziert mit `pytest -q` (134 passed), `py_compile` für Kernmodule, kleinem Simulation-Smoke (`OK smoke (60, 30) (320, 6)`). Commit/Push folgt in diesem Heartbeat; Zip-Artefakt wird aktualisiert.
+
+
+## 2026-04-30 01:14 UTC — Learning-Page Operatorfolge für Registry-Integration
+
+- **Context:** Heartbeat-Priorität liegt auf Core-Plattform/Daten-Provenienz. Vorher existierte die Registry-Integrations-Operatorfolge als API, war aber auf der Learning Page noch nicht sichtbar; außerdem zeigte ein No-Decision-Record-Pfad einen `None.get`-Crash in Statuskarten.
+- **Project Manager:** Sinnvoller kleiner Plattform-Slice: bestehende API-Logik in die Onboarding-/Learning-UI bringen und leeren Status robust halten, statt neue Evidenz zu sammeln.
+- **Designer/UX:** Operator:innen sehen jetzt nach Statuskarten/Statusboard eine konkrete, mobile-safe Tabelle: lesen → auditieren → einzeln prüfen → PR separat. Das verhindert den Sprung von Status direkt zu Branch/Integration.
+- **Creative Agent:** Keine neue Show-UI; die vorhandene Gate-Ladder wird als kopierbare Bedienfolge nutzbar.
+- **Political Health-System Strategist:** Beibehaltener Hold-Default schützt vor vorschneller politischer Nutzung einzelner Datenpunkte als Wirksamkeitsbeweis.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; keine neuen Realwelt-Claims. Guardrails trennen weiterhin Status, Audit, Review, PR und Registry-/Modellmutation.
+- **Integrator Decision:** `build_learning_data_readiness_backlog()` bettet `registry_integration_operator_steps` ein; `render_learning_data_readiness_backlog()` rendert die Operatorfolge; `build_data_readiness_registry_integration_status_cards()` ist robust, wenn noch keine ready row existiert.
+- **Question to Alex if needed:** Keine wichtige Entscheidung offen.
+- **Verification/Git:** Geprüft mit fokussierten Tests, voller Suite und Simulation-Smoke; Commit/Push folgt in diesem Heartbeat.

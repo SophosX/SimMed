@@ -49,6 +49,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_pr_runbook,
     build_data_readiness_registry_integration_status_board,
     build_data_readiness_registry_integration_status_cards,
+    build_data_readiness_registry_integration_operator_steps,
     build_data_readiness_gate_plan,
     build_data_readiness_operator_handoff,
     build_data_readiness_platform_brief,
@@ -4132,6 +4133,7 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
     audit_checklist = build_data_readiness_registry_integration_decision_audit_checklist(decision_record)
     pr_runbook = build_data_readiness_registry_integration_pr_runbook(decision_record)
     status_board = build_data_readiness_registry_integration_status_board(decision_record, audit_checklist, pr_runbook)
+    status_cards = build_data_readiness_registry_integration_status_cards(status_board)
     return {
         "title": "Nächste Daten-Schritte: erst Cache, dann Review, dann Integration",
         "plain_language_note": (
@@ -4156,7 +4158,8 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         "registry_integration_decision_template": build_data_readiness_registry_integration_decision_template(decision_record),
         "registry_integration_decision_audit_checklist": audit_checklist,
         "registry_integration_status_board": status_board,
-        "registry_integration_status_cards": build_data_readiness_registry_integration_status_cards(status_board),
+        "registry_integration_status_cards": status_cards,
+        "registry_integration_operator_steps": build_data_readiness_registry_integration_operator_steps(status_board, status_cards),
         "registry_integration_handoff_packet": build_data_readiness_registry_integration_handoff_packet(decision_record),
         "registry_integration_pr_runbook": pr_runbook,
         "rows": [
@@ -4509,6 +4512,23 @@ def render_learning_data_readiness_backlog():
         else:
             st.caption("Noch kein Statusboard, weil kein Decision-Record vorliegt.")
         st.caption(status_board["guardrail"])
+        operator_steps = backlog["registry_integration_operator_steps"]
+        st.markdown(f"**{operator_steps['title']}**")
+        st.caption(operator_steps["plain_language_note"])
+        operator_step_rows = [
+            {
+                "Rang": step["rank"],
+                "Schritt": step["title"],
+                "Warum": step["why"],
+                "Status-Befehl": step["copyable_status_command"],
+                "Erwartetes Ergebnis": step["expected_result"],
+                "Guardrail": step["guardrail"],
+            }
+            for step in operator_steps["steps"]
+        ]
+        st.dataframe(pd.DataFrame(operator_step_rows), use_container_width=True, hide_index=True)
+        st.caption("Definition of done vor Branch: " + " · ".join(operator_steps["definition_of_done_before_branch"]))
+        st.caption(operator_steps["guardrail"])
         audit_checklist = backlog["registry_integration_decision_audit_checklist"]
         st.markdown(f"**{audit_checklist['title']}**")
         st.caption(audit_checklist["plain_language_note"])

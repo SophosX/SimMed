@@ -1608,7 +1608,7 @@ def build_data_readiness_registry_integration_status_cards(status_board: dict) -
             "id": "ready_for_human_audit",
             "title": "Was ist nur menschlich entscheidungsreif?",
             "value": str(len(ready_rows)),
-            "answer": first_ready.get("label", "Keine Zeile ist aktuell menschlich Go/Hold/Reject-reif."),
+            "answer": first_ready.get("label", "Keine Zeile ist aktuell menschlich Go/Hold/Reject-reif.") if first_ready else "Keine Zeile ist aktuell menschlich Go/Hold/Reject-reif.",
             "next_click": "GET /data-readiness/registry-integration-decision-template",
             "guardrail": "Auch grün heißt nur: Menschliches Go/Hold/Reject auditieren; kein Wirkungsbeweis und kein PR-Start.",
         },
