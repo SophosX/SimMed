@@ -1039,9 +1039,9 @@ def build_causal_result_packet(
     ) or "keine priorisierten Kennzahlen verfügbar"
     if study_places_changed:
         short_answer = (
-            f"Das Ergebnis: Weniger Medizinstudienplätze erzeugen verzögerten Kapazitätsdruck; wichtigste Signale: {top_kpi_sentences}. "
-            "Warum? Über die Ausbildungs-Pipeline: ab etwa Jahr 6 kommt weniger Nachwuchs an, Richtung Jahr 11–15 wird der Facharztpfad wichtig. "
-            "Was bedeutet das? Das bedeutet: als Nächstes Wartezeit, Belastung und Puffer prüfen, dann politisch bewerten."
+            f"Das Ergebnis: Weniger Medizinstudienplätze erzeugen verzögerten Kapazitätsdruck; sichtbar bei {top_kpi_sentences}. "
+            "Warum? weil ab etwa Jahr 6 weniger Nachwuchs ankommt; Richtung Jahr 11–15 zählt der Facharztpfad. "
+            "Was bedeutet das? Das bedeutet: nächste Prüfung: Wartezeit, Belastung und Puffer prüfen, dann politisch bewerten."
         )
     elif changed:
         short_answer = (
@@ -1083,7 +1083,7 @@ def build_causal_result_packet(
     kpi_body = "; ".join(kpi_items) + "." if kpi_items else "Keine priorisierten Kennzahlen verfügbar."
     if study_places_changed:
         result_body = (
-            "Heraus kommt ein späterer Kapazitätsdruck. Anfangs bleibt die Versorgung fast unverändert; später werden weniger Ärzt:innen, längere Wartezeiten und höhere Belastung relevant."
+            "Heraus kommt späterer Kapazitätsdruck: anfangs kaum Versorgungsänderung, später weniger Ärzt:innen, längere Wartezeiten und mehr Belastung."
         )
     elif changed:
         result_body = (
@@ -1131,8 +1131,8 @@ def build_causal_result_packet(
         observed_signals.append(f"{label} {direction}")
     observed_text = "; ".join(observed_signals) or "kein starkes Puffersignal sichtbar"
     adaptation_body = (
-        f"Das Modell prüft Puffer wie Telemedizin; beobachtet: {observed_text}. "
-        "Fällt Belastung trotz Mangel, braucht es einen klaren Puffer, sonst ist es ein Plausibilitätscheck."
+        f"Puffer wie Telemedizin werden geprüft; beobachtet: {observed_text}. "
+        "Sinkt Belastung trotz Mangel, ist das ein Plausibilitätscheck."
     )
     result_sections = [
         {"heading": "Ergebnis", "body": result_body},

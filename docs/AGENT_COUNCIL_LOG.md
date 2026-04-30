@@ -5634,3 +5634,33 @@ Keine wichtige Entscheidung offen. Empfehlung: als Nächstes die echte Streamlit
 
 ### Verification / Git
 Lokal grün: `pytest -q` → 287 passed; `py_compile` für zentrale Dateien; 50-run Simulations-Smoke mit halbierten Medizinstudienplätzen und causal packet. Git-Sync/Commit/Push folgt in diesem Heartbeat.
+
+
+## 2026-04-30 18:52 Europe/Berlin — Result first-screen clarity tightening
+
+### Context
+Alex's latest correction is that the result page must feel like one readable German briefing, not another layer on top of overlapping helper widgets. This run tightened the simplified causal packet in `result_causality.py` and the clarity regression tests in `tests/test_result_causality.py`.
+
+### Project Manager
+Priority: keep the first screen focused on outcome, changed lever, why, meaning, and next check. Risk: older result helpers remain valuable for audit, but must not compete visually with the first briefing. Next tasks: continue moving dense legacy views below collapsed audit sections and consider a Streamlit visual pass once the packet text is stable.
+
+### Designer / UX
+The first answer is now shorter and more direct: fewer words, one route through Ergebnis → Eingriff → Warum → Kennzahlen → Anpassungen → Einordnung → Nächster Prüfschritt. Relevant KPIs stay compact instead of expanding into a full KPI grid first.
+
+### Creative Agent
+Idea: later add a "one-page briefing" export that uses the same packet, but only after the on-page hierarchy is settled. Fit: good for policymakers and sharing, but not needed before the first result view is clean.
+
+### Political Health-System Strategist
+The wording keeps political interpretation after technical plausibility: especially for fewer medical study places, the report says delayed capacity pressure first, then asks whether waiting time, burden, and buffers fit before any political reading.
+
+### Evidence / Domain
+No new external evidence was added in this run. The change is communication-layer only; model dynamics and parameter sources are unchanged. Guardrails remain: no official forecast, no policy-effect proof, and evidence/assumption details stay available in the audit layer.
+
+### Integrator Decision
+Accepted: stricter tests for concise public result text and a shortened first-screen packet. Deferred: any model changes, free-text scenario mutation, and broader new levers such as DRG/GKV/gatekeeping until they have explicit proposal/review surfaces.
+
+### Question to Alex
+No blocking decision. Keep progressing safely on result-page simplification.
+
+### Verification / Git
+Focused verification passed locally: `pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients tests/test_app_explanations.py -q` → 124 passed. Full-suite, sync, commit, and push status are recorded in the heartbeat message after completion.
