@@ -4213,3 +4213,32 @@ Keine wichtige Entscheidung offen. Sicherer nächster Schritt: optionale Detail-
 
 ### Verification / Git
 Targeted tests grün: `python3 -m pytest tests/test_result_causality.py tests/test_api.py tests/test_app_explanations.py -q` → 159 passed. Full verification grün: `python3 -m pytest -q` → 254 passed; py_compile für berührte Module/Tests grün; Smoke-Test 30 Läufe × 15 Jahre grün (`df=(480, 30)`, `reg=(480, 6)`, Narrative Blocks vorhanden). Git: Commit `0879956` auf `main` gepusht; diese Verifikationszeile folgt als separater Log-Commit ohne Force-Push.
+
+## 2026-04-30 12:26 Europe/Berlin — Heartbeat: Public Ergebnisbericht Sequence
+
+### Context
+Continued the result-experience restructuring around `result_causality.py`, `app.py`, API packet exposure, and tests. Added a public, UI/API-ready briefing sequence that names the same serious reading path in user-facing terms: Ausgangslage → Eingriff → Wirkpfad der Simulation → relevante Kennzahlen → Anpassungsreaktionen → Einordnung → nächste Prüfentscheidung.
+
+### Project Manager
+Priority remains the first result view: one coherent Ergebnisbericht, not another loose KPI layer. Risk: existing packet internals are rich, but public clients could still pick awkward helper names. Next tasks: (1) make the Streamlit first view visually calmer around the new public sequence, (2) keep dense KPI/detail layers collapsed, (3) extend the causal packet only through structured fields, not scattered prose.
+
+### Designer / UX
+The useful shift this run is naming: public clients can render “Wirkpfad der Simulation” and “Relevante Kennzahlen” without exposing internal packet/table language. This should feel more like a professional briefing and less like a dashboard explaining its own plumbing.
+
+### Creative Agent
+Idea: later turn the public sequence into a printable one-page “SimMed Ergebnisbrief” with the seven blocks as fixed anchors. Fit is good for seriousness and sharing, but only after the first Streamlit result view is visually stable.
+
+### Political Health-System Strategist
+The sequence deliberately keeps political interpretation after model-path and adaptation checks. That is important for sensitive reforms such as fewer study places: a politically tempting headline should not outrun the delayed training pipeline, Burnout plausibility, and visible buffers.
+
+### Evidence / Domain
+No new evidence or numeric assumptions were added. The change is presentation/schema only. Existing guardrails remain: no official forecast, no proof of policy effectiveness, and no hidden direct mutation from free text.
+
+### Integrator Decision
+Accepted: add `public_briefing_sequence` to the causal packet and `primary_result_view`, and have `render_result_causal_overview()` prefer it for the first result view. Deferred: any new model dynamics or policy levers.
+
+### Question to Alex
+No decision required right now; this is a safe/reversible continuation of the already chosen Ergebnisbericht direction.
+
+### Verification / Git
+Local verification passed: `pytest tests/test_result_causality.py::test_causal_packet_exposes_public_briefing_sequence_for_api_and_ui_clients -q`; targeted packet/API/UI tests passed (29 tests); full `pytest -q` passed (255 tests); `py_compile` passed; 50-run simulation/result-packet smoke test passed. Commit/push status follows after sync.

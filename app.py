@@ -3529,16 +3529,23 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
             st.info(professional["lead_paragraph"])
         if professional.get("reader_summary"):
             st.write(professional["reader_summary"])
-        narrative_blocks = professional.get("narrative_blocks", [])
-        if narrative_blocks:
-            for block in narrative_blocks:
-                st.markdown(f"**{block['heading']}**")
-                st.write(block["body"])
-                st.caption(block["reader_hint"])
+        sequence = packet.get("public_briefing_sequence") or primary_view.get("public_briefing_sequence", [])
+        if sequence:
+            for step in sequence:
+                st.markdown(f"**{step['stage']}**")
+                st.write(step["body"])
+                st.caption(step["reader_hint"])
         else:
-            reader_brief = professional.get("reader_brief") or primary_view.get("professional_briefing_text")
-            if reader_brief:
-                st.markdown(reader_brief.replace("\n", "\n\n"))
+            narrative_blocks = professional.get("narrative_blocks", [])
+            if narrative_blocks:
+                for block in narrative_blocks:
+                    st.markdown(f"**{block['heading']}**")
+                    st.write(block["body"])
+                    st.caption(block["reader_hint"])
+            else:
+                reader_brief = professional.get("reader_brief") or primary_view.get("professional_briefing_text")
+                if reader_brief:
+                    st.markdown(reader_brief.replace("\n", "\n\n"))
         briefing_cards = packet.get("first_view_briefing_cards", []) or primary_view.get("first_view_briefing_cards", [])
         if briefing_cards:
             with st.expander("Lesereihenfolge als Prüftabelle anzeigen", expanded=False):

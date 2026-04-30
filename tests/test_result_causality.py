@@ -655,3 +655,33 @@ def test_professional_briefing_exposes_reader_ready_narrative_blocks():
         "guardrail",
     ]
     assert not any(term in combined for term in banned)
+
+
+def test_causal_packet_exposes_public_briefing_sequence_for_api_and_ui_clients():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    sequence = packet["public_briefing_sequence"]
+
+    assert [step["stage"] for step in sequence] == [
+        "Ausgangslage",
+        "Eingriff",
+        "Wirkpfad der Simulation",
+        "Relevante Kennzahlen",
+        "Anpassungsreaktionen",
+        "Einordnung",
+        "Nächste Prüfentscheidung",
+    ]
+    assert packet["primary_result_view"]["public_briefing_sequence"] == sequence
+    assert sequence[2]["body"].startswith("Der Eingriff läuft")
+    assert "ab Jahr 6" in sequence[2]["body"]
+    assert "Jahr 11–15" in sequence[2]["body"]
+    assert "Telemedizin" in sequence[4]["body"]
+    assert "Burnout" in sequence[4]["body"]
+    assert "keine amtliche Prognose" in sequence[5]["body"]
+    assert "erst fachlich prüfen" in sequence[-1]["body"].lower()
+    assert all(step["body"].strip() and step["reader_hint"].startswith("Warum das wichtig ist:") for step in sequence)
+    public_text = " ".join(step["stage"] + " " + step["body"] + " " + step["reader_hint"] for step in sequence)
+    banned = ["random Internet", "Klartext", "KPI-Wand", "Audit-Layer", "guardrail", "render_sequence", "causal_result_packet"]
+    assert not any(term in public_text for term in banned)

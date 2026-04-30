@@ -788,7 +788,7 @@ def build_causal_result_packet(
             "body": (
                 "Als nächste fachliche Prüfung sollte zuerst geklärt werden, ob die Anpassungsreaktionen den Kapazitätsdruck plausibel erklären: "
                 "Telemedizin/Delegation/Zuwanderung als Puffer, Burnout als Drucksignal und Wartezeit als Patient:innen-Signal. "
-                "Erst danach lohnt die politische Bewertung; sonst wäre die Zahl präzise, aber die Entscheidung zu früh."
+                "Kurz: erst fachlich prüfen, dann politisch bewerten; sonst wäre die Zahl präzise, aber die Entscheidung zu früh."
             ),
         },
     ]
@@ -864,6 +864,21 @@ def build_causal_result_packet(
             ),
         }
         for section in professional_sections
+    ]
+    public_stage_labels = {
+        "Berechnete Wirkpfade": "Wirkpfad der Simulation",
+        "Relevante KPIs": "Relevante Kennzahlen",
+        "Einordnung und Belastbarkeit": "Einordnung",
+        "Was daraus folgt": "Einordnung",
+    }
+    public_briefing_sequence = [
+        {
+            "stage": public_stage_labels.get(block["heading"], block["heading"]),
+            "body": block["body"],
+            "reader_hint": block["reader_hint"],
+        }
+        for block in narrative_blocks
+        if block["heading"] != "Was daraus folgt"
     ]
     reader_brief = "\n\n".join(
         f"{block['heading']}: {block['body']}\n{block['reader_hint']}" for block in narrative_blocks
@@ -941,6 +956,7 @@ def build_causal_result_packet(
             "professional_briefing_text": reader_brief,
             "lead_paragraph": lead_paragraph,
             "section_flow": section_flow,
+            "public_briefing_sequence": public_briefing_sequence,
             "first_view_briefing_cards": first_view_briefing_cards,
             "first_view_kpi_cards": first_view_kpi_cards,
             "policy_readiness_summary": policy_readiness_summary,
@@ -971,6 +987,7 @@ def build_causal_result_packet(
         },
         "story_sections": story_sections,
         "professional_briefing": professional_briefing,
+        "public_briefing_sequence": public_briefing_sequence,
         "first_view_briefing_cards": first_view_briefing_cards,
         "policy_readiness_summary": policy_readiness_summary,
         "briefing_quality_checks": briefing_quality_checks,
