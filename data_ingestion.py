@@ -2376,6 +2376,43 @@ def build_data_readiness_registry_integration_safe_start_checklist(safe_start_pa
     }
 
 
+def build_data_readiness_registry_integration_safe_start_cards(safe_start_checklist: dict) -> dict:
+    """Return compact mobile cards for the safe-start checklist.
+
+    The checklist table is audit-friendly but dense on phones. These cards preserve
+    the same read-only commands and stop/hold guardrails as short first-contact cards
+    so an operator can see the next click without interpreting a wide dataframe.
+    """
+
+    cards = []
+    for row in safe_start_checklist.get("rows", []):
+        command = row.get("copyable_read_only_command", "")
+        decision = row.get("operator_decision", "")
+        cards.append(
+            {
+                "rank": row.get("rank"),
+                "title": row.get("check"),
+                "primary_action": command,
+                "decision_hint": decision,
+                "expected_evidence": row.get("expected_evidence"),
+                "is_stop_gate": "kein Befehl" in command.lower() or "branch" in decision.lower(),
+                "guardrail": row.get("guardrail"),
+            }
+        )
+    return {
+        "title": "Safe-start-Karten: nächster Klick ohne Tabellenbreite",
+        "plain_language_note": (
+            "Dies sind dieselben vier Safe-start-Schritte als mobile Karten: Status lesen, "
+            "einen Parameter prüfen, Audit öffnen, dann bewusst stoppen."
+        ),
+        "primary_parameter_key": safe_start_checklist.get("primary_parameter_key"),
+        "primary_label": safe_start_checklist.get("primary_label"),
+        "cards": cards,
+        "guardrail": "Read-only/Card-only: kein Branch, kein execute=true, keine Datenaktion, keine Review-Erzeugung, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    }
+
+
+
 def build_data_readiness_registry_integration_handoff_packet(decision_record: dict) -> dict:
     """Create a copy-safe operator handoff from the Go/Hold/Reject decision record.
 

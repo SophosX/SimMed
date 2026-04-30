@@ -45,6 +45,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_operator_steps,
     build_data_readiness_registry_integration_safe_start_packet,
     build_data_readiness_registry_integration_safe_start_checklist,
+    build_data_readiness_registry_integration_safe_start_cards,
     build_data_readiness_registry_integration_pr_runbook,
     build_data_readiness_registry_integration_status_board,
     build_data_readiness_registry_integration_status_cards,
@@ -747,6 +748,9 @@ def get_data_readiness_registry_integration_safe_start(limit: int = 3) -> dict:
         "summary": build_data_readiness_summary(items),
         "registry_integration_safe_start_packet": safe_start_packet,
         "registry_integration_safe_start_checklist": build_data_readiness_registry_integration_safe_start_checklist(safe_start_packet),
+        "registry_integration_safe_start_cards": build_data_readiness_registry_integration_safe_start_cards(
+            build_data_readiness_registry_integration_safe_start_checklist(safe_start_packet)
+        ),
     }
 
 
@@ -777,11 +781,13 @@ def get_data_readiness_registry_integration_safe_start_checklist(limit: int = 3)
     status_cards = build_data_readiness_registry_integration_status_cards(status_board)
     operator_steps = build_data_readiness_registry_integration_operator_steps(status_board, status_cards)
     safe_start_packet = build_data_readiness_registry_integration_safe_start_packet(operator_steps, status_board)
+    safe_start_checklist = build_data_readiness_registry_integration_safe_start_checklist(safe_start_packet)
     return {
         "status": "data_readiness_registry_integration_safe_start_checklist_not_applied",
         "guardrail": "Safe-start-Checkliste ist read-only/status-only: kein Branch, kein execute=true, kein Netzwerkabruf, kein Cache-/Review-Schreiben, keine Registry-/Modellmutation und kein Wirkungsbeweis.",
         "summary": build_data_readiness_summary(items),
-        "registry_integration_safe_start_checklist": build_data_readiness_registry_integration_safe_start_checklist(safe_start_packet),
+        "registry_integration_safe_start_checklist": safe_start_checklist,
+        "registry_integration_safe_start_cards": build_data_readiness_registry_integration_safe_start_cards(safe_start_checklist),
     }
 
 

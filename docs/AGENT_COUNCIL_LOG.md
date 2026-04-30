@@ -2551,3 +2551,16 @@ Keine wichtige Entscheidung offen.
 
 ### Verification / Git
 Verified focused API regression (`1 passed`), full suite (`153 passed`), `py_compile`, and 20x2 simulation smoke (`df=(60,30)`, `reg=(320,6)`). Implemented in commit `b45b806`, pushed to `feat/platform-data-status-foundation`; zip refreshed at `/opt/data/cache/documents/health_simulation_app_updated.zip`.
+
+
+## 2026-04-30T02:45Z — Safe-start-Karten für Registry-Integration
+
+- **Context:** Plattform-Heartbeat priorisiert Core-Plattform/Data-Readiness statt KI-Recherche; bestehende Safe-start-Checkliste war korrekt, aber auf Mobile weiterhin tabellenlastig.
+- **Project Manager:** Kleine reversible UX/API-Schicht auf bestehenden Registry-Integrations-Gates; kein Live-Fetch, kein Review-Schreiben, keine Modellintegration.
+- **Designer/UX:** Safe-start jetzt zusätzlich als vier kurze Karten: Status lesen → Parameter prüfen → Audit öffnen → Stoppschild. Das reduziert Tabellenbreite für Erstkontakt/Tablet.
+- **Creative Agent:** Produktfit: Karten sind kein neues Feature-Spektakel, sondern machen die Governance-Leiter schneller begreifbar.
+- **Political Health-System Strategist:** Guardrails bleiben explizit: keine amtliche Prognose, kein Policy-Wirkungsbeweis, keine Lobbying-Empfehlung.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; keine neuen Sachbehauptungen oder Parameterwerte eingeführt.
+- **Integrator Decision:** `build_data_readiness_registry_integration_safe_start_cards(...)` als strukturierter Helper, API-Aggregate und Learning-Page-Anzeige ergänzt; Quelle bleibt die bestehende Checkliste.
+- **Question to Alex if needed:** Keine.
+- **Verification/Git:** Fokustests und Full Suite lokal grün (`153 passed`); Commit/Push folgt nach Zip-Refresh.

@@ -62,6 +62,7 @@ from data_ingestion import (
     build_data_readiness_registry_integration_operator_steps,
     build_data_readiness_registry_integration_safe_start_packet,
     build_data_readiness_registry_integration_safe_start_checklist,
+    build_data_readiness_registry_integration_safe_start_cards,
     build_data_readiness_gate_plan,
     build_data_readiness_operator_handoff,
     build_data_readiness_platform_brief,
@@ -4210,6 +4211,7 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
     status_cards = build_data_readiness_registry_integration_status_cards(status_board)
     operator_steps = build_data_readiness_registry_integration_operator_steps(status_board, status_cards)
     safe_start_packet = build_data_readiness_registry_integration_safe_start_packet(operator_steps, status_board)
+    safe_start_checklist = build_data_readiness_registry_integration_safe_start_checklist(safe_start_packet)
     return {
         "title": "Nächste Daten-Schritte: erst Cache, dann Review, dann Integration",
         "plain_language_note": (
@@ -4237,7 +4239,8 @@ def build_learning_data_readiness_backlog(limit: int = 6) -> dict[str, Any]:
         "registry_integration_status_cards": status_cards,
         "registry_integration_operator_steps": operator_steps,
         "registry_integration_safe_start_packet": safe_start_packet,
-        "registry_integration_safe_start_checklist": build_data_readiness_registry_integration_safe_start_checklist(safe_start_packet),
+        "registry_integration_safe_start_checklist": safe_start_checklist,
+        "registry_integration_safe_start_cards": build_data_readiness_registry_integration_safe_start_cards(safe_start_checklist),
         "registry_integration_handoff_packet": build_data_readiness_registry_integration_handoff_packet(decision_record),
         "registry_integration_pr_runbook": pr_runbook,
         "rows": [
@@ -4601,6 +4604,15 @@ def render_learning_data_readiness_backlog():
         st.caption("Nicht tun: " + " · ".join(safe_packet["do_not_do"][:4]))
         st.caption(safe_packet["guardrail"])
         safe_checklist = backlog["registry_integration_safe_start_checklist"]
+        safe_cards = backlog["registry_integration_safe_start_cards"]
+        st.markdown(f"**{safe_cards['title']}**")
+        st.caption(safe_cards["plain_language_note"])
+        for card in safe_cards["cards"]:
+            st.info(
+                f"{card['rank']}. {card['title']} — `{card['primary_action']}`\n\n"
+                f"Entscheidung: {card['decision_hint']}"
+            )
+        st.caption(safe_cards["guardrail"])
         st.markdown(f"**{safe_checklist['title']}**")
         st.caption(safe_checklist["plain_language_note"])
         safe_checklist_rows = [

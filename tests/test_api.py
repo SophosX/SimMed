@@ -937,6 +937,15 @@ def test_api_exposes_focused_registry_integration_safe_start_without_apply():
     assert "Stoppschild" in checklist["rows"][3]["check"]
     assert not any("execute=true" in row["copyable_read_only_command"] for row in checklist["rows"])
     assert "keine Registry-/Modellmutation" in checklist["guardrail"]
+    cards = body["registry_integration_safe_start_cards"]
+    assert cards["title"].startswith("Safe-start-Karten")
+    assert cards["primary_parameter_key"] == "bevoelkerung_mio"
+    assert [card["rank"] for card in cards["cards"]] == [1, 2, 3, 4]
+    assert cards["cards"][0]["primary_action"] == "GET /data-readiness/registry-integration-status-board"
+    assert cards["cards"][1]["primary_action"] == "GET /data-readiness/bevoelkerung_mio"
+    assert cards["cards"][3]["is_stop_gate"] is True
+    assert not any("execute=true" in card["primary_action"] for card in cards["cards"])
+    assert "keine Registry-/Modellmutation" in cards["guardrail"]
 
 
 def test_api_exposes_focused_registry_integration_safe_start_checklist_without_apply():
@@ -961,6 +970,10 @@ def test_api_exposes_focused_registry_integration_safe_start_checklist_without_a
     assert not any("execute=true" in command for command in commands)
     assert "keine Registry-/Modellmutation" in checklist["guardrail"]
     assert "kein Policy-Wirkungsbeweis" in checklist["guardrail"]
+    cards = body["registry_integration_safe_start_cards"]
+    assert cards["cards"][0]["primary_action"] == checklist["rows"][0]["copyable_read_only_command"]
+    assert cards["cards"][3]["is_stop_gate"] is True
+    assert "kein execute=true" in cards["guardrail"]
 
     invalid = client.get("/data-readiness/registry-integration-safe-start-checklist?limit=0")
     assert invalid.status_code == 422

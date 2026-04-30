@@ -215,6 +215,14 @@ def test_learning_data_readiness_backlog_includes_integration_preflight():
     assert "Stoppschild" in safe_checklist["rows"][3]["check"]
     assert not any("execute=true" in row["copyable_read_only_command"] for row in safe_checklist["rows"])
     assert "keine Registry-/Modellmutation" in safe_checklist["guardrail"]
+    safe_cards = backlog["registry_integration_safe_start_cards"]
+    assert safe_cards["title"].startswith("Safe-start-Karten")
+    assert safe_cards["primary_parameter_key"] == safe_checklist["primary_parameter_key"]
+    assert [card["rank"] for card in safe_cards["cards"]] == [1, 2, 3, 4]
+    assert safe_cards["cards"][0]["primary_action"] == safe_checklist["rows"][0]["copyable_read_only_command"]
+    assert safe_cards["cards"][3]["is_stop_gate"] is True
+    assert "kein execute=true" in safe_cards["guardrail"]
+    assert "keine Registry-/Modellmutation" in safe_cards["guardrail"]
     handoff_packet = backlog["registry_integration_handoff_packet"]
     assert handoff_packet["title"].startswith("Registry-Integrations-Handoff")
     assert handoff_packet["summary"]["handoff_rows"] == decision_record["summary"]["decision_rows"]
