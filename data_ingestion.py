@@ -647,6 +647,57 @@ def build_cached_snapshot_review_start_checklist(integrity_report: dict, limit: 
     }
 
 
+def build_cached_snapshot_review_start_handoff_packet(review_start_checklist: dict) -> dict:
+    """Create a copyable handoff for starting manual transformation reviews.
+
+    This comes after raw-cache SHA256 integrity is OK and before any persisted
+    ReviewedTransformation. It gives operators concrete review-template routes,
+    but stays read-only: it never creates a review or mutates model values.
+    """
+
+    rows = review_start_checklist.get("rows", [])
+    blocked_count = review_start_checklist.get("blocked_snapshot_count", 0)
+    ready_count = review_start_checklist.get("ready_snapshot_count", len(rows))
+    if blocked_count:
+        first_safe_step = "Integritätsblocker zuerst beheben; keine Review-Vorlage ausfüllen."
+        status = "review_start_blocked_by_integrity"
+    elif rows:
+        first_safe_step = "Erste Review-Vorlage öffnen und Rohdatei/Manifest manuell gegenprüfen; noch nichts ins Modell übernehmen."
+        status = "manual_review_template_ready"
+    else:
+        first_safe_step = "Noch keinen Review starten; erst Rohsnapshot-Integrität oder Connector-Dry-run prüfen."
+        status = "no_manual_review_template_ready"
+
+    first_route = ""
+    for row in rows:
+        routes = row.get("review_template_routes") or []
+        if routes:
+            first_route = routes[0]
+            break
+
+    return {
+        "title": "Transformation-Review starten: Operator-Handoff",
+        "status": status,
+        "ready_snapshot_count": ready_count,
+        "blocked_snapshot_count": blocked_count,
+        "first_safe_step": first_safe_step,
+        "checklist_route": "GET /data-snapshots/review-start-checklist",
+        "first_review_template_route": first_route,
+        "copyable_status_command": "curl -s http://localhost:8000/data-snapshots/review-start-checklist",
+        "operator_sequence": [
+            "Pre-Review-Checkliste lesen",
+            "Rohdatei und Manifest/SHA256 öffnen",
+            "Passende Transformation-Review-Vorlage je Parameter öffnen",
+            "Reviewer, Methode, Einheit, Jahr/Denominator und Caveat dokumentieren",
+            "Registry-/Modellintegration erst in separatem getesteten PR entscheiden",
+        ],
+        "definition_of_done_before_review_creation": review_start_checklist.get("definition_of_done_before_review_creation", []),
+        "rows": rows,
+        "guardrail": "Handoff ist pre-review/read-only: kein execute=true, kein Netzwerkabruf, kein Cache-Schreiben, keine Review-Erzeugung, keine Registry-/Modellmutation, keine amtliche Prognose und kein Policy-Wirkungsbeweis.",
+    }
+
+
+
 def build_cached_snapshot_integrity_handoff_packet(integrity_report: dict) -> dict:
     """Create a copyable, read-only handoff for raw-cache integrity follow-up.
 

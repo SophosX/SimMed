@@ -75,6 +75,10 @@ def test_api_exposes_snapshot_review_start_checklist_without_execution():
     }
     assert "definition_of_done_before_review_creation" in checklist
     assert "keine Registry-/Modellmutation" in checklist["guardrail"]
+    packet = body["review_start_handoff_packet"]
+    assert packet["checklist_route"] == "GET /data-snapshots/review-start-checklist"
+    assert "curl -s" in packet["copyable_status_command"]
+    assert "keine Review-Erzeugung" in packet["guardrail"]
 
 
 def test_api_exposes_focused_snapshot_integrity_handoff_without_execution():

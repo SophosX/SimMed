@@ -34,6 +34,7 @@ from data_ingestion import (
     build_cached_snapshot_integrity_handoff_packet,
     build_cached_snapshot_integrity_report,
     build_cached_snapshot_review_start_checklist,
+    build_cached_snapshot_review_start_handoff_packet,
     build_connector_execution_plan,
     build_connector_snapshot_requests,
     build_data_connector_queue,
@@ -4079,6 +4080,7 @@ def build_learning_data_passport_overview(limit: int = 8) -> dict[str, Any]:
         ),
     )[:limit]
     snapshot_integrity = build_cached_snapshot_integrity_report()
+    review_start_checklist = build_cached_snapshot_review_start_checklist(snapshot_integrity)
     return {
         "title": "Datenpass: Was ist gemessen, was ist Annahme?",
         "plain_language_note": (
@@ -4095,7 +4097,8 @@ def build_learning_data_passport_overview(limit: int = 8) -> dict[str, Any]:
         "snapshot_integrity": snapshot_integrity,
         "snapshot_integrity_action_plan": build_cached_snapshot_integrity_action_plan(snapshot_integrity),
         "snapshot_integrity_handoff_packet": build_cached_snapshot_integrity_handoff_packet(snapshot_integrity),
-        "snapshot_review_start_checklist": build_cached_snapshot_review_start_checklist(snapshot_integrity),
+        "snapshot_review_start_checklist": review_start_checklist,
+        "snapshot_review_start_handoff_packet": build_cached_snapshot_review_start_handoff_packet(review_start_checklist),
         "rows": [
             {
                 "Parameter": row["label"],
@@ -4138,7 +4141,10 @@ def render_learning_data_passport_overview():
             st.markdown(f"**Operator-Handoff:** {handoff['first_safe_step']}")
             st.code(handoff["copyable_status_command"], language="bash")
             review_start = overview["snapshot_review_start_checklist"]
+            review_handoff = overview["snapshot_review_start_handoff_packet"]
             st.markdown(f"**Pre-Review-Status:** {review_start['status']}")
+            st.markdown(f"**Review-Start-Handoff:** {review_handoff['first_safe_step']}")
+            st.code(review_handoff["copyable_status_command"], language="bash")
             if review_start["rows"]:
                 st.dataframe(pd.DataFrame(review_start["rows"]), use_container_width=True, hide_index=True)
     if overview["rows"]:

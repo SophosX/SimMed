@@ -94,6 +94,9 @@ def test_learning_data_passport_overview_separates_registry_cache_and_transforma
     assert "keine Registry-/Modellmutation" in overview["snapshot_integrity_action_plan"]["guardrail"]
     handoff = overview["snapshot_integrity_handoff_packet"]
     assert handoff["status_route"] == "GET /data-snapshots/integrity"
+    review_handoff = overview["snapshot_review_start_handoff_packet"]
+    assert review_handoff["checklist_route"] == "GET /data-snapshots/review-start-checklist"
+    assert "keine Review-Erzeugung" in review_handoff["guardrail"]
     assert "curl -s" in handoff["copyable_status_command"]
     assert "kein execute=true" in handoff["guardrail"]
     assert 1 <= len(overview["rows"]) <= 6

@@ -2368,3 +2368,15 @@ Gezielt: `pytest tests/test_api.py::test_api_exposes_focused_registry_integratio
 - **Integrator Decision:** Implemented `build_cached_snapshot_review_start_checklist(...)`, surfaced it in `/data-snapshots/integrity`, new focused `/data-snapshots/review-start-checklist`, and Learning Page data-passport overview.
 - **Question to Alex if needed:** Keine.
 - **Verification/Git:** Targeted tests passed; full pytest passed (143); py_compile passed; 20-run simulation smoke passed. Commit/push pending in this heartbeat.
+
+## 2026-04-30T01:59:40Z — Review-Start-Handoff für Rohsnapshot-Transformationen
+
+- **Context:** Alex priorisiert Kernplattform/Data-Ingestion. Vorher gab es Integritätscheck + Pre-Review-Checkliste; der konkrete Operator-Handoff von „SHA256 ok“ zu „welche Review-Vorlage öffne ich sicher?“ war noch nicht als eigenes strukturiertes Paket/API/UI-Feld sichtbar.
+- **Project Manager:** Kleine, sichere Plattform-Scheibe: keine Live-Connector-Ausführung, sondern bessere Handlungsfähigkeit im Datenfundament.
+- **Designer/UX:** Learning Page zeigt jetzt zusätzlich einen kopierbaren Review-Start-Handoff, damit Erstnutzer nicht zwischen Rohcache-Tabelle und Review-Template verloren gehen.
+- **Creative Agent:** Der Handoff macht aus der Daten-Werkbank eine geführte Schleuse statt einer losen Statusliste: erst Integrität, dann Review-Vorlage, dann separater Modell-PR.
+- **Political Health-System Strategist:** Keine neuen Policy-/Stakeholder-Claims; wichtig bleibt, Rohdatenprüfung nicht als amtliche Prognose oder Wirkungsbeweis zu verkaufen.
+- **Evidence/Domain:** Keine neue Recherche in diesem Lauf; Änderung betrifft Provenance-/Governance-Workflow, nicht neue Evidenz oder Parameterwerte.
+- **Integrator Decision:** `build_cached_snapshot_review_start_handoff_packet(...)` ergänzt, in `/data-snapshots/review-start-checklist` und Learning-Page-Datenpass eingebunden; Guardrails bleiben read-only/pre-review-only.
+- **Question to Alex if needed:** Keine wichtige Entscheidung offen.
+- **Verification/Git:** Fokustests für Data-Ingestion/API/Learning-Page bestanden; Full suite + py_compile bestanden (144 passed). Commit/Push folgt.
