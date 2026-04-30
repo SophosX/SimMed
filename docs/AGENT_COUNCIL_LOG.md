@@ -4182,4 +4182,4 @@ Accepted: expose `professional_briefing.reader_brief`, make `primary_result_view
 No blocking decision. Safe next step: continue tightening the first result page by making legacy drilldowns/report/political sections clearly subordinate to the new Ergebnisbericht.
 
 ### Verification / Git
-RED/GREEN targeted tests were run for the new reader-brief contract and render sequence. Full verification and git push follow in this heartbeat.
+RED/GREEN targeted tests were run for the new reader-brief contract and render sequence. Verification: `python3 -m pytest -q` → 253 passed; py_compile for touched modules/tests passed; simulation smoke `n_runs=50, n_years=15` passed with reader brief/render-sequence assertions. Git: commit `c4115ea` pushed to `origin/main`.
