@@ -128,7 +128,38 @@ def test_first_result_view_has_one_sequential_briefing_with_kpis_in_place():
     assert "Facharzt-Wartezeit" in kpi_block["body"]
     assert "erste Befund" not in kpi_block["body"]
     assert view["briefing_style"] == "single_readable_briefing"
-    assert view["primary_blocks"] == packet["result_sections"]
+    assert view["primary_blocks"] == blocks
+    assert "briefing_summary" not in view
+    assert "sections" not in view
+
+
+def test_public_result_packet_is_minimal_and_does_not_expose_legacy_layers_first():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    view = packet["public_result_view"]
+
+    allowed_public_keys = {
+        "briefing_style",
+        "render_order",
+        "headline",
+        "short_answer",
+        "first_screen_blocks",
+        "primary_blocks",
+        "relevant_kpis",
+        "follow_up_question",
+        "deeper_review_default_expanded",
+        "audit_expanders",
+        "guardrail",
+    }
+    assert set(view) == allowed_public_keys
+    assert view["primary_blocks"] == view["first_screen_blocks"]
+    assert all(len(section["body"].split()) <= 38 for section in packet["result_sections"])
+    assert packet["short_answer"].count(".") <= 4
+    public_text = _public_text(packet)
+    for forbidden in ["erste Ansicht", "Detailkarten", "Audit-Layer", "Systemnotizen", "zusammengeklebte"]:
+        assert forbidden not in public_text
 
 
 def test_causal_result_packet_prioritizes_relevant_kpis_and_coherent_freetext():
@@ -911,13 +942,14 @@ def test_public_result_view_is_one_briefing_not_overlapping_explanation_layers()
     view = packet["public_result_view"]
 
     assert view["briefing_style"] == "single_readable_briefing"
-    assert view["primary_blocks"] == packet["result_sections"]
+    assert view["primary_blocks"] == view["first_screen_blocks"]
     assert view["deeper_review_default_expanded"] is False
     assert "first_screen_note" not in view
-    assert "relevante kennzahlen" in view["briefing_summary"].lower()
+    assert "briefing_summary" not in view
+    assert "sections" not in view
     assert "Nächster Prüfschritt" in [section["heading"] for section in view["primary_blocks"]]
     public_text = " ".join(
-        [view["headline"], view["short_answer"], view["briefing_summary"]]
+        [view["headline"], view["short_answer"]]
         + [section["body"] for section in view["primary_blocks"]]
     )
     for term in ["Widget", "helper", "generated", "Meta", "Audit-Layer", "KPI-Wand"]:

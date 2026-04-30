@@ -4660,3 +4660,33 @@ No important decision open. Continue safely with the visual Streamlit result-car
 
 ### Verification / Git
 Verification in source tree: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` → 37 passed; `python3 -m pytest -q` → 264 passed; `python3 -m py_compile app.py result_causality.py api.py simulation_core.py` passed; 20-run simulation/packet smoke passed. GitHub push confirmed: `e19b486 Tighten public causal result packet` on `origin/main` with `docs/AGENT_COUNCIL_LOG.md`, `result_causality.py`, and `tests/test_result_causality.py`.
+
+
+## 2026-04-30 12:22 UTC — Public result packet made leaner
+
+### Context
+Alex's latest correction stays active: the result page should read like one serious German briefing, not like several overlapping explanation layers. This heartbeat removed more first-view packet clutter and made the public packet shape stricter.
+
+### Project Manager
+Priority remains immediate result comprehension. The slice is deliberately communication/API-shape only: no model dynamics, source registry, or parameter values changed.
+
+### Designer / UX
+The first result view now exposes only the lean briefing fields: headline, short answer, seven sequential blocks, relevant KPIs, follow-up question, and collapsed review pointers. Legacy/summary fields no longer sit inside `public_result_view`.
+
+### Creative Agent
+The page is moving toward a memo-like first screen: answer first, then the seven headings. Next design step should polish the Streamlit card layout rather than add more text blocks.
+
+### Political Health-System Strategist
+The medical-study-place scenario still frames delayed capacity pressure as a fachliche Prüfung before political interpretation. This avoids pretending the model output is already a legislative recommendation.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. No new factual or source claim was introduced; evidence/assumption material remains in the collapsed review layer.
+
+### Integrator Decision
+Accepted: add RED tests that fail when the public packet exposes briefing-summary/section duplicates, then make `public_result_view.primary_blocks` point to the displayed first-screen blocks and keep the packet minimal.
+
+### Question to Alex
+No important decision open. Continue safely with Streamlit visual cleanup of the same briefing.
+
+### Verification / Git
+Local verification passed in source tree: focused causal/API tests → 38 passed; full suite → 265 passed; `py_compile` for `app.py`, `result_causality.py`, `api.py`, `simulation_core.py` passed; 30-run simulation/packet smoke passed. Git commit/push pending in this same heartbeat.

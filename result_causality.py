@@ -962,7 +962,8 @@ def build_causal_result_packet(
         else "Ergebnis: die wichtigsten Veränderungen im Modelllauf"
     )
     top_kpi_sentences = "; ".join(
-        f"{item['label']} {item['direction']} ({item['start']} → {item['end']})" for item in kpis[:3]
+        f"{item['label']} {item['direction']} ({str(item['start']).replace('.', ',')} → {str(item['end']).replace('.', ',')})"
+        for item in kpis[:3]
     ) or "keine priorisierten Kennzahlen verfügbar"
     if study_places_changed:
         short_answer = (
@@ -1061,13 +1062,8 @@ def build_causal_result_packet(
         ],
         "headline": result_headline,
         "short_answer": short_answer,
-        "briefing_summary": (
-            "Die erste Ansicht liest den Lauf als ein Ergebnis-Briefing: Ergebnis, Eingriff, Ursache, "
-            "relevante Kennzahlen, Anpassungen, Einordnung und nächster Prüfschritt."
-        ),
-        "sections": result_sections,
-        "primary_blocks": result_sections,
         "first_screen_blocks": first_screen_blocks,
+        "primary_blocks": first_screen_blocks,
         "relevant_kpis": relevant_kpis_public,
         "follow_up_question": follow_up_question,
         "deeper_review_default_expanded": False,
