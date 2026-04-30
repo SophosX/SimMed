@@ -3523,9 +3523,9 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
     st.markdown(f"### {view.get('headline', packet.get('result_headline', packet['title']))}")
     st.info(view.get("short_answer", packet.get("short_answer", "Der Modelllauf wurde berechnet; die Detailprüfung steht darunter.")))
 
-    for section in view.get("sections", packet.get("result_sections", [])):
+    for section in view.get("first_screen_blocks", view.get("sections", packet.get("result_sections", []))):
         # Kennzahlen werden direkt darunter als kompakte, scanbare Karten gezeigt.
-        if section.get("heading") == "Relevante Kennzahlen":
+        if section.get("display") == "kpi_rows" or section.get("heading") == "Relevante Kennzahlen":
             continue
         st.markdown(f"**{section['heading']}**")
         st.write(section["body"])

@@ -1034,11 +1034,21 @@ def build_causal_result_packet(
         else "Welche Annahme begrenzt die wichtigste beobachtete Kennzahl am stärksten?"
     )
 
+    first_screen_blocks = [
+        {
+            "heading": section["heading"],
+            "body": section["body"][:320],
+            "display": "kpi_rows" if section["heading"] == "Relevante Kennzahlen" else "text",
+            "primary_answer": section["heading"] == "Ergebnis",
+        }
+        for section in result_sections
+    ]
+
     public_result_view = {
         "render_order": [
             "result_headline",
             "short_answer",
-            "result_sections",
+            "first_screen_blocks",
             "relevant_kpis",
             "follow_up_question",
             "deeper_review",
@@ -1046,6 +1056,7 @@ def build_causal_result_packet(
         "headline": result_headline,
         "short_answer": short_answer,
         "sections": result_sections,
+        "first_screen_blocks": first_screen_blocks,
         "relevant_kpis": relevant_kpis_public,
         "follow_up_question": follow_up_question,
         "audit_expanders": [

@@ -50,11 +50,24 @@ def test_simplified_public_result_packet_is_short_clear_and_not_meta():
 
     packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
 
+    first_screen = packet["public_result_view"]["first_screen_blocks"]
+    assert [block["heading"] for block in first_screen] == [
+        "Ergebnis",
+        "Eingriff",
+        "Warum es passiert",
+        "Relevante Kennzahlen",
+        "Anpassungen",
+        "Einordnung",
+        "Nächster Prüfschritt",
+    ]
+    assert all(len(block["body"]) <= 320 for block in first_screen)
+    assert first_screen[0]["primary_answer"] is True
+    assert all(block["display"] in {"text", "kpi_rows"} for block in first_screen)
     assert packet["result_headline"].startswith("Weniger Medizinstudienplätze")
     assert packet["public_result_view"]["render_order"] == [
         "result_headline",
         "short_answer",
-        "result_sections",
+        "first_screen_blocks",
         "relevant_kpis",
         "follow_up_question",
         "deeper_review",
@@ -871,7 +884,7 @@ def test_result_layout_uses_human_first_view_names_not_internal_widget_language(
     assert view["render_order"] == [
         "result_headline",
         "short_answer",
-        "result_sections",
+        "first_screen_blocks",
         "relevant_kpis",
         "follow_up_question",
         "deeper_review",

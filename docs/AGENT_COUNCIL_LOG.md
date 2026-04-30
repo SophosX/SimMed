@@ -4461,3 +4461,32 @@ Vor Commit grün: `python3 -m pytest tests/test_result_causality.py::test_simpli
 - Integrator Decision: Preserve the simplified causal packet (`result_headline`, `short_answer`, `result_sections`, `relevant_kpis`, `follow_up_question`) as the source of truth for UI/API.
 - Question to Alex if needed: No blocking decision; next safe slice is visual polish of the single briefing card and removal of remaining duplicate legacy-first sections if they still distract.
 - Verification/Git: Source tests green locally: `python3 -m pytest -q` (261 passed), py_compile core modules, 50-run simulation smoke with causal packet. Git sync/commit/push follows in this heartbeat.
+
+## 2026-04-30 11:29 UTC — Heartbeat: Ergebnisbericht erste Ansicht stabilisieren
+
+### Context
+Alexs jüngste Korrektur verlangt keine weitere Textschicht, sondern eine neu geordnete, verständliche Resultatseite. Dieser Lauf konzentrierte sich auf den öffentlichen Causal-Result-Packet-Vertrag und die Streamlit-Erstansicht.
+
+### Project Manager
+Priorität: erster Bildschirm muss sofort Ergebnis, Eingriff, Wirkpfad, relevante Kennzahlen, Anpassungen, Einordnung und nächsten Prüfschritt zeigen. Risiko: ältere Audit-/Story-Helfer dürfen nicht wieder vor die Lesefassung rutschen. Nächste Aufgabe: visuelles Layout der ersten Karte weiter vereinfachen und Detailbereiche konsequent geschlossen halten.
+
+### Designer / UX
+Die Erstansicht bekommt nun `first_screen_blocks` als explizite Lesereihenfolge. Das trennt den menschlichen Bericht von internen Detailstrukturen und macht klar, welche Blöcke oben stehen dürfen.
+
+### Creative Agent
+Idee: später eine dezente „Ergebnis in 30 Sekunden“-Zeile als Druck-/Export-Lead verwenden. Fit: gut für Policy-Briefing und Teilen, aber erst nach Stabilisierung des Hauptlayouts.
+
+### Political Health-System Strategist
+Die Formulierung bleibt ernst: kein fertiges politisches Urteil, sondern erst fachliche Prüfung von Kapazitätslücke, Puffern und Drucksignalen. Das reduziert Überinterpretation bei sensiblen Ausbildungs-/Versorgungsfragen.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Es wurden keine Modellparameter, Evidenzgrade oder externen Tatsachenbehauptungen geändert; die Arbeit betrifft Darstellung und API/UI-Struktur. Guardrails zu Annahmen, amtlicher Prognose und Wirksamkeitsnachweis bleiben sichtbar.
+
+### Integrator Decision
+Akzeptiert: `public_result_view.first_screen_blocks` wird als öffentlicher, knapper First-Screen-Vertrag eingeführt und `render_result_causal_overview()` nutzt diese Blöcke vor relevanten KPI-Karten und geschlossenen Prüfbereichen.
+
+### Question to Alex
+Keine offene Entscheidung nötig; sicherer nächster Schritt ist weitere Layout-Vereinfachung ohne Modelländerung.
+
+### Verification / Git
+RED gesehen: neuer Test fiel zunächst mit `KeyError: 'first_screen_blocks'`. GREEN: fokussierter Test bestanden, anschließend `tests/test_result_causality.py` plus API-Causal-Packet-Test bestanden. Vollsuite/Git-Push folgen im selben Heartbeat nach dieser Log-Aktualisierung.
