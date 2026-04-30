@@ -3947,3 +3947,33 @@ Keine wichtige Entscheidung offen; sicher weiterarbeiten an der Ergebnisbriefing
 
 ### Verification / Git
 TDD: neuer Test für Lead/Section-Flow zuerst rot (`KeyError: 'lead_paragraph'`), danach grün. Verifikation vor Git: `python3 -m pytest -q` → 245 passed; `py_compile` für Kernmodule/Tests; 30×3-Jahre Simulation-Smoke mit `build_causal_result_packet` → OK. Git-Commit/Push folgt in diesem Lauf.
+
+
+## 2026-04-30 11:24 Europe/Berlin — Heartbeat: Ergebnisbericht-Qualitätscheck
+
+### Context
+Alexs aktuelle Priorität bleibt die seriöse, menschlich lesbare Ergebnisansicht. Dieser Lauf baut auf dem bestehenden `causal_result_packet` auf und ergänzt einen expliziten Qualitätscheck für die erste Ansicht, damit die neue Struktur nicht wieder in Zahlenwand, Meta-Sprache oder unklare Reihenfolge zurückrutscht. Relevante Dateien: `result_causality.py`, `app.py`, `tests/test_result_causality.py`, `tests/test_app_explanations.py`.
+
+### Project Manager
+Priorität: Ergebnisbericht als führende Oberfläche stabilisieren, nicht weitere Einzel-Snippets danebenstellen. Risiko: ein Qualitätscheck darf nicht selbst zum neuen Dashboard-Lärm werden. Deshalb bleibt er als kleiner optionaler Expander hinter dem Ergebnisbericht.
+
+### Designer / UX
+Die erste Ansicht bekommt eine ruhige Selbstprüfung: roter Faden, wenige KPIs, sichtbare Anpassung, professionelle Sprache und Belastbarkeitsgrenze. Das ist eher ein Sicherheitsnetz als ein weiteres Feature — sichtbar genug für Vertrauen, aber nicht vor den eigentlichen Bericht geschoben.
+
+### Creative Agent
+Produktfit: Der Check wirkt wie eine kleine redaktionelle Schlusskontrolle eines guten Briefings. Das passt zu SimMed besser als ein technischer Debug-Kasten, weil er die Lesbarkeit schützt, ohne den Text künstlich wirken zu lassen.
+
+### Political Health-System Strategist
+Politische Bewertung bleibt nachgelagert. Der neue Check stärkt genau diese Reihenfolge: erst Wirkpfad und Belastbarkeit prüfen, dann Stakeholder-/Umsetzbarkeitsdeutung. Keine neue politische oder reale Wirksamkeitsbehauptung wurde eingeführt.
+
+### Evidence / Domain
+Keine neue externe Recherche in diesem Lauf. Die Änderung betrifft Darstellungsqualität und Governance der Ergebnisansicht. Evidenzgrade und Guardrails bleiben aus Registry/Modellkontext abgeleitet; keine neuen Parameterwerte, keine neuen Realweltclaims, keine Modellmutation.
+
+### Integrator Decision
+Akzeptiert: `briefing_quality_checks` wird Teil des `causal_result_packet` und `primary_result_view`; Streamlit zeigt ihn optional als „Warum dieser Bericht zuerst lesbar sein sollte“. Verworfener Weg: den Check vor den Ergebnisbericht zu stellen — das hätte die neue Lesereihenfolge wieder gestört.
+
+### Question to Alex
+Keine wichtige Entscheidung offen. Sicher weiter: als nächstes die Zeitfenster 0–5 / 6–10 / 11–15 stärker mit tatsächlichen KPI-Verlaufswerten verbinden.
+
+### Verification / Git
+TDD: neuer Test war zuerst rot (`KeyError: 'briefing_quality_checks'`), danach grün. Verifikation: `tests/test_result_causality.py tests/test_app_explanations.py::test_result_causal_overview_exposes_briefing_quality_checks_for_first_view tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients` → 21 passed; Full Suite → 247 passed; py_compile Kernmodule/Tests OK; 50-run/15-Jahre Simulation + `build_causal_result_packet` Smoke OK. Git-Commit/Push folgt nach Sync in die GitHub-Clone und `git show`-Prüfung.

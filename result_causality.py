@@ -304,6 +304,66 @@ def _counterintuitive_findings(kpis: Sequence[Mapping[str, Any]], params: Mappin
     return findings
 
 
+def _briefing_quality_checks(
+    professional_briefing: Mapping[str, Any],
+    kpis: Sequence[Mapping[str, Any]],
+    adaptation_trace: Sequence[Mapping[str, str]],
+    evidence_rows: Sequence[Mapping[str, Any]],
+) -> list[dict[str, str]]:
+    """Return a compact, read-only quality gate for the first result view.
+
+    The goal is not to score the scenario. It guards the presentation: one
+    sequential briefing, a small KPI set, visible adaptation signals, restrained
+    human language, and an explicit interpretation boundary.
+    """
+
+    sequential_text = str(professional_briefing.get("sequential_text", ""))
+    headings = [str(section.get("heading", "")) for section in professional_briefing.get("sections", [])]
+    display_headings = ["Wirkpfad" if heading == "Berechnete Wirkpfade" else heading for heading in headings[:3]]
+    ordered = " → ".join(display_headings) if len(display_headings) >= 3 else "Sequenz unvollständig"
+    adaptation_labels = ", ".join(str(row.get("label", "")) for row in adaptation_trace) or "keine spezifischen Anpassungssignale"
+    evidence_grades = ", ".join(
+        f"{row.get('label', row.get('parameter_key', 'Parameter'))}: Evidenzgrad {row.get('evidence_grade', '?')}"
+        for row in evidence_rows
+    ) or "keine geänderte Registry-Zeile"
+    banned_terms = ("random Internet", "Klartext", "KPI-Wand", "keine freie Web-Recherche")
+    professional_language_ok = not any(term in sequential_text for term in banned_terms)
+    bounded = "keine amtliche Prognose" in sequential_text or "keine amtliche Prognose" in RESULT_CAUSALITY_GUARDRAIL
+
+    return [
+        {
+            "check": "Ein roter Faden",
+            "status": "erfüllt" if headings[:3] == ["Ausgangslage", "Eingriff", "Berechnete Wirkpfade"] else "prüfen",
+            "evidence": f"{ordered} ist die erste Lesespur.",
+            "why_it_matters": "Der Bericht beginnt mit einer nachvollziehbaren Kette statt mit lose verteilten Kennzahlen.",
+        },
+        {
+            "check": "Wenige relevante KPIs",
+            "status": "erfüllt" if 0 < len(kpis) <= 5 else "prüfen",
+            "evidence": f"{len(kpis)} relevante Kennzahlen stehen vor den Detailkarten.",
+            "why_it_matters": "Die erste Ansicht zeigt nur Signale, die den Wirkpfad erklären; der Rest bleibt als Audit-Layer verfügbar.",
+        },
+        {
+            "check": "Anpassung sichtbar",
+            "status": "erfüllt" if adaptation_trace else "prüfen",
+            "evidence": f"Beobachtete Anpassungs-/Drucksignale: {adaptation_labels}.",
+            "why_it_matters": "Bei Kapazitätsdruck müssen Puffer wie Telemedizin und Drucksignale wie Burnout gemeinsam gelesen werden.",
+        },
+        {
+            "check": "Professionelle Sprache",
+            "status": "erfüllt" if professional_language_ok else "prüfen",
+            "evidence": "Der erste Ergebnistext vermeidet interne Meta-Floskeln und bleibt bei fachlicher Sprache.",
+            "why_it_matters": "Der Bericht soll wie eine ernsthafte Simulationseinordnung wirken, nicht wie zusammengeklebte Systemnotizen.",
+        },
+        {
+            "check": "Belastbarkeit begrenzt",
+            "status": "erfüllt" if bounded else "prüfen",
+            "evidence": f"{evidence_grades}; keine amtliche Prognose oder Wirksamkeitsnachweis.",
+            "why_it_matters": "Evidenz und Annahmen bleiben sichtbar, ohne die erste Ergebnisansicht mit Quellenprosa zu überladen.",
+        },
+    ]
+
+
 def _timeline_windows(params: Mapping[str, Any]) -> list[dict[str, str]]:
     """Return human-readable timing checkpoints for delayed policy effects."""
     defaults = get_default_params()
@@ -653,6 +713,12 @@ def build_causal_result_packet(
         ),
         "guardrail": RESULT_CAUSALITY_GUARDRAIL,
     }
+    briefing_quality_checks = _briefing_quality_checks(
+        professional_briefing,
+        kpis,
+        adaptation_trace,
+        evidence_rows,
+    )
     sequential_plain_text = professional_briefing["sequential_text"]
 
     coherent_story = (
@@ -720,10 +786,12 @@ def build_causal_result_packet(
             "adaptation_signal_trace": adaptation_trace,
             "timeline_windows": timeline_windows,
             "evidence_assumption_rows": evidence_rows,
+            "briefing_quality_checks": briefing_quality_checks,
             "optional_details_after": ["KPI-Drilldowns", "Trend", "Policy-Briefing", "Politik/Stakeholder"],
         },
         "story_sections": story_sections,
         "professional_briefing": professional_briefing,
+        "briefing_quality_checks": briefing_quality_checks,
         "legacy_numbered_story": legacy_numbered_story,
         "sequential_plain_text": sequential_plain_text,
         "coherent_story": coherent_story,

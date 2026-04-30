@@ -35,6 +35,7 @@ from app import (
     build_political_lever_detail_sections,
     build_political_result_checkpoints,
     build_political_stakeholder_rows,
+    build_result_causal_overview,
     build_result_decision_checkpoints,
     build_result_explorer_topics,
     build_result_narrative_summary,
@@ -995,6 +996,48 @@ def test_changed_policy_lever_notes_names_only_changed_scenario_levers():
     assert "Präventionsbudget wurde erhöht" in combined
     assert "Telemedizin" not in combined
     assert "kaum sofort" in combined
+
+
+def test_result_causal_overview_exposes_briefing_quality_checks_for_first_view():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+    agg = pd.DataFrame([
+        {
+            "jahr": 2026,
+            "aerzte_pro_100k_mean": 430.0,
+            "burnout_rate_mean": 12.0,
+            "wartezeit_fa_mean": 25.0,
+            "gkv_saldo_mean": -2.0,
+            "telemedizin_rate_mean": 5.0,
+            "versorgungsindex_rural_mean": 72.0,
+        },
+        {
+            "jahr": 2041,
+            "aerzte_pro_100k_mean": 360.0,
+            "burnout_rate_mean": 23.0,
+            "wartezeit_fa_mean": 45.0,
+            "gkv_saldo_mean": -12.0,
+            "telemedizin_rate_mean": 18.0,
+            "versorgungsindex_rural_mean": 56.0,
+        },
+    ])
+
+    overview = build_result_causal_overview(agg, params)
+    checks = overview["primary_result_view"]["briefing_quality_checks"]
+
+    assert [row["check"] for row in checks] == [
+        "Ein roter Faden",
+        "Wenige relevante KPIs",
+        "Anpassung sichtbar",
+        "Professionelle Sprache",
+        "Belastbarkeit begrenzt",
+    ]
+    assert all(row["status"] == "erfüllt" for row in checks)
+    combined = " ".join(row["evidence"] for row in checks)
+    assert "Ausgangslage → Eingriff → Wirkpfad" in combined
+    assert "keine amtliche Prognose" in combined
+    assert "random Internet" not in combined
+    assert "Klartext" not in combined
 
 
 def test_sidebar_quick_start_steps_make_first_action_clear():

@@ -3556,6 +3556,15 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
         st.markdown(f"**{next_check['label']}**")
         st.write(next_check["text"])
 
+    quality_checks = primary_view.get("briefing_quality_checks", []) if primary_view else []
+    if quality_checks:
+        with st.expander("Warum dieser Bericht zuerst lesbar sein sollte", expanded=False):
+            st.dataframe(
+                pd.DataFrame(quality_checks)[["check", "status", "evidence", "why_it_matters"]],
+                use_container_width=True,
+                hide_index=True,
+            )
+
     st.caption(packet["guardrail"])
 
     if packet.get("adaptation_signal_trace"):

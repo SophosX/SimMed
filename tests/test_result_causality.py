@@ -449,3 +449,28 @@ def test_professional_briefing_does_not_invent_study_place_path_when_no_lever_ch
     assert packet["timeline_windows"] == []
     assert packet["adaptation_mechanisms"] == []
     assert packet["primary_result_view"]["next_check"]["label"] == "Was daraus folgt"
+
+
+def test_result_briefing_quality_check_guards_first_view_style_and_sequence():
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    packet = build_causal_result_packet(_agg_frame(), params, max_kpis=4)
+    checks = packet["briefing_quality_checks"]
+
+    assert [check["check"] for check in checks] == [
+        "Ein roter Faden",
+        "Wenige relevante KPIs",
+        "Anpassung sichtbar",
+        "Professionelle Sprache",
+        "Belastbarkeit begrenzt",
+    ]
+    assert all(check["status"] == "erfüllt" for check in checks)
+    combined = " ".join(check["evidence"] + " " + check["why_it_matters"] for check in checks)
+    assert "Ausgangslage → Eingriff → Wirkpfad" in combined
+    assert "4 relevante Kennzahlen" in combined
+    assert "Telemedizin" in combined and "Burnout" in combined
+    assert "keine amtliche Prognose" in combined
+    assert "random Internet" not in combined
+    assert "Klartext" not in combined
+    assert packet["primary_result_view"]["briefing_quality_checks"] == checks
