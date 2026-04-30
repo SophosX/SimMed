@@ -3408,6 +3408,70 @@ def render_main_trend_chart(agg: pd.DataFrame, params: dict | None = None):
     fig.update_layout(height=430, hovermode="x unified", margin=dict(l=20,r=20,t=20,b=20), legend=dict(orientation="h"), xaxis_title="Jahr", yaxis_title="Modellwert")
     st.plotly_chart(fig, use_container_width=True)
 
+def build_uncertainty_band_summary(agg: pd.DataFrame, metric_keys: list[str] | None = None, limit: int = 5) -> list[dict[str, str]]:
+    """Summarize Monte-Carlo uncertainty bands for first-contact result reading.
+
+    Uses already aggregated P5/P95 columns only. This is a display/audit helper:
+    it does not rerun simulations, add new causal claims, or turn uncertainty
+    bands into official forecast intervals.
+    """
+    if agg.empty:
+        return []
+    metric_keys = metric_keys or [
+        "gkv_saldo",
+        "wartezeit_fa",
+        "versorgungsindex_rural",
+        "gesundheitsausgaben_mrd",
+        "aerzte_pro_100k",
+        "kollaps_wahrscheinlichkeit",
+    ]
+    last = agg.iloc[-1]
+    rows: list[dict[str, str]] = []
+    for key in metric_keys:
+        p5_col = f"{key}_p5"
+        p95_col = f"{key}_p95"
+        mean_col = f"{key}_mean"
+        if p5_col not in agg.columns or p95_col not in agg.columns or mean_col not in agg.columns:
+            continue
+        p5 = float(last[p5_col])
+        p95 = float(last[p95_col])
+        mean = float(last[mean_col])
+        width = p95 - p5
+        relative_width = abs(width / mean) if mean else abs(width)
+        if relative_width >= 0.50:
+            signal = "breites Band"
+            interpretation = "Ergebnis stark als Spannweite lesen; erst Annahmen und Treiber prüfen."
+        elif relative_width >= 0.20:
+            signal = "mittleres Band"
+            interpretation = "Mittelwert nur zusammen mit P5/P95 lesen; mehrere plausible Modellläufe unterscheiden sich sichtbar."
+        else:
+            signal = "enges Band"
+            interpretation = "Mittelwert wirkt in den Modellläufen relativ stabil, bleibt aber Szenario- und Annahmen-getrieben."
+        rows.append({
+            "metric_key": key,
+            "label": KPI_LABELS.get(key, key),
+            "end_year": str(int(last["jahr"])),
+            "mean": f"{mean:.2f}",
+            "p5": f"{p5:.2f}",
+            "p95": f"{p95:.2f}",
+            "band_width": f"{width:.2f}",
+            "signal": signal,
+            "interpretation": interpretation,
+            "guardrail": "Monte-Carlo-Spannweite im SimMed-Modell; keine amtliche Prognose, kein Wirksamkeitsnachweis und keine Konfidenzgarantie.",
+        })
+    return sorted(rows, key=lambda row: float(row["band_width"]), reverse=True)[:limit]
+
+
+def render_uncertainty_band_summary(agg: pd.DataFrame):
+    """Render a mobile-safe uncertainty-band checklist before KPI cards."""
+    rows = build_uncertainty_band_summary(agg)
+    if not rows:
+        return
+    with st.expander("Unsicherheit zuerst lesen: Wie breit sind die Modell-Spannweiten?", expanded=False):
+        st.caption("P5/P95 zeigen die Spannweite der Monte-Carlo-Läufe im Endjahr. Das ist Orientierung, keine amtliche Prognose.")
+        st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+
+
 def render_dashboard(agg: pd.DataFrame, params: dict):
     """Zeigt Dashboard-Karten mit Trend-Pfeilen."""
     st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
@@ -3419,9 +3483,10 @@ def render_dashboard(agg: pd.DataFrame, params: dict):
     render_result_narrative_summary(agg, params)
     render_result_decision_checkpoints(agg, params)
     render_result_storyboard(agg, params)
+    render_uncertainty_band_summary(agg)
 
     st.markdown(f"### Kernkennzahlen {endjahr} (Mittelwerte über alle Runs)")
-    st.caption("Desktop: ⓘ/Hover erklärt jede Karte. Mobil/Tablet: dieselben Erklärungen stehen direkt darunter in den aufklappbaren KPI-Details.")
+    st.caption("Desktop: ⓘ/Hover erklärt jede Karte. Mobil/Tablet: dieselben Erklärungen stehen direkt darunter in den aufklappbaren KPI-Details. P5/P95-Spannweiten stehen oben im Unsicherheits-Check.")
 
     def delta_pct(col: str) -> float:
         v0, v1 = first[f"{col}_mean"], last[f"{col}_mean"]

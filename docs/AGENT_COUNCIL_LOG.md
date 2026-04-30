@@ -3243,3 +3243,15 @@ Keine.
 
 ### Verification / Git
 Lokal verifiziert: gezielte 3 Tests passed; vollständige Suite `191 passed`; `py_compile` für app/api/scenario_gallery/simulation_core/data_ingestion/parameter_registry; Simulation-Smoke `OK smoke (60, 30) (320, 6)`. Commit/Push folgt in diesem Lauf.
+
+## 2026-04-30 – Heartbeat: Unsicherheits-Check vor KPI-Karten
+
+- **Context:** Alex priorisiert Core-Plattform. Dieser Lauf ergänzt die Ergebnis-/Policy-Briefing-Lesespur um einen expliziten Monte-Carlo-Spannweiten-Check vor den KPI-Karten.
+- **Project Manager:** Sinnvoller kleiner Plattform-Slice auf Priorität 4 (Uncertainty/Sensitivity), ohne neue Modelllogik oder Datenbehauptungen.
+- **Designer/UX:** Mobile/tablet-sichere Tabelle/Expander statt Hover: Nutzer sehen P5/P95, Signal und Guardrail, bevor Mittelwerte als harte Prognose gelesen werden.
+- **Creative Agent:** Keine neue Visual-Spektakel-Schicht; bewusst nüchterner Audit-Baustein, der später zu Sensitivitätskarten erweitert werden kann.
+- **Political Health-System Strategist:** Politische Lesart bleibt vorsichtig: Spannweiten verhindern Überinterpretation einzelner Mittelwerte als Mandat, Prognose oder Wirkungsbeweis.
+- **Evidence/Domain:** Nutzt nur vorhandene Aggregationsspalten (`_p5`, `_p95`, `_mean`); keine neue externe Recherche und keine neuen Realweltclaims.
+- **Integrator Decision:** `build_uncertainty_band_summary()` plus `render_uncertainty_band_summary()` in `app.py`; Regressionstest ergänzt.
+- **Question to Alex if needed:** Keine wichtige Produktentscheidung offen; nächster sicherer Schritt: Sensitivitäts-/Treiber-Sicht aus vorhandenen Simulationsdaten strukturieren.
+- **Verification/Git:** Tests/py_compile/Smoke/Git werden nach diesem Logeintrag ausgeführt.

@@ -44,6 +44,7 @@ from app import (
     build_simulation_report,
     build_trend_changed_lever_timing,
     build_trend_metric_reading_rows,
+    build_uncertainty_band_summary,
     build_trend_view_guidance,
     get_default_params,
     kpi_data_status_badge,
@@ -2045,3 +2046,38 @@ def test_result_storyboard_orders_sections_from_signal_to_politics():
     assert "Vote-Forecast" in combined
     assert "Lobbying-Empfehlung" in combined
     assert "Ergebnis → Wirkpfad → Annahme → Zeitverlauf" in combined
+
+
+def test_uncertainty_band_summary_surfaces_p5_p95_before_kpi_cards():
+    agg = pd.DataFrame([
+        {
+            "jahr": 2025,
+            "gkv_saldo_mean": 1.0,
+            "gkv_saldo_p5": 0.5,
+            "gkv_saldo_p95": 1.5,
+            "wartezeit_fa_mean": 20.0,
+            "wartezeit_fa_p5": 19.0,
+            "wartezeit_fa_p95": 21.0,
+        },
+        {
+            "jahr": 2040,
+            "gkv_saldo_mean": 2.0,
+            "gkv_saldo_p5": -3.0,
+            "gkv_saldo_p95": 7.0,
+            "wartezeit_fa_mean": 30.0,
+            "wartezeit_fa_p5": 28.0,
+            "wartezeit_fa_p95": 32.0,
+        },
+    ])
+
+    rows = build_uncertainty_band_summary(agg, metric_keys=["gkv_saldo", "wartezeit_fa"])
+
+    assert rows[0]["metric_key"] == "gkv_saldo"
+    assert rows[0]["label"] == "GKV-Saldo (Mrd. €)"
+    assert rows[0]["p5"] == "-3.00"
+    assert rows[0]["p95"] == "7.00"
+    assert rows[0]["signal"] == "breites Band"
+    assert "Spannweite" in rows[0]["interpretation"]
+    assert "keine amtliche Prognose" in rows[0]["guardrail"]
+    assert "kein Wirksamkeitsnachweis" in rows[0]["guardrail"]
+    assert rows[1]["signal"] == "enges Band"
