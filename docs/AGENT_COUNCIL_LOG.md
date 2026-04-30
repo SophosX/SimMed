@@ -6205,3 +6205,32 @@ Keine wichtige Entscheidung offen. Sicher weiter: die Detail-/Audit-Ebene weiter
 
 ### Verification / Git
 Verifiziert lokal: `python3 -m pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q`, `python3 -m py_compile result_causality.py app.py api.py`, kleiner Simulation/Packet-Smoke-Test, und `python3 -m pytest -q` mit 297 passed. Commit `3d63f43` (`Clarify causal result first view`) wurde auf `origin/main` gepusht; `git show --name-only --oneline -1` bestätigt `docs/AGENT_COUNCIL_LOG.md`, `result_causality.py`, `tests/test_result_causality.py`.
+
+## 2026-04-30 20:55 Europe/Berlin — Result-first briefing deduplication
+
+### Context
+Alexs neueste Korrektur bleibt die Leitplanke: Die Ergebnisansicht soll wie ein einziger verständlicher Bericht wirken, nicht wie mehrere übereinandergelegte Erklär-Widgets. Der vorhandene kompakte `causal_result_packet` war bereits auf sieben klare Abschnitte reduziert; im Streamlit-Renderer wurde der nächste Prüfschritt aber zusätzlich als separate Info-Box unter denselben Abschnitten gerendert.
+
+### Project Manager
+Priorität: erste Ergebnisansicht weiter entstapeln, ohne Modelllogik anzufassen. Risiko: zusätzliche Info-Boxen erzeugen trotz guter Texte wieder den Eindruck eines Widget-Stapels. Nächste Aufgaben: erst Renderer-Duplizierungen entfernen, dann die restlichen darunterliegenden Detailflächen weiter in ein einheitliches Briefing-/Audit-Muster bringen.
+
+### Designer / UX
+Die erste Ansicht soll genau einmal durch die Sequenz Ergebnis → Eingriff → Warum es passiert → Relevante Kennzahlen → Anpassungen → Einordnung → Nächster Prüfschritt führen. Der Prüfschritt gehört in diese Lesereihenfolge; eine zweite Info-Box direkt danach schwächt die Hierarchie.
+
+### Creative Agent
+Idee: Der erste Ergebnisblock kann später wie eine kurze ärztliche Übergabe funktionieren: Befund, Ursache, relevante Werte, Vorsicht, nächster Check. Fit: sehr gut für SimMed, aber heute nur als kleine Renderer-Bereinigung, nicht als neues Format umgesetzt.
+
+### Political Health-System Strategist
+Politische Deutung bleibt untergeordnet: Der erste Screen soll nicht zum schnellen Urteil drängen, sondern fachlich sauber zeigen, welche Signale zuerst geprüft werden müssen. Das schützt vor zu frühen Reform-Schlussfolgerungen.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Es wurden keine neuen Modell- oder Evidenzbehauptungen eingeführt; Änderung betrifft nur Darstellung/Kommunikation. Guardrails zu amtlicher Prognose, Wirksamkeitsnachweis und Annahmengrenzen bleiben erhalten.
+
+### Integrator Decision
+Akzeptiert: `render_result_causal_overview()` respektiert nun `render_follow_up_after_sections=False`; der nächste Prüfschritt wird nicht mehr doppelt als separate Info-Box gerendert. Zusätzlich wurde ein Streamlit-Renderer-Regressions-Test ergänzt, der genau diese Dopplung verhindert.
+
+### Question to Alex
+Keine wichtige Entscheidung offen. Sicher weiterarbeiten: nächste kohärente Scheibe sollte die tieferen Detail-/Audit-Flächen sprachlich und visuell stärker an denselben einen Ergebnisbericht anbinden.
+
+### Verification / Git
+RED: `tests/test_result_causality.py::test_streamlit_first_view_does_not_render_follow_up_twice` fiel zuerst, weil `st.info(...)` den Prüfschritt doppelt renderte. GREEN: fokussierter Test und `tests/test_result_causality.py` grün. Vollständige Verifikation/Git-Push folgt in diesem Heartbeat.

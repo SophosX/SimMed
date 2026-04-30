@@ -3549,7 +3549,7 @@ def render_result_causal_overview(agg: pd.DataFrame, params: dict):
                 st.markdown(section.get("body", ""))
 
         next_check = briefing.get("next_check") or view.get("follow_up_question") or packet.get("follow_up_question")
-        if next_check:
+        if next_check and view.get("render_follow_up_after_sections", True):
             st.info(next_check)
         st.caption(view.get("executive_brief", {}).get("audit_hint") or briefing.get("guardrail") or view.get("guardrail", packet["guardrail"]))
 

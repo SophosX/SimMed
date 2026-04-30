@@ -270,6 +270,57 @@ def test_public_result_view_has_single_follow_up_rendering_instruction():
     assert section_by_heading["Nächster Prüfschritt"] != view["follow_up_question"]
 
 
+def test_streamlit_first_view_does_not_render_follow_up_twice(monkeypatch):
+    """The final next-check section is already in the briefing; no second info box above the audit layer."""
+
+    import app as app_module
+
+    class FakeContext:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+    class FakeStreamlit:
+        def __init__(self):
+            self.info_calls = []
+            self.markdown_calls = []
+            self.caption_calls = []
+
+        def container(self, **_kwargs):
+            return FakeContext()
+
+        def expander(self, *_args, **_kwargs):
+            return FakeContext()
+
+        def columns(self, count):
+            return [FakeContext() for _ in range(count)]
+
+        def markdown(self, text, *_, **__):
+            self.markdown_calls.append(str(text))
+
+        def caption(self, text, *_, **__):
+            self.caption_calls.append(str(text))
+
+        def info(self, text, *_, **__):
+            self.info_calls.append(str(text))
+
+        def dataframe(self, *_args, **_kwargs):
+            return None
+
+    fake_st = FakeStreamlit()
+    monkeypatch.setattr(app_module, "st", fake_st)
+    params = get_default_params()
+    params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
+
+    app_module.render_result_causal_overview(_agg_frame(), params)
+
+    assert fake_st.info_calls == []
+    rendered = "\n".join(fake_st.markdown_calls)
+    assert rendered.count("#### Nächster Prüfschritt") == 1
+
+
 def test_first_result_view_excludes_legacy_audit_payloads_and_stays_brief():
     params = get_default_params()
     params["medizinstudienplaetze"] = params["medizinstudienplaetze"] * 0.5
