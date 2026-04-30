@@ -132,6 +132,8 @@ def test_public_adaptation_section_is_not_truncated_mid_sentence():
     assert "Burnout steigt." in adaptation
     assert "dämpfender M" not in adaptation
     assert " M Fällt" not in adaptation
+    assert adaptation.endswith("Plausibilitätscheck.")
+    assert all(section["body"].endswith((".", "?", "!")) for section in packet["result_sections"])
     assert why.startswith("Der Eingriff wirkt verzögert. In Jahr 0–5")
     assert "Ab etwa Jahr 6" in why
 

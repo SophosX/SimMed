@@ -1041,18 +1041,18 @@ def build_causal_result_packet(
         label = str(signal.get("label", "Signal"))
         direction = str(signal.get("observed_direction", "ändert sich"))
         observed_signals.append(f"{label} {direction}.")
-    observed_text = " ".join(observed_signals) or "Kein starkes Anpassungssignal im kompakten Kennzahlen-Set."
+    observed_text = " ".join(observed_signals) or "Kein starkes Puffersignal sichtbar."
     adaptation_body = (
-        "Das Modell prüft Puffer: Telemedizin, Delegation oder Zuwanderung. "
+        "Das Modell prüft Puffer wie Telemedizin. "
         f"Beobachtet: {observed_text} "
-        "Wenn Burnout/Belastung trotz Ärztemangel sinkt, muss ein solcher Puffer klar erkennbar sein; sonst ist es ein Plausibilitätscheck."
+        "Fällt Belastung trotz Mangel, braucht es einen klaren Puffer; sonst ist es ein Plausibilitätscheck."
     )
     result_sections = [
-        {"heading": "Ergebnis", "body": result_body[:190]},
-        {"heading": "Eingriff", "body": changed_text[:190]},
-        {"heading": "Warum es passiert", "body": why_body[:190]},
-        {"heading": "Relevante Kennzahlen", "body": kpi_body[:190]},
-        {"heading": "Anpassungen", "body": adaptation_body[:190]},
+        {"heading": "Ergebnis", "body": result_body},
+        {"heading": "Eingriff", "body": changed_text},
+        {"heading": "Warum es passiert", "body": why_body},
+        {"heading": "Relevante Kennzahlen", "body": kpi_body},
+        {"heading": "Anpassungen", "body": adaptation_body},
         {
             "heading": "Einordnung",
             "body": (

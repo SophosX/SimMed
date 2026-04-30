@@ -5163,3 +5163,33 @@ No important decision is blocked. Recommendation: continue safely by removing or
 
 ### Verification / Git
 Verification before sync: `pytest tests/test_result_causality.py tests/test_api.py::test_simulate_embeds_causal_result_packet_for_answer_first_clients -q` (50 passed), full `pytest -q` (277 passed), `py_compile app.py result_causality.py api.py simulation_core.py`, and 50-run simulation smoke with causal packet build. Git sync/commit/push follows this entry.
+
+
+## 2026-04-30 16:40 Europe/Berlin — Heartbeat: Ergebnisbriefing ohne abgeschnittene Sätze
+
+### Context
+Alexs aktuelle Korrektur bleibt maßgeblich: Die Result Page soll wie ein klarer, seriöser deutscher Ergebnisbericht gelesen werden, nicht wie mehrere übereinandergelegte Erklärungsschichten. Dieser Lauf konzentrierte sich auf die öffentliche `result_causality.py`-Briefing-Ausgabe und ihre Tests.
+
+### Project Manager
+Priorität: erste Ergebnisansicht sprachlich stabilisieren, bevor weitere neue Ergebnisblöcke entstehen. Risiko: kurze Textgrenzen dürfen nicht per harter Zeichenkürzung mitten im Satz enden. Nächste Aufgaben: Rendering weiter vereinfachen, Legacy-Detailblöcke stärker in geschlossene Prüfbereiche verschieben, danach Browser-/Streamlit-Sicht prüfen.
+
+### Designer / UX
+Die erste Ansicht bleibt in der gewünschten Reihenfolge Ergebnis → Eingriff → Warum es passiert → Relevante Kennzahlen → Anpassungen → Einordnung → Nächster Prüfschritt. Wichtiges UX-Fix: Der Abschnitt „Anpassungen“ endet jetzt als vollständiger Satz mit einem professionellen Plausibilitätscheck statt abgeschnittenem Wort.
+
+### Creative Agent
+Produktidee: die erste Karte später wie ein „Ärztlicher Kurzbefund“ lesen lassen: Befund, Ursache, Verlauf, Prüfbedarf. Fit: gut für Verständlichkeit; erst umsetzen, wenn die aktuelle Berichtshierarchie stabil ist.
+
+### Political Health-System Strategist
+Für Medizinstudienplätze bleibt die politische Kernaussage vorsichtig: Der Druck kommt verzögert und muss vor Bewertung gegen Puffer wie Telemedizin/Delegation und Belastungssignale geprüft werden. Keine neue stakeholder- oder parteipolitische Behauptung in diesem Lauf.
+
+### Evidence / Domain
+Keine neue Recherche in diesem Lauf. Es wurden keine Modellparameter, Datenquellen oder Evidenzgrade geändert; nur die öffentliche Kommunikationsschicht wurde präzisiert. Guardrails „keine amtliche Prognose“ und „kein Wirksamkeitsnachweis“ bleiben erhalten.
+
+### Integrator Decision
+Akzeptiert: Test-first Regression gegen abgeschnittene öffentliche Result-Sections plus kürzerer, vollständiger Anpassungsabschnitt in `result_causality.py`. Keine Änderung an Simulation, API-Schema oder Modellmechanik.
+
+### Question to Alex
+Keine wichtige Entscheidung offen. Sicher weiter: Result-Rendering in `app.py` weiter entschlacken und Audit-/Legacy-Details konsequenter unterhalb des ersten Briefings bündeln.
+
+### Verification / Git
+Lokal grün vor Sync: `python3 -m pytest -q` → 277 passed; `py_compile app.py result_causality.py api.py simulation_core.py`; kleiner 30-run Smoke-Test mit halbierten Medizinstudienplätzen bestanden. Git-Sync/Commit/Push folgt im Anschluss an diese Log-Ergänzung.
